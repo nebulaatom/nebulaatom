@@ -1,0 +1,56 @@
+# Install files
+
+## Project
+install(
+	TARGETS ${PROJECT_NAME} 
+	DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+## Header files
+install(
+	FILES 
+		${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h 
+		${HEADER}/library1.h
+		${HEADER}/library2.h
+		${HEADER}/object_library.h
+	DESTINATION 
+		${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
+)
+
+## Libraries
+install(
+	TARGETS 
+		library1
+		library2
+	DESTINATION 
+		${CMAKE_INSTALL_LIBDIR}
+)
+
+## Docs files
+install(
+	FILES 
+		${PROJECT_SOURCE_DIR}/README.md
+		${PROJECT_SOURCE_DIR}/CODE_OF_CONDUCT.md
+		${PROJECT_SOURCE_DIR}/LICENSE
+		${PROJECT_SOURCE_DIR}/PULL_REQUEST_TEMPLATE.md
+	DESTINATION
+		${CMAKE_INSTALL_DOCDIR}
+)
+
+## Share files
+install(
+	FILES ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.desktop
+	DESTINATION ${CMAKE_INSTALL_DATADIR}/applications
+)
+install(
+	FILES ${PROJECT_BINARY_DIR}/share/${PROJECT_NAME}/${PROJECT_NAME}.glade
+	DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
+)
+install(
+	FILES ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.pc
+	DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+)
+install(
+	FILES ${PROJECT_SOURCE_DIR}/share/icons/project-name.svg
+	DESTINATION ${CMAKE_INSTALL_DATADIR}/icons
+)

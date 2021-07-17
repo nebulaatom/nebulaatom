@@ -1,0 +1,15 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}/@CMAKE_INSTALL_BINDIR@
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@/@PROJECT_NAME@
+datarootdir=${prefix}/@CMAKE_INSTALL_DATAROOTDIR@
+datadir=${prefix}/@CMAKE_INSTALL_DATADIR@/@PROJECT_NAME@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@/@PROJECT_NAME@
+docdir=${prefix}/@CMAKE_INSTALL_DOCDIR@/@PROJECT_NAME@
+
+Name: @NAME_PROJECT@
+Description: Description for project
+Version: @PACKAGE_VERSION@
+URL: https://www.cpwonline.org/
+Requires: #dep1-1.0 dep2-1.0 dep3-1.0
+Libs: -L${libdir} -l@PROJECT_NAME@
+Cflags: -I${includedir}

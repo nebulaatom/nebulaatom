@@ -1,0 +1,26 @@
+#!/bin/bash
+
+location="$(dirname "$(readlink -f "${0}")")"
+
+if [ ! -z $APPIMAGE ] ; then
+  BINARY_NAME=$(basename "$ARGV0")
+else
+  BINARY_NAME=$(basename "$0")
+fi
+
+if [ ! -z "$1" ] && [ -e "$location/bin/$1" ] ; then
+  MAIN="$location/bin/$1" ; shift
+elif [ ! -z "$1" ] && [ -e "$location/usr/bin/$1" ] ; then
+  MAIN="$location/usr/bin/$1" ; shift
+elif [ -e "$location/bin/$BINARY_NAME" ] ; then
+  MAIN="$location/bin/$BINARY_NAME"
+elif [ -e "$location/usr/bin/$BINARY_NAME" ] ; then
+  MAIN="$location/usr/bin/$BINARY_NAME"
+else
+  MAIN="$location/usr/bin/project-name"
+fi
+
+export PATH="${location}"/usr/bin/:"${PATH}"
+cd $location
+
+exec "${MAIN}" "$@"
