@@ -2,7 +2,7 @@
 
 ## Project
 cmake_minimum_required(VERSION 3.12)
-project("project-name" LANGUAGES CXX)
+project("cpw-woodpecker-server" LANGUAGES CXX C)
 include(cmake/general_options.cmake)
 include(cmake/build_settings.cmake)
 include(cmake/conan.cmake)
