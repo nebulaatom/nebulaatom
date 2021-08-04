@@ -18,16 +18,16 @@
 
 #include "cpw_woodpecker_server.h"
 
-
 int main(int argc, char** argv)
 {
 	try
 	{
-		WoodpeckerServer app_main(8080);
+		CPW::WoodpeckerServer app_main(8080);
 		return app_main.run(argc, argv);
 	}
 	catch (std::exception const& error)
 	{
 		std::cout << error.what() << std::endl;
+		return -1;
 	}
 }
