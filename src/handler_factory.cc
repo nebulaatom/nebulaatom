@@ -20,7 +20,8 @@
 
 using namespace CPW;
 
-HandlerFactory::HandlerFactory()
+HandlerFactory::HandlerFactory() :
+	api_version_("v0")
 {
 	PrepareEndpoints_();
 }
