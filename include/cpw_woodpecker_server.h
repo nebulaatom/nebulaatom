@@ -49,6 +49,7 @@ class CPW::WoodpeckerServer : public ServerApplication
 
 	protected:
 		virtual int main(const std::vector<std::string>& args);
+		int Init_();
 
 	private:
 		Poco::UInt16 port_;

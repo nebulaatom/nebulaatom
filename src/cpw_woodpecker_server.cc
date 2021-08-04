@@ -44,3 +44,15 @@ int WoodpeckerServer::main(const std::vector<std::string>& args)
 	return Init_();
 }
 
+int WoodpeckerServer::Init_()
+{
+	srv->start();
+	std::cout << std::endl << "Server started at port " << port_ << std::endl;
+
+	waitForTerminationRequest();
+
+	std::cout << std::endl << "Shutting down server..." << std::endl;
+	srv->stop();
+
+	return Application::EXIT_OK;
+}
