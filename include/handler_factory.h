@@ -66,6 +66,7 @@ class CPW::HandlerFactory : public HTTPRequestHandlerFactory
 
 		HandlerFactory();
 		virtual ~HandlerFactory();
+		virtual HTTPRequestHandler* createRequestHandler(const HTTPServerRequest& request);
 
 
 	private:

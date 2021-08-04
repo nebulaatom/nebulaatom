@@ -17,11 +17,8 @@
  */
 
 #include "handler_factory.h"
-#include "Factory/business_handler.h"
-#include "Factory/null_handler.h"
 
-namespace CPW
-{
+using namespace CPW;
 
 HandlerFactory::HandlerFactory()
 {
@@ -30,7 +27,17 @@ HandlerFactory::HandlerFactory()
 
 HandlerFactory::~HandlerFactory()
 {
-	//dtor
+
+}
+
+HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest& request)
+{
+	URI initial_uri(request.getURI());
+	auto end_type = endpoints_keys_.find(initial_uri.getPath());
+	if(end_type != endpoints_keys_.end())
+		return endpoints_handlers_[end_type->second]();
+	else
+		return endpoints_handlers_[Endpoint::kNull]();
 }
 
 }
