@@ -16,11 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ROOTHANDLER_H
-#define ROOTHANDLER_H
+#ifndef CPW_FACTORY_ROOTHANDLER_H
+#define CPW_FACTORY_ROOTHANDLER_H
 
 
 #include <iostream>
+#include <string>
+#include <set>
 
 #include <Poco/Net/HTTPRequestHandler.h>
 #include <Poco/Net/HTTPServerRequest.h>
@@ -41,18 +43,24 @@
 #include <Poco/Dynamic/Var.h>
 #include <Poco/Dynamic/Struct.h>
 
-#include <vector>
-#include <iostream>
-#include <string>
+
+namespace CPW
+{
+	namespace Factory
+	{
+		class RootHandler;
+	}
+}
 
 using namespace Poco::Data::Keywords;
-using Poco::Data::Session;
-using Poco::Data::Statement;
 using namespace Poco;
 using namespace Poco::Net;
 
+using Poco::Data::Session;
+using Poco::Data::Statement;
 
-class RootHandler : public HTTPRequestHandler
+
+class CPW::Factory::RootHandler : public HTTPRequestHandler
 {
 	public:
 		RootHandler();
@@ -60,4 +68,4 @@ class RootHandler : public HTTPRequestHandler
 };
 
 
-#endif // ROOTHANDLER_H
+#endif // CPW_FACTORY_ROOTHANDLER_H

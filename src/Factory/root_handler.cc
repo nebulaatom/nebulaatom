@@ -18,6 +18,8 @@
 
 #include "Factory/root_handler.h"
 
+using namespace CPW::Factory;
+
 RootHandler::RootHandler()
 {
 
