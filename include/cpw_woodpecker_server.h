@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPWWOODPECKERSERVER_H
-#define CPWWOODPECKERSERVER_H
+#ifndef CPW_WOODPECKERSERVER_H
+#define CPW_WOODPECKERSERVER_H
 
 
 #include <string>
@@ -32,21 +32,21 @@
 #include "handler_factory.h"
 
 
-using namespace Poco::Net;
-using namespace Poco::Util;
-
-
 namespace CPW
 {
 	class WoodpeckerServer;
 }
 
+using namespace Poco::Net;
+using namespace Poco::Util;
 
-class WoodpeckerServer : public ServerApplication
+
+class CPW::WoodpeckerServer : public ServerApplication
 {
 	public:
-		WoodpeckerServer();
+		WoodpeckerServer(int port);
 		virtual ~WoodpeckerServer();
+
 };
 
-#endif // CPWWOODPECKERSERVER_H
+#endif // CPW_WOODPECKERSERVER_H

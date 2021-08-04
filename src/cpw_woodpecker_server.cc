@@ -18,7 +18,11 @@
 
 #include "cpw_woodpecker_server.h"
 
-WoodpeckerServer::WoodpeckerServer()
+using namespace CPW;
+
+WoodpeckerServer::WoodpeckerServer(int port) :
+	port_(port),
+	svs(port_)
 {
 
 }
