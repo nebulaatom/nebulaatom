@@ -70,6 +70,8 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler
 
 		RootHandler();
 		virtual ~RootHandler();
+		virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
+
 
 	private:
 		std::string current_route_;
