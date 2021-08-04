@@ -29,3 +29,50 @@ RootHandler::~RootHandler()
 {
 
 }
+
+bool RootHandler::AuthenticateUser_(HTTPServerRequest& request)
+{
+	// Read the JSON
+		std::string json_body;
+		StreamCopier::copyToString(request.stream(), json_body);
+		if(json_body.empty())
+			return false;
+
+	// Parse JSON
+		JSON::Parser parser;
+		JSON::Object::Ptr object_json = parser.parse(json_body).extract<JSON::Object::Ptr>();
+		Poco::DynamicStruct dynamic_object = *object_json;
+
+	// Verify the key-values
+		if(dynamic_object["auth"].isEmpty() || dynamic_object["auth"]["user"].isEmpty() || dynamic_object["auth"]["password"].isEmpty())
+			return false;
+
+	// Prepare the row
+		User user_params;
+		user_params.user = dynamic_object["auth"]["user"].toString();
+		user_params.password = dynamic_object["auth"]["password"].toString();
+		std::cout << "\nUser: " << user_params.user << ", password: " << user_params.password;
+
+	// Ejecute the query
+		bool user_identified = false;
+		try
+		{
+			Poco::Data::MySQL::Connector::registerConnector();
+			Session session("MySQL", "host=127.0.0.1;port=3306;db=cpw_woodpecker;user=root;password=mariadb_password;");
+
+			Poco::Data::Statement query(session);
+			query << "SELECT * FROM users WHERE username = ? AND password = ?",
+				use(user_params.user),
+				use(user_params.password)
+			;
+			query.execute();
+			if(query.subTotalRowCount() > 0)
+				user_identified = true;
+		}
+		catch(Poco::Data::MySQL::MySQLException& e)
+		{
+			std::cout << "\nError: " << e.displayText() << std::endl;
+		}
+	return user_identified;
+}
+

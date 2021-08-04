@@ -73,6 +73,7 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler
 		virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 
 	protected:
+		bool AuthenticateUser_(HTTPServerRequest& request);
 		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
