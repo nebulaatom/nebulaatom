@@ -66,8 +66,12 @@ class CPW::HandlerFactory : public HTTPRequestHandlerFactory
 
 		HandlerFactory();
 		virtual ~HandlerFactory();
-};
 
-}
+
+	private:
+		std::map<Endpoint, std::function<CPW::Factory::RootHandler*()>> endpoints_handlers_;
+		std::map<std::string, Endpoint> endpoints_keys_;
+		std::string api_version_;
+};
 
 #endif // CPW_HANDLERFACTORY_H
