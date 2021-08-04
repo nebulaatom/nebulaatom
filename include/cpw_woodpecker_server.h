@@ -49,6 +49,12 @@ class CPW::WoodpeckerServer : public ServerApplication
 
 	protected:
 		virtual int main(const std::vector<std::string>& args);
+
+	private:
+		Poco::UInt16 port_;
+		Poco::Net::HTTPServerParams* pParams;
+		Poco::Net::ServerSocket svs;
+		std::unique_ptr<HTTPServer> srv;
 };
 
 #endif // CPW_WOODPECKERSERVER_H
