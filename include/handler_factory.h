@@ -46,8 +46,10 @@ using namespace Poco::Data::Keywords;
 
 namespace CPW
 {
+	class HandlerFactory;
+}
 
-class HandlerFactory : public HTTPRequestHandlerFactory
+class CPW::HandlerFactory : public HTTPRequestHandlerFactory
 {
 	public:
 		HandlerFactory();
@@ -56,4 +58,4 @@ class HandlerFactory : public HTTPRequestHandlerFactory
 
 }
 
-#endif // HANDLERFACTORY_H
+#endif // CPW_HANDLERFACTORY_H
