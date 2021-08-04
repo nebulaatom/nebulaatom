@@ -52,6 +52,18 @@ namespace CPW
 class CPW::HandlerFactory : public HTTPRequestHandlerFactory
 {
 	public:
+		enum Endpoint
+		{
+			kBusiness,
+			kAccounts,
+			kDeals,
+			kPays,
+			kCurrency,
+			kInventories,
+			kInvoices,
+			kNull
+		};
+
 		HandlerFactory();
 		virtual ~HandlerFactory();
 };
