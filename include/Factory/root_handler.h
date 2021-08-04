@@ -70,7 +70,10 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler
 
 		RootHandler();
 		virtual ~RootHandler();
-};
 
+	private:
+		std::string current_route_;
+		std::set<std::string> routes_list_;
+};
 
 #endif // CPW_FACTORY_ROOTHANDLER_H
