@@ -68,6 +68,8 @@ class CPW::HandlerFactory : public HTTPRequestHandlerFactory
 		virtual ~HandlerFactory();
 		virtual HTTPRequestHandler* createRequestHandler(const HTTPServerRequest& request);
 
+	protected:
+		void PrepareEndpoints_();
 
 	private:
 		std::map<Endpoint, std::function<CPW::Factory::RootHandler*()>> endpoints_handlers_;

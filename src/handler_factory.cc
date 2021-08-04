@@ -41,4 +41,24 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 		return endpoints_handlers_[Endpoint::kNull]();
 }
 
+void HandlerFactory::PrepareEndpoints_()
+{
+	endpoints_keys_.insert(std::make_pair("/api/"+api_version_+"/business", Endpoint::kBusiness));
+	endpoints_handlers_.insert
+	(
+		std::make_pair
+		(
+			Endpoint::kBusiness,
+			[](){return new CPW::Factory::BusinessHandler();}
+		)
+	);
+	endpoints_keys_.insert(std::make_pair("null", Endpoint::kNull));
+	endpoints_handlers_.insert
+	(
+		std::make_pair
+		(
+			Endpoint::kNull,
+			[](){return new CPW::Factory::NullHandler();}
+		)
+	);
 }
