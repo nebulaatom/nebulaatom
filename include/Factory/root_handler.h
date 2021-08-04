@@ -63,6 +63,11 @@ using Poco::Data::Statement;
 class CPW::Factory::RootHandler : public HTTPRequestHandler
 {
 	public:
+		struct User
+		{
+			std::string user, password;
+		};
+
 		RootHandler();
 		virtual ~RootHandler();
 };
