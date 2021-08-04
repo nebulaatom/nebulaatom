@@ -31,3 +31,16 @@ WoodpeckerServer::~WoodpeckerServer()
 {
 	//dtor
 }
+
+int WoodpeckerServer::main(const std::vector<std::string>& args)
+{
+	pParams = new HTTPServerParams();
+	pParams->setMaxQueued(100);
+	pParams->setMaxThreads(16);
+
+	std::unique_ptr<HTTPServer> srv_test(new HTTPServer(new CPW::HandlerFactory(), svs, pParams));
+	srv = std::move(srv_test);
+
+	return Init_();
+}
+

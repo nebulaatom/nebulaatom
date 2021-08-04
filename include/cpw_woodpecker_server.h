@@ -47,6 +47,8 @@ class CPW::WoodpeckerServer : public ServerApplication
 		WoodpeckerServer(int port);
 		virtual ~WoodpeckerServer();
 
+	protected:
+		virtual int main(const std::vector<std::string>& args);
 };
 
 #endif // CPW_WOODPECKERSERVER_H
