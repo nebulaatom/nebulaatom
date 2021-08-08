@@ -43,6 +43,8 @@
 #include <Poco/Dynamic/Var.h>
 #include <Poco/Dynamic/Struct.h>
 
+#include "query_actions.h"
+
 
 namespace CPW
 {
@@ -52,9 +54,9 @@ namespace CPW
 	}
 }
 
-using namespace Poco::Data::Keywords;
 using namespace Poco;
 using namespace Poco::Net;
+using namespace Poco::Data::Keywords;
 
 using Poco::Data::Session;
 using Poco::Data::Statement;
@@ -72,6 +74,11 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler
 		virtual ~RootHandler();
 		virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 
+		std::string get_current_route() const {return current_route_;}
+		std::set<std::string> get_routes_list() const {return routes_list_;}
+		QueryActions* get_current_query_actions() const {return current_query_actions_;}
+		Poco::DynamicStruct get_dynamic_json_body() const {return dynamic_json_body_;}
+
 	protected:
 		bool AuthenticateUser_(HTTPServerRequest& request);
 		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
@@ -82,6 +89,8 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler
 	private:
 		std::string current_route_;
 		std::set<std::string> routes_list_;
+		QueryActions* current_query_actions_;
+		Poco::DynamicStruct dynamic_json_body_;
 };
 
 #endif // CPW_FACTORY_ROOTHANDLER_H
