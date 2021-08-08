@@ -113,6 +113,20 @@ bool RootHandler::VerifyPermissions_(std::string user, std::string action, std::
 		else
 			return false;
 }
+void RootHandler::ErrorReport_(HTTPServerResponse& response, std::string message, HTTPResponse::HTTPStatus status)
+{
+	response.setStatus(status);
+	response.setContentType("application/json");
+
+	std::ostream& out = response.send();
+	out
+		<< "{"
+			<< "\"status\":\"" << size_t(status) << "\","
+			<< "\"message\":\"" << message << "\""
+		<< "}"
+	;
+	out.flush();
+}
 {
 	// Read the JSON
 		std::string json_body;
