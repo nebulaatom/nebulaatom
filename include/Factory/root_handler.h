@@ -88,6 +88,7 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler
 		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		void ErrorReport_(HTTPServerResponse& response, std::string message, HTTPResponse::HTTPStatus status);
+		void ReadJSON_(HTTPServerRequest& request);
 
 	private:
 		std::string current_route_;
