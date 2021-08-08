@@ -37,6 +37,8 @@ class NullHandler : public RootHandler
 
 	protected:
 		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
+		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
+		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
 };
 
 }
