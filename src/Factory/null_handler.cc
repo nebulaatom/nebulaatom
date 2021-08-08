@@ -18,9 +18,15 @@
 
 #include "Factory/null_handler.h"
 
+namespace CPW
+{
+namespace Factory
+{
+
+
 NullHandler::NullHandler()
 {
-	//ctor
+
 }
 
 NullHandler::~NullHandler()

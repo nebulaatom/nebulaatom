@@ -16,11 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NULLHANDLER_H
-#define NULLHANDLER_H
+#ifndef CPW_FACTORY_NULLHANDLER_H
+#define CPW_FACTORY_NULLHANDLER_H
 
 
 #include "Factory/root_handler.h"
+
+namespace CPW
+{
+namespace Factory
+{
 
 
 class NullHandler : public RootHandler
@@ -30,4 +35,7 @@ class NullHandler : public RootHandler
 		virtual ~NullHandler();
 };
 
-#endif // NULLHANDLER_H
+}
+}
+
+#endif // CPW_FACTORY_NULLHANDLER_H
