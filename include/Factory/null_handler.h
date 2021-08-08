@@ -34,6 +34,9 @@ class NullHandler : public RootHandler
 		NullHandler();
 		virtual ~NullHandler();
 		virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
+
+	protected:
+		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
 };
 
 }

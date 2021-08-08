@@ -46,4 +46,17 @@ void NullHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 		HandleDELMethod_(request, response);
 }
 
+void NullHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+{
+	response.setStatus(HTTPResponse::HTTP_NOT_FOUND);
+	response.setContentType("text/html");
+
+	std::ostream& out = response.send();
+	out
+		<< "<h1>Sorry, content not found from " << request.getMethod() << " request</h1>"
+		<< "<p>CPW Woodpecker</p>"
+	;
+	out.flush();
+}
+
 }
