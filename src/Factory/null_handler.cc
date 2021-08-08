@@ -31,5 +31,19 @@ NullHandler::NullHandler()
 
 NullHandler::~NullHandler()
 {
-	//dtor
+
+}
+
+void NullHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& response)
+{
+	if(request.getMethod() == "GET")
+		HandleGETMethod_(request, response);
+	else if(request.getMethod() == "POST")
+		HandlePOSTMethod_(request, response);
+	else if(request.getMethod() == "PUT")
+		HandlePUTMethod_(request, response);
+	else if(request.getMethod() == "DEL")
+		HandleDELMethod_(request, response);
+}
+
 }

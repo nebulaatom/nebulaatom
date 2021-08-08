@@ -33,6 +33,7 @@ class NullHandler : public RootHandler
 	public:
 		NullHandler();
 		virtual ~NullHandler();
+		virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 };
 
 }
