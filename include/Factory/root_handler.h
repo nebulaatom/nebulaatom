@@ -80,6 +80,7 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler
 		Poco::DynamicStruct get_dynamic_json_body() const {return dynamic_json_body_;}
 
 	protected:
+		void SecurityVerification_(HTTPServerRequest& request, HTTPServerResponse& response);
 		bool AuthenticateUser_(HTTPServerRequest& request);
 		bool VerifyPermissions_(std::string user, std::string action, std::string action_type);
 		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;

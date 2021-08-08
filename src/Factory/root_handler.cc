@@ -30,6 +30,14 @@ RootHandler::~RootHandler()
 	delete current_query_actions_;
 }
 
+void RootHandler::SecurityVerification_(HTTPServerRequest& request, HTTPServerResponse& response)
+{
+	if(AuthenticateUser_(request))
+	{
+		auto table_rows = get_current_query_actions()->get_table_rows_();
+		URI uri(request.getURI());
+		std::vector<std::string> segments;
+		uri.getPathSegments(segments);
 
 		if(!VerifyPermissions_(table_rows->find("user")->second, segments.back(), request.getMethod()))
 		{
