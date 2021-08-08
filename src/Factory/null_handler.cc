@@ -72,4 +72,17 @@ void NullHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerRespon
 	out.flush();
 }
 
+void NullHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+{
+	response.setStatus(HTTPResponse::HTTP_NOT_FOUND);
+	response.setContentType("text/html");
+
+	std::ostream& out = response.send();
+	out
+		<< "<h1>Sorry, content not found from " << request.getMethod() << " request</h1>"
+		<< "<p>CPW Woodpecker</p>"
+	;
+	out.flush();
+}
+
 }
