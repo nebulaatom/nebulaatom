@@ -81,6 +81,7 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler
 
 	protected:
 		bool AuthenticateUser_(HTTPServerRequest& request);
+		bool VerifyPermissions_(std::string user, std::string action, std::string action_type);
 		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;

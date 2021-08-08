@@ -22,7 +22,7 @@ using namespace CPW::Factory;
 
 RootHandler::RootHandler()
 {
-
+	current_query_actions_ = new QueryActions();
 }
 
 RootHandler::~RootHandler()
@@ -31,6 +31,40 @@ RootHandler::~RootHandler()
 }
 
 bool RootHandler::AuthenticateUser_(HTTPServerRequest& request)
+{
+}
+
+bool RootHandler::VerifyPermissions_(std::string user, std::string action, std::string action_type)
+{
+	current_query_actions_->ResetQuery_();
+	int result;
+	current_query_actions_->get_query()
+		<<
+			"SELECT COUNT(1)"
+			"FROM permissions_log pl, permissions p, users u "
+			"WHERE "
+			"	u.username = ? "
+			"	AND pl.type = ? "
+			"	AND p.name = ? "
+			"	AND pl.id_permission = p.id "
+			"	AND pl.id_user = u.id"
+			";"
+		,
+		use(user),
+		use(action_type),
+		use(action),
+		into(result)
+	;
+
+	// Execute the query
+		current_query_actions_->get_query().execute();
+		std::cout << "\nResult: " << result;
+
+		if(result > 0)
+			return true;
+		else
+			return false;
+}
 {
 	// Read the JSON
 		std::string json_body;
