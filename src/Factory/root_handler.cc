@@ -27,11 +27,51 @@ RootHandler::RootHandler()
 
 RootHandler::~RootHandler()
 {
+	delete current_query_actions_;
+}
 
+
+		if(!VerifyPermissions_(table_rows->find("user")->second, segments.back(), request.getMethod()))
+		{
+			ErrorReport_(response, "The user does not have the permissions to perform this operation.", HTTPResponse::HTTP_UNAUTHORIZED);
+			return;
+		}
+
+	}
+	else
+	{
+		ErrorReport_(response, "Unauthorized user or wrong user or password.", HTTPResponse::HTTP_UNAUTHORIZED);
+		return;
+	}
 }
 
 bool RootHandler::AuthenticateUser_(HTTPServerRequest& request)
 {
+	ReadJSON_(request);
+
+	// Verify the key-values
+		if(dynamic_json_body_["auth"].isEmpty() || dynamic_json_body_["auth"]["user"].isEmpty() || dynamic_json_body_["auth"]["password"].isEmpty())
+			return false;
+
+	// Prepare the row
+		auto table_rows = current_query_actions_->get_table_rows_();
+		table_rows->insert(std::make_pair("user", ""));
+		table_rows->insert(std::make_pair("password", ""));
+
+		table_rows->find("user")->second = dynamic_json_body_["auth"]["user"].toString();
+		table_rows->find("password")->second = dynamic_json_body_["auth"]["password"].toString();
+
+	// Execute the query
+		current_query_actions_->ResetQuery_();
+		current_query_actions_->get_query() << "SELECT * FROM users WHERE username = ? AND password = ?",
+			use(table_rows->find("user")->second),
+			use(table_rows->find("password")->second)
+		;
+		current_query_actions_->get_query().execute();
+		if(current_query_actions_->get_query().subTotalRowCount() > 0)
+			return true;
+		else
+			return false;
 }
 
 bool RootHandler::VerifyPermissions_(std::string user, std::string action, std::string action_type)
