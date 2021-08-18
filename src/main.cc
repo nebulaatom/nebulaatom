@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 	}
 	catch (std::exception const& error)
 	{
-		std::cout << error.what() << std::endl;
+		std::cout << "\nError on main.cc: " << error.what() << std::endl;
 		return -1;
 	}
 }
