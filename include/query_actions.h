@@ -68,6 +68,13 @@ class CPW::QueryActions
 		QueryActions();
 		~QueryActions();
 
+		std::string get_final_query() const {return final_query_;}
+		Filters get_current_filters_() const {return current_filters_;}
+		Data::Session get_session() const {return session_;}
+		Data::Statement get_query() const {return query_;}
+		std::map<std::string, std::string>* get_table_rows() const {return table_rows_;}
+		Poco::JSON::Array* get_result_json() const {return result_json_;}
+
 	protected:
 		void IdentidyFilter_(const HTTPServerRequest& request);
 		void CreateRows_();
