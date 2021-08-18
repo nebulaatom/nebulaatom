@@ -8,4 +8,4 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(GTEST REQUIRED gtest)
 
 # Add and linking libraries for Executable
-target_link_libraries(test_gen PUBLIC ${GTEST_LIBRARIES} library1 library2)
+target_link_libraries(test_gen PUBLIC ${GTEST_LIBRARIES} woodpeckerserver)
