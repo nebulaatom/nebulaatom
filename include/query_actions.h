@@ -50,6 +50,14 @@ using namespace Poco::Data::Keywords;
 class CPW::QueryActions
 {
 	public:
+		enum TypeAction
+		{
+			kInsert,
+			kSelect,
+			kUpdate,
+			kDelete
+		};
+
 		QueryActions();
 		~QueryActions();
 
