@@ -21,8 +21,21 @@
 
 
 #include <string>
+#include <map>
 
 #include <Poco/Net/HTTPServerRequest.h>
+#include "Poco/Data/Session.h"
+#include "Poco/Data/MySQL/Connector.h"
+#include <Poco/Data/MySQL/MySQLException.h>
+#include <Poco/Data/Statement.h>
+#include <Poco/URI.h>
+#include <Poco/JSON/JSON.h>
+#include <Poco/JSON/Array.h>
+#include <Poco/JSON/Object.h>
+#include <Poco/JSON/Parser.h>
+#include <Poco/Dynamic/Var.h>
+#include <Poco/Dynamic/Struct.h>
+#include <Poco/Data/RecordSet.h>
 
 
 namespace CPW
@@ -30,7 +43,9 @@ namespace CPW
 	class QueryActions;
 }
 
+using namespace Poco;
 using namespace Poco::Net;
+using namespace Poco::Data::Keywords;
 
 class CPW::QueryActions
 {
