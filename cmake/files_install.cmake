@@ -10,9 +10,11 @@ install(
 install(
 	FILES 
 		${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h 
-		${HEADER}/library1.h
-		${HEADER}/library2.h
-		${HEADER}/object_library.h
+		${HEADER}/cpw_woodpecker_server.h
+		${HEADER}/handler_factory.h
+		${HEADER}/Factory/root_handler.h
+		${HEADER}/Factory/data_handler.h
+		${HEADER}/Factory/null_handler.h
 	DESTINATION 
 		${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
 )
@@ -20,8 +22,7 @@ install(
 ## Libraries
 install(
 	TARGETS 
-		library1
-		library2
+		woodpeckerserver
 	DESTINATION 
 		${CMAKE_INSTALL_LIBDIR}
 )
@@ -39,18 +40,6 @@ install(
 
 ## Share files
 install(
-	FILES ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.desktop
-	DESTINATION ${CMAKE_INSTALL_DATADIR}/applications
-)
-install(
-	FILES ${PROJECT_BINARY_DIR}/share/${PROJECT_NAME}/${PROJECT_NAME}.glade
-	DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}
-)
-install(
 	FILES ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.pc
 	DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
-)
-install(
-	FILES ${PROJECT_SOURCE_DIR}/share/icons/project-name.svg
-	DESTINATION ${CMAKE_INSTALL_DATADIR}/icons
 )
