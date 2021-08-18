@@ -74,11 +74,12 @@ class CPW::QueryActions
 		void ComposeQuery_(const HTTPServerRequest& request);
 
 	private:
-		bool iqual_;
-		bool sort_;
-		bool page_;
-		bool limit_;
 		std::string final_query_;
+		Filters current_filters_;
+		Data::Session session_;
+		Data::Statement query_;
+		std::map<std::string, std::string>* table_rows_;
+		Poco::JSON::Array* result_json_;
 };
 
 
