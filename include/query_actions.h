@@ -58,6 +58,13 @@ class CPW::QueryActions
 			kDelete
 		};
 
+		struct Filters
+		{
+			std::string fields, page, limit;
+			std::map<std::string, std::string> sorts_conditions;
+			std::map<std::string, std::string> iquals_conditions;
+		};
+
 		QueryActions();
 		~QueryActions();
 
