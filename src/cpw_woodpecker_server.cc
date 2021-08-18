@@ -29,7 +29,7 @@ WoodpeckerServer::WoodpeckerServer(int port) :
 
 WoodpeckerServer::~WoodpeckerServer()
 {
-	//dtor
+
 }
 
 int WoodpeckerServer::main(const std::vector<std::string>& args)
