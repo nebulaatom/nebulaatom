@@ -1,37 +1,57 @@
-# Use PkgConfig
-include(FindPkgConfig)
-find_package(PkgConfig REQUIRED)
-pkg_search_module(DEPENDENCY1 REQUIRED gtkmm-3.0)
-pkg_search_module(DEPENDENCY2 REQUIRED libmariadb libmysqlclient)
+add_subdirectory(Factory)
 
 # Find packages
-find_package(Poco REQUIRED COMPONENTS Foundation)
+include(${PROJECT_SOURCE_DIR}/cmake/FindMySQL.cmake)
+
+find_package(Poco REQUIRED COMPONENTS Foundation Net Util Data DataMySQL)
 if(NOT Poco_FOUND)
 	message(FATAL_ERROR "Poco not found")
 endif()
+
 
 # Targets
 
 ## Objects libraries
 
-### objectlibrary
-add_library(objectlibrary OBJECT "object_library.cc")
-target_include_directories(objectlibrary PUBLIC ${HEADER})
-set_target_properties(objectlibrary PROPERTIES POSITION_INDEPENDENT_CODE 1)
+### handlerfactory
+add_library(handlerfactory OBJECT "handler_factory.cc")
+target_include_directories(handlerfactory PUBLIC ${HEADER})
+set_target_properties(handlerfactory PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
+### queryactions
+add_library(queryactions OBJECT "query_actions.cc")
+target_include_directories(queryactions PUBLIC ${HEADER})
+set_target_properties(queryactions PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
+### errorreport
+add_library(errorreport OBJECT "error_report.cc")
+target_include_directories(errorreport PUBLIC ${HEADER})
+set_target_properties(errorreport PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
 ## Shared and statics libraries
 
-### library1
-add_library(library1 SHARED "library1.cc")
-target_include_directories(library1 PUBLIC ${HEADER} ${DEPENDENCY1_INCLUDE_DIRS} ${PROJECT_BINARY_DIR})
-target_link_libraries(library1 ${DEPENDENCY1_LIBRARIES} objectlibrary)
-
-### library2
-add_library(library2 STATIC "library2.cc")
-target_include_directories(library2 PUBLIC ${HEADER} ${DEPENDENCY2_INCLUDE_DIRS})
-target_link_libraries(library2 ${DEPENDENCY2_LIBRARIES} objectlibrary)
+### woodpeckerserver
+add_library(woodpeckerserver STATIC "cpw_woodpecker_server.cc")
+target_include_directories(woodpeckerserver PUBLIC ${HEADER})
+target_link_libraries(
+	woodpeckerserver
+	handlerfactory
+	queryactions
+	errorreport
+	roothandler
+	nullhandler
+	businesshandler
+	webhandler
+	Poco::Foundation
+	Poco::Net
+	Poco::Util
+	Poco::Data
+	Poco::Data
+	Poco::DataMySQL
+	Poco::JSON
+)
 
 ## Main executable
 add_executable(${PROJECT_NAME} "main.cc")
 target_include_directories(${PROJECT_NAME} PUBLIC ${HEADER})
-target_link_libraries(${PROJECT_NAME} PUBLIC library1 library2 Poco::Foundation)
+target_link_libraries(${PROJECT_NAME} PUBLIC woodpeckerserver)
