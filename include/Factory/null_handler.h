@@ -24,11 +24,14 @@
 
 namespace CPW
 {
-namespace Factory
-{
+	namespace Factory
+	{
+		class NullHandler;
+	}
+}
 
 
-class NullHandler : public RootHandler
+class CPW::Factory::NullHandler : public RootHandler
 {
 	public:
 		NullHandler();
