@@ -62,3 +62,18 @@ void HandlerFactory::PrepareEndpoints_()
 		)
 	);
 }
+
+
+HandlerFactory::Endpoint HandlerFactory::GetEndpoint_(std::vector<std::string> segments)
+{
+	for(auto it : endpoints_handlers_)
+	{
+		auto sub_segments = it.second.segments;
+		auto found = std::search(segments.begin(), segments.end(), sub_segments.begin(), sub_segments.end());
+
+		if(found != segments.end())
+			return it.first;
+	}
+
+	return Endpoint::kNull;
+}

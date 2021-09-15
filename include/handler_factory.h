@@ -81,6 +81,7 @@ class CPW::HandlerFactory : public HTTPRequestHandlerFactory, public ErrorReport
 
 	protected:
 		void PrepareEndpoints_();
+		Endpoint GetEndpoint_(std::vector<std::string> segments);
 
 	private:
 		std::map<Endpoint, EndpointProperties> endpoints_handlers_;
