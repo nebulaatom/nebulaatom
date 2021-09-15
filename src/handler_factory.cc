@@ -78,24 +78,33 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 
 void HandlerFactory::PrepareEndpoints_()
 {
-	endpoints_keys_.insert(std::make_pair("/api/"+api_version_+"/business", Endpoint::kBusiness));
-	endpoints_handlers_.insert
+	endpoints_handlers_.insert(std::make_pair
 	(
-		std::make_pair
-		(
-			Endpoint::kBusiness,
-			[](){return new CPW::Factory::BusinessHandler();}
-		)
-	);
-	endpoints_keys_.insert(std::make_pair("null", Endpoint::kNull));
-	endpoints_handlers_.insert
+		Endpoint::kBusiness,
+		EndpointProperties
+		{
+			std::vector<std::string>{"api", api_version_, "business"},
+			[&](){return new CPW::Factory::BusinessHandler(api_version_);}
+		}
+	));
+	endpoints_handlers_.insert(std::make_pair
 	(
-		std::make_pair
-		(
-			Endpoint::kNull,
-			[](){return new CPW::Factory::NullHandler();}
-		)
-	);
+		Endpoint::kWeb,
+		EndpointProperties
+		{
+			std::vector<std::string>{"web"},
+			[&](){return new CPW::Factory::WebHandler(api_version_);}
+		}
+	));
+	endpoints_handlers_.insert(std::make_pair
+	(
+		Endpoint::kNull,
+		EndpointProperties
+		{
+			std::vector<std::string>{},
+			[&](){return new CPW::Factory::NullHandler(api_version_);}
+		}
+	));
 }
 
 
