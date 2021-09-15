@@ -68,6 +68,12 @@ class CPW::HandlerFactory : public HTTPRequestHandlerFactory, public ErrorReport
 			kNull
 		};
 
+		struct EndpointProperties
+		{
+			std::vector<std::string> segments;
+			std::function<CPW::Factory::RootHandler*()> return_handler;
+		};
+
 		HandlerFactory();
 		virtual ~HandlerFactory();
 		virtual HTTPRequestHandler* createRequestHandler(const HTTPServerRequest& request);
