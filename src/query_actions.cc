@@ -34,3 +34,8 @@ QueryActions::~QueryActions()
 {
 
 }
+
+void QueryActions::ResetQuery_()
+{
+	query_.reset(session_);
+}

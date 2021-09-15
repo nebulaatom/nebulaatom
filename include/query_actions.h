@@ -75,6 +75,7 @@ class CPW::QueryActions
 		std::map<std::string, std::string>* get_table_rows() const {return table_rows_;}
 		Poco::JSON::Array* get_result_json() const {return result_json_;}
 
+		void ResetQuery_();
 	protected:
 		void IdentidyFilter_(const HTTPServerRequest& request);
 		void CreateRows_();
