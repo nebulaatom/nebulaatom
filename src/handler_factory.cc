@@ -33,12 +33,47 @@ HandlerFactory::~HandlerFactory()
 
 HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest& request)
 {
-	URI initial_uri(request.getURI());
-	auto end_type = endpoints_keys_.find(initial_uri.getPath());
-	if(end_type != endpoints_keys_.end())
-		return endpoints_handlers_[end_type->second]();
-	else
-		return endpoints_handlers_[Endpoint::kNull]();
+	auto return_null = [&]()->HTTPRequestHandler*
+	{
+		return endpoints_handlers_[Endpoint::kNull].return_handler();
+	};
+
+	try
+	{
+		URI initial_uri(request.getURI());
+
+		std::vector<std::string> segments;
+		initial_uri.getPathSegments(segments);
+
+	if(segments.size() > 0)
+			return endpoints_handlers_[GetEndpoint_(segments)].return_handler();
+		else
+			return return_null();
+
+		/*if(segments.size() < 1 || segments.size() <= 2)
+			return endpoints_handlers_[Endpoint::kWeb]();
+		else
+		{
+			if(segments[0] == "api" && segments[1] == api_version_)
+			{
+				auto end_type = endpoints_keys_.find(segments[2]);
+				if(end_type != endpoints_keys_.end())
+					return endpoints_handlers_[end_type->second]();
+				else
+					return return_null();
+			}
+			else if(segments[0] == "api" && segments[1] != api_version_)
+				return return_null();
+			else
+				return endpoints_handlers_[Endpoint::kWeb]();
+		}*/
+	}
+	catch (std::exception const& error)
+	{
+		std::cout << "\nError: " << error.what() << std::endl;
+	}
+
+	return return_null();
 }
 
 void HandlerFactory::PrepareEndpoints_()
