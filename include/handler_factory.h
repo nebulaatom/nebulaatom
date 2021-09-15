@@ -65,6 +65,7 @@ class CPW::HandlerFactory : public HTTPRequestHandlerFactory, public ErrorReport
 			kCurrency,
 			kInventories,
 			kInvoices,
+			kWeb,
 			kNull
 		};
 
