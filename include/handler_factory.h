@@ -82,8 +82,7 @@ class CPW::HandlerFactory : public HTTPRequestHandlerFactory, public ErrorReport
 		void PrepareEndpoints_();
 
 	private:
-		std::map<Endpoint, std::function<CPW::Factory::RootHandler*()>> endpoints_handlers_;
-		std::map<std::string, Endpoint> endpoints_keys_;
+		std::map<Endpoint, EndpointProperties> endpoints_handlers_;
 		std::string api_version_;
 };
 
