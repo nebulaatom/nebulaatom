@@ -23,6 +23,7 @@
 #include <iostream>
 #include <string>
 #include <set>
+#include <algorithm>
 
 #include <Poco/Net/HTTPRequestHandler.h>
 #include <Poco/Net/HTTPServerRequest.h>
@@ -44,6 +45,8 @@
 #include <Poco/Dynamic/Struct.h>
 
 #include "query_actions.h"
+#include "error_report.h"
+
 
 
 namespace CPW
@@ -62,7 +65,7 @@ using Poco::Data::Session;
 using Poco::Data::Statement;
 
 
-class CPW::Factory::RootHandler : public HTTPRequestHandler
+class CPW::Factory::RootHandler : public HTTPRequestHandler, public ErrorReport
 {
 	public:
 		struct User
