@@ -53,7 +53,7 @@ namespace CPW
 	class HandlerFactory;
 }
 
-class CPW::HandlerFactory : public HTTPRequestHandlerFactory
+class CPW::HandlerFactory : public HTTPRequestHandlerFactory, public ErrorReport
 {
 	public:
 		enum Endpoint
