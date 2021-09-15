@@ -34,7 +34,7 @@ namespace CPW
 class CPW::Factory::NullHandler : public RootHandler
 {
 	public:
-		NullHandler();
+		using RootHandler::RootHandler;
 		virtual ~NullHandler();
 		virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
