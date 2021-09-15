@@ -18,85 +18,48 @@
 
 #include "Factory/null_handler.h"
 
-namespace CPW
-{
-namespace Factory
-{
-
-
-NullHandler::NullHandler()
-{
-
-}
+using namespace CPW::Factory;
 
 NullHandler::~NullHandler()
 {
 
 }
 
-void NullHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& response)
-{
-	if(request.getMethod() == "GET")
-		HandleGETMethod_(request, response);
-	else if(request.getMethod() == "POST")
-		HandlePOSTMethod_(request, response);
-	else if(request.getMethod() == "PUT")
-		HandlePUTMethod_(request, response);
-	else if(request.getMethod() == "DEL")
-		HandleDELMethod_(request, response);
-}
-
 void NullHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	response.setStatus(HTTPResponse::HTTP_NOT_FOUND);
-	response.setContentType("text/html");
-
-	std::ostream& out = response.send();
-	out
-		<< "<h1>Sorry, content not found from " << request.getMethod() << " request</h1>"
-		<< "<p>CPW Woodpecker</p>"
-	;
-	out.flush();
+	NotFoundError_(request, response);
 }
 
 void NullHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	response.setStatus(HTTPResponse::HTTP_NOT_FOUND);
-	response.setContentType("text/html");
-
-	std::ostream& out = response.send();
-	out
-		<< "<h1>Sorry, content not found from " << request.getMethod() << " request</h1>"
-		<< "<p>CPW Woodpecker</p>"
-	;
-	out.flush();
+	NotFoundError_(request, response);
 }
 
 void NullHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	response.setStatus(HTTPResponse::HTTP_NOT_FOUND);
-	response.setContentType("text/html");
-
-	std::ostream& out = response.send();
-	out
-		<< "<h1>Sorry, content not found from " << request.getMethod() << " request</h1>"
-		<< "<p>CPW Woodpecker</p>"
-	;
-	out.flush();
+	NotFoundError_(request, response);
 }
 
 void NullHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
+	NotFoundError_(request, response);
+}
+
+void NullHandler::AddRoutes_()
+{
+
+}
+
+void NullHandler::NotFoundError_(HTTPServerRequest& request, HTTPServerResponse& response)
+{
 	response.setStatus(HTTPResponse::HTTP_NOT_FOUND);
-	response.setContentType("text/html");
+	response.setContentType("application/json");
+
+	Poco::JSON::Object::Ptr object_json = new Poco::JSON::Object;
+	object_json->set("Status", "404");
+	object_json->set("Message", "Sorry, content not found from" + request.getMethod() + " request.");
 
 	std::ostream& out = response.send();
-	out
-		<< "<h1>Sorry, content not found from " << request.getMethod() << " request</h1>"
-		<< "<p>CPW Woodpecker</p>"
-	;
+	object_json->stringify(out);
 	out.flush();
-}
-
-}
 }

@@ -36,16 +36,16 @@ class CPW::Factory::NullHandler : public RootHandler
 	public:
 		using RootHandler::RootHandler;
 		virtual ~NullHandler();
-		virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
 	protected:
 		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
 		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
 		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
 		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
-};
+		virtual void AddRoutes_();
 
-}
-}
+	private:
+		void NotFoundError_(HTTPServerRequest& request, HTTPServerResponse& response);
+};
 
 #endif // CPW_FACTORY_NULLHANDLER_H
