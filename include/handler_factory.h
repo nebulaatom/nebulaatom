@@ -22,6 +22,8 @@
 
 #include <map>
 #include <functional>
+#include <exception>
+#include <vector>
 
 #include <Poco/Net/HTTPRequestHandlerFactory.h>
 #include <Poco/JSON/JSON.h>
@@ -36,9 +38,11 @@
 #include <Poco/Data/MySQL/MySQLException.h>
 #include <Poco/Data/Statement.h>
 
+#include "error_report.h"
 #include "Factory/root_handler.h"
 #include "Factory/null_handler.h"
 #include "Factory/business_handler.h"
+#include "Factory/web_handler.h"
 
 using namespace Poco::Net;
 using namespace Poco::JSON;
