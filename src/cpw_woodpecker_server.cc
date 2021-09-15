@@ -22,37 +22,37 @@ using namespace CPW;
 
 WoodpeckerServer::WoodpeckerServer(int port) :
 	port_(port),
-	svs(port_)
+	server_socket_(port_)
 {
-
+	handler_factory_ = new HandlerFactory();
 }
 
 WoodpeckerServer::~WoodpeckerServer()
 {
-
+	delete handler_factory_;
 }
 
 int WoodpeckerServer::main(const std::vector<std::string>& args)
 {
-	pParams = new HTTPServerParams();
-	pParams->setMaxQueued(100);
-	pParams->setMaxThreads(16);
+	server_params_ = new HTTPServerParams();
+	server_params_->setMaxQueued(100);
+	server_params_->setMaxThreads(16);
 
-	std::unique_ptr<HTTPServer> srv_test(new HTTPServer(new CPW::HandlerFactory(), svs, pParams));
-	srv = std::move(srv_test);
+	std::unique_ptr<HTTPServer> srv_test(new HTTPServer(handler_factory_, server_socket_, server_params_));
+	server_ = std::move(srv_test);
 
 	return Init_();
 }
 
 int WoodpeckerServer::Init_()
 {
-	srv->start();
+	server_->start();
 	std::cout << std::endl << "Server started at port " << port_ << std::endl;
 
 	waitForTerminationRequest();
 
 	std::cout << std::endl << "Shutting down server..." << std::endl;
-	srv->stop();
+	server_->stop();
 
 	return Application::EXIT_OK;
 }
