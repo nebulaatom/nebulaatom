@@ -67,13 +67,23 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 	}
 }
 
-bool RootHandler::AuthenticateUser_(HTTPServerRequest& request)
+bool RootHandler::SecurityVerification_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	ReadJSON_(request);
-
-	// Verify the key-values
-		if(dynamic_json_body_["auth"].isEmpty() || dynamic_json_body_["auth"]["user"].isEmpty() || dynamic_json_body_["auth"]["password"].isEmpty())
+	if(AuthenticateUser_())
+	{
+		if(!VerifyPermissions_(request))
+		{
+			BasicError_(response, "The user does not have the permissions to perform this operation.", HTTPResponse::HTTP_UNAUTHORIZED);
 			return false;
+		}
+		return true;
+	}
+	else
+	{
+		BasicError_(response, "Unauthorized user or wrong user or password.", HTTPResponse::HTTP_UNAUTHORIZED);
+		return false;
+	}
+}
 
 	// Prepare the row
 		auto table_rows = current_query_actions_->get_table_rows_();
