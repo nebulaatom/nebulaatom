@@ -19,10 +19,20 @@
 #ifndef CPW_FACTORY_WEBHANDLER_H
 #define CPW_FACTORY_WEBHANDLER_H
 
+#include <string>
+#include <map>
+#include <vector>
+
+#include "Poco/Path.h"
+#include "Poco/File.h"
+
 #include "Factory/root_handler.h"
 
-namespace CPW {
-	namespace Factory {
+
+namespace CPW
+{
+	namespace Factory
+	{
 		class WebHandler;
 	}
 }
