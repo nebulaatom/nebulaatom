@@ -34,7 +34,7 @@ namespace CPW
 class CPW::Factory::BusinessHandler : public RootHandler
 {
 	public:
-		BusinessHandler();
+		using RootHandler::RootHandler;
 		virtual ~BusinessHandler();
 };
 

@@ -16,14 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "business_handler.h"
+#include "Factory/business_handler.h"
 
-BusinessHandler::BusinessHandler()
+using namespace CPW::Factory;
+
+BusinessHandler::~BusinessHandler()
 {
 
 }
 
-BusinessHandler::~BusinessHandler()
 {
 
 }
