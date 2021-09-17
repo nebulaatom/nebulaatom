@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BUSINESSHANDLER_H
-#define BUSINESSHANDLER_H
+#ifndef CPW_FACTORY_BUSINESSHANDLER_H
+#define CPW_FACTORY_BUSINESSHANDLER_H
 
 
 #include "Factory/root_handler.h"
