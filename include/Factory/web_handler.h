@@ -42,6 +42,12 @@ class CPW::Factory::WebHandler : public RootHandler
 {
 	public:
 		WebHandler();
+		struct FileProperties
+		{
+			std::string content_type;
+			bool binary;
+			std::vector<std::string> other_extensions;
+		};
 		~WebHandler();
 
 	protected:
