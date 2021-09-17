@@ -34,26 +34,36 @@ RootHandler::~RootHandler()
 	delete routes_list_;
 }
 
-void RootHandler::SecurityVerification_(HTTPServerRequest& request, HTTPServerResponse& response)
+void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	if(AuthenticateUser_(request))
+	try
 	{
-		auto table_rows = get_current_query_actions()->get_table_rows_();
-		URI uri(request.getURI());
-		std::vector<std::string> segments;
-		uri.getPathSegments(segments);
+		AddRoutes_();
+		ReadJSONBody_(request);
 
-		if(!VerifyPermissions_(table_rows->find("user")->second, segments.back(), request.getMethod()))
+		if(!IdentifyRoute_(request))
 		{
-			ErrorReport_(response, "The user does not have the permissions to perform this operation.", HTTPResponse::HTTP_UNAUTHORIZED);
+			BasicError_(response, "The requested endpoint is not available.", HTTPResponse::HTTP_NOT_FOUND);
 			return;
 		}
 
+		if(!SecurityVerification_(request, response))
+			return;
+
+		if(request.getMethod() == "GET")
+			HandleGETMethod_(request, response);
+		else if(request.getMethod() == "POST")
+			HandlePOSTMethod_(request, response);
+		else if(request.getMethod() == "PUT")
+			HandlePUTMethod_(request, response);
+		else if(request.getMethod() == "DEL")
+			HandleDELMethod_(request, response);
+		else
+			BasicError_(response, "The client provided a bad HTTP method.", HTTPResponse::HTTP_BAD_REQUEST);
 	}
-	else
+	catch(std::exception error)
 	{
-		ErrorReport_(response, "Unauthorized user or wrong user or password.", HTTPResponse::HTTP_UNAUTHORIZED);
-		return;
+		std::cout << "\nError on root_handler.cc: " << error.what();
 	}
 }
 

@@ -75,7 +75,7 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler, public ErrorReport
 
 		RootHandler(std::string api_version);
 		virtual ~RootHandler();
-		virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
+		virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
 		std::string get_current_route() const {return current_route_;}
 		std::set<std::string> get_routes_list() const {return routes_list_;}
