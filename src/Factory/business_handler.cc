@@ -89,5 +89,9 @@ void BusinessHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerRes
 
 }
 
+void BusinessHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+{
+
+}
 
 }
