@@ -37,7 +37,8 @@ namespace CPW
 	}
 }
 
-class CPW::Factory::WebHandler :  CPW::Factory::RootHandler
+
+class CPW::Factory::WebHandler : public RootHandler
 {
 	public:
 		WebHandler();
