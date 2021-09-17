@@ -42,6 +42,7 @@ class CPW::Factory::BusinessHandler : public RootHandler
 		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
 		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
 		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
+		virtual void AddRoutes_();
 
 	private:
 		struct BusinessRow

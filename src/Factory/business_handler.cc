@@ -94,4 +94,17 @@ void BusinessHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerRes
 
 }
 
+void BusinessHandler::AddRoutes_()
+{
+	auto sub = "/api/" + get_api_verion();
+
+	get_routes_list()->insert(sub + "/business");
+	get_routes_list()->insert(sub + "/business/users");
+	get_routes_list()->insert(sub + "/business/users/actions");
+	get_routes_list()->insert(sub + "/business/permissions");
+	get_routes_list()->insert(sub + "/business/permissions/permissions_log");
+	get_routes_list()->insert(sub + "/business/levels");
+	get_routes_list()->insert(sub + "/business/levels/levels_log");
+	get_routes_list()->insert(sub + "/business/banks_accounts");
+	get_routes_list()->insert(sub + "/business/banks_accounts/transactions");
 }
