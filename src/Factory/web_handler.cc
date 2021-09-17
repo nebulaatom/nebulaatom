@@ -83,7 +83,26 @@ void WebHandler::AddSupportedFiles_()
 	));
 }
 
-void WebHandler::HandleGETMethod_(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
+bool WebHandler::IsSupported_(std::string path)
 {
+	Path requested_path(path);
+	if(requested_path.isDirectory())
+		requested_path.setFileName("index.html");
 
+	auto file_found = supported_files_->find(requested_path.getExtension());
+	if(file_found != supported_files_->end())
+	{
+		return true;
+	}
+	else
+	{
+		for(auto& it : *supported_files_)
+		{
+			auto other_extensions = &it.second.other_extensions;
+			auto find_depth = std::find(other_extensions->begin(), other_extensions->end(), requested_path.getExtension());
+			if(find_depth != other_extensions->end())
+				return true;
+		}
+		return false;
+	}
 }
