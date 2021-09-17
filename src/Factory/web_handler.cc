@@ -54,12 +54,12 @@ void WebHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerRespons
 
 }
 
-void WebHandler::HandleDELMethod_(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
+void WebHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
 
 }
 
-void WebHandler::HandlePUTMethod_(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
+void WebHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
 
 }
