@@ -78,5 +78,11 @@ void BusinessHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRes
 	std::ostream& out = response.send();
 	array_json.stringify(out);
 	out.flush();*/
+}
+
+void BusinessHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+{
+}
+
 
 }
