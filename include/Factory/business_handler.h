@@ -40,6 +40,15 @@ class CPW::Factory::BusinessHandler : public RootHandler
 	protected:
 		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
 		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
+
+	private:
+		struct BusinessRow
+		{
+			int id;
+			std::string name;
+			int image;
+			int reg_date;
+		};
 };
 
 #endif // BUSINESSHANDLER_H
