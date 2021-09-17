@@ -52,11 +52,16 @@ class CPW::Factory::WebHandler : public RootHandler
 		~WebHandler();
 
 	protected:
-		virtual void AddRoutes_() = 0;
-		virtual void HandleDELMethod_(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response) = 0;
-		virtual void HandlePUTMethod_(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response) = 0;
-		virtual void HandlePOSTMethod_(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response) = 0;
-		virtual void HandleGETMethod_(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response) = 0;
+		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
+		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
+		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
+		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
+		virtual void AddRoutes_();
+
+		void AddSupportedFiles_();
+		bool IsSupported_(std::string path);
+		bool CheckFile_(std::string path);
+
 };
 
 #endif // CPW_FACTORY_WEBHANDLER_H
