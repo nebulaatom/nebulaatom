@@ -106,3 +106,19 @@ bool WebHandler::IsSupported_(std::string path)
 		return false;
 	}
 }
+
+bool WebHandler::CheckFile_(std::string path)
+{
+	Path requested_path(path);
+	if(requested_path.isDirectory())
+		requested_path.setFileName("index.html");
+
+	File requested_file(requested_path);
+
+	if(!requested_file.canRead())
+		return false;
+	else if(!requested_file.exists())
+		return false;
+	else
+		return true;
+}
