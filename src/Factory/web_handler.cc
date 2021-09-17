@@ -20,14 +20,16 @@
 
 using namespace CPW::Factory;
 
-WebHandler::WebHandler()
+WebHandler::WebHandler(std::string api_version) :
+	RootHandler(api_version)
 {
-
+	supported_files_ = new std::map<std::string, FileProperties>;
+	AddSupportedFiles_();
 }
 
 WebHandler::~WebHandler()
 {
-
+	delete supported_files_;
 }
 
 void WebHandler::AddRoutes_()
