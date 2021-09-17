@@ -39,3 +39,18 @@ void QueryActions::ResetQuery_()
 {
 	query_.reset(session_);
 }
+
+void QueryActions::IdentidyFilter_(const HTTPServerRequest& request)
+{
+
+}
+
+void QueryActions::CreateRows_()
+{
+
+}
+
+void QueryActions::ComposeQuery_(const HTTPServerRequest& request)
+{
+
+}
