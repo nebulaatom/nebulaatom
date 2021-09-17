@@ -96,8 +96,10 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler, public ErrorReport
 		void ReadJSON_(HTTPServerRequest& request);
 
 	private:
+		std::string api_verion_;
 		std::string current_route_;
-		std::set<std::string> routes_list_;
+		std::string table_route_;
+		std::set<std::string>* routes_list_;
 		QueryActions* current_query_actions_;
 		Poco::DynamicStruct dynamic_json_body_;
 };
