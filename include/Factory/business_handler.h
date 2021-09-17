@@ -22,7 +22,16 @@
 
 #include "Factory/root_handler.h"
 
-class BusinessHandler : public RootHandler
+namespace CPW
+{
+	namespace Factory
+	{
+		class BusinessHandler;
+	}
+}
+
+
+class CPW::Factory::BusinessHandler : public RootHandler
 {
 	public:
 		BusinessHandler();
