@@ -189,7 +189,8 @@ bool RootHandler::IdentifyRoute_(HTTPServerRequest& request)
 	else
 		return check_every_endpoint();
 }
-void RootHandler::ReadJSON_(HTTPServerRequest& request)
+
+void RootHandler::ReadJSONBody_(HTTPServerRequest& request)
 {
 	// Read the JSON
 		std::string json_body;
