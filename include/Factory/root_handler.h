@@ -73,7 +73,7 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler, public ErrorReport
 			std::string user, password;
 		};
 
-		RootHandler();
+		RootHandler(std::string api_version);
 		virtual ~RootHandler();
 		virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 

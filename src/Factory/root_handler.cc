@@ -20,14 +20,18 @@
 
 using namespace CPW::Factory;
 
-RootHandler::RootHandler()
+RootHandler::RootHandler(std::string api_version) :
+	api_verion_(api_version),
+	current_route_("")
 {
 	current_query_actions_ = new QueryActions();
+	routes_list_ = new std::set<std::string>;
 }
 
 RootHandler::~RootHandler()
 {
 	delete current_query_actions_;
+	delete routes_list_;
 }
 
 void RootHandler::SecurityVerification_(HTTPServerRequest& request, HTTPServerResponse& response)
