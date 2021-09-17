@@ -76,10 +76,18 @@ class CPW::QueryActions
 		Poco::JSON::Array* get_result_json() const {return result_json_;}
 
 		void ResetQuery_();
+		void IdentifyFilters_(HTTPServerRequest& request);
+		void ComposeQuery_(TypeAction action_type, std::string table, std::string body);
+		void ExecuteQuery_();
+
 	protected:
-		void IdentidyFilter_(const HTTPServerRequest& request);
-		void CreateRows_();
-		void ComposeQuery_(const HTTPServerRequest& request);
+		void CreateRows_(TypeAction action_type);
+		std::string GetSortsConditions_();
+		std::string GetIqualsConditions_();
+		std::string ComposeInsertSentence_(std::string table, std::string body);
+		std::string ComposeSelectSentence_(std::string table);
+		std::string ComposeUpdateSentence_(std::string table, std::string body);
+		std::string ComposeDeleteSentence_(std::string table, std::string body);
 
 	private:
 		std::string final_query_;
