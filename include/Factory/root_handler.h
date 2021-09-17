@@ -77,8 +77,10 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler, public ErrorReport
 		virtual ~RootHandler();
 		virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
+		std::string get_api_verion() const {return api_verion_;}
 		std::string get_current_route() const {return current_route_;}
-		std::set<std::string> get_routes_list() const {return routes_list_;}
+		std::string get_table_route() const {return table_route_;}
+		std::set<std::string>* get_routes_list() const {return routes_list_;}
 		QueryActions* get_current_query_actions() const {return current_query_actions_;}
 		Poco::DynamicStruct get_dynamic_json_body() const {return dynamic_json_body_;}
 
