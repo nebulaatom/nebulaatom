@@ -85,15 +85,15 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler, public ErrorReport
 		Poco::DynamicStruct get_dynamic_json_body() const {return dynamic_json_body_;}
 
 	protected:
-		void SecurityVerification_(HTTPServerRequest& request, HTTPServerResponse& response);
-		bool AuthenticateUser_(HTTPServerRequest& request);
-		bool VerifyPermissions_(std::string user, std::string action, std::string action_type);
+		void ReadJSONBody_(HTTPServerRequest& request);
+		bool SecurityVerification_(HTTPServerRequest& request, HTTPServerResponse& response);
+		bool AuthenticateUser_();
+		bool VerifyPermissions_(HTTPServerRequest& request);
 		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
-		void ErrorReport_(HTTPServerResponse& response, std::string message, HTTPResponse::HTTPStatus status);
-		void ReadJSON_(HTTPServerRequest& request);
+		bool IdentifyRoute_(HTTPServerRequest& request);
 
 	private:
 		std::string api_verion_;
