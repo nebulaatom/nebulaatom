@@ -117,13 +117,19 @@ bool RootHandler::AuthenticateUser_()
 			return false;
 }
 
-bool RootHandler::VerifyPermissions_(std::string user, std::string action, std::string action_type)
+bool RootHandler::VerifyPermissions_(HTTPServerRequest& request)
 {
+	std::string user = get_current_query_actions()->get_table_rows()->at("user");
+	std::string action_type = request.getMethod();
+	std::string action = current_route_;
+
+	std::cout << "\naction: " << action << ", user: " << user << ", action type: " << action_type;
+
 	current_query_actions_->ResetQuery_();
 	int result;
 	current_query_actions_->get_query()
 		<<
-			"SELECT COUNT(1)"
+			"SELECT COUNT(1) "
 			"FROM permissions_log pl, permissions p, users u "
 			"WHERE "
 			"	u.username = ? "
@@ -141,12 +147,14 @@ bool RootHandler::VerifyPermissions_(std::string user, std::string action, std::
 
 	// Execute the query
 		current_query_actions_->get_query().execute();
-		std::cout << "\nResult: " << result;
 
 		if(result > 0)
 			return true;
 		else
-			return false;
+			if(*routes_list_->begin() == "*")
+				return true;
+			else
+				return false;
 }
 void RootHandler::ErrorReport_(HTTPServerResponse& response, std::string message, HTTPResponse::HTTPStatus status)
 {
