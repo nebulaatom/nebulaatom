@@ -62,6 +62,8 @@ class CPW::Factory::WebHandler : public RootHandler
 		bool IsSupported_(std::string path);
 		bool CheckFile_(std::string path);
 
+	private:
+		std::map<std::string, FileProperties>* supported_files_;;
 };
 
 #endif // CPW_FACTORY_WEBHANDLER_H
