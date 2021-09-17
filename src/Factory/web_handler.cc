@@ -37,6 +37,18 @@ void WebHandler::AddRoutes_()
 	get_routes_list()->insert("*");
 }
 
+void WebHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+{
+	if(!IsSupported_(request.getURI()))
+	{
+		std::cout << "\nFile not supported";
+	}
+	if(!CheckFile_(request.getURI()))
+	{
+		std::cout << "\nFile bad check";
+	}
+}
+
 void WebHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
 
