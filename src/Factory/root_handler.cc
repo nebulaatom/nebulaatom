@@ -85,13 +85,24 @@ bool RootHandler::SecurityVerification_(HTTPServerRequest& request, HTTPServerRe
 	}
 }
 
+bool RootHandler::AuthenticateUser_()
+{
 	// Prepare the row
-		auto table_rows = current_query_actions_->get_table_rows_();
+		auto table_rows = current_query_actions_->get_table_rows();
 		table_rows->insert(std::make_pair("user", ""));
 		table_rows->insert(std::make_pair("password", ""));
 
-		table_rows->find("user")->second = dynamic_json_body_["auth"]["user"].toString();
-		table_rows->find("password")->second = dynamic_json_body_["auth"]["password"].toString();
+	// Verify the key-values
+		if(dynamic_json_body_["auth"].isEmpty() || dynamic_json_body_["auth"]["user"].isEmpty() || dynamic_json_body_["auth"]["password"].isEmpty())
+		{
+			table_rows->find("user")->second = "null";
+			table_rows->find("password")->second = "null";
+		}
+		else
+		{
+			table_rows->find("user")->second = dynamic_json_body_["auth"]["user"].toString();
+			table_rows->find("password")->second = dynamic_json_body_["auth"]["password"].toString();
+		}
 
 	// Execute the query
 		current_query_actions_->ResetQuery_();
