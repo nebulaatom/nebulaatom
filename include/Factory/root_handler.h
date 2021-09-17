@@ -93,6 +93,7 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler, public ErrorReport
 		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
+		virtual void AddRoutes_() = 0;
 		bool IdentifyRoute_(HTTPServerRequest& request);
 
 	private:
