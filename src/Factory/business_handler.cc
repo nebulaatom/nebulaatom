@@ -25,6 +25,58 @@ BusinessHandler::~BusinessHandler()
 
 }
 
+void BusinessHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
+	get_current_query_actions()->IdentifyFilters_(request);
+	get_current_query_actions()->ComposeQuery_(QueryActions::TypeAction::kSelect, get_table_route(), "");
+	get_current_query_actions()->ExecuteQuery_();
+
+	response.setStatus(HTTPResponse::HTTP_OK);
+	response.setContentType("application/json");
+
+	std::ostream& out = response.send();
+	get_current_query_actions()->get_result_json()->stringify(out);
+	out.flush();
+
+	/*Poco::JSON::Array array_json;
+	try
+	{
+		Poco::Data::MySQL::Connector::registerConnector();
+		Session session("MySQL", "host=127.0.0.1;port=3306;db=cpw_woodpecker;user=root;password=mariadb_password;");
+
+		BusinessRow business;
+		Poco::Data::Statement select(session);
+		select << "SELECT * FROM business",
+			into(business.id),
+			into(business.name),
+			into(business.image),
+			into(business.reg_date),
+			range(0, 1)
+		;
+
+		int a = 0;
+		while (!select.done())
+		{
+			select.execute();
+
+			Poco::JSON::Object::Ptr object_json = new Poco::JSON::Object;
+			object_json->set("id", business.id);
+			object_json->set("name", business.name);
+			object_json->set("imagen", business.image);
+			object_json->set("reg_date", business.reg_date);
+			array_json.set(a, object_json);
+			a++;
+		}
+	}
+	catch(Poco::Data::MySQL::MySQLException& e)
+	{
+		std::cout << "\nError: " << e.displayText() << std::endl;
+	}
+	response.setStatus(HTTPResponse::HTTP_OK);
+	response.setContentType("application/json");
+
+	std::ostream& out = response.send();
+	array_json.stringify(out);
+	out.flush();*/
 
 }

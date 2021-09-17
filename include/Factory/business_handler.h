@@ -36,6 +36,9 @@ class CPW::Factory::BusinessHandler : public RootHandler
 	public:
 		using RootHandler::RootHandler;
 		virtual ~BusinessHandler();
+
+	protected:
+		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
 };
 
 #endif // BUSINESSHANDLER_H
