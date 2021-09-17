@@ -156,19 +156,38 @@ bool RootHandler::VerifyPermissions_(HTTPServerRequest& request)
 			else
 				return false;
 }
-void RootHandler::ErrorReport_(HTTPServerResponse& response, std::string message, HTTPResponse::HTTPStatus status)
-{
-	response.setStatus(status);
-	response.setContentType("application/json");
 
-	std::ostream& out = response.send();
-	out
-		<< "{"
-			<< "\"status\":\"" << size_t(status) << "\","
-			<< "\"message\":\"" << message << "\""
-		<< "}"
-	;
-	out.flush();
+bool RootHandler::IdentifyRoute_(HTTPServerRequest& request)
+{
+	auto check_every_endpoint = [&]() -> bool
+	{
+		if(*routes_list_->begin() == "*")
+			return true;
+		else
+			return false;
+	};
+
+	URI uri(request.getURI());
+	std::vector<std::string> segments;
+	std::list<std::string> route;
+	uri.getPathSegments(segments);
+
+	if(segments.size() > 0)
+	{
+		for(auto& it : segments)
+		{
+			current_route_ += "/" + it;
+		}
+
+		table_route_ = segments.back();
+
+		if(routes_list_->find(current_route_) != routes_list_->end())
+			return true;
+		else
+			return check_every_endpoint();
+	}
+	else
+		return check_every_endpoint();
 }
 void RootHandler::ReadJSON_(HTTPServerRequest& request)
 {
