@@ -84,5 +84,10 @@ void BusinessHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerRe
 {
 }
 
+void BusinessHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+{
+
+}
+
 
 }
