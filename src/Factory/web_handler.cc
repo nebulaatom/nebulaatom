@@ -34,6 +34,11 @@ WebHandler::~WebHandler()
 
 void WebHandler::AddRoutes_()
 {
+	get_routes_list()->insert("*");
+}
+
+void WebHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+{
 
 }
 
