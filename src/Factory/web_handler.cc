@@ -64,9 +64,23 @@ void WebHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse
 
 }
 
-void WebHandler::HandlePOSTMethod_(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
+void WebHandler::AddSupportedFiles_()
 {
-
+	supported_files_->insert(std::make_pair
+	(
+		".html",
+		FileProperties{"text/html", false, {".xhtml", ".htm", ".html5"}}
+	));
+	supported_files_->insert(std::make_pair
+	(
+		".js",
+		FileProperties{"text/javascript", false, {".html", ".htm", ".html5"}}
+	));
+	supported_files_->insert(std::make_pair
+	(
+		".css",
+		FileProperties{"text/css", false, {".html", ".htm", ".html5"}}
+	));
 }
 
 void WebHandler::HandleGETMethod_(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
