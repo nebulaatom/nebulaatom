@@ -27,7 +27,7 @@ BusinessHandler::~BusinessHandler()
 
 void BusinessHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	get_current_query_actions()->IdentifyFilters_(request);
+	/*get_current_query_actions()->IdentifyFilters_(request);
 	get_current_query_actions()->ComposeQuery_(QueryActions::TypeAction::kSelect, get_table_route(), "");
 	get_current_query_actions()->ExecuteQuery_();
 
@@ -36,9 +36,9 @@ void BusinessHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRes
 
 	std::ostream& out = response.send();
 	get_current_query_actions()->get_result_json()->stringify(out);
-	out.flush();
+	out.flush();*/
 
-	/*Poco::JSON::Array array_json;
+	Poco::JSON::Array array_json;
 	try
 	{
 		Poco::Data::MySQL::Connector::registerConnector();
@@ -77,7 +77,7 @@ void BusinessHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRes
 
 	std::ostream& out = response.send();
 	array_json.stringify(out);
-	out.flush();*/
+	out.flush();
 }
 
 void BusinessHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
