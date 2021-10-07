@@ -25,6 +25,7 @@
 #include <set>
 #include <algorithm>
 
+#include "Poco/Util/ServerApplication.h"
 #include <Poco/Net/HTTPRequestHandler.h>
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPResponse.h>
@@ -79,7 +80,7 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler, public ErrorReport
 
 		std::string get_api_verion() const {return api_verion_;}
 		std::string get_current_route() const {return current_route_;}
-		std::string get_table_route() const {return table_route_;}
+		std::string get_target_route() const {return target_route_;}
 		std::set<std::string>* get_routes_list() const {return routes_list_;}
 		QueryActions* get_current_query_actions() const {return current_query_actions_;}
 		Poco::DynamicStruct get_dynamic_json_body() const {return dynamic_json_body_;}
@@ -99,7 +100,7 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler, public ErrorReport
 	private:
 		std::string api_verion_;
 		std::string current_route_;
-		std::string table_route_;
+		std::string target_route_;
 		std::set<std::string>* routes_list_;
 		QueryActions* current_query_actions_;
 		Poco::DynamicStruct dynamic_json_body_;
