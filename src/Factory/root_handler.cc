@@ -119,11 +119,13 @@ bool RootHandler::AuthenticateUser_()
 
 bool RootHandler::VerifyPermissions_(HTTPServerRequest& request)
 {
+	Util::Application& app = Util::Application::instance();
+
 	std::string user = get_current_query_actions()->get_table_rows()->at("user");
 	std::string action_type = request.getMethod();
-	std::string action = current_route_;
+	std::string target = target_route_;
 
-	std::cout << "\naction: " << action << ", user: " << user << ", action type: " << action_type;
+	app.logger().information("\ntarget: " + target + ", user: " + user + ", action type: " + action_type);
 
 	current_query_actions_->ResetQuery_();
 	int result;
@@ -141,7 +143,7 @@ bool RootHandler::VerifyPermissions_(HTTPServerRequest& request)
 		,
 		use(user),
 		use(action_type),
-		use(action),
+		use(target),
 		into(result)
 	;
 
@@ -179,7 +181,12 @@ bool RootHandler::IdentifyRoute_(HTTPServerRequest& request)
 			current_route_ += "/" + it;
 		}
 
-		table_route_ = segments.back();
+		auto segments2 = segments;
+		segments2.erase(segments2.begin(), segments2.begin() + 2);
+		for(auto& it : segments2)
+		{
+			target_route_ += "/" + it;
+		}
 
 		if(routes_list_->find(current_route_) != routes_list_->end())
 			return true;
