@@ -40,17 +40,17 @@ void QueryActions::ResetQuery_()
 	query_.reset(session_);
 }
 
-void QueryActions::IdentidyFilter_(const HTTPServerRequest& request)
+void QueryActions::IdentifyFilters_(HTTPServerRequest& request)
 {
 
 }
 
-void QueryActions::CreateRows_()
+void QueryActions::ComposeQuery_(TypeAction action_type, std::string table, std::string body)
 {
 
 }
 
-void QueryActions::ComposeQuery_(const HTTPServerRequest& request)
+void QueryActions::ExecuteQuery_()
 {
 
 }
