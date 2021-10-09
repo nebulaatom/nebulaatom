@@ -38,6 +38,7 @@
 #include <Poco/Data/MySQL/MySQLException.h>
 #include <Poco/Data/Statement.h>
 
+#include "route.h"
 #include "error_report.h"
 #include "Factory/root_handler.h"
 #include "Factory/null_handler.h"
@@ -50,8 +51,22 @@ using namespace Poco::Data::Keywords;
 
 namespace CPW
 {
+	class HandlerConnection;
 	class HandlerFactory;
 }
+
+
+class CPW::HandlerConnection
+{
+	public:
+		using HandlerFunctor = std::function<CPW::Factory::RootHandler*()>;
+
+		HandlerConnection(Route route, HandlerFunctor handler);
+		~HandlerConnection();
+
+		Route current_route_;
+		HandlerFunctor return_handler_;
+};
 
 class CPW::HandlerFactory : public HTTPRequestHandlerFactory, public ErrorReport
 {
