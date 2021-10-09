@@ -20,6 +20,18 @@
 
 using namespace CPW;
 
+HandlerConnection::HandlerConnection(Route route, HandlerFunctor handler) :
+	current_route_(route)
+	,return_handler_(handler)
+{
+
+}
+
+HandlerConnection::~HandlerConnection()
+{
+
+}
+
 HandlerFactory::HandlerFactory() :
 	api_version_("v0")
 {
