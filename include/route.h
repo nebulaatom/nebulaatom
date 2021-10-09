@@ -46,13 +46,21 @@ class CPW::Route
 		Route();
 		~Route();
 
+		std::string get_database_table_target() const {return database_table_target_;}
+		RouteType get_current_route_type() const {return current_route_type_;}
+		std::string get_target() const {return target_;}
+		std::vector<std::string> get_segments() const {return segments_;}
+
+		void set_database_table_target(std::string database_table_target) {database_table_target_ = database_table_target;}
+		void set_current_route_type(RouteType current_route_type) {current_route_type_ = current_route_type;}
+		void set_target(std::string target) {target_ = target;}
+		void set_segments(std::vector<std::string> segments) {segments_ = segments;}
+
 	protected:
 		bool IdentifyRouteType_();
 
 	private:
-
 		std::string database_table_target_;
-		std::function<CPW::Factory::RootHandler*()> return_handler;
 		RouteType current_route_type_;
 		std::string target_;
 		std::vector<std::string> segments_;
