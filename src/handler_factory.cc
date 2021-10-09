@@ -89,33 +89,51 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 	return return_null();
 }
 
-void HandlerFactory::PrepareEndpoints_()
+void HandlerFactory::CreateConnections_()
 {
-	endpoints_handlers_.insert(std::make_pair
+	connections_.insert(std::make_pair
 	(
-		Endpoint::kBusiness,
-		EndpointProperties
+		HandlerType::kNull,
+		new HandlerConnection
 		{
-			std::vector<std::string>{"api", api_version_, "business"},
-			[&](){return new CPW::Factory::BusinessHandler(api_version_);}
+			Route
+			(
+				""
+				,RouteType::kEndpoint
+				,""
+				,std::vector<std::string>{""}
+			)
+			,[&](){return new CPW::Factory::NullHandler(api_version_);}
 		}
 	));
-	endpoints_handlers_.insert(std::make_pair
+	connections_.insert(std::make_pair
 	(
-		Endpoint::kWeb,
-		EndpointProperties
+		HandlerType::kBusiness,
+		new HandlerConnection
 		{
-			std::vector<std::string>{"web"},
-			[&](){return new CPW::Factory::WebHandler(api_version_);}
+			Route
+			(
+				"business"
+				,RouteType::kEndpoint
+				,"business"
+				,std::vector<std::string>{"api", api_version_, "business"}
+			)
+			,[&](){return new CPW::Factory::BusinessHandler(api_version_);}
 		}
 	));
-	endpoints_handlers_.insert(std::make_pair
+	connections_.insert(std::make_pair
 	(
-		Endpoint::kNull,
-		EndpointProperties
+		HandlerType::kWeb,
+		new HandlerConnection
 		{
-			std::vector<std::string>{},
-			[&](){return new CPW::Factory::NullHandler(api_version_);}
+			Route
+			(
+				""
+				,RouteType::kEntrypoint
+				,""
+				,std::vector<std::string>{""}
+			)
+			,[&](){return new CPW::Factory::WebHandler(api_version_);}
 		}
 	));
 }
