@@ -71,7 +71,7 @@ class CPW::HandlerConnection
 class CPW::HandlerFactory : public HTTPRequestHandlerFactory, public ErrorReport
 {
 	public:
-		enum Endpoint
+		enum HandlerType
 		{
 			kBusiness,
 			kAccounts,
@@ -84,23 +84,18 @@ class CPW::HandlerFactory : public HTTPRequestHandlerFactory, public ErrorReport
 			kNull
 		};
 
-		struct EndpointProperties
-		{
-			std::vector<std::string> segments;
-			std::function<CPW::Factory::RootHandler*()> return_handler;
-		};
-
 		HandlerFactory();
 		virtual ~HandlerFactory();
 		virtual HTTPRequestHandler* createRequestHandler(const HTTPServerRequest& request);
 
 	protected:
-		void PrepareEndpoints_();
-		Endpoint GetEndpoint_(std::vector<std::string> segments);
+		void CreateConnections_();
+		HandlerType FindHandler_(std::vector<std::string> segments);
 
 	private:
-		std::map<Endpoint, EndpointProperties> endpoints_handlers_;
 		std::string api_version_;
+		std::unique_ptr<Route> requested_route_;
+		std::map<HandlerType, HandlerConnection*> connections_;
 };
 
 #endif // CPW_HANDLERFACTORY_H
