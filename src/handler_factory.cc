@@ -35,12 +35,13 @@ HandlerConnection::~HandlerConnection()
 HandlerFactory::HandlerFactory() :
 	api_version_("v0")
 {
-	PrepareEndpoints_();
+	CreateConnections_();
 }
 
 HandlerFactory::~HandlerFactory()
 {
-
+	for(auto it = connections_.begin(); it != connections_.end(); ++it)
+		delete it->second;
 }
 
 HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest& request)
