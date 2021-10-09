@@ -43,7 +43,7 @@ enum class CPW::RouteType
 class CPW::Route
 {
 	public:
-		Route();
+		Route(std::string database_table_target, RouteType current_route_type, std::string target, std::vector<std::string> segments);
 		~Route();
 
 		std::string get_database_table_target() const {return database_table_target_;}

@@ -20,9 +20,13 @@
 
 using namespace CPW;
 
-Route::Route()
+Route::Route(std::string database_table_target, RouteType current_route_type, std::string target, std::vector<std::string> segments) :
+	database_table_target_(database_table_target)
+	,current_route_type_(current_route_type)
+	,target_(target)
+	,segments_(segments)
 {
-
+	IdentifyRouteType_();
 }
 
 Route::~Route()
