@@ -35,7 +35,15 @@ Route::~Route()
 }
 
 
-bool Route::IdentifyRouteType_()
+void Route::IdentifyRouteType_()
 {
-	 return true;
+	if(segments_.front() != *segments_.end())
+	{
+		if(segments_.front() == "api")
+			current_route_type_ = RouteType::kEndpoint;
+		else
+			current_route_type_ = RouteType::kEntrypoint;
+	}
+	else
+		current_route_type_ = RouteType::kEntrypoint;
 }

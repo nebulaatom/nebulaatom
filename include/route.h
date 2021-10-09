@@ -57,7 +57,7 @@ class CPW::Route
 		void set_segments(std::vector<std::string> segments) {segments_ = segments;}
 
 	protected:
-		bool IdentifyRouteType_();
+		void IdentifyRouteType_();
 
 	private:
 		std::string database_table_target_;
