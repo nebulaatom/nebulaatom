@@ -139,16 +139,17 @@ void HandlerFactory::CreateConnections_()
 }
 
 
-HandlerFactory::Endpoint HandlerFactory::GetEndpoint_(std::vector<std::string> segments)
+HandlerFactory::HandlerType HandlerFactory::FindHandler_(std::vector<std::string> segments)
 {
-	for(auto it : endpoints_handlers_)
-	{
-		auto sub_segments = it.second.segments;
-		auto found = std::search(segments.begin(), segments.end(), sub_segments.begin(), sub_segments.end());
+	if(segments.size() < 3)
+		return HandlerType::kNull;
 
-		if(found != segments.end())
+	for(auto it : connections_)
+	{
+		auto sub_segments = it.second->current_route_.get_segments();
+		if(sub_segments[3] == sub_segments[3])
 			return it.first;
 	}
 
-	return Endpoint::kNull;
+	return HandlerFactory::HandlerType::kNull;
 }
