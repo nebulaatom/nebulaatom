@@ -23,6 +23,11 @@ add_library(queryactions OBJECT "query_actions.cc")
 target_include_directories(queryactions PUBLIC ${HEADER})
 set_target_properties(queryactions PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
+### route
+add_library(route OBJECT "route.cc")
+target_include_directories(route PUBLIC ${HEADER})
+set_target_properties(route PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
 ### errorreport
 add_library(errorreport OBJECT "error_report.cc")
 target_include_directories(errorreport PUBLIC ${HEADER})
@@ -37,6 +42,7 @@ target_link_libraries(
 	woodpeckerserver
 	handlerfactory
 	queryactions
+	route
 	errorreport
 	roothandler
 	nullhandler
