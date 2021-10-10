@@ -48,7 +48,7 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 {
 	auto return_null = [&]()->HTTPRequestHandler*
 	{
-		return endpoints_handlers_[Endpoint::kNull].return_handler();
+		return connections_[HandlerType::kNull]->return_handler_();
 	};
 
 	try
@@ -58,28 +58,31 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 		std::vector<std::string> segments;
 		initial_uri.getPathSegments(segments);
 
-	if(segments.size() > 0)
-			return endpoints_handlers_[GetEndpoint_(segments)].return_handler();
-		else
-			return return_null();
 
-		/*if(segments.size() < 1 || segments.size() <= 2)
-			return endpoints_handlers_[Endpoint::kWeb]();
-		else
+		std::unique_ptr<Route> requested_route
+		(
+			new Route
+			(
+				""
+				,std::vector<std::string>{""}
+			)
+		);
+		requested_route_ = std::move(requested_route);
+
+		switch(requested_route_->get_current_route_type())
 		{
-			if(segments[0] == "api" && segments[1] == api_version_)
+			case RouteType::kEndpoint:
 			{
-				auto end_type = endpoints_keys_.find(segments[2]);
-				if(end_type != endpoints_keys_.end())
-					return endpoints_handlers_[end_type->second]();
-				else
-					return return_null();
+				auto found = FindHandler_(requested_route_->get_segments());
+				return connections_[found]->return_handler_();
+				break;
 			}
-			else if(segments[0] == "api" && segments[1] != api_version_)
-				return return_null();
-			else
-				return endpoints_handlers_[Endpoint::kWeb]();
-		}*/
+			case RouteType::kEntrypoint:
+			{
+				return connections_[HandlerType::kWeb]->return_handler_();
+			}
+		}
+
 	}
 	catch (std::exception const& error)
 	{
@@ -99,8 +102,6 @@ void HandlerFactory::CreateConnections_()
 			Route
 			(
 				""
-				,RouteType::kEndpoint
-				,""
 				,std::vector<std::string>{""}
 			)
 			,[&](){return new CPW::Factory::NullHandler(api_version_);}
@@ -114,8 +115,6 @@ void HandlerFactory::CreateConnections_()
 			Route
 			(
 				"business"
-				,RouteType::kEndpoint
-				,"business"
 				,std::vector<std::string>{"api", api_version_, "business"}
 			)
 			,[&](){return new CPW::Factory::BusinessHandler(api_version_);}
@@ -129,8 +128,6 @@ void HandlerFactory::CreateConnections_()
 			Route
 			(
 				""
-				,RouteType::kEntrypoint
-				,""
 				,std::vector<std::string>{""}
 			)
 			,[&](){return new CPW::Factory::WebHandler(api_version_);}
