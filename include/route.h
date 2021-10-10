@@ -24,8 +24,6 @@
 #include <vector>
 #include <functional>
 
-#include "Factory/root_handler.h"
-
 
 namespace CPW
 {
@@ -43,15 +41,13 @@ enum class CPW::RouteType
 class CPW::Route
 {
 	public:
-		Route(std::string database_table_target, RouteType current_route_type, std::string target, std::vector<std::string> segments);
+		Route(std::string target, std::vector<std::string> segments);
 		~Route();
 
-		std::string get_database_table_target() const {return database_table_target_;}
 		RouteType get_current_route_type() const {return current_route_type_;}
 		std::string get_target() const {return target_;}
 		std::vector<std::string> get_segments() const {return segments_;}
 
-		void set_database_table_target(std::string database_table_target) {database_table_target_ = database_table_target;}
 		void set_current_route_type(RouteType current_route_type) {current_route_type_ = current_route_type;}
 		void set_target(std::string target) {target_ = target;}
 		void set_segments(std::vector<std::string> segments) {segments_ = segments;}
@@ -60,7 +56,6 @@ class CPW::Route
 		void IdentifyRouteType_();
 
 	private:
-		std::string database_table_target_;
 		RouteType current_route_type_;
 		std::string target_;
 		std::vector<std::string> segments_;
