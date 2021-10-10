@@ -96,15 +96,13 @@ void BusinessHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerRes
 
 void BusinessHandler::AddRoutes_()
 {
-	auto sub = "/api/" + get_api_verion();
-
-	get_routes_list()->insert(sub + "/business");
-	get_routes_list()->insert(sub + "/business/users");
-	get_routes_list()->insert(sub + "/business/users/actions");
-	get_routes_list()->insert(sub + "/business/permissions");
-	get_routes_list()->insert(sub + "/business/permissions/permissions_log");
-	get_routes_list()->insert(sub + "/business/levels");
-	get_routes_list()->insert(sub + "/business/levels/levels_log");
-	get_routes_list()->insert(sub + "/business/banks_accounts");
-	get_routes_list()->insert(sub + "/business/banks_accounts/transactions");
+	get_routes_list()->push_back(new Route("",std::vector<std::string>{"api", get_api_verion(), "business"}));
+	get_routes_list()->push_back(new Route("",std::vector<std::string>{"api", get_api_verion(), "business", "users"}));
+	get_routes_list()->push_back(new Route("",std::vector<std::string>{"api", get_api_verion(), "business", "users", "actions"}));
+	get_routes_list()->push_back(new Route("",std::vector<std::string>{"api", get_api_verion(), "business", "permissions"}));
+	get_routes_list()->push_back(new Route("",std::vector<std::string>{"api", get_api_verion(), "business", "permissions", "permissions_log"}));
+	get_routes_list()->push_back(new Route("",std::vector<std::string>{"api", get_api_verion(), "business", "levels"}));
+	get_routes_list()->push_back(new Route("",std::vector<std::string>{"api", get_api_verion(), "business", "levels", "levels_log"}));
+	get_routes_list()->push_back(new Route("",std::vector<std::string>{"api", get_api_verion(), "business", "banks_accounts"}));
+	get_routes_list()->push_back(new Route("",std::vector<std::string>{"api", get_api_verion(), "business", "banks_accounts", "transactions"}));
 }
