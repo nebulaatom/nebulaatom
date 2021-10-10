@@ -64,7 +64,7 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 			new Route
 			(
 				""
-				,std::vector<std::string>{""}
+				,segments
 			)
 		);
 		requested_route_ = std::move(requested_route);
@@ -80,6 +80,7 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 			case RouteType::kEntrypoint:
 			{
 				return connections_[HandlerType::kWeb]->return_handler_();
+				break;
 			}
 		}
 
@@ -101,7 +102,7 @@ void HandlerFactory::CreateConnections_()
 		{
 			Route
 			(
-				""
+				"null"
 				,std::vector<std::string>{""}
 			)
 			,[&](){return new CPW::Factory::NullHandler(api_version_);}
@@ -127,7 +128,7 @@ void HandlerFactory::CreateConnections_()
 		{
 			Route
 			(
-				""
+				"web"
 				,std::vector<std::string>{""}
 			)
 			,[&](){return new CPW::Factory::WebHandler(api_version_);}
@@ -143,8 +144,8 @@ HandlerFactory::HandlerType HandlerFactory::FindHandler_(std::vector<std::string
 
 	for(auto it : connections_)
 	{
-		auto sub_segments = it.second->current_route_.get_segments();
-		if(sub_segments[3] == sub_segments[3])
+		auto target = it.second->current_route_.get_target();
+		if(segments[2] == target)
 			return it.first;
 	}
 
