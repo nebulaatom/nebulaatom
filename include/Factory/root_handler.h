@@ -22,7 +22,8 @@
 
 #include <iostream>
 #include <string>
-#include <set>
+#include <list>
+#include <vector>
 #include <algorithm>
 
 #include "Poco/Util/ServerApplication.h"
@@ -46,6 +47,7 @@
 #include <Poco/Dynamic/Struct.h>
 
 #include "query_actions.h"
+#include "route.h"
 #include "error_report.h"
 
 
@@ -79,9 +81,7 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler, public ErrorReport
 		virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
 		std::string get_api_verion() const {return api_verion_;}
-		std::string get_current_route() const {return current_route_;}
-		std::string get_target_route() const {return target_route_;}
-		std::set<std::string>* get_routes_list() const {return routes_list_;}
+		std::list<Route*>* get_routes_list() const {return routes_list_;}
 		QueryActions* get_current_query_actions() const {return current_query_actions_;}
 		Poco::DynamicStruct get_dynamic_json_body() const {return dynamic_json_body_;}
 
@@ -99,9 +99,8 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler, public ErrorReport
 
 	private:
 		std::string api_verion_;
-		std::string current_route_;
-		std::string target_route_;
-		std::set<std::string>* routes_list_;
+		std::unique_ptr<Route> requested_route_;
+		std::list<Route*>* routes_list_;
 		QueryActions* current_query_actions_;
 		Poco::DynamicStruct dynamic_json_body_;
 };

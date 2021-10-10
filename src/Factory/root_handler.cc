@@ -21,16 +21,17 @@
 using namespace CPW::Factory;
 
 RootHandler::RootHandler(std::string api_version) :
-	api_verion_(api_version),
-	current_route_("")
+	api_verion_(api_version)
 {
 	current_query_actions_ = new QueryActions();
-	routes_list_ = new std::set<std::string>;
+	routes_list_ = new std::list<Route*>;
 }
 
 RootHandler::~RootHandler()
 {
 	delete current_query_actions_;
+	for(auto it : *routes_list_)
+		delete it;
 	delete routes_list_;
 }
 
@@ -123,7 +124,7 @@ bool RootHandler::VerifyPermissions_(HTTPServerRequest& request)
 
 	std::string user = get_current_query_actions()->get_table_rows()->at("user");
 	std::string action_type = request.getMethod();
-	std::string target = target_route_;
+	std::string target = requested_route_->get_target();
 
 	app.logger().information("\ntarget: " + target + ", user: " + user + ", action type: " + action_type);
 
@@ -153,48 +154,38 @@ bool RootHandler::VerifyPermissions_(HTTPServerRequest& request)
 		if(result > 0)
 			return true;
 		else
-			if(*routes_list_->begin() == "*")
-				return true;
-			else
-				return false;
+			return false;
 }
 
 bool RootHandler::IdentifyRoute_(HTTPServerRequest& request)
 {
-	auto check_every_endpoint = [&]() -> bool
-	{
-		if(*routes_list_->begin() == "*")
-			return true;
-		else
-			return false;
-	};
-
 	URI uri(request.getURI());
 	std::vector<std::string> segments;
-	std::list<std::string> route;
 	uri.getPathSegments(segments);
 
-	if(segments.size() > 0)
+	std::unique_ptr<Route> requested_route
+	(
+		new Route
+		(
+			""
+			,std::vector<std::string>{""}
+		)
+	);
+	requested_route_ = std::move(requested_route);
+
+	for(auto it : *routes_list_)
 	{
-		for(auto& it : segments)
-		{
-			current_route_ += "/" + it;
-		}
+		auto sub_segments = it->get_segments();
+		auto found = std::search(segments.begin(), segments.end(), sub_segments.begin(), sub_segments.end());
 
-		auto segments2 = segments;
-		segments2.erase(segments2.begin(), segments2.begin() + 2);
-		for(auto& it : segments2)
+		if(found != segments.end())
 		{
-			target_route_ += "/" + it;
-		}
-
-		if(routes_list_->find(current_route_) != routes_list_->end())
+			requested_route_->set_target(it->get_target());
 			return true;
-		else
-			return check_every_endpoint();
+		}
 	}
-	else
-		return check_every_endpoint();
+
+	return false;
 }
 
 void RootHandler::ReadJSONBody_(HTTPServerRequest& request)
