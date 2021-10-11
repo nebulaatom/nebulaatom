@@ -34,7 +34,7 @@ WebHandler::~WebHandler()
 
 void WebHandler::AddRoutes_()
 {
-	get_routes_list()->push_back(new Route("",std::vector<std::string>{"api", get_api_verion(), "/"}));
+	get_routes_list()->push_back(new Route("",std::vector<std::string>{""}));
 }
 
 void WebHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
