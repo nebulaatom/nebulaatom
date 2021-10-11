@@ -44,7 +44,6 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 
 		if(!IdentifyRoute_(request))
 		{
-			BasicError_(response, "The requested endpoint is not available.", HTTPResponse::HTTP_NOT_FOUND);
 			return;
 		}
 
@@ -125,14 +124,16 @@ bool RootHandler::VerifyPermissions_(HTTPServerRequest& request)
 	std::string user = get_current_query_actions()->get_table_rows()->at("user");
 	std::string action_type = request.getMethod();
 	std::string target = requested_route_->get_target();
+	int granted = -1;
+	std::size_t rows = 0;
 
 	app.logger().information("\ntarget: " + target + ", user: " + user + ", action type: " + action_type);
 
 	current_query_actions_->ResetQuery_();
-	int result;
 	current_query_actions_->get_query()
 		<<
-			"SELECT COUNT(1) "
+			"SELECT "
+			"	pl.granted "
 			"FROM permissions_log pl, permissions p, users u "
 			"WHERE "
 			"	u.username = ? "
@@ -141,20 +142,45 @@ bool RootHandler::VerifyPermissions_(HTTPServerRequest& request)
 			"	AND pl.id_permission = p.id "
 			"	AND pl.id_user = u.id"
 			";"
-		,
-		use(user),
-		use(action_type),
-		use(target),
-		into(result)
+		,use(user)
+		,use(action_type)
+		,use(target)
+		,into(granted)
 	;
 
 	// Execute the query
-		current_query_actions_->get_query().execute();
+		rows = current_query_actions_->get_query().execute();
 
-		if(result > 0)
-			return true;
+		if(rows > 0)
+			return granted == 1 ? true : false;
+
+	// Verify permissions for the null user
+		current_query_actions_->ResetQuery_();
+		current_query_actions_->get_query()
+			<<
+				"SELECT "
+				"	pl.granted "
+				"FROM permissions_log pl, permissions p, users u "
+				"WHERE "
+				"	u.username = 'null' "
+				"	AND pl.type = ? "
+				"	AND p.name = ? "
+				"	AND pl.id_permission = p.id "
+				"	AND pl.id_user = u.id"
+				";"
+			,use(action_type)
+			,use(target)
+			,into(granted)
+		;
+
+	// Execute the query
+		rows = current_query_actions_->get_query().execute();
+
+		if(rows > 0)
+			return granted == 1 ? true : false;
 		else
 			return false;
+
 }
 
 bool RootHandler::IdentifyRoute_(HTTPServerRequest& request)
