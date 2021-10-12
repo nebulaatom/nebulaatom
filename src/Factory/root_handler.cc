@@ -22,6 +22,7 @@ using namespace CPW::Factory;
 
 RootHandler::RootHandler(std::string api_version) :
 	api_verion_(api_version)
+	,route_verification_(true)
 {
 	current_query_actions_ = new QueryActions();
 	routes_list_ = new std::list<Route*>;
@@ -42,10 +43,12 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 		AddRoutes_();
 		ReadJSONBody_(request);
 
-		if(!IdentifyRoute_(request))
-		{
-			return;
-		}
+		if(route_verification_)
+			if(!IdentifyRoute_(request))
+			{
+				BasicError_(response, "The requested endpoint is not available.", HTTPResponse::HTTP_NOT_FOUND);
+				return;
+			}
 
 		if(!SecurityVerification_(request, response))
 			return;
@@ -194,17 +197,14 @@ bool RootHandler::IdentifyRoute_(HTTPServerRequest& request)
 		new Route
 		(
 			""
-			,std::vector<std::string>{""}
+			,segments
 		)
 	);
 	requested_route_ = std::move(requested_route);
 
 	for(auto it : *routes_list_)
 	{
-		auto sub_segments = it->get_segments();
-		auto found = std::search(segments.begin(), segments.end(), sub_segments.begin(), sub_segments.end());
-
-		if(found != segments.end())
+		if(requested_route_->SegmentsToString_() == it->SegmentsToString_())
 		{
 			requested_route_->set_target(it->get_target());
 			return true;

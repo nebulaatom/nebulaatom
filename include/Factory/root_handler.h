@@ -99,6 +99,7 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler, public ErrorReport
 
 	private:
 		std::string api_verion_;
+		bool route_verification_;
 		std::unique_ptr<Route> requested_route_;
 		std::list<Route*>* routes_list_;
 		QueryActions* current_query_actions_;
