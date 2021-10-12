@@ -52,6 +52,8 @@ class CPW::Route
 		void set_target(std::string target) {target_ = target;}
 		void set_segments(std::vector<std::string> segments) {segments_ = segments;}
 
+		std::string SegmentsToString_();
+
 	protected:
 		void IdentifyRouteType_();
 

@@ -45,3 +45,13 @@ void Route::IdentifyRouteType_()
 	else
 		current_route_type_ = RouteType::kEntrypoint;
 }
+
+std::string Route::SegmentsToString_()
+{
+	std::string segments_to_string = "";
+	for(auto it : segments_)
+ 	{
+		segments_to_string += "/" + it;
+	}
+	return segments_to_string;
+}
