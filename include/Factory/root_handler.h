@@ -90,6 +90,7 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler, public ErrorReport
 		bool SecurityVerification_(HTTPServerRequest& request, HTTPServerResponse& response);
 		bool AuthenticateUser_();
 		bool VerifyPermissions_(HTTPServerRequest& request);
+		void SeePermissionsPerUser_(std::string user, std::string action_type, std::string target);
 		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;

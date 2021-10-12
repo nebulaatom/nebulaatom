@@ -132,6 +132,29 @@ bool RootHandler::VerifyPermissions_(HTTPServerRequest& request)
 
 	app.logger().information("\ntarget: " + target + ", user: " + user + ", action type: " + action_type);
 
+	// Verify permissions for the user
+		SeePermissionsPerUser_(user, action_type, target);
+		current_query_actions_->get_query(), into(granted);
+		rows = current_query_actions_->get_query().execute();
+
+		if(rows > 0)
+			return granted == 1 ? true : false;
+
+	// Verify permissions for the null user
+
+		SeePermissionsPerUser_("null", action_type, target);
+		current_query_actions_->get_query(), into(granted);
+		rows = current_query_actions_->get_query().execute();
+
+		if(rows > 0)
+			return granted == 1 ? true : false;
+		else
+			return false;
+
+}
+
+void RootHandler::SeePermissionsPerUser_(std::string user, std::string action_type, std::string target)
+{
 	current_query_actions_->ResetQuery_();
 	current_query_actions_->get_query()
 		<<
@@ -148,42 +171,7 @@ bool RootHandler::VerifyPermissions_(HTTPServerRequest& request)
 		,use(user)
 		,use(action_type)
 		,use(target)
-		,into(granted)
 	;
-
-	// Execute the query
-		rows = current_query_actions_->get_query().execute();
-
-		if(rows > 0)
-			return granted == 1 ? true : false;
-
-	// Verify permissions for the null user
-		current_query_actions_->ResetQuery_();
-		current_query_actions_->get_query()
-			<<
-				"SELECT "
-				"	pl.granted "
-				"FROM permissions_log pl, permissions p, users u "
-				"WHERE "
-				"	u.username = 'null' "
-				"	AND pl.type = ? "
-				"	AND p.name = ? "
-				"	AND pl.id_permission = p.id "
-				"	AND pl.id_user = u.id"
-				";"
-			,use(action_type)
-			,use(target)
-			,into(granted)
-		;
-
-	// Execute the query
-		rows = current_query_actions_->get_query().execute();
-
-		if(rows > 0)
-			return granted == 1 ? true : false;
-		else
-			return false;
-
 }
 
 bool RootHandler::IdentifyRoute_(HTTPServerRequest& request)
