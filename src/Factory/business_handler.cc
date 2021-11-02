@@ -112,13 +112,13 @@ void BusinessHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerRes
 
 void BusinessHandler::AddRoutes_()
 {
-	get_routes_list()->push_back(new Route("business",std::vector<std::string>{"api", get_api_verion(), "business"}));
-	get_routes_list()->push_back(new Route("users",std::vector<std::string>{"api", get_api_verion(), "business", "users"}));
-	get_routes_list()->push_back(new Route("actions",std::vector<std::string>{"api", get_api_verion(), "business", "users", "actions"}));
-	get_routes_list()->push_back(new Route("permissions",std::vector<std::string>{"api", get_api_verion(), "business", "permissions"}));
-	get_routes_list()->push_back(new Route("permissions_log",std::vector<std::string>{"api", get_api_verion(), "business", "permissions", "permissions_log"}));
-	get_routes_list()->push_back(new Route("levels",std::vector<std::string>{"api", get_api_verion(), "business", "levels"}));
-	get_routes_list()->push_back(new Route("levels_log",std::vector<std::string>{"api", get_api_verion(), "business", "levels", "levels_log"}));
-	get_routes_list()->push_back(new Route("banks_accounts",std::vector<std::string>{"api", get_api_verion(), "business", "banks_accounts"}));
-	get_routes_list()->push_back(new Route("transactions",std::vector<std::string>{"api", get_api_verion(), "business", "banks_accounts", "transactions"}));
+	get_routes_list().push_back(new Route("business",std::vector<std::string>{"api", get_api_verion(), "business"}));
+	get_routes_list().push_back(new Route("users",std::vector<std::string>{"api", get_api_verion(), "business", "users"}));
+	get_routes_list().push_back(new Route("actions",std::vector<std::string>{"api", get_api_verion(), "business", "users", "actions"}));
+	get_routes_list().push_back(new Route("permissions",std::vector<std::string>{"api", get_api_verion(), "business", "permissions"}));
+	get_routes_list().push_back(new Route("permissions_log",std::vector<std::string>{"api", get_api_verion(), "business", "permissions", "permissions_log"}));
+	get_routes_list().push_back(new Route("levels",std::vector<std::string>{"api", get_api_verion(), "business", "levels"}));
+	get_routes_list().push_back(new Route("levels_log",std::vector<std::string>{"api", get_api_verion(), "business", "levels", "levels_log"}));
+	get_routes_list().push_back(new Route("banks_accounts",std::vector<std::string>{"api", get_api_verion(), "business", "banks_accounts"}));
+	get_routes_list().push_back(new Route("transactions",std::vector<std::string>{"api", get_api_verion(), "business", "banks_accounts", "transactions"}));
 }

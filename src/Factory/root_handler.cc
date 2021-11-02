@@ -20,20 +20,158 @@
 
 using namespace CPW::Factory;
 
+DynamicElements::DynamicElements()
+{
+	current_query_actions_ = new QueryActions();
+}
+
+DynamicElements::~DynamicElements()
+{
+	delete current_query_actions_;
+	for(auto it : routes_list_)
+		delete it;
+}
+
+
+SecurityVerification::SecurityVerification()
+{
+
+}
+
+SecurityVerification::~SecurityVerification()
+{
+
+}
+
+bool SecurityVerification::InitSecurityProccess_(HTTPServerRequest& request, HTTPServerResponse& response)
+{
+	if(AuthenticateUser_())
+	{
+		if(!VerifyPermissions_(request))
+		{
+			BasicError_(response, "The user does not have the permissions to perform this operation.", HTTPResponse::HTTP_UNAUTHORIZED);
+			return false;
+		}
+		return true;
+	}
+	else
+	{
+		BasicError_(response, "Unauthorized user or wrong user or password.", HTTPResponse::HTTP_UNAUTHORIZED);
+		return false;
+	}
+}
+
+bool SecurityVerification::AuthenticateUser_()
+{
+	// Variables
+		auto json_body = get_dynamic_json_body();
+		auto query_actions = get_current_query_actions();
+		auto table_rows = query_actions->get_table_rows();
+
+	// Prepare the row
+		table_rows->insert(std::make_pair("user", ""));
+		table_rows->insert(std::make_pair("password", ""));
+
+	// Verify the key-values
+		if
+		(
+				json_body["auth"].isEmpty()
+				|| json_body["auth"]["user"].isEmpty()
+				|| json_body["auth"]["password"].isEmpty()
+		)
+		{
+			table_rows->find("user")->second = "null";
+			table_rows->find("password")->second = "null";
+		}
+		else
+		{
+			table_rows->find("user")->second = json_body["auth"]["user"].toString();
+			table_rows->find("password")->second = json_body["auth"]["password"].toString();
+		}
+
+	// Execute the query
+		query_actions->ResetQuery_();
+		query_actions->get_query() << "SELECT * FROM users WHERE username = ? AND password = ?",
+			use(table_rows->find("user")->second),
+			use(table_rows->find("password")->second)
+		;
+		query_actions->get_query().execute();
+		if(query_actions->get_query().subTotalRowCount() > 0)
+			return true;
+		else
+			return false;
+}
+
+bool SecurityVerification::VerifyPermissions_(HTTPServerRequest& request)
+{
+	// Variables
+		Util::Application& app = Util::Application::instance();
+		auto query_actions = get_current_query_actions();
+
+		std::string user = query_actions->get_table_rows()->at("user");
+		std::string action_type = request.getMethod();
+		std::string target = requested_route_->get_target();
+		int granted = -1;
+		std::size_t rows = 0;
+
+	app.logger().information("\ntarget: " + target + ", user: " + user + ", action type: " + action_type);
+
+	// Verify permissions for the user
+		SeePermissionsPerUser_(user, action_type, target);
+		query_actions->get_query(), into(granted);
+		rows = query_actions->get_query().execute();
+
+		if(rows > 0)
+			return granted == 1 ? true : false;
+
+	// Verify permissions for the null user
+
+		SeePermissionsPerUser_("null", action_type, target);
+		query_actions->get_query(), into(granted);
+		rows = query_actions->get_query().execute();
+
+		if(rows > 0)
+			return granted == 1 ? true : false;
+		else
+			return false;
+
+}
+
+void SecurityVerification::SeePermissionsPerUser_(std::string user, std::string action_type, std::string target)
+{
+	// Variables
+		Util::Application& app = Util::Application::instance();
+		auto query_actions = get_current_query_actions();
+
+	query_actions->ResetQuery_();
+	query_actions->get_query()
+		<<
+			"SELECT "
+			"	pl.granted "
+			"FROM permissions_log pl, permissions p, users u "
+			"WHERE "
+			"	u.username = ? "
+			"	AND pl.type = ? "
+			"	AND p.name = ? "
+			"	AND pl.id_permission = p.id "
+			"	AND pl.id_user = u.id"
+			";"
+		,use(user)
+		,use(action_type)
+		,use(target)
+	;
+}
+
 RootHandler::RootHandler(std::string api_version) :
 	api_verion_(api_version)
 	,route_verification_(true)
 {
-	current_query_actions_ = new QueryActions();
-	routes_list_ = new std::list<Route*>;
+
 }
 
 RootHandler::~RootHandler()
 {
-	delete current_query_actions_;
-	for(auto it : *routes_list_)
-		delete it;
-	delete routes_list_;
+
 }
 
 void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& response)
@@ -44,13 +182,15 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 		ReadJSONBody_(request);
 
 		if(route_verification_)
+		{
 			if(!IdentifyRoute_(request))
 			{
 				BasicError_(response, "The requested endpoint is not available.", HTTPResponse::HTTP_NOT_FOUND);
 				return;
 			}
+		}
 
-		if(!SecurityVerification_(request, response))
+		if(!InitSecurityProccess_(request, response))
 			return;
 
 		if(request.getMethod() == "GET")
@@ -70,110 +210,6 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 	}
 }
 
-bool RootHandler::SecurityVerification_(HTTPServerRequest& request, HTTPServerResponse& response)
-{
-	if(AuthenticateUser_())
-	{
-		if(!VerifyPermissions_(request))
-		{
-			BasicError_(response, "The user does not have the permissions to perform this operation.", HTTPResponse::HTTP_UNAUTHORIZED);
-			return false;
-		}
-		return true;
-	}
-	else
-	{
-		BasicError_(response, "Unauthorized user or wrong user or password.", HTTPResponse::HTTP_UNAUTHORIZED);
-		return false;
-	}
-}
-
-bool RootHandler::AuthenticateUser_()
-{
-	// Prepare the row
-		auto table_rows = current_query_actions_->get_table_rows();
-		table_rows->insert(std::make_pair("user", ""));
-		table_rows->insert(std::make_pair("password", ""));
-
-	// Verify the key-values
-		if(dynamic_json_body_["auth"].isEmpty() || dynamic_json_body_["auth"]["user"].isEmpty() || dynamic_json_body_["auth"]["password"].isEmpty())
-		{
-			table_rows->find("user")->second = "null";
-			table_rows->find("password")->second = "null";
-		}
-		else
-		{
-			table_rows->find("user")->second = dynamic_json_body_["auth"]["user"].toString();
-			table_rows->find("password")->second = dynamic_json_body_["auth"]["password"].toString();
-		}
-
-	// Execute the query
-		current_query_actions_->ResetQuery_();
-		current_query_actions_->get_query() << "SELECT * FROM users WHERE username = ? AND password = ?",
-			use(table_rows->find("user")->second),
-			use(table_rows->find("password")->second)
-		;
-		current_query_actions_->get_query().execute();
-		if(current_query_actions_->get_query().subTotalRowCount() > 0)
-			return true;
-		else
-			return false;
-}
-
-bool RootHandler::VerifyPermissions_(HTTPServerRequest& request)
-{
-	Util::Application& app = Util::Application::instance();
-
-	std::string user = get_current_query_actions()->get_table_rows()->at("user");
-	std::string action_type = request.getMethod();
-	std::string target = requested_route_->get_target();
-	int granted = -1;
-	std::size_t rows = 0;
-
-	app.logger().information("\ntarget: " + target + ", user: " + user + ", action type: " + action_type);
-
-	// Verify permissions for the user
-		SeePermissionsPerUser_(user, action_type, target);
-		current_query_actions_->get_query(), into(granted);
-		rows = current_query_actions_->get_query().execute();
-
-		if(rows > 0)
-			return granted == 1 ? true : false;
-
-	// Verify permissions for the null user
-
-		SeePermissionsPerUser_("null", action_type, target);
-		current_query_actions_->get_query(), into(granted);
-		rows = current_query_actions_->get_query().execute();
-
-		if(rows > 0)
-			return granted == 1 ? true : false;
-		else
-			return false;
-
-}
-
-void RootHandler::SeePermissionsPerUser_(std::string user, std::string action_type, std::string target)
-{
-	current_query_actions_->ResetQuery_();
-	current_query_actions_->get_query()
-		<<
-			"SELECT "
-			"	pl.granted "
-			"FROM permissions_log pl, permissions p, users u "
-			"WHERE "
-			"	u.username = ? "
-			"	AND pl.type = ? "
-			"	AND p.name = ? "
-			"	AND pl.id_permission = p.id "
-			"	AND pl.id_user = u.id"
-			";"
-		,use(user)
-		,use(action_type)
-		,use(target)
-	;
-}
-
 bool RootHandler::IdentifyRoute_(HTTPServerRequest& request)
 {
 	URI uri(request.getURI());
@@ -190,7 +226,7 @@ bool RootHandler::IdentifyRoute_(HTTPServerRequest& request)
 	);
 	requested_route_ = std::move(requested_route);
 
-	for(auto it : *routes_list_)
+	for(auto& it : get_routes_list())
 	{
 		if(requested_route_->SegmentsToString_() == it->SegmentsToString_())
 		{
@@ -213,6 +249,6 @@ void RootHandler::ReadJSONBody_(HTTPServerRequest& request)
 	// Parse JSON
 		JSON::Parser parser;
 		JSON::Object::Ptr object_json = parser.parse(json_body).extract<JSON::Object::Ptr>();
-		dynamic_json_body_ = *object_json;
+		get_dynamic_json_body() = *object_json;
 
 }
