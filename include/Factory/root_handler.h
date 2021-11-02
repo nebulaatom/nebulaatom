@@ -51,11 +51,12 @@
 #include "error_report.h"
 
 
-
 namespace CPW
 {
 	namespace Factory
 	{
+		class DynamicElements;
+		class SecurityVerification;
 		class RootHandler;
 	}
 }
@@ -68,7 +69,50 @@ using Poco::Data::Session;
 using Poco::Data::Statement;
 
 
-class CPW::Factory::RootHandler : public HTTPRequestHandler, public ErrorReport
+class CPW::Factory::DynamicElements
+{
+	public:
+		DynamicElements();
+		~DynamicElements();
+
+		std::list<Route*>& get_routes_list()
+		{
+			std::list<Route*>& r = routes_list_;
+			return r;
+		}
+		QueryActions* get_current_query_actions() const {return current_query_actions_;}
+		Poco::DynamicStruct& get_dynamic_json_body()
+		{
+			Poco::DynamicStruct& d = dynamic_json_body_;
+			return d;
+		}
+
+	protected:
+		std::unique_ptr<Route> requested_route_;
+
+	private:
+		std::list<Route*> routes_list_;
+		QueryActions* current_query_actions_;
+		Poco::DynamicStruct dynamic_json_body_;
+};
+
+class CPW::Factory::SecurityVerification:
+	public DynamicElements
+	,public ErrorReport
+{
+	public:
+		SecurityVerification();
+		~SecurityVerification();
+
+		bool InitSecurityProccess_(HTTPServerRequest& request, HTTPServerResponse& response);
+		bool AuthenticateUser_();
+		bool VerifyPermissions_(HTTPServerRequest& request);
+		void SeePermissionsPerUser_(std::string user, std::string action_type, std::string target);
+};
+
+class CPW::Factory::RootHandler :
+	public HTTPRequestHandler
+	,public CPW::Factory::SecurityVerification
 {
 	public:
 		struct User
@@ -81,16 +125,9 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler, public ErrorReport
 		virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
 		std::string get_api_verion() const {return api_verion_;}
-		std::list<Route*>* get_routes_list() const {return routes_list_;}
-		QueryActions* get_current_query_actions() const {return current_query_actions_;}
-		Poco::DynamicStruct get_dynamic_json_body() const {return dynamic_json_body_;}
 
 	protected:
 		void ReadJSONBody_(HTTPServerRequest& request);
-		bool SecurityVerification_(HTTPServerRequest& request, HTTPServerResponse& response);
-		bool AuthenticateUser_();
-		bool VerifyPermissions_(HTTPServerRequest& request);
-		void SeePermissionsPerUser_(std::string user, std::string action_type, std::string target);
 		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
@@ -101,10 +138,6 @@ class CPW::Factory::RootHandler : public HTTPRequestHandler, public ErrorReport
 	private:
 		std::string api_verion_;
 		bool route_verification_;
-		std::unique_ptr<Route> requested_route_;
-		std::list<Route*>* routes_list_;
-		QueryActions* current_query_actions_;
-		Poco::DynamicStruct dynamic_json_body_;
 };
 
 #endif // CPW_FACTORY_ROOTHANDLER_H
