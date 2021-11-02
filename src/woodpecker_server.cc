@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "cpw_woodpecker_server.h"
+#include "woodpecker_server.h"
 
 using namespace CPW;
 

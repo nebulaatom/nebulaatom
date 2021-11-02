@@ -18,7 +18,7 @@
 
 #include <iostream>
 #include "gtest/gtest.h"
-#include "cpw_woodpecker_server.h"
+#include "woodpecker_server.h"
 
 using namespace CPW;
 
