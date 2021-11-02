@@ -40,6 +40,8 @@
 
 namespace CPW
 {
+	enum class TypeAction;
+	class Filters;
 	class QueryActions;
 }
 
@@ -47,24 +49,46 @@ using namespace Poco;
 using namespace Poco::Net;
 using namespace Poco::Data::Keywords;
 
+
+
+enum class CPW::TypeAction
+{
+	kInsert
+	,kSelect
+	,kUpdate
+	,kDelete
+};
+
+class CPW::Filters
+{
+	public:
+		Filters();
+		~Filters();
+
+		std::string get_fields() const { return fields_; }
+		std::string get_page() const { return page_; }
+		std::string get_limit() const { return limit_; }
+		std::map<std::string, std::string>& get_sorts_conditions()
+		{
+			auto& sc = sorts_conditions_;
+			return sc;
+		}
+		std::map<std::string, std::string>& get_iquals_conditions()
+		{
+			auto& ic = iquals_conditions_;
+			return ic;
+		}
+
+	private:
+		std::string fields_, page_, limit_;
+		std::map<std::string, std::string> sorts_conditions_;
+		std::map<std::string, std::string> iquals_conditions_;
+};
+
+
 class CPW::QueryActions
 {
 	public:
-		enum TypeAction
-		{
-			kInsert,
-			kSelect,
-			kUpdate,
-			kDelete
-		};
-
-		struct Filters
-		{
-			std::string fields, page, limit;
-			std::map<std::string, std::string> sorts_conditions;
-			std::map<std::string, std::string> iquals_conditions;
-		};
-
 		QueryActions();
 		~QueryActions();
 

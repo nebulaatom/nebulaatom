@@ -20,14 +20,24 @@
 
 using namespace CPW;
 
+Filters::Filters()
+{
+
+}
+
+Filters::~Filters()
+{
+
+}
+
 QueryActions::QueryActions() :
 	session_((Data::MySQL::Connector::registerConnector(), Data::Session("MySQL", "host=127.0.0.1;port=3306;db=cpw_woodpecker;user=root;password=mariadb_password;"))),
 	query_(session_)
 {
 	table_rows_ = new std::map<std::string, std::string>;
 	result_json_ = new Poco::JSON::Array;
-	current_filters_.limit = "20";
-	current_filters_.page = "0";
+	current_filters_.get_limit() = "20";
+	current_filters_.get_page() = "0";
 }
 
 QueryActions::~QueryActions()
