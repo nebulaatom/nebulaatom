@@ -20,6 +20,17 @@
 
 using namespace CPW::Factory;
 
+
+HTTPMethods::HTTPMethods()
+{
+
+}
+
+HTTPMethods::~HTTPMethods()
+{
+
+}
+
 DynamicElements::DynamicElements()
 {
 	current_query_actions_ = new QueryActions();

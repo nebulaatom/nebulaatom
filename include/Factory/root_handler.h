@@ -55,6 +55,7 @@ namespace CPW
 {
 	namespace Factory
 	{
+		class HTTPMethods;
 		class DynamicElements;
 		class SecurityVerification;
 		class RootHandler;
@@ -68,6 +69,17 @@ using namespace Poco::Data::Keywords;
 using Poco::Data::Session;
 using Poco::Data::Statement;
 
+class CPW::Factory::HTTPMethods
+{
+	public:
+		HTTPMethods();
+		~HTTPMethods();
+
+		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
+		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
+		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
+		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
+};
 
 class CPW::Factory::DynamicElements
 {
@@ -113,6 +125,7 @@ class CPW::Factory::SecurityVerification:
 class CPW::Factory::RootHandler :
 	public HTTPRequestHandler
 	,public CPW::Factory::SecurityVerification
+	,public CPW::Factory::HTTPMethods
 {
 	public:
 		struct User
