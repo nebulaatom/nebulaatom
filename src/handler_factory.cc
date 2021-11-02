@@ -137,7 +137,7 @@ void HandlerFactory::CreateConnections_()
 }
 
 
-HandlerFactory::HandlerType HandlerFactory::FindHandler_(std::vector<std::string> segments)
+HandlerType HandlerFactory::FindHandler_(std::vector<std::string> segments)
 {
 	if(segments.size() < 3)
 		return HandlerType::kNull;
@@ -149,5 +149,5 @@ HandlerFactory::HandlerType HandlerFactory::FindHandler_(std::vector<std::string
 			return it.first;
 	}
 
-	return HandlerFactory::HandlerType::kNull;
+	return HandlerType::kNull;
 }

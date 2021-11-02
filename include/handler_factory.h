@@ -51,9 +51,23 @@ using namespace Poco::Data::Keywords;
 
 namespace CPW
 {
+	enum class HandlerType;
 	class HandlerConnection;
 	class HandlerFactory;
 }
+
+enum class CPW::HandlerType
+{
+	kBusiness
+	,kAccounts
+	,kDeals
+	,kPays
+	,kCurrency
+	,kInventories
+	,kInvoices
+	,kWeb
+	,kNull
+};
 
 
 class CPW::HandlerConnection
@@ -71,19 +85,6 @@ class CPW::HandlerConnection
 class CPW::HandlerFactory : public HTTPRequestHandlerFactory, public ErrorReport
 {
 	public:
-		enum HandlerType
-		{
-			kBusiness,
-			kAccounts,
-			kDeals,
-			kPays,
-			kCurrency,
-			kInventories,
-			kInvoices,
-			kWeb,
-			kNull
-		};
-
 		HandlerFactory();
 		virtual ~HandlerFactory();
 		virtual HTTPRequestHandler* createRequestHandler(const HTTPServerRequest& request);
