@@ -44,6 +44,13 @@ void BusinessHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRes
 		Poco::Data::MySQL::Connector::registerConnector();
 		Session session("MySQL", "host=127.0.0.1;port=3306;db=cpw_woodpecker;user=root;password=mariadb_password;");
 
+		struct BusinessRow
+		{
+			int id;
+			std::string name;
+			int image;
+			int reg_date;
+		};
 		BusinessRow business;
 		Poco::Data::Statement select(session);
 		select << "SELECT * FROM business",

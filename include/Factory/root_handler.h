@@ -128,11 +128,6 @@ class CPW::Factory::RootHandler :
 	,public CPW::Factory::HTTPMethods
 {
 	public:
-		struct User
-		{
-			std::string user, password;
-		};
-
 		RootHandler(std::string api_version);
 		virtual ~RootHandler();
 		virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
