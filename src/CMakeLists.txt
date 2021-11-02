@@ -36,7 +36,7 @@ set_target_properties(errorreport PROPERTIES POSITION_INDEPENDENT_CODE 1)
 ## Shared and statics libraries
 
 ### woodpeckerserver
-add_library(woodpeckerserver STATIC "cpw_woodpecker_server.cc")
+add_library(woodpeckerserver STATIC "woodpecker_server.cc")
 target_include_directories(woodpeckerserver PUBLIC ${HEADER})
 target_link_libraries(
 	woodpeckerserver
