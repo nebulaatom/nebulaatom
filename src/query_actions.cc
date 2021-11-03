@@ -52,7 +52,25 @@ void QueryActions::ResetQuery_()
 
 void QueryActions::IdentifyFilters_(HTTPServerRequest& request)
 {
+	URI initial_uri(request.getURI());
 
+	auto query_parameters = initial_uri.getQueryParameters();
+	for(auto it : query_parameters)
+	{
+		std::cout << "\n" << it.first << "=" << it.second;
+		if(it.first == "_fields")
+			current_filters_.set_fields(it.second);
+		else if(it.first == "_page")
+			current_filters_.set_page(it.second);
+		else if(it.first == "_limit")
+			current_filters_.set_limit(it.second);
+		else if(it.first == "_sort")
+			current_filters_.set_sorts_conditions(it.second);
+		else
+		{
+			current_filters_.get_iquals_conditions().emplace(std::make_pair(it.first, it.second));
+		}
+	}
 }
 
 void QueryActions::ComposeQuery_(TypeAction action_type, std::string table, std::string body)
