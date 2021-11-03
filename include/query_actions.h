@@ -109,8 +109,7 @@ class CPW::QueryActions
 
 	protected:
 		void CreateRows_(TypeAction action_type);
-		std::string GetSortsConditions_();
-		std::string GetIqualsConditions_();
+		std::string IqualsConditionsToString_();
 		std::string ComposeInsertSentence_(std::string table, std::string body);
 		std::string ComposeSelectSentence_(std::string table);
 		std::string ComposeUpdateSentence_(std::string table, std::string body);

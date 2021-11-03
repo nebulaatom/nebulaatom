@@ -64,3 +64,23 @@ void QueryActions::ExecuteQuery_()
 {
 
 }
+
+std::string QueryActions::IqualsConditionsToString_()
+{
+	std::string iquals_conditions = "";
+	bool first = true;
+
+	for(auto it : current_filters_.get_iquals_conditions())
+	{
+		if(first)
+		{
+			iquals_conditions += it.first + "='" + it.second + "' ";
+			first = false;
+		}
+		else
+			iquals_conditions += "AND " + it.first + "='" + it.second + "' ";
+	}
+
+	return iquals_conditions;
+}
+
