@@ -20,7 +20,9 @@
 
 using namespace CPW;
 
-Filters::Filters()
+Filters::Filters() :
+	page_("0")
+	,limit_("20")
 {
 
 }
@@ -36,8 +38,6 @@ QueryActions::QueryActions() :
 {
 	table_rows_ = new std::map<std::string, std::string>;
 	result_json_ = new Poco::JSON::Array;
-	current_filters_.get_limit() = "20";
-	current_filters_.get_page() = "0";
 }
 
 QueryActions::~QueryActions()
