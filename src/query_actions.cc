@@ -83,6 +83,11 @@ void QueryActions::ExecuteQuery_()
 
 }
 
+void CreateRows_(TypeAction action_type)
+{
+
+}
+
 std::string QueryActions::IqualsConditionsToString_()
 {
 	std::string iquals_conditions = "";
@@ -100,6 +105,11 @@ std::string QueryActions::IqualsConditionsToString_()
 	}
 
 	return iquals_conditions;
+}
+
+std::string QueryActions::ComposeInsertSentence_(std::string table, std::string body)
+{
+
 }
 
 std::string QueryActions::ComposeSelectSentence_(std::string table)
@@ -128,5 +138,15 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 	tmp_query += ";";
 
 	return tmp_query;
+}
+
+std::string QueryActions::ComposeUpdateSentence_(std::string table, std::string body)
+{
+
+}
+
+std::string QueryActions::ComposeDeleteSentence_(std::string table, std::string body)
+{
+
 }
 
