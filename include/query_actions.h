@@ -68,20 +68,23 @@ class CPW::Filters
 		std::string get_fields() const { return fields_; }
 		std::string get_page() const { return page_; }
 		std::string get_limit() const { return limit_; }
-		std::map<std::string, std::string>& get_sorts_conditions()
-		{
-			auto& sc = sorts_conditions_;
-			return sc;
-		}
+		std::string get_sorts_conditions() const { return sorts_conditions_; }
 		std::map<std::string, std::string>& get_iquals_conditions()
 		{
 			auto& ic = iquals_conditions_;
 			return ic;
 		}
 
+		void set_fields(std::string fields) { fields_ = fields; }
+		void set_page(std::string page) { page_ = page; }
+		void set_limit(std::string limit) { limit_ = limit; }
+		void set_sorts_conditions(std::string sorts_conditions) { sorts_conditions_ = sorts_conditions; }
+
 	private:
-		std::string fields_, page_, limit_;
-		std::map<std::string, std::string> sorts_conditions_;
+		std::string fields_;
+		std::string page_;
+		std::string limit_;
+		std::string sorts_conditions_;
 		std::map<std::string, std::string> iquals_conditions_;
 };
 
