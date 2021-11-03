@@ -102,3 +102,31 @@ std::string QueryActions::IqualsConditionsToString_()
 	return iquals_conditions;
 }
 
+std::string QueryActions::ComposeSelectSentence_(std::string table)
+{
+	std::string tmp_query = "SELECT ";
+	if(current_filters_.get_fields() == "")
+		tmp_query += "* FROM ";
+	else
+		tmp_query += current_filters_.get_fields() + " ";
+
+	tmp_query += "FROM " + table + " ";
+	if(current_filters_.get_iquals_conditions().size() > 0)
+		tmp_query += "WHERE " + IqualsConditionsToString_() + " ";
+
+	if(current_filters_.get_sorts_conditions() != "")
+		tmp_query += "ORDER BY " + current_filters_.get_sorts_conditions() + " ";
+
+	if(std::stoi(current_filters_.get_limit()) > 0)
+	{
+		int offset = std::stoi(current_filters_.get_limit()) * std::stoi(current_filters_.get_page());
+		tmp_query += "LIMIT " + std::to_string(offset) + ", " + current_filters_.get_limit() + " ";
+	}
+	else
+		tmp_query += "LIMIT 0, 20 ";
+
+	tmp_query += ";";
+
+	return tmp_query;
+}
+
