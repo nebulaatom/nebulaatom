@@ -63,6 +63,7 @@ namespace CPW
 }
 
 using namespace Poco;
+using namespace Poco::Util;
 using namespace Poco::Net;
 using namespace Poco::Data::Keywords;
 
@@ -98,6 +99,7 @@ class CPW::Factory::DynamicElements
 			Poco::DynamicStruct& d = dynamic_json_body_;
 			return d;
 		}
+		Application& get_app() const {return app_;};
 
 	protected:
 		std::unique_ptr<Route> requested_route_;
@@ -106,6 +108,7 @@ class CPW::Factory::DynamicElements
 		std::list<Route*> routes_list_;
 		QueryActions* current_query_actions_;
 		Poco::DynamicStruct dynamic_json_body_;
+		Application& app_;
 };
 
 class CPW::Factory::SecurityVerification:
@@ -142,6 +145,8 @@ class CPW::Factory::RootHandler :
 		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void AddRoutes_() = 0;
 		bool IdentifyRoute_(HTTPServerRequest& request);
+
+		Application& app_;
 
 	private:
 		std::string api_verion_;

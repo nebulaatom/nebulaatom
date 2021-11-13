@@ -31,7 +31,8 @@ HTTPMethods::~HTTPMethods()
 
 }
 
-DynamicElements::DynamicElements()
+DynamicElements::DynamicElements() :
+	app_(Application::instance())
 {
 	current_query_actions_ = new QueryActions();
 }
@@ -116,7 +117,6 @@ bool SecurityVerification::AuthenticateUser_()
 bool SecurityVerification::VerifyPermissions_(HTTPServerRequest& request)
 {
 	// Variables
-		Util::Application& app = Util::Application::instance();
 		auto query_actions = get_current_query_actions();
 
 		std::string user = query_actions->get_table_rows()->at("user");
@@ -125,7 +125,7 @@ bool SecurityVerification::VerifyPermissions_(HTTPServerRequest& request)
 		int granted = -1;
 		std::size_t rows = 0;
 
-	app.logger().information("\ntarget: " + target + ", user: " + user + ", action type: " + action_type);
+	get_app().logger().information("Target: " + target + ", user: " + user + ", action type: " + action_type);
 
 	// Verify permissions for the user
 		SeePermissionsPerUser_(user, action_type, target);
@@ -151,7 +151,6 @@ bool SecurityVerification::VerifyPermissions_(HTTPServerRequest& request)
 void SecurityVerification::SeePermissionsPerUser_(std::string user, std::string action_type, std::string target)
 {
 	// Variables
-		Util::Application& app = Util::Application::instance();
 		auto query_actions = get_current_query_actions();
 
 	query_actions->ResetQuery_();
@@ -174,7 +173,8 @@ void SecurityVerification::SeePermissionsPerUser_(std::string user, std::string 
 }
 
 RootHandler::RootHandler(std::string api_version) :
-	api_verion_(api_version)
+	app_(Application::instance())
+	,api_verion_(api_version)
 	,route_verification_(true)
 {
 
@@ -217,7 +217,7 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 	}
 	catch(std::exception error)
 	{
-		std::cout << "\nError on root_handler.cc: " << error.what();
+		app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
 	}
 }
 
