@@ -21,8 +21,9 @@
 using namespace CPW;
 
 WoodpeckerServer::WoodpeckerServer(int port) :
-	port_(port),
-	server_socket_(port_)
+	port_(port)
+	,server_socket_(port_)
+	,app_(Application::instance())
 {
 	handler_factory_ = new HandlerFactory();
 }
@@ -47,11 +48,11 @@ int WoodpeckerServer::main(const std::vector<std::string>& args)
 int WoodpeckerServer::Init_()
 {
 	server_->start();
-	std::cout << std::endl << "Server started at port " << port_ << std::endl;
+	app_.logger().information("- Server started at port " + format("%d", static_cast<int>(port_)));
 
 	waitForTerminationRequest();
 
-	std::cout << std::endl << "Shutting down server..." << std::endl;
+	app_.logger().information("- Shutting down server... ");
 	server_->stop();
 
 	return Application::EXIT_OK;

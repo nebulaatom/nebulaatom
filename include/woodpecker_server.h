@@ -28,6 +28,7 @@
 #include <Poco/Util/ServerApplication.h>
 #include <Poco/Net/ServerSocket.h>
 #include <Poco/Net/HTTPServer.h>
+#include "Poco/Format.h"
 
 #include "handler_factory.h"
 
@@ -37,6 +38,7 @@ namespace CPW
 	class WoodpeckerServer;
 }
 
+using namespace Poco;
 using namespace Poco::Net;
 using namespace Poco::Util;
 
@@ -57,6 +59,7 @@ class CPW::WoodpeckerServer : public ServerApplication
 		Poco::Net::ServerSocket server_socket_;
 		std::unique_ptr<HTTPServer> server_;
 		HandlerFactory* handler_factory_;
+		Application& app_;
 };
 
 #endif // CPW_WOODPECKERSERVER_H
