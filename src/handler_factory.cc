@@ -34,6 +34,7 @@ HandlerConnection::~HandlerConnection()
 
 HandlerFactory::HandlerFactory() :
 	api_version_("v0")
+	,app_(Application::instance())
 {
 	CreateConnections_();
 }
@@ -87,7 +88,7 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 	}
 	catch (std::exception const& error)
 	{
-		std::cout << "\nError: " << error.what() << std::endl;
+		app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + std::string(error.what()));
 	}
 
 	return return_null();

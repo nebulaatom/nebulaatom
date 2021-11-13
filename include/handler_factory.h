@@ -25,6 +25,8 @@
 #include <exception>
 #include <vector>
 
+#include "Poco/Util/Application.h"
+#include "Poco/Format.h"
 #include <Poco/Net/HTTPRequestHandlerFactory.h>
 #include <Poco/JSON/JSON.h>
 #include <Poco/JSON/Array.h>
@@ -45,6 +47,8 @@
 #include "Factory/business_handler.h"
 #include "Factory/web_handler.h"
 
+using namespace Poco;
+using namespace Poco::Util;
 using namespace Poco::Net;
 using namespace Poco::JSON;
 using namespace Poco::Data::Keywords;
@@ -97,6 +101,7 @@ class CPW::HandlerFactory : public HTTPRequestHandlerFactory, public ErrorReport
 		std::string api_version_;
 		std::unique_ptr<Route> requested_route_;
 		std::map<HandlerType, HandlerConnection*> connections_;
+		Application& app_;
 };
 
 #endif // CPW_HANDLERFACTORY_H
