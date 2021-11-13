@@ -16,7 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+#include "Poco/Util/Application.h"
+#include "Poco/Format.h"
+
 #include "woodpecker_server.h"
+
+using namespace Poco;
+using namespace Poco::Util;
 
 int main(int argc, char** argv)
 {
@@ -27,7 +34,7 @@ int main(int argc, char** argv)
 	}
 	catch (std::exception const& error)
 	{
-		std::cout << "\nError on main.cc: " << error.what() << std::endl;
+		Application::instance().logger().error("- Error on main.cc on main(): " + std::string(error.what()));
 		return -1;
 	}
 }
