@@ -77,7 +77,7 @@ void BusinessHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRes
 	}
 	catch(Poco::Data::MySQL::MySQLException& e)
 	{
-		std::cout << "\nError: " << e.displayText() << std::endl;
+		app_.logger().error("- Error on business_handler.cc on HandleGETMethod_(): " + e.displayText());
 	}
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("application/json");
