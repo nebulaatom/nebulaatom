@@ -181,7 +181,7 @@ class CPW::Filters
 };
 
 
-class CPW::QueryActions
+class CPW::QueryActions : public ManageJSON
 {
 	public:
 		QueryActions();
