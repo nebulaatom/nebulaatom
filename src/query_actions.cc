@@ -82,26 +82,105 @@ void QueryActions::ResetQuery_()
 	query_.reset(session_);
 }
 
-void QueryActions::IdentifyFilters_(HTTPServerRequest& request)
+void QueryActions::IdentifyFilters_(Dynamic::Var dynamic_manager)
 {
-	URI initial_uri(request.getURI());
-
-	auto query_parameters = initial_uri.getQueryParameters();
-	for(auto it : query_parameters)
+	try
 	{
-		std::cout << "\n" << it.first << "=" << it.second;
-		if(it.first == "_fields")
-			current_filters_.set_fields(it.second);
-		else if(it.first == "_page")
-			current_filters_.set_page(it.second);
-		else if(it.first == "_limit")
-			current_filters_.set_limit(it.second);
-		else if(it.first == "_sort")
-			current_filters_.set_sorts_conditions(it.second);
-		else
+		get_dynamic_manager() = dynamic_manager;
+		TypeQuery type;
+
+		// Get the main array
+			JSON::Array::Ptr main_array = get_dynamic_manager().extract<JSON::Array::Ptr>();
+
+		// Create the data json array and object
+			JSON::Object::Ptr data_object = main_array->getObject(1);
+			JSON::Array::Ptr data_array = data_object->getArray("data");
+
+		Dynamic::Var it;
+		for (std::size_t a = 0; a < data_array->size(); a++)
 		{
-			current_filters_.get_iquals_conditions().emplace(std::make_pair(it.first, it.second));
+			JSON::Object::Ptr tmp_object = data_array->getObject(a);
+
+			it = tmp_object->get("type");
+
+			// Search if exists
+				auto found = type_actions_map_.find(it.toString());
+				if(found != type_actions_map_.end())
+					type = found->second;
+				else
+					continue;
+
+			std::cout << "\nFound type: " << it.toString();
+
+			switch(type)
+			{
+				case TypeQuery::kFields:
+				{
+					if(!tmp_object->isArray("contents"))
+						throw std::runtime_error("contents is not array on tmp_object\n");
+
+					JSON::Array::Ptr tmp_object_contents = tmp_object->getArray("contents");
+					for(std::size_t b = 0; b < tmp_object_contents->size(); b++)
+					{
+						auto value = tmp_object_contents->get(b);
+						get_current_filters_().get_fields().push_back(value.toString());
+					}
+					break;
+				}
+				case TypeQuery::kPage:
+				{
+					auto value = tmp_object->get("content");
+					get_current_filters_().set_page(value.toString());
+					break;
+				}
+				case TypeQuery::kLimit:
+				{
+					auto value = tmp_object->get("content");
+					get_current_filters_().set_limit(value.toString());
+					break;
+				}
+				case TypeQuery::kSort:
+				{
+					break;
+				}
+				case TypeQuery::kIqual:
+				{
+					break;
+				}
+				case TypeQuery::kNotIqual:
+				{
+					break;
+				}
+				case TypeQuery::kGreatherThan:
+				{
+					break;
+				}
+				case TypeQuery::kSmallerThan:
+				{
+					break;
+				}
+				case TypeQuery::kBetween:
+				{
+					break;
+				}
+				case TypeQuery::kIn:
+				{
+					break;
+				}
+				case TypeQuery::kNotIn:
+				{
+					break;
+				}
+				case TypeQuery::kValues:
+				{
+					break;
+				}
+			}
 		}
+	}
+	catch(std::runtime_error& error)
+	{
+		std::cout << "\nError on query_actions.cc on IdentifyFilters_(): " << error.what();
 	}
 }
 
