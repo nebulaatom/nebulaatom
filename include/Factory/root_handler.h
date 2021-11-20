@@ -21,6 +21,7 @@
 
 
 #include <iostream>
+#include <istream>
 #include <string>
 #include <list>
 #include <vector>
@@ -93,11 +94,6 @@ class CPW::Factory::DynamicElements
 			return r;
 		}
 		QueryActions* get_current_query_actions() const {return current_query_actions_;}
-		Poco::DynamicStruct& get_dynamic_json_body()
-		{
-			Poco::DynamicStruct& d = dynamic_json_body_;
-			return d;
-		}
 
 	protected:
 		std::unique_ptr<Route> requested_route_;
@@ -105,12 +101,12 @@ class CPW::Factory::DynamicElements
 	private:
 		std::list<Route*> routes_list_;
 		QueryActions* current_query_actions_;
-		Poco::DynamicStruct dynamic_json_body_;
 };
 
 class CPW::Factory::SecurityVerification:
 	public DynamicElements
 	,public ErrorReport
+	,public ManageJSON
 {
 	public:
 		SecurityVerification();
@@ -135,7 +131,6 @@ class CPW::Factory::RootHandler :
 		std::string get_api_verion() const {return api_verion_;}
 
 	protected:
-		void ReadJSONBody_(HTTPServerRequest& request);
 		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;

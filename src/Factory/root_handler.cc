@@ -86,9 +86,9 @@ bool SecurityVerification::AuthenticateUser_()
 	// Verify the key-values
 		if
 		(
-				json_body["auth"].isEmpty()
-				|| json_body["auth"]["user"].isEmpty()
-				|| json_body["auth"]["password"].isEmpty()
+			json_body["pair-information"].isEmpty()
+			|| json_body["pair-information"][0]["auth"]["user"].isEmpty()
+			|| json_body["pair-information"][0]["auth"]["password"].isEmpty()
 		)
 		{
 			table_rows->find("user")->second = "null";
@@ -96,8 +96,8 @@ bool SecurityVerification::AuthenticateUser_()
 		}
 		else
 		{
-			table_rows->find("user")->second = json_body["auth"]["user"].toString();
-			table_rows->find("password")->second = json_body["auth"]["password"].toString();
+			table_rows->find("user")->second = json_body["pair-information"][0]["auth"]["user"].toString();
+			table_rows->find("password")->second = json_body["pair-information"][0]["auth"]["password"].toString();
 		}
 
 	// Execute the query
@@ -107,6 +107,7 @@ bool SecurityVerification::AuthenticateUser_()
 			use(table_rows->find("password")->second)
 		;
 		query_actions->get_query().execute();
+
 		if(query_actions->get_query().subTotalRowCount() > 0)
 			return true;
 		else
@@ -190,7 +191,7 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 	try
 	{
 		AddRoutes_();
-		ReadJSONBody_(request);
+		Parse_(ReadBody_(request.stream()));
 
 		if(route_verification_)
 		{
@@ -247,19 +248,4 @@ bool RootHandler::IdentifyRoute_(HTTPServerRequest& request)
 	}
 
 	return false;
-}
-
-void RootHandler::ReadJSONBody_(HTTPServerRequest& request)
-{
-	// Read the JSON
-		std::string json_body;
-		StreamCopier::copyToString(request.stream(), json_body);
-		if(json_body.empty())
-			return;
-
-	// Parse JSON
-		JSON::Parser parser;
-		JSON::Object::Ptr object_json = parser.parse(json_body).extract<JSON::Object::Ptr>();
-		get_dynamic_json_body() = *object_json;
-
 }
