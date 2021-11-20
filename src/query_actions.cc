@@ -186,12 +186,33 @@ void QueryActions::IdentifyFilters_(Dynamic::Var dynamic_manager)
 
 void QueryActions::ComposeQuery_(TypeAction action_type, std::string table, std::string body)
 {
+	std::string tmp_query;
 
-}
+	switch(action_type)
+	{
+		case TypeAction::kInsert:
+		{
+			tmp_query = ComposeInsertSentence_(table, body);
+			break;
+		}
+		case TypeAction::kSelect:
+		{
+			tmp_query = ComposeSelectSentence_(table);
+			break;
+		}
+		case TypeAction::kUpdate:
+		{
+			tmp_query = ComposeUpdateSentence_(table, body);
+			break;
+		}
+		case TypeAction::kDelete:
+		{
+			tmp_query = ComposeDeleteSentence_(table, body);
+			break;
+		}
+	}
 
-void QueryActions::ExecuteQuery_()
-{
-
+	std::cout << "\nFinal query: " << tmp_query;
 }
 
 void CreateRows_(TypeAction action_type)

@@ -200,8 +200,8 @@ class CPW::QueryActions : public ManageJSON
 		Poco::JSON::Array* get_result_json() const {return result_json_;}
 
 		void ResetQuery_();
-		void ComposeQuery_(TypeAction action_type, std::string table, std::string body);
 		void IdentifyFilters_(Dynamic::Var dynamic_manager);
+		void ComposeQuery_(TypeAction action_type, std::string table, std::string bod);
 		void ExecuteQuery_();
 
 	protected:
