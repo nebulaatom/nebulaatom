@@ -20,6 +20,36 @@
 
 using namespace CPW;
 
+ManageJSON::ManageJSON()
+{
+
+}
+
+ManageJSON::~ManageJSON()
+{
+
+}
+
+std::string ManageJSON::ReadBody_(std::istream& stream)
+{
+	std::string json_body;
+	StreamCopier::copyToString(stream, json_body);
+
+	if(json_body.empty())
+		return "";
+
+	return json_body;
+}
+
+void ManageJSON::Parse_(std::string string_to_parse)
+{
+	JSON::Parser parser;
+	JSON::Object::Ptr object_json = parser.parse(string_to_parse).extract<JSON::Object::Ptr>();
+	dynamic_json_body_ = *object_json;
+	if(!dynamic_json_body_["pair-information"].isEmpty())
+		dynamic_manager_ = object_json->get("pair-information");
+}
+
 Filters::Filters() :
 	page_("0")
 	,limit_("20")

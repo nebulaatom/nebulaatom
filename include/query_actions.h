@@ -44,6 +44,7 @@ namespace CPW
 {
 	enum class TypeAction;
 	enum class TypeQuery;
+	class ManageJSON;
 	class Filters;
 	class QueryActions;
 }
@@ -75,6 +76,31 @@ enum class CPW::TypeQuery
 	,kIn
 	,kNotIn
 	,kValues
+};
+
+class CPW::ManageJSON
+{
+	public:
+		ManageJSON();
+		~ManageJSON();
+
+		Poco::DynamicStruct& get_dynamic_json_body()
+		{
+			Poco::DynamicStruct& d = dynamic_json_body_;
+			return d;
+		}
+		Poco::Dynamic::Var& get_dynamic_manager()
+		{
+			Poco::Dynamic::Var& d = dynamic_manager_;
+			return d;
+		}
+
+		std::string ReadBody_(std::istream& stream);
+		void Parse_(std::string string_to_parse);
+
+	private:
+		Poco::DynamicStruct dynamic_json_body_;
+		Dynamic::Var dynamic_manager_;
 };
 
 class CPW::Filters
