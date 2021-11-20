@@ -23,6 +23,7 @@
 #include <istream>
 #include <string>
 #include <map>
+#include <stdexcept>
 
 #include <Poco/Net/HTTPServerRequest.h>
 #include "Poco/Data/Session.h"
@@ -188,7 +189,11 @@ class CPW::QueryActions : public ManageJSON
 		~QueryActions();
 
 		std::string get_final_query() const {return final_query_;}
-		Filters get_current_filters_() const {return current_filters_;}
+		Filters& get_current_filters_()
+		{
+			auto& var = current_filters_;
+			return var;
+		}
 		Data::Session get_session() const {return session_;}
 		Data::Statement get_query() const {return query_;}
 		std::map<std::string, std::string>* get_table_rows() const {return table_rows_;}
