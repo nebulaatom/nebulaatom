@@ -215,7 +215,7 @@ void QueryActions::ComposeQuery_(TypeAction action_type, std::string table, std:
 	std::cout << "\nFinal query: " << tmp_query;
 }
 
-void CreateRows_(TypeAction action_type)
+void QueryActions::ExecuteQuery_()
 {
 
 }
@@ -246,30 +246,41 @@ std::string QueryActions::ComposeInsertSentence_(std::string table, std::string 
 
 std::string QueryActions::ComposeSelectSentence_(std::string table)
 {
-	std::string tmp_query = "SELECT ";
-	if(current_filters_.get_fields() == "")
-		tmp_query += "* FROM ";
-	else
-		tmp_query += current_filters_.get_fields() + " ";
+	// Sentence type and fileds
+		std::vector<std::string> tmp_query = {"SELECT"};
+		if(current_filters_.get_fields().size() == 0)
+			tmp_query.push_back("*");
+		else
+		{
+			for(auto it : current_filters_.get_fields())
+			{
+				if(it == current_filters_.get_fields().front())
+					tmp_query.push_back(it);
+				else
+					tmp_query.push_back(", " + it);
+			}
+		}
 
-	tmp_query += "FROM " + table + " ";
-	if(current_filters_.get_iquals_conditions().size() > 0)
-		tmp_query += "WHERE " + IqualsConditionsToString_() + " ";
+	// Table and Where condition
+		tmp_query.push_back("FROM " + table);
 
-	if(current_filters_.get_sorts_conditions() != "")
-		tmp_query += "ORDER BY " + current_filters_.get_sorts_conditions() + " ";
+	// Limit condition
+		if(std::stoi(current_filters_.get_limit()) > 0)
+		{
+			int offset = std::stoi(current_filters_.get_limit()) * std::stoi(current_filters_.get_page());
+			tmp_query.push_back("LIMIT " + std::to_string(offset));
+			tmp_query.push_back(", " + current_filters_.get_limit());
+		}
+		else
+			tmp_query.push_back("LIMIT 0, 20 ");
 
-	if(std::stoi(current_filters_.get_limit()) > 0)
-	{
-		int offset = std::stoi(current_filters_.get_limit()) * std::stoi(current_filters_.get_page());
-		tmp_query += "LIMIT " + std::to_string(offset) + ", " + current_filters_.get_limit() + " ";
-	}
-	else
-		tmp_query += "LIMIT 0, 20 ";
+	tmp_query.push_back(";");
 
-	tmp_query += ";";
+	std::string final_query = "";
+	for(auto it : tmp_query)
+		final_query += it + " ";
 
-	return tmp_query;
+	return final_query;
 }
 
 std::string QueryActions::ComposeUpdateSentence_(std::string table, std::string body)
