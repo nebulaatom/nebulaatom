@@ -20,6 +20,7 @@
 #define CPW_QUERYACTIONS_H
 
 
+#include <istream>
 #include <string>
 #include <map>
 
@@ -29,6 +30,7 @@
 #include <Poco/Data/MySQL/MySQLException.h>
 #include <Poco/Data/Statement.h>
 #include <Poco/URI.h>
+#include <Poco/StreamCopier.h>
 #include <Poco/JSON/JSON.h>
 #include <Poco/JSON/Array.h>
 #include <Poco/JSON/Object.h>
@@ -41,6 +43,7 @@
 namespace CPW
 {
 	enum class TypeAction;
+	enum class TypeQuery;
 	class Filters;
 	class QueryActions;
 }
@@ -50,13 +53,28 @@ using namespace Poco::Net;
 using namespace Poco::Data::Keywords;
 
 
-
 enum class CPW::TypeAction
 {
 	kInsert
 	,kSelect
 	,kUpdate
 	,kDelete
+};
+
+enum class CPW::TypeQuery
+{
+	kFields
+	,kPage
+	,kLimit
+	,kSort
+	,kIqual
+	,kNotIqual
+	,kGreatherThan
+	,kSmallerThan
+	,kBetween
+	,kIn
+	,kNotIn
+	,kValues
 };
 
 class CPW::Filters
