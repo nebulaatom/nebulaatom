@@ -200,7 +200,6 @@ class CPW::QueryActions : public ManageJSON
 		void ExecuteQuery_();
 
 	protected:
-		void CreateRows_(TypeAction action_type);
 		std::string IqualsConditionsToString_();
 		std::string ComposeInsertSentence_(std::string table, std::string body);
 		std::string ComposeSelectSentence_(std::string table);
@@ -208,12 +207,15 @@ class CPW::QueryActions : public ManageJSON
 		std::string ComposeDeleteSentence_(std::string table, std::string body);
 
 	private:
+		void FillTypeActionsText_();
+
 		std::string final_query_;
 		Filters current_filters_;
 		Data::Session session_;
 		Data::Statement query_;
 		std::map<std::string, std::string>* table_rows_;
 		Poco::JSON::Array* result_json_;
+		std::map<std::string, TypeQuery> type_actions_map_;
 };
 
 

@@ -66,13 +66,15 @@ QueryActions::QueryActions() :
 	session_((Data::MySQL::Connector::registerConnector(), Data::Session("MySQL", "host=127.0.0.1;port=3306;db=cpw_woodpecker;user=root;password=mariadb_password;"))),
 	query_(session_)
 {
-	table_rows_ = new std::map<std::string, std::string>;
 	result_json_ = new Poco::JSON::Array;
+	table_rows_ = new std::map<std::string, std::string>;
+	FillTypeActionsText_();
 }
 
 QueryActions::~QueryActions()
 {
-
+	delete result_json_;
+	delete table_rows_;
 }
 
 void QueryActions::ResetQuery_()
@@ -180,3 +182,18 @@ std::string QueryActions::ComposeDeleteSentence_(std::string table, std::string 
 
 }
 
+void QueryActions::FillTypeActionsText_()
+{
+	type_actions_map_.emplace(std::make_pair("fields", TypeQuery::kFields));
+	type_actions_map_.emplace(std::make_pair("page", TypeQuery::kPage));
+	type_actions_map_.emplace(std::make_pair("limit", TypeQuery::kLimit));
+	type_actions_map_.emplace(std::make_pair("sort", TypeQuery::kSort));
+	type_actions_map_.emplace(std::make_pair("iqual", TypeQuery::kIqual));
+	type_actions_map_.emplace(std::make_pair("notiqual", TypeQuery::kNotIqual));
+	type_actions_map_.emplace(std::make_pair("greatherthan", TypeQuery::kGreatherThan));
+	type_actions_map_.emplace(std::make_pair("smallerthan", TypeQuery::kSmallerThan));
+	type_actions_map_.emplace(std::make_pair("between", TypeQuery::kBetween));
+	type_actions_map_.emplace(std::make_pair("in", TypeQuery::kIn));
+	type_actions_map_.emplace(std::make_pair("notin", TypeQuery::kNotIn));
+	type_actions_map_.emplace(std::make_pair("values", TypeQuery::kValues));
+}
