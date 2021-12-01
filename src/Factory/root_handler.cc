@@ -227,6 +227,10 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 	{
 		std::cout << "\nError on root_handler.cc: " << error.what();
 	}
+	catch(JSON::JSONException& error)
+	{
+		std::cout << "\nError on root_handler.cc on handleRequest(): " << error.what();
+	}
 }
 
 bool RootHandler::IdentifyRoute_(HTTPServerRequest& request)

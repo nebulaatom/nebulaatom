@@ -41,6 +41,7 @@
 #include <Poco/Format.h>
 #include <Poco/NumberFormatter.h>
 #include <Poco/JSON/JSON.h>
+#include <Poco/JSON/JSONException.h>
 #include <Poco/JSON/Array.h>
 #include <Poco/JSON/Object.h>
 #include <Poco/JSON/Parser.h>
