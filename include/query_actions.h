@@ -211,6 +211,7 @@ class CPW::QueryActions : public ManageJSON
 
 	private:
 		void FillTypeActionsText_();
+		bool ExistsType_(std::string type);
 
 		std::string final_query_;
 		Filters current_filters_;

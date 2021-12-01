@@ -322,3 +322,12 @@ void QueryActions::FillTypeActionsText_()
 	type_actions_map_.emplace(std::make_pair("notin", TypeQuery::kNotIn));
 	type_actions_map_.emplace(std::make_pair("values", TypeQuery::kValues));
 }
+
+bool QueryActions::ExistsType_(std::string type)
+{
+	auto found = type_actions_map_.find(type);
+	if(found != type_actions_map_.end())
+		return true;
+	else
+		return false;
+}
