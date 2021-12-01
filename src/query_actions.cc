@@ -125,10 +125,9 @@ void QueryActions::IdentifyFilters_()
 					case TypeQuery::kFields:
 					{
 						if(it["contents"].isEmpty())
-							throw std::runtime_error("contents is empty on data array index " + std::to_string(a));
+							throw std::runtime_error("contents in kFields is empty on data array index " + std::to_string(a));
 
-						auto tmp_size = it["contents"].size();
-						for(std::size_t b = 0; b < tmp_size; b++)
+						for(std::size_t b = 0; b < it["contents"].size(); b++)
 						{
 							get_current_filters_().get_fields().push_back(it["contents"][b]);
 						}
@@ -136,16 +135,29 @@ void QueryActions::IdentifyFilters_()
 					}
 					case TypeQuery::kPage:
 					{
+						if(it["content"].isEmpty())
+							throw std::runtime_error("content in kPage is empty on data array index " + std::to_string(a));
+
 						get_current_filters_().set_page(it["content"].toString());
 						break;
 					}
 					case TypeQuery::kLimit:
 					{
+						if(it["content"].isEmpty())
+							throw std::runtime_error("content in kLimit is empty on data array index " + std::to_string(a));
+
 						get_current_filters_().set_limit(it["content"].toString());
 						break;
 					}
 					case TypeQuery::kSort:
 					{
+						if(it["contents"].isEmpty())
+							throw std::runtime_error("contents in kSort is empty on data array index " + std::to_string(a));
+
+						for(std::size_t b = 0; b < it["contents"].size(); b++)
+						{
+							get_current_filters_().get_sorts_conditions().push_back(it["contents"][b]);
+						}
 						break;
 					}
 					case TypeQuery::kIqual:
@@ -272,6 +284,19 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 
 	// Table and Where condition
 		tmp_query.push_back("FROM " + table);
+
+	// sort conditions
+		if(current_filters_.get_sorts_conditions().size() > 0)
+		{
+			tmp_query.push_back("ORDER BY");
+			for(auto it : current_filters_.get_sorts_conditions())
+			{
+				if(it == current_filters_.get_sorts_conditions().front())
+					tmp_query.push_back(it);
+				else
+					tmp_query.push_back(", " + it);
+			}
+		}
 
 	// Limit condition
 		if(std::stoi(current_filters_.get_limit()) > 0)
