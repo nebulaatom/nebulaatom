@@ -191,7 +191,14 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 	try
 	{
 		AddRoutes_();
-		Parse_(ReadBody_(request.stream()));
+
+		if(!Parse_(ReadBody_(request.stream())))
+		{
+			BasicError_(response, "Something was wrong with the JSON data.", HTTPResponse::HTTP_BAD_REQUEST);
+			return;
+		}
+
+		get_current_query_actions()->get_dynamic_json_body() = get_dynamic_json_body();
 
 		if(route_verification_)
 		{
