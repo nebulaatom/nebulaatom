@@ -41,13 +41,27 @@ std::string ManageJSON::ReadBody_(std::istream& stream)
 	return json_body;
 }
 
-void ManageJSON::Parse_(std::string string_to_parse)
+bool ManageJSON::Parse_(std::string string_to_parse)
 {
 	JSON::Parser parser;
 	JSON::Object::Ptr object_json = parser.parse(string_to_parse).extract<JSON::Object::Ptr>();
 	dynamic_json_body_ = *object_json;
-	if(!dynamic_json_body_["pair-information"].isEmpty())
-		dynamic_manager_ = object_json->get("pair-information");
+
+	return VerifyJSON_();
+}
+
+bool ManageJSON::VerifyJSON_()
+{
+	if
+	(
+		dynamic_json_body_["pair-information"].isEmpty()
+		|| dynamic_json_body_["pair-information"][0]["auth"].isEmpty()
+		|| dynamic_json_body_["pair-information"][1]["data"].isEmpty()
+		|| dynamic_json_body_["pair-information"][1]["data"].size() < 1
+	)
+		return false;
+	else{
+		return true;}
 }
 
 Filters::Filters() :

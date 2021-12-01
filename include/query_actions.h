@@ -33,6 +33,7 @@
 #include <Poco/URI.h>
 #include <Poco/StreamCopier.h>
 #include <Poco/JSON/JSON.h>
+#include <Poco/JSON/JSONException.h>
 #include <Poco/JSON/Array.h>
 #include <Poco/JSON/Object.h>
 #include <Poco/JSON/Parser.h>
@@ -85,23 +86,20 @@ class CPW::ManageJSON
 		ManageJSON();
 		~ManageJSON();
 
-		Poco::DynamicStruct& get_dynamic_json_body()
+		Dynamic::Struct<std::string>& get_dynamic_json_body()
 		{
-			Poco::DynamicStruct& d = dynamic_json_body_;
-			return d;
-		}
-		Poco::Dynamic::Var& get_dynamic_manager()
-		{
-			Poco::Dynamic::Var& d = dynamic_manager_;
+			Dynamic::Struct<std::string>& d = dynamic_json_body_;
 			return d;
 		}
 
 		std::string ReadBody_(std::istream& stream);
-		void Parse_(std::string string_to_parse);
+		bool Parse_(std::string string_to_parse);
+
+	protected:
+		bool VerifyJSON_();
 
 	private:
-		Poco::DynamicStruct dynamic_json_body_;
-		Dynamic::Var dynamic_manager_;
+		Dynamic::Struct<std::string> dynamic_json_body_;
 };
 
 class CPW::Filters
