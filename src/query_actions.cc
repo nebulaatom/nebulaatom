@@ -96,103 +96,98 @@ void QueryActions::ResetQuery_()
 	query_.reset(session_);
 }
 
-void QueryActions::IdentifyFilters_(Dynamic::Var dynamic_manager)
+void QueryActions::IdentifyFilters_()
 {
 	try
 	{
-		get_dynamic_manager() = dynamic_manager;
 		TypeQuery type;
+		Dynamic::Var& data_array = get_dynamic_json_body()["pair-information"][1]["data"];
 
-		// Get the main array
-			JSON::Array::Ptr main_array = get_dynamic_manager().extract<JSON::Array::Ptr>();
-
-		// Create the data json array and object
-			JSON::Object::Ptr data_object = main_array->getObject(1);
-			JSON::Array::Ptr data_array = data_object->getArray("data");
-
-		Dynamic::Var it;
-		for (std::size_t a = 0; a < data_array->size(); a++)
+		for (std::size_t a = 0; a < data_array.size(); a++)
 		{
-			JSON::Object::Ptr tmp_object = data_array->getObject(a);
+			// Get the temporal objects
+				if(data_array[a].isEmpty())
+					throw std::runtime_error("Data array haves a empty object.");
 
-			it = tmp_object->get("type");
+				Dynamic::Var& it = data_array[a];
+				if(it["type"].isEmpty())
+					throw std::runtime_error("An array object don't haves a type.");
 
 			// Search if exists
-				auto found = type_actions_map_.find(it.toString());
-				if(found != type_actions_map_.end())
-					type = found->second;
+				if(ExistsType_(it["type"].toString()))
+					type = type_actions_map_.find(it["type"].toString())->second;
 				else
 					continue;
 
-			std::cout << "\nFound type: " << it.toString();
-
-			switch(type)
-			{
-				case TypeQuery::kFields:
+			// Manage the type
+				switch(type)
 				{
-					if(!tmp_object->isArray("contents"))
-						throw std::runtime_error("contents is not array on tmp_object\n");
-
-					JSON::Array::Ptr tmp_object_contents = tmp_object->getArray("contents");
-					for(std::size_t b = 0; b < tmp_object_contents->size(); b++)
+					case TypeQuery::kFields:
 					{
-						auto value = tmp_object_contents->get(b);
-						get_current_filters_().get_fields().push_back(value.toString());
+						if(it["contents"].isEmpty())
+							throw std::runtime_error("contents is empty on data array index " + std::to_string(a));
+
+						auto tmp_size = it["contents"].size();
+						for(std::size_t b = 0; b < tmp_size; b++)
+						{
+							get_current_filters_().get_fields().push_back(it["contents"][b]);
+						}
+						break;
 					}
-					break;
+					case TypeQuery::kPage:
+					{
+						get_current_filters_().set_page(it["content"].toString());
+						break;
+					}
+					case TypeQuery::kLimit:
+					{
+						get_current_filters_().set_limit(it["content"].toString());
+						break;
+					}
+					case TypeQuery::kSort:
+					{
+						break;
+					}
+					case TypeQuery::kIqual:
+					{
+						break;
+					}
+					case TypeQuery::kNotIqual:
+					{
+						break;
+					}
+					case TypeQuery::kGreatherThan:
+					{
+						break;
+					}
+					case TypeQuery::kSmallerThan:
+					{
+						break;
+					}
+					case TypeQuery::kBetween:
+					{
+						break;
+					}
+					case TypeQuery::kIn:
+					{
+						break;
+					}
+					case TypeQuery::kNotIn:
+					{
+						break;
+					}
+					case TypeQuery::kValues:
+					{
+						break;
+					}
 				}
-				case TypeQuery::kPage:
-				{
-					auto value = tmp_object->get("content");
-					get_current_filters_().set_page(value.toString());
-					break;
-				}
-				case TypeQuery::kLimit:
-				{
-					auto value = tmp_object->get("content");
-					get_current_filters_().set_limit(value.toString());
-					break;
-				}
-				case TypeQuery::kSort:
-				{
-					break;
-				}
-				case TypeQuery::kIqual:
-				{
-					break;
-				}
-				case TypeQuery::kNotIqual:
-				{
-					break;
-				}
-				case TypeQuery::kGreatherThan:
-				{
-					break;
-				}
-				case TypeQuery::kSmallerThan:
-				{
-					break;
-				}
-				case TypeQuery::kBetween:
-				{
-					break;
-				}
-				case TypeQuery::kIn:
-				{
-					break;
-				}
-				case TypeQuery::kNotIn:
-				{
-					break;
-				}
-				case TypeQuery::kValues:
-				{
-					break;
-				}
-			}
 		}
 	}
 	catch(std::runtime_error& error)
+	{
+		std::cout << "\nError on query_actions.cc on IdentifyFilters_(): " << error.what();
+	}
+	catch(JSON::JSONException& error)
 	{
 		std::cout << "\nError on query_actions.cc on IdentifyFilters_(): " << error.what();
 	}
