@@ -343,54 +343,10 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 			IncorporeBetween_(tmp_query);
 
 		// In
-			if(current_filters_.get_in().size() > 0)
-			{
-				auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
-				if(found == tmp_query.end())
-					tmp_query.push_back("WHERE");
-
-				for(auto it : current_filters_.get_in())
-				{
-					if(found != tmp_query.end())
-						tmp_query.push_back("AND");
-
-					tmp_query.push_back(it.first);
-					tmp_query.push_back("IN (");
-					for(auto it_v : it.second)
-					{
-						if(it_v == it.second.front())
-							tmp_query.push_back("'" + it_v + "'");
-						else
-							tmp_query.push_back(", '" + it_v + "'");
-					}
-					tmp_query.push_back(")");
-				}
-			}
+			IncorporeIn_(tmp_query);
 
 		// Not In
-			if(current_filters_.get_not_in().size() > 0)
-			{
-				auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
-				if(found == tmp_query.end())
-					tmp_query.push_back("WHERE");
-
-				for(auto it : current_filters_.get_not_in())
-				{
-					if(found != tmp_query.end())
-						tmp_query.push_back("AND");
-
-					tmp_query.push_back(it.first);
-					tmp_query.push_back("NOT IN (");
-					for(auto it_v : it.second)
-					{
-						if(it_v == it.second.front())
-							tmp_query.push_back("'" + it_v + "'");
-						else
-							tmp_query.push_back(", '" + it_v + "'");
-					}
-					tmp_query.push_back(")");
-				}
-			}
+			IncorporeNotIn_(tmp_query);
 
 	// Sort conditions
 		IncorporeSort_(tmp_query);
@@ -580,6 +536,60 @@ void QueryActions::IncorporeBetween_(std::vector<std::string>& tmp_query)
 			tmp_query.push_back("'" + it.second.first + "'");
 			tmp_query.push_back("AND");
 			tmp_query.push_back("'" + it.second.second + "'");
+		}
+	}
+}
+
+void QueryActions::IncorporeIn_(std::vector<std::string>& tmp_query)
+{
+	if(current_filters_.get_in().size() > 0)
+	{
+		auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+		if(found == tmp_query.end())
+			tmp_query.push_back("WHERE");
+
+		for(auto it : current_filters_.get_in())
+		{
+			if(found != tmp_query.end())
+				tmp_query.push_back("AND");
+
+			tmp_query.push_back(it.first);
+			tmp_query.push_back("IN (");
+			for(auto it_v : it.second)
+			{
+				if(it_v == it.second.front())
+					tmp_query.push_back("'" + it_v + "'");
+				else
+					tmp_query.push_back(", '" + it_v + "'");
+			}
+			tmp_query.push_back(")");
+		}
+	}
+}
+
+void QueryActions::IncorporeNotIn_(std::vector<std::string>& tmp_query)
+{
+	if(current_filters_.get_not_in().size() > 0)
+	{
+		auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+		if(found == tmp_query.end())
+			tmp_query.push_back("WHERE");
+
+		for(auto it : current_filters_.get_not_in())
+		{
+			if(found != tmp_query.end())
+				tmp_query.push_back("AND");
+
+			tmp_query.push_back(it.first);
+			tmp_query.push_back("NOT IN (");
+			for(auto it_v : it.second)
+			{
+				if(it_v == it.second.front())
+					tmp_query.push_back("'" + it_v + "'");
+				else
+					tmp_query.push_back(", '" + it_v + "'");
+			}
+			tmp_query.push_back(")");
 		}
 	}
 }
