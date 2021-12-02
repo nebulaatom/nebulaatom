@@ -80,6 +80,7 @@ enum class CPW::TypeQuery
 	,kIn
 	,kNotIn
 	,kValues
+	,kSet
 };
 
 class CPW::ManageJSON
@@ -162,6 +163,11 @@ class CPW::Filters
 			auto& var = values_;
 			return var;
 		}
+		std::map<std::string, std::string>& get_set()
+		{
+			auto& var = set_;
+			return var;
+		}
 
 		void set_page(std::string page) { page_ = page; }
 		void set_limit(std::string limit) { limit_ = limit; }
@@ -179,6 +185,7 @@ class CPW::Filters
 		std::map<std::string, std::vector<std::string>> in_;
 		std::map<std::string, std::vector<std::string>> not_in_;
 		std::vector<std::vector<std::string>> values_;
+		std::map<std::string, std::string> set_;
 };
 
 
@@ -223,6 +230,7 @@ class CPW::QueryActions : public ManageJSON
 		void IncorporeIn_(std::vector<std::string>& tmp_query);
 		void IncorporeNotIn_(std::vector<std::string>& tmp_query);
 		void IncorporeValues_(std::vector<std::string>& tmp_query);
+		void IncorporeSet_(std::vector<std::string>& tmp_query);
 
 	private:
 		void FillTypeActionsText_();

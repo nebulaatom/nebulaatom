@@ -263,6 +263,18 @@ void QueryActions::IdentifyFilters_()
 						}
 						break;
 					}
+					case TypeQuery::kSet:
+					{
+						if(it["content"].isEmpty() || it["col"].isEmpty())
+							throw std::runtime_error("content or col in kSet is empty on data array index " + std::to_string(a));
+
+						get_current_filters_().get_set().emplace(std::make_pair
+						(
+							it["col"].toString()
+							,it["content"].toString()
+						));
+						break;
+					}
 				}
 		}
 	}
@@ -369,7 +381,36 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 
 std::string QueryActions::ComposeUpdateSentence_(std::string table, std::string body)
 {
+	// Sentence type and table
+		std::vector<std::string> tmp_query = {"UPDATE"};
+		tmp_query.push_back(table);
 
+	// Set
+		tmp_query.push_back("SET");
+		IncorporeSet_(tmp_query);
+
+	// Conditions
+		IncorporeIqual_(tmp_query);
+		IncorporeNotIqual_(tmp_query);
+		IncorporeGreatherThan_(tmp_query);
+		IncorporeSmallerThan_(tmp_query);
+		IncorporeBetween_(tmp_query);
+		IncorporeIn_(tmp_query);
+		IncorporeNotIn_(tmp_query);
+
+	// Sort conditions
+		IncorporeSort_(tmp_query);
+
+	// Page and Limit condition
+		IncorporePageLimit_(tmp_query);
+
+	tmp_query.push_back(";");
+
+	std::string final_query = "";
+	for(auto it : tmp_query)
+		final_query += it + " ";
+
+	return final_query;
 }
 
 std::string QueryActions::ComposeDeleteSentence_(std::string table, std::string body)
@@ -618,6 +659,22 @@ void QueryActions::IncorporeValues_(std::vector<std::string>& tmp_query)
 	}
 }
 
+void QueryActions::IncorporeSet_(std::vector<std::string>& tmp_query)
+{
+	if(current_filters_.get_set().size() > 0)
+	{
+		for(auto it : current_filters_.get_set())
+		{
+			if(it != *current_filters_.get_set().begin())
+				tmp_query.push_back(",");
+
+			tmp_query.push_back(it.first);
+			tmp_query.push_back("=");
+			tmp_query.push_back("'" + it.second + "'");
+		}
+	}
+}
+
 void QueryActions::FillTypeActionsText_()
 {
 	type_actions_map_.emplace(std::make_pair("fields", TypeQuery::kFields));
@@ -632,6 +689,7 @@ void QueryActions::FillTypeActionsText_()
 	type_actions_map_.emplace(std::make_pair("in", TypeQuery::kIn));
 	type_actions_map_.emplace(std::make_pair("notin", TypeQuery::kNotIn));
 	type_actions_map_.emplace(std::make_pair("values", TypeQuery::kValues));
+	type_actions_map_.emplace(std::make_pair("set", TypeQuery::kSet));
 }
 
 bool QueryActions::ExistsType_(std::string type)
