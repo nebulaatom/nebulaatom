@@ -220,6 +220,7 @@ class CPW::QueryActions : public ManageJSON
 		void IncorporeBetween_(std::vector<std::string>& tmp_query);
 		void IncorporeIn_(std::vector<std::string>& tmp_query);
 		void IncorporeNotIn_(std::vector<std::string>& tmp_query);
+		void IncorporeValues_(std::vector<std::string>& tmp_query);
 
 	private:
 		void FillTypeActionsText_();

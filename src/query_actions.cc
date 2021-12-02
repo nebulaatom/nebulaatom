@@ -355,24 +355,7 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 		IncorporePageLimit_(tmp_query);
 
 	// Values
-		if(current_filters_.get_values().size() > 0)
-		{
-			for(auto it : current_filters_.get_values())
-			{
-				if(it != current_filters_.get_values().front())
-					tmp_query.push_back(", ");
-
-				tmp_query.push_back("(");
-				for(auto it_sub : it)
-				{
-					if(it_sub != it.front())
-						tmp_query.push_back(", ");
-
-					tmp_query.push_back("'" + it_sub + "'");
-				}
-				tmp_query.push_back(")");
-			}
-		}
+		IncorporeValues_(tmp_query);
 
 	tmp_query.push_back(";");
 
@@ -588,6 +571,28 @@ void QueryActions::IncorporeNotIn_(std::vector<std::string>& tmp_query)
 					tmp_query.push_back("'" + it_v + "'");
 				else
 					tmp_query.push_back(", '" + it_v + "'");
+			}
+			tmp_query.push_back(")");
+		}
+	}
+}
+
+void QueryActions::IncorporeValues_(std::vector<std::string>& tmp_query)
+{
+	if(current_filters_.get_values().size() > 0)
+	{
+		for(auto it : current_filters_.get_values())
+		{
+			if(it != current_filters_.get_values().front())
+				tmp_query.push_back(",");
+
+			tmp_query.push_back("(");
+			for(auto it_sub : it)
+			{
+				if(it_sub != it.front())
+					tmp_query.push_back(",");
+
+				tmp_query.push_back("'" + it_sub + "'");
 			}
 			tmp_query.push_back(")");
 		}
