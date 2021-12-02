@@ -210,6 +210,14 @@ void QueryActions::IdentifyFilters_()
 					}
 					case TypeQuery::kBetween:
 					{
+						if(it["col"].isEmpty() || it["content1"].isEmpty() || it["content2"].isEmpty())
+							throw std::runtime_error("col, content1 or content2 in kBetween is empty on data array index " + std::to_string(a));
+
+						get_current_filters_().get_between().emplace(std::make_pair
+						(
+							it["col"].toString()
+							,std::make_pair(it["content1"].toString(), it["content2"].toString())
+						));
 						break;
 					}
 					case TypeQuery::kIn:
@@ -407,6 +415,34 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 						tmp_query.push_back("AND " + it.first);
 						tmp_query.push_back("<");
 						tmp_query.push_back("'" + it.second + "'");
+					}
+				}
+			}
+
+		// Between
+			if(current_filters_.get_between().size() > 0)
+			{
+				auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+				if(found == tmp_query.end())
+					tmp_query.push_back("WHERE");
+
+				for(auto it : current_filters_.get_between())
+				{
+					if(it == *current_filters_.get_between().begin() && found == tmp_query.end())
+					{
+						tmp_query.push_back(it.first);
+						tmp_query.push_back("BETWEEN");
+						tmp_query.push_back("'" + it.second.first + "'");
+						tmp_query.push_back("AND");
+						tmp_query.push_back("'" + it.second.second + "'");
+					}
+					else
+					{
+						tmp_query.push_back("AND " + it.first);
+						tmp_query.push_back("BETWEEN");
+						tmp_query.push_back("'" + it.second.first + "'");
+						tmp_query.push_back("AND");
+						tmp_query.push_back("'" + it.second.second + "'");
 					}
 				}
 			}

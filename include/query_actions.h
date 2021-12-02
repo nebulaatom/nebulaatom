@@ -140,7 +140,7 @@ class CPW::Filters
 			auto& var = smaller_than_;
 			return var;
 		}
-		std::map<std::string, std::string>& get_between()
+		std::map<std::string, std::pair<std::string, std::string>>& get_between()
 		{
 			auto& var = between_;
 			return var;
@@ -173,7 +173,7 @@ class CPW::Filters
 		std::map<std::string, std::string> not_iquals_conditions_;
 		std::map<std::string, std::string> greather_than_;
 		std::map<std::string, std::string> smaller_than_;
-		std::map<std::string, std::string> between_;
+		std::map<std::string, std::pair<std::string, std::string>> between_;
 		std::map<std::string, std::vector<std::string>> in_;
 		std::map<std::string, std::vector<std::string>> not_in_;
 		std::vector<std::string> values_;
