@@ -410,17 +410,7 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 			}
 
 	// Sort conditions
-		if(current_filters_.get_sorts_conditions().size() > 0)
-		{
-			tmp_query.push_back("ORDER BY");
-			for(auto it : current_filters_.get_sorts_conditions())
-			{
-				if(it != current_filters_.get_sorts_conditions().front())
-					tmp_query.push_back(", ");
-
-				tmp_query.push_back(it);
-			}
-		}
+		IncorporeSort_(tmp_query);
 
 	// Page and Limit condition
 		IncorporePageLimit_(tmp_query);
@@ -492,6 +482,21 @@ void QueryActions::IncorporePageLimit_(std::vector<std::string>& tmp_query)
 	}
 	else
 		tmp_query.push_back("LIMIT 0, 20 ");
+}
+
+void QueryActions::IncorporeSort_(std::vector<std::string>& tmp_query)
+{
+	if(current_filters_.get_sorts_conditions().size() > 0)
+	{
+		tmp_query.push_back("ORDER BY");
+		for(auto it : current_filters_.get_sorts_conditions())
+		{
+			if(it != current_filters_.get_sorts_conditions().front())
+				tmp_query.push_back(", ");
+
+			tmp_query.push_back(it);
+		}
+	}
 }
 
 void QueryActions::IncorporeIqual_(std::vector<std::string>& tmp_query)
