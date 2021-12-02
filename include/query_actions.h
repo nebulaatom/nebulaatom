@@ -210,6 +210,8 @@ class CPW::QueryActions : public ManageJSON
 		std::string ComposeUpdateSentence_(std::string table, std::string body);
 		std::string ComposeDeleteSentence_(std::string table, std::string body);
 
+		void IncorporeFields_(std::vector<std::string>& tmp_query);
+
 	private:
 		void FillTypeActionsText_();
 		bool ExistsType_(std::string type);

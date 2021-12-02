@@ -321,18 +321,7 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 {
 	// Sentence type and fileds
 		std::vector<std::string> tmp_query = {"SELECT"};
-		if(current_filters_.get_fields().size() == 0)
-			tmp_query.push_back("*");
-		else
-		{
-			for(auto it : current_filters_.get_fields())
-			{
-				if(it != current_filters_.get_fields().front())
-					tmp_query.push_back(",");
-
-				tmp_query.push_back(it);
-			}
-		}
+		IncorporeFields_(tmp_query);
 
 	// Table
 		tmp_query.push_back("FROM " + table);
@@ -540,6 +529,23 @@ std::string QueryActions::ComposeUpdateSentence_(std::string table, std::string 
 std::string QueryActions::ComposeDeleteSentence_(std::string table, std::string body)
 {
 
+}
+
+
+void QueryActions::IncorporeFields_(std::vector<std::string>& tmp_query)
+{
+	if(current_filters_.get_fields().size() == 0)
+		tmp_query.push_back("*");
+	else
+	{
+		for(auto it : current_filters_.get_fields())
+		{
+			if(it != current_filters_.get_fields().front())
+				tmp_query.push_back(",");
+
+			tmp_query.push_back(it);
+		}
+	}
 }
 
 void QueryActions::FillTypeActionsText_()
