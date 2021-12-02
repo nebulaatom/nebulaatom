@@ -422,15 +422,8 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 			}
 		}
 
-	// Limit condition
-		if(std::stoi(current_filters_.get_limit()) > 0)
-		{
-			int offset = std::stoi(current_filters_.get_limit()) * std::stoi(current_filters_.get_page());
-			tmp_query.push_back("LIMIT " + std::to_string(offset));
-			tmp_query.push_back(", " + current_filters_.get_limit());
-		}
-		else
-			tmp_query.push_back("LIMIT 0, 20 ");
+	// Page and Limit condition
+		IncorporePageLimit_(tmp_query);
 
 	// Values
 		if(current_filters_.get_values().size() > 0)
@@ -486,6 +479,19 @@ void QueryActions::IncorporeFields_(std::vector<std::string>& tmp_query)
 			tmp_query.push_back(it);
 		}
 	}
+}
+
+void QueryActions::IncorporePageLimit_(std::vector<std::string>& tmp_query)
+{
+	if(std::stoi(current_filters_.get_limit()) > 0)
+	{
+		int offset = std::stoi(current_filters_.get_limit()) * std::stoi(current_filters_.get_page());
+		tmp_query.push_back("LIMIT");
+		tmp_query.push_back(std::to_string(offset));
+		tmp_query.push_back(", " + current_filters_.get_limit());
+	}
+	else
+		tmp_query.push_back("LIMIT 0, 20 ");
 }
 
 void QueryActions::IncorporeIqual_(std::vector<std::string>& tmp_query)
