@@ -314,10 +314,10 @@ void QueryActions::ExecuteQuery_()
 
 std::string QueryActions::ComposeInsertSentence_(std::string table, std::string body)
 {
-	// Table
+	// Sentence type and Table
 		std::vector<std::string> tmp_query = {"INSERT INTO " + table + " ("};
 
-	// Sentence type and fileds
+	// Fields
 		IncorporeFields_(tmp_query);
 		tmp_query.push_back(")");
 
@@ -336,7 +336,7 @@ std::string QueryActions::ComposeInsertSentence_(std::string table, std::string 
 
 std::string QueryActions::ComposeSelectSentence_(std::string table)
 {
-	// Sentence type and fileds
+	// Sentence type and fields
 		std::vector<std::string> tmp_query = {"SELECT"};
 		IncorporeFields_(tmp_query);
 
@@ -358,9 +358,6 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 	// Page and Limit condition
 		IncorporePageLimit_(tmp_query);
 
-	// Values
-		IncorporeValues_(tmp_query);
-
 	tmp_query.push_back(";");
 
 	std::string final_query = "";
@@ -377,7 +374,31 @@ std::string QueryActions::ComposeUpdateSentence_(std::string table, std::string 
 
 std::string QueryActions::ComposeDeleteSentence_(std::string table, std::string body)
 {
+	// Sentence type and Table
+		std::vector<std::string> tmp_query = {"DELETE FROM " + table};
 
+	// Conditions
+		IncorporeIqual_(tmp_query);
+		IncorporeNotIqual_(tmp_query);
+		IncorporeGreatherThan_(tmp_query);
+		IncorporeSmallerThan_(tmp_query);
+		IncorporeBetween_(tmp_query);
+		IncorporeIn_(tmp_query);
+		IncorporeNotIn_(tmp_query);
+
+	// Sort conditions
+		IncorporeSort_(tmp_query);
+
+	// Page and Limit condition
+		IncorporePageLimit_(tmp_query);
+
+	tmp_query.push_back(";");
+
+	std::string final_query = "";
+	for(auto it : tmp_query)
+		final_query += it + " ";
+
+	return final_query;
 }
 
 void QueryActions::IncorporeWhere_(std::vector<std::string>& tmp_query)
