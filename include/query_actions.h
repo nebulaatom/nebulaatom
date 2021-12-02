@@ -210,6 +210,8 @@ class CPW::QueryActions : public ManageJSON
 		std::string ComposeUpdateSentence_(std::string table, std::string body);
 		std::string ComposeDeleteSentence_(std::string table, std::string body);
 
+		void IncorporeWhere_(std::vector<std::string>& tmp_query);
+		void IncorporeAND_(std::vector<std::string>& tmp_query);
 		void IncorporeFields_(std::vector<std::string>& tmp_query);
 		void IncorporePageLimit_(std::vector<std::string>& tmp_query);
 		void IncorporeSort_(std::vector<std::string>& tmp_query);

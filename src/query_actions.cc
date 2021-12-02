@@ -326,27 +326,14 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 	// Table
 		tmp_query.push_back("FROM " + table);
 
-	// Where condition
-		// Iqual
-			IncorporeIqual_(tmp_query);
-
-		// Not Iqual
-			IncorporeNotIqual_(tmp_query);
-
-		// Greather than
-			IncorporeGreatherThan_(tmp_query);
-
-		// Smaller than
-			IncorporeSmallerThan_(tmp_query);
-
-		// Between
-			IncorporeBetween_(tmp_query);
-
-		// In
-			IncorporeIn_(tmp_query);
-
-		// Not In
-			IncorporeNotIn_(tmp_query);
+	// Conditions
+		IncorporeIqual_(tmp_query);
+		IncorporeNotIqual_(tmp_query);
+		IncorporeGreatherThan_(tmp_query);
+		IncorporeSmallerThan_(tmp_query);
+		IncorporeBetween_(tmp_query);
+		IncorporeIn_(tmp_query);
+		IncorporeNotIn_(tmp_query);
 
 	// Sort conditions
 		IncorporeSort_(tmp_query);
@@ -376,6 +363,21 @@ std::string QueryActions::ComposeDeleteSentence_(std::string table, std::string 
 
 }
 
+void QueryActions::IncorporeWhere_(std::vector<std::string>& tmp_query)
+{
+	auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+
+	if(found == tmp_query.end())
+		tmp_query.push_back("WHERE");
+}
+
+void QueryActions::IncorporeAND_(std::vector<std::string>& tmp_query)
+{
+	auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+
+	if(*found != tmp_query.back())
+		tmp_query.push_back("AND");
+}
 
 void QueryActions::IncorporeFields_(std::vector<std::string>& tmp_query)
 {
@@ -425,14 +427,11 @@ void QueryActions::IncorporeIqual_(std::vector<std::string>& tmp_query)
 {
 	if(current_filters_.get_iquals_conditions().size() > 0)
 	{
-		auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
-		if(found == tmp_query.end())
-			tmp_query.push_back("WHERE");
+		IncorporeWhere_(tmp_query);
 
 		for(auto it : current_filters_.get_iquals_conditions())
 		{
-			if(found != tmp_query.end())
-				tmp_query.push_back("AND");
+			IncorporeAND_(tmp_query);
 
 			tmp_query.push_back(it.first);
 			tmp_query.push_back("=");
@@ -445,14 +444,11 @@ void QueryActions::IncorporeNotIqual_(std::vector<std::string>& tmp_query)
 {
 	if(current_filters_.get_not_iquals_conditions().size() > 0)
 	{
-		auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
-		if(found == tmp_query.end())
-			tmp_query.push_back("WHERE");
+		IncorporeWhere_(tmp_query);
 
 		for(auto it : current_filters_.get_not_iquals_conditions())
 		{
-			if(found != tmp_query.end())
-				tmp_query.push_back("AND");
+			IncorporeAND_(tmp_query);
 
 			tmp_query.push_back(it.first);
 			tmp_query.push_back("<>");
@@ -465,14 +461,11 @@ void QueryActions::IncorporeGreatherThan_(std::vector<std::string>& tmp_query)
 {
 	if(current_filters_.get_greather_than().size() > 0)
 	{
-		auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
-		if(found == tmp_query.end())
-			tmp_query.push_back("WHERE");
+		IncorporeWhere_(tmp_query);
 
 		for(auto it : current_filters_.get_greather_than())
 		{
-			if(found != tmp_query.end())
-				tmp_query.push_back("AND");
+			IncorporeAND_(tmp_query);
 
 			tmp_query.push_back(it.first);
 			tmp_query.push_back(">");
@@ -485,14 +478,11 @@ void QueryActions::IncorporeSmallerThan_(std::vector<std::string>& tmp_query)
 {
 	if(current_filters_.get_smaller_than().size() > 0)
 	{
-		auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
-		if(found == tmp_query.end())
-			tmp_query.push_back("WHERE");
+		IncorporeWhere_(tmp_query);
 
 		for(auto it : current_filters_.get_smaller_than())
 		{
-			if(found != tmp_query.end())
-				tmp_query.push_back("AND");
+			IncorporeAND_(tmp_query);
 
 			tmp_query.push_back(it.first);
 			tmp_query.push_back("<");
@@ -505,14 +495,11 @@ void QueryActions::IncorporeBetween_(std::vector<std::string>& tmp_query)
 {
 	if(current_filters_.get_between().size() > 0)
 	{
-		auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
-		if(found == tmp_query.end())
-			tmp_query.push_back("WHERE");
+		IncorporeWhere_(tmp_query);
 
 		for(auto it : current_filters_.get_between())
 		{
-			if(found != tmp_query.end())
-				tmp_query.push_back("AND");
+			IncorporeAND_(tmp_query);
 
 			tmp_query.push_back(it.first);
 			tmp_query.push_back("BETWEEN");
@@ -527,14 +514,11 @@ void QueryActions::IncorporeIn_(std::vector<std::string>& tmp_query)
 {
 	if(current_filters_.get_in().size() > 0)
 	{
-		auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
-		if(found == tmp_query.end())
-			tmp_query.push_back("WHERE");
+		IncorporeWhere_(tmp_query);
 
 		for(auto it : current_filters_.get_in())
 		{
-			if(found != tmp_query.end())
-				tmp_query.push_back("AND");
+			IncorporeAND_(tmp_query);
 
 			tmp_query.push_back(it.first);
 			tmp_query.push_back("IN (");
@@ -554,14 +538,11 @@ void QueryActions::IncorporeNotIn_(std::vector<std::string>& tmp_query)
 {
 	if(current_filters_.get_not_in().size() > 0)
 	{
-		auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
-		if(found == tmp_query.end())
-			tmp_query.push_back("WHERE");
+		IncorporeWhere_(tmp_query);
 
 		for(auto it : current_filters_.get_not_in())
 		{
-			if(found != tmp_query.end())
-				tmp_query.push_back("AND");
+			IncorporeAND_(tmp_query);
 
 			tmp_query.push_back(it.first);
 			tmp_query.push_back("NOT IN (");
