@@ -334,40 +334,10 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 			IncorporeNotIqual_(tmp_query);
 
 		// Greather than
-			if(current_filters_.get_greather_than().size() > 0)
-			{
-				auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
-				if(found == tmp_query.end())
-					tmp_query.push_back("WHERE");
-
-				for(auto it : current_filters_.get_greather_than())
-				{
-					if(found != tmp_query.end())
-						tmp_query.push_back("AND " + it.first);
-
-					tmp_query.push_back(it.first);
-					tmp_query.push_back(">");
-					tmp_query.push_back("'" + it.second + "'");
-				}
-			}
+			IncorporeGreatherThan_(tmp_query);
 
 		// Smaller than
-			if(current_filters_.get_smaller_than().size() > 0)
-			{
-				auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
-				if(found == tmp_query.end())
-					tmp_query.push_back("WHERE");
-
-				for(auto it : current_filters_.get_smaller_than())
-				{
-					if(found != tmp_query.end())
-						tmp_query.push_back("AND " + it.first);
-
-					tmp_query.push_back(it.first);
-					tmp_query.push_back("<");
-					tmp_query.push_back("'" + it.second + "'");
-				}
-			}
+			IncorporeSmallerThan_(tmp_query);
 
 		// Between
 			if(current_filters_.get_between().size() > 0)
@@ -553,6 +523,46 @@ void QueryActions::IncorporeNotIqual_(std::vector<std::string>& tmp_query)
 
 			tmp_query.push_back(it.first);
 			tmp_query.push_back("<>");
+			tmp_query.push_back("'" + it.second + "'");
+		}
+	}
+}
+
+void QueryActions::IncorporeGreatherThan_(std::vector<std::string>& tmp_query)
+{
+	if(current_filters_.get_greather_than().size() > 0)
+	{
+		auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+		if(found == tmp_query.end())
+			tmp_query.push_back("WHERE");
+
+		for(auto it : current_filters_.get_greather_than())
+		{
+			if(found != tmp_query.end())
+				tmp_query.push_back("AND");
+
+			tmp_query.push_back(it.first);
+			tmp_query.push_back(">");
+			tmp_query.push_back("'" + it.second + "'");
+		}
+	}
+}
+
+void QueryActions::IncorporeSmallerThan_(std::vector<std::string>& tmp_query)
+{
+	if(current_filters_.get_smaller_than().size() > 0)
+	{
+		auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+		if(found == tmp_query.end())
+			tmp_query.push_back("WHERE");
+
+		for(auto it : current_filters_.get_smaller_than())
+		{
+			if(found != tmp_query.end())
+				tmp_query.push_back("AND");
+
+			tmp_query.push_back(it.first);
+			tmp_query.push_back("<");
 			tmp_query.push_back("'" + it.second + "'");
 		}
 	}
