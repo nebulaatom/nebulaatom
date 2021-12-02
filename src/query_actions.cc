@@ -314,7 +314,24 @@ void QueryActions::ExecuteQuery_()
 
 std::string QueryActions::ComposeInsertSentence_(std::string table, std::string body)
 {
+	// Table
+		std::vector<std::string> tmp_query = {"INSERT INTO " + table + " ("};
 
+	// Sentence type and fileds
+		IncorporeFields_(tmp_query);
+		tmp_query.push_back(")");
+
+	// Values
+		tmp_query.push_back("VALUES");
+		IncorporeValues_(tmp_query);
+
+	tmp_query.push_back(";");
+
+	std::string final_query = "";
+	for(auto it : tmp_query)
+		final_query += it + " ";
+
+	return final_query;
 }
 
 std::string QueryActions::ComposeSelectSentence_(std::string table)
