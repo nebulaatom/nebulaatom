@@ -162,10 +162,26 @@ void QueryActions::IdentifyFilters_()
 					}
 					case TypeQuery::kIqual:
 					{
+						if(it["content"].isEmpty())
+							throw std::runtime_error("content in kIqual is empty on data array index " + std::to_string(a));
+
+						get_current_filters_().get_iquals_conditions().emplace(std::make_pair
+						(
+							it["col"].toString()
+							,it["content"].toString()
+						));
 						break;
 					}
 					case TypeQuery::kNotIqual:
 					{
+						if(it["content"].isEmpty())
+							throw std::runtime_error("content in kNotIqual is empty on data array index " + std::to_string(a));
+
+						get_current_filters_().get_not_iquals_conditions().emplace(std::make_pair
+						(
+							it["col"].toString()
+							,it["content"].toString()
+						));
 						break;
 					}
 					case TypeQuery::kGreatherThan:
@@ -282,10 +298,56 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 			}
 		}
 
-	// Table and Where condition
+	// Table
 		tmp_query.push_back("FROM " + table);
 
-	// sort conditions
+	// Where condition
+		// Iqual
+			if(current_filters_.get_iquals_conditions().size() > 0)
+			{
+				tmp_query.push_back("WHERE");
+				for(auto it : current_filters_.get_iquals_conditions())
+				{
+					if(it == *current_filters_.get_iquals_conditions().begin())
+					{
+						tmp_query.push_back(it.first);
+						tmp_query.push_back("=");
+						tmp_query.push_back("'" + it.second + "'");
+					}
+					else
+					{
+						tmp_query.push_back("AND " + it.first);
+						tmp_query.push_back("=");
+						tmp_query.push_back("'" + it.second + "'");
+					}
+				}
+			}
+
+		// Not Iqual
+			if(current_filters_.get_not_iquals_conditions().size() > 0)
+			{
+				auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+				if(found == tmp_query.end())
+					tmp_query.push_back("WHERE");
+
+				for(auto it : current_filters_.get_not_iquals_conditions())
+				{
+					if(it == *current_filters_.get_not_iquals_conditions().begin() && found == tmp_query.end())
+					{
+						tmp_query.push_back(it.first);
+						tmp_query.push_back("!=");
+						tmp_query.push_back("'" + it.second + "'");
+					}
+					else
+					{
+						tmp_query.push_back("AND " + it.first);
+						tmp_query.push_back("!=");
+						tmp_query.push_back("'" + it.second + "'");
+					}
+				}
+			}
+
+	// Sort conditions
 		if(current_filters_.get_sorts_conditions().size() > 0)
 		{
 			tmp_query.push_back("ORDER BY");
