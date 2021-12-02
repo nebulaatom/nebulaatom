@@ -87,9 +87,9 @@ bool SecurityVerification::AuthenticateUser_()
 	// Verify the key-values
 		if
 		(
-				json_body["auth"].isEmpty()
-				|| json_body["auth"]["user"].isEmpty()
-				|| json_body["auth"]["password"].isEmpty()
+			json_body["pair-information"].isEmpty()
+			|| json_body["pair-information"][0]["auth"]["user"].isEmpty()
+			|| json_body["pair-information"][0]["auth"]["password"].isEmpty()
 		)
 		{
 			table_rows->find("user")->second = "null";
@@ -97,8 +97,8 @@ bool SecurityVerification::AuthenticateUser_()
 		}
 		else
 		{
-			table_rows->find("user")->second = json_body["auth"]["user"].toString();
-			table_rows->find("password")->second = json_body["auth"]["password"].toString();
+			table_rows->find("user")->second = json_body["pair-information"][0]["auth"]["user"].toString();
+			table_rows->find("password")->second = json_body["pair-information"][0]["auth"]["password"].toString();
 		}
 
 	// Execute the query
@@ -108,6 +108,7 @@ bool SecurityVerification::AuthenticateUser_()
 			use(table_rows->find("password")->second)
 		;
 		query_actions->get_query().execute();
+
 		if(query_actions->get_query().subTotalRowCount() > 0)
 			return true;
 		else
@@ -190,7 +191,14 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 	try
 	{
 		AddRoutes_();
-		ReadJSONBody_(request);
+
+		if(!Parse_(ReadBody_(request.stream())))
+		{
+			BasicError_(response, "Something was wrong with the JSON data.", HTTPResponse::HTTP_BAD_REQUEST);
+			return;
+		}
+
+		get_current_query_actions()->get_dynamic_json_body() = get_dynamic_json_body();
 
 		if(route_verification_)
 		{
@@ -218,6 +226,10 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 	catch(std::exception error)
 	{
 		app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
+	}
+	catch(JSON::JSONException& error)
+	{
+		std::cout << "\nError on root_handler.cc on handleRequest(): " << error.what();
 	}
 }
 
@@ -247,19 +259,4 @@ bool RootHandler::IdentifyRoute_(HTTPServerRequest& request)
 	}
 
 	return false;
-}
-
-void RootHandler::ReadJSONBody_(HTTPServerRequest& request)
-{
-	// Read the JSON
-		std::string json_body;
-		StreamCopier::copyToString(request.stream(), json_body);
-		if(json_body.empty())
-			return;
-
-	// Parse JSON
-		JSON::Parser parser;
-		JSON::Object::Ptr object_json = parser.parse(json_body).extract<JSON::Object::Ptr>();
-		get_dynamic_json_body() = *object_json;
-
 }

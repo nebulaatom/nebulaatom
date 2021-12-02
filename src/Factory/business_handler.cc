@@ -27,11 +27,11 @@ BusinessHandler::~BusinessHandler()
 
 void BusinessHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	/*get_current_query_actions()->IdentifyFilters_(request);
-	get_current_query_actions()->ComposeQuery_(QueryActions::TypeAction::kSelect, get_table_route(), "");
-	get_current_query_actions()->ExecuteQuery_();
+	get_current_query_actions()->IdentifyFilters_();
+	get_current_query_actions()->ComposeQuery_(TypeAction::kSelect, requested_route_->get_target(), "");
+	//get_current_query_actions()->ExecuteQuery_();
 
-	response.setStatus(HTTPResponse::HTTP_OK);
+	/*response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("application/json");
 
 	std::ostream& out = response.send();

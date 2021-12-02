@@ -20,8 +20,10 @@
 #define CPW_QUERYACTIONS_H
 
 
+#include <istream>
 #include <string>
 #include <map>
+#include <stdexcept>
 
 #include <Poco/Net/HTTPServerRequest.h>
 #include "Poco/Data/Session.h"
@@ -29,7 +31,9 @@
 #include <Poco/Data/MySQL/MySQLException.h>
 #include <Poco/Data/Statement.h>
 #include <Poco/URI.h>
+#include <Poco/StreamCopier.h>
 #include <Poco/JSON/JSON.h>
+#include <Poco/JSON/JSONException.h>
 #include <Poco/JSON/Array.h>
 #include <Poco/JSON/Object.h>
 #include <Poco/JSON/Parser.h>
@@ -41,6 +45,8 @@
 namespace CPW
 {
 	enum class TypeAction;
+	enum class TypeQuery;
+	class ManageJSON;
 	class Filters;
 	class QueryActions;
 }
@@ -48,7 +54,6 @@ namespace CPW
 using namespace Poco;
 using namespace Poco::Net;
 using namespace Poco::Data::Keywords;
-
 
 
 enum class CPW::TypeAction
@@ -59,67 +64,162 @@ enum class CPW::TypeAction
 	,kDelete
 };
 
+enum class CPW::TypeQuery
+{
+	kFields
+	,kPage
+	,kLimit
+	,kSort
+	,kIqual
+	,kNotIqual
+	,kGreatherThan
+	,kSmallerThan
+	,kBetween
+	,kIn
+	,kNotIn
+	,kValues
+};
+
+class CPW::ManageJSON
+{
+	public:
+		ManageJSON();
+		~ManageJSON();
+
+		Dynamic::Struct<std::string>& get_dynamic_json_body()
+		{
+			Dynamic::Struct<std::string>& d = dynamic_json_body_;
+			return d;
+		}
+
+		std::string ReadBody_(std::istream& stream);
+		bool Parse_(std::string string_to_parse);
+
+	protected:
+		bool VerifyJSON_();
+
+	private:
+		Dynamic::Struct<std::string> dynamic_json_body_;
+};
+
 class CPW::Filters
 {
 	public:
 		Filters();
 		~Filters();
 
-		std::string get_fields() const { return fields_; }
+		std::vector<std::string>& get_fields()
+		{
+			auto& var = fields_;
+			return var;
+		}
 		std::string get_page() const { return page_; }
 		std::string get_limit() const { return limit_; }
-		std::map<std::string, std::string>& get_sorts_conditions()
+		std::vector<std::string>& get_sorts_conditions()
 		{
-			auto& sc = sorts_conditions_;
-			return sc;
+			auto& var = sorts_conditions_;
+			return var;
 		}
 		std::map<std::string, std::string>& get_iquals_conditions()
 		{
-			auto& ic = iquals_conditions_;
-			return ic;
+			auto& var = iquals_conditions_;
+			return var;
+		}
+		std::map<std::string, std::string>& get_not_iquals_conditions()
+		{
+			auto& var = not_iquals_conditions_;
+			return var;
+		}
+		std::map<std::string, std::string>& get_greather_than()
+		{
+			auto& var = greather_than_;
+			return var;
+		}
+		std::map<std::string, std::string>& get_smaller_than()
+		{
+			auto& var = smaller_than_;
+			return var;
+		}
+		std::map<std::string, std::pair<std::string, std::string>>& get_between()
+		{
+			auto& var = between_;
+			return var;
+		}
+		std::map<std::string, std::vector<std::string>>& get_in()
+		{
+			auto& var = in_;
+			return var;
+		}
+		std::map<std::string, std::vector<std::string>>& get_not_in()
+		{
+			auto& var = not_in_;
+			return var;
+		}
+		std::vector<std::vector<std::string>>& get_values()
+		{
+			auto& var = values_;
+			return var;
 		}
 
+		void set_page(std::string page) { page_ = page; }
+		void set_limit(std::string limit) { limit_ = limit; }
+
 	private:
-		std::string fields_, page_, limit_;
-		std::map<std::string, std::string> sorts_conditions_;
+		std::vector<std::string> fields_;
+		std::string page_;
+		std::string limit_;
+		std::vector<std::string> sorts_conditions_;
 		std::map<std::string, std::string> iquals_conditions_;
+		std::map<std::string, std::string> not_iquals_conditions_;
+		std::map<std::string, std::string> greather_than_;
+		std::map<std::string, std::string> smaller_than_;
+		std::map<std::string, std::pair<std::string, std::string>> between_;
+		std::map<std::string, std::vector<std::string>> in_;
+		std::map<std::string, std::vector<std::string>> not_in_;
+		std::vector<std::vector<std::string>> values_;
 };
 
 
-class CPW::QueryActions
+class CPW::QueryActions : public ManageJSON
 {
 	public:
 		QueryActions();
 		~QueryActions();
 
 		std::string get_final_query() const {return final_query_;}
-		Filters get_current_filters_() const {return current_filters_;}
+		Filters& get_current_filters_()
+		{
+			auto& var = current_filters_;
+			return var;
+		}
 		Data::Session get_session() const {return session_;}
 		Data::Statement get_query() const {return query_;}
 		std::map<std::string, std::string>* get_table_rows() const {return table_rows_;}
 		Poco::JSON::Array* get_result_json() const {return result_json_;}
 
 		void ResetQuery_();
-		void IdentifyFilters_(HTTPServerRequest& request);
-		void ComposeQuery_(TypeAction action_type, std::string table, std::string body);
+		void IdentifyFilters_();
+		void ComposeQuery_(TypeAction action_type, std::string table, std::string bod);
 		void ExecuteQuery_();
 
 	protected:
-		void CreateRows_(TypeAction action_type);
-		std::string GetSortsConditions_();
-		std::string GetIqualsConditions_();
+		std::string IqualsConditionsToString_();
 		std::string ComposeInsertSentence_(std::string table, std::string body);
 		std::string ComposeSelectSentence_(std::string table);
 		std::string ComposeUpdateSentence_(std::string table, std::string body);
 		std::string ComposeDeleteSentence_(std::string table, std::string body);
 
 	private:
+		void FillTypeActionsText_();
+		bool ExistsType_(std::string type);
+
 		std::string final_query_;
 		Filters current_filters_;
 		Data::Session session_;
 		Data::Statement query_;
 		std::map<std::string, std::string>* table_rows_;
 		Poco::JSON::Array* result_json_;
+		std::map<std::string, TypeQuery> type_actions_map_;
 };
 
 
