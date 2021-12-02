@@ -248,6 +248,18 @@ void QueryActions::IdentifyFilters_()
 					}
 					case TypeQuery::kValues:
 					{
+						if(it["contents"].isEmpty())
+							throw std::runtime_error("contents in kValues is empty on data array index " + std::to_string(a));
+
+						for(std::size_t b = 0; b < it["contents"].size(); b++)
+						{
+							get_current_filters_().get_values().push_back(std::vector<std::string> {});
+
+							for(auto it_v: it["contents"][b])
+							{
+								get_current_filters_().get_values()[b].push_back(it_v.toString());
+							}
+						}
 						break;
 					}
 				}
@@ -508,6 +520,26 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 		}
 		else
 			tmp_query.push_back("LIMIT 0, 20 ");
+
+	// Values
+		if(current_filters_.get_values().size() > 0)
+		{
+			for(auto it : current_filters_.get_values())
+			{
+				if(it != current_filters_.get_values().front())
+					tmp_query.push_back(", ");
+
+				tmp_query.push_back("(");
+				for(auto it_sub : it)
+				{
+					if(it_sub != it.front())
+						tmp_query.push_back(", ");
+
+					tmp_query.push_back("'" + it_sub + "'");
+				}
+				tmp_query.push_back(")");
+			}
+		}
 
 	tmp_query.push_back(";");
 

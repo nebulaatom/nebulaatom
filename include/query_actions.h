@@ -155,7 +155,7 @@ class CPW::Filters
 			auto& var = not_in_;
 			return var;
 		}
-		std::vector<std::string>& get_values()
+		std::vector<std::vector<std::string>>& get_values()
 		{
 			auto& var = values_;
 			return var;
@@ -176,7 +176,7 @@ class CPW::Filters
 		std::map<std::string, std::pair<std::string, std::string>> between_;
 		std::map<std::string, std::vector<std::string>> in_;
 		std::map<std::string, std::vector<std::string>> not_in_;
-		std::vector<std::string> values_;
+		std::vector<std::vector<std::string>> values_;
 };
 
 
