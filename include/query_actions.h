@@ -211,6 +211,8 @@ class CPW::QueryActions : public ManageJSON
 		std::string ComposeDeleteSentence_(std::string table, std::string body);
 
 		void IncorporeFields_(std::vector<std::string>& tmp_query);
+		void IncorporeIqual_(std::vector<std::string>& tmp_query);
+		void IncorporeNotIqual_(std::vector<std::string>& tmp_query);
 
 	private:
 		void FillTypeActionsText_();

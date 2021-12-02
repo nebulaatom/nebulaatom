@@ -328,40 +328,10 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 
 	// Where condition
 		// Iqual
-			if(current_filters_.get_iquals_conditions().size() > 0)
-			{
-				auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
-				if(found == tmp_query.end())
-					tmp_query.push_back("WHERE");
-
-				for(auto it : current_filters_.get_iquals_conditions())
-				{
-					if(found != tmp_query.end())
-						tmp_query.push_back("AND " + it.first);
-
-					tmp_query.push_back(it.first);
-					tmp_query.push_back("=");
-					tmp_query.push_back("'" + it.second + "'");
-				}
-			}
+			IncorporeIqual_(tmp_query);
 
 		// Not Iqual
-			if(current_filters_.get_not_iquals_conditions().size() > 0)
-			{
-				auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
-				if(found == tmp_query.end())
-					tmp_query.push_back("WHERE");
-
-				for(auto it : current_filters_.get_not_iquals_conditions())
-				{
-					if(found != tmp_query.end())
-						tmp_query.push_back("AND " + it.first);
-
-					tmp_query.push_back(it.first);
-					tmp_query.push_back("!=");
-					tmp_query.push_back("'" + it.second + "'");
-				}
-			}
+			IncorporeNotIqual_(tmp_query);
 
 		// Greather than
 			if(current_filters_.get_greather_than().size() > 0)
@@ -544,6 +514,46 @@ void QueryActions::IncorporeFields_(std::vector<std::string>& tmp_query)
 				tmp_query.push_back(",");
 
 			tmp_query.push_back(it);
+		}
+	}
+}
+
+void QueryActions::IncorporeIqual_(std::vector<std::string>& tmp_query)
+{
+	if(current_filters_.get_iquals_conditions().size() > 0)
+	{
+		auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+		if(found == tmp_query.end())
+			tmp_query.push_back("WHERE");
+
+		for(auto it : current_filters_.get_iquals_conditions())
+		{
+			if(found != tmp_query.end())
+				tmp_query.push_back("AND");
+
+			tmp_query.push_back(it.first);
+			tmp_query.push_back("=");
+			tmp_query.push_back("'" + it.second + "'");
+		}
+	}
+}
+
+void QueryActions::IncorporeNotIqual_(std::vector<std::string>& tmp_query)
+{
+	if(current_filters_.get_not_iquals_conditions().size() > 0)
+	{
+		auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+		if(found == tmp_query.end())
+			tmp_query.push_back("WHERE");
+
+		for(auto it : current_filters_.get_not_iquals_conditions())
+		{
+			if(found != tmp_query.end())
+				tmp_query.push_back("AND");
+
+			tmp_query.push_back(it.first);
+			tmp_query.push_back("<>");
+			tmp_query.push_back("'" + it.second + "'");
 		}
 	}
 }
