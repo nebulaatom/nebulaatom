@@ -370,13 +370,7 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 	// Page and Limit condition
 		IncorporePageLimit_(tmp_query);
 
-	tmp_query.push_back(";");
-
-	std::string final_query = "";
-	for(auto it : tmp_query)
-		final_query += it + " ";
-
-	return final_query;
+	return MakeFinalQuery_(tmp_query);
 }
 
 std::string QueryActions::ComposeUpdateSentence_(std::string table, std::string body)
@@ -404,13 +398,7 @@ std::string QueryActions::ComposeUpdateSentence_(std::string table, std::string 
 	// Page and Limit condition
 		IncorporePageLimit_(tmp_query);
 
-	tmp_query.push_back(";");
-
-	std::string final_query = "";
-	for(auto it : tmp_query)
-		final_query += it + " ";
-
-	return final_query;
+	return MakeFinalQuery_(tmp_query);
 }
 
 std::string QueryActions::ComposeDeleteSentence_(std::string table, std::string body)
@@ -433,9 +421,14 @@ std::string QueryActions::ComposeDeleteSentence_(std::string table, std::string 
 	// Page and Limit condition
 		IncorporePageLimit_(tmp_query);
 
-	tmp_query.push_back(";");
+	return MakeFinalQuery_(tmp_query);
+}
 
+std::string QueryActions::MakeFinalQuery_(std::vector<std::string>& tmp_query)
+{
+	tmp_query.push_back(";");
 	std::string final_query = "";
+
 	for(auto it : tmp_query)
 		final_query += it + " ";
 
