@@ -162,8 +162,8 @@ void QueryActions::IdentifyFilters_()
 					}
 					case TypeQuery::kIqual:
 					{
-						if(it["content"].isEmpty())
-							throw std::runtime_error("content in kIqual is empty on data array index " + std::to_string(a));
+						if(it["content"].isEmpty() || it["col"].isEmpty())
+							throw std::runtime_error("content or col in kIqual is empty on data array index " + std::to_string(a));
 
 						get_current_filters_().get_iquals_conditions().emplace(std::make_pair
 						(
@@ -174,8 +174,8 @@ void QueryActions::IdentifyFilters_()
 					}
 					case TypeQuery::kNotIqual:
 					{
-						if(it["content"].isEmpty())
-							throw std::runtime_error("content in kNotIqual is empty on data array index " + std::to_string(a));
+						if(it["content"].isEmpty() || it["col"].isEmpty())
+							throw std::runtime_error("content or col in kNotIqual is empty on data array index " + std::to_string(a));
 
 						get_current_filters_().get_not_iquals_conditions().emplace(std::make_pair
 						(
@@ -186,10 +186,26 @@ void QueryActions::IdentifyFilters_()
 					}
 					case TypeQuery::kGreatherThan:
 					{
+						if(it["content"].isEmpty() || it["col"].isEmpty())
+							throw std::runtime_error("content or col in kGreatherThan is empty on data array index " + std::to_string(a));
+
+						get_current_filters_().get_greather_than().emplace(std::make_pair
+						(
+							it["col"].toString()
+							,it["content"].toString()
+						));
 						break;
 					}
 					case TypeQuery::kSmallerThan:
 					{
+						if(it["content"].isEmpty() || it["col"].isEmpty())
+							throw std::runtime_error("content or col in kSmallerThan is empty on data array index " + std::to_string(a));
+
+						get_current_filters_().get_smaller_than().emplace(std::make_pair
+						(
+							it["col"].toString()
+							,it["content"].toString()
+						));
 						break;
 					}
 					case TypeQuery::kBetween:
@@ -342,6 +358,54 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 					{
 						tmp_query.push_back("AND " + it.first);
 						tmp_query.push_back("!=");
+						tmp_query.push_back("'" + it.second + "'");
+					}
+				}
+			}
+
+		// Greather than
+			if(current_filters_.get_greather_than().size() > 0)
+			{
+				auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+				if(found == tmp_query.end())
+					tmp_query.push_back("WHERE");
+
+				for(auto it : current_filters_.get_greather_than())
+				{
+					if(it == *current_filters_.get_greather_than().begin() && found == tmp_query.end())
+					{
+						tmp_query.push_back(it.first);
+						tmp_query.push_back(">");
+						tmp_query.push_back("'" + it.second + "'");
+					}
+					else
+					{
+						tmp_query.push_back("AND " + it.first);
+						tmp_query.push_back(">");
+						tmp_query.push_back("'" + it.second + "'");
+					}
+				}
+			}
+
+		// Smaller than
+			if(current_filters_.get_smaller_than().size() > 0)
+			{
+				auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+				if(found == tmp_query.end())
+					tmp_query.push_back("WHERE");
+
+				for(auto it : current_filters_.get_smaller_than())
+				{
+					if(it == *current_filters_.get_smaller_than().begin() && found == tmp_query.end())
+					{
+						tmp_query.push_back(it.first);
+						tmp_query.push_back("<");
+						tmp_query.push_back("'" + it.second + "'");
+					}
+					else
+					{
+						tmp_query.push_back("AND " + it.first);
+						tmp_query.push_back("<");
 						tmp_query.push_back("'" + it.second + "'");
 					}
 				}
