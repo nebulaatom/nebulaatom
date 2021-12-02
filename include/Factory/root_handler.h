@@ -96,6 +96,7 @@ class CPW::Factory::DynamicElements
 			return r;
 		}
 		QueryActions* get_current_query_actions() const {return current_query_actions_;}
+		Application& get_app() const {return app_;};
 
 	protected:
 		std::unique_ptr<Route> requested_route_;
@@ -103,6 +104,7 @@ class CPW::Factory::DynamicElements
 	private:
 		std::list<Route*> routes_list_;
 		QueryActions* current_query_actions_;
+		Application& app_;
 };
 
 class CPW::Factory::SecurityVerification:
@@ -131,6 +133,7 @@ class CPW::Factory::RootHandler :
 		virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
 		std::string get_api_verion() const {return api_verion_;}
+		Application& get_app() const {return app_;};
 
 	protected:
 		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;

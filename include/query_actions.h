@@ -25,6 +25,7 @@
 #include <map>
 #include <stdexcept>
 
+#include "Poco/Util/Application.h"
 #include <Poco/Net/HTTPServerRequest.h>
 #include "Poco/Data/Session.h"
 #include "Poco/Data/MySQL/Connector.h"
@@ -52,6 +53,7 @@ namespace CPW
 }
 
 using namespace Poco;
+using namespace Poco::Util;
 using namespace Poco::Net;
 using namespace Poco::Data::Keywords;
 
@@ -203,7 +205,6 @@ class CPW::QueryActions : public ManageJSON
 		void ExecuteQuery_();
 
 	protected:
-		std::string IqualsConditionsToString_();
 		std::string ComposeInsertSentence_(std::string table, std::string body);
 		std::string ComposeSelectSentence_(std::string table);
 		std::string ComposeUpdateSentence_(std::string table, std::string body);
@@ -220,6 +221,7 @@ class CPW::QueryActions : public ManageJSON
 		std::map<std::string, std::string>* table_rows_;
 		Poco::JSON::Array* result_json_;
 		std::map<std::string, TypeQuery> type_actions_map_;
+		Application& app_;
 };
 
 

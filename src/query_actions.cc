@@ -77,8 +77,9 @@ Filters::~Filters()
 }
 
 QueryActions::QueryActions() :
-	session_((Data::MySQL::Connector::registerConnector(), Data::Session("MySQL", "host=127.0.0.1;port=3306;db=cpw_woodpecker;user=root;password=mariadb_password;"))),
-	query_(session_)
+	session_((Data::MySQL::Connector::registerConnector(), Data::Session("MySQL", "host=127.0.0.1;port=3306;db=cpw_woodpecker;user=root;password=mariadb_password;")))
+	,query_(session_)
+	,app_(Application::instance())
 {
 	result_json_ = new Poco::JSON::Array;
 	table_rows_ = new std::map<std::string, std::string>;
@@ -267,11 +268,11 @@ void QueryActions::IdentifyFilters_()
 	}
 	catch(std::runtime_error& error)
 	{
-		std::cout << "\nError on query_actions.cc on IdentifyFilters_(): " << error.what();
+		app_.logger().error("- Error on query_actions.cc on IdentifyFilters_(): " + std::string(error.what()));
 	}
 	catch(JSON::JSONException& error)
 	{
-		std::cout << "\nError on query_actions.cc on IdentifyFilters_(): " << error.what();
+		app_.logger().error("- Error on query_actions.cc on IdentifyFilters_(): " + std::string(error.what()));
 	}
 }
 
@@ -303,31 +304,12 @@ void QueryActions::ComposeQuery_(TypeAction action_type, std::string table, std:
 		}
 	}
 
-	std::cout << "\nFinal query: " << tmp_query;
+	app_.logger().information("- Final query: " + tmp_query);
 }
 
 void QueryActions::ExecuteQuery_()
 {
 
-}
-
-std::string QueryActions::IqualsConditionsToString_()
-{
-	std::string iquals_conditions = "";
-	bool first = true;
-
-	for(auto it : current_filters_.get_iquals_conditions())
-	{
-		if(first)
-		{
-			iquals_conditions += it.first + "='" + it.second + "' ";
-			first = false;
-		}
-		else
-			iquals_conditions += "AND " + it.first + "='" + it.second + "' ";
-	}
-
-	return iquals_conditions;
 }
 
 std::string QueryActions::ComposeInsertSentence_(std::string table, std::string body)
