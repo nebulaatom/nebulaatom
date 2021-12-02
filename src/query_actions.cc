@@ -222,10 +222,28 @@ void QueryActions::IdentifyFilters_()
 					}
 					case TypeQuery::kIn:
 					{
+						if(it["col"].isEmpty() || it["contents"].isEmpty())
+							throw std::runtime_error("col or contents in kIn is empty on data array index " + std::to_string(a));
+
+						std::vector<std::string> tmp_in;
+						for(std::size_t b = 0; b < it["contents"].size(); b++)
+						{
+							tmp_in.push_back(it["contents"][b]);
+						}
+						get_current_filters_().get_in().emplace(std::make_pair(it["col"], tmp_in));
 						break;
 					}
 					case TypeQuery::kNotIn:
 					{
+						if(it["col"].isEmpty() || it["contents"].isEmpty())
+							throw std::runtime_error("col or contents in kNotIn is empty on data array index " + std::to_string(a));
+
+						std::vector<std::string> tmp_not_in;
+						for(std::size_t b = 0; b < it["contents"].size(); b++)
+						{
+							tmp_not_in.push_back(it["contents"][b]);
+						}
+						get_current_filters_().get_not_in().emplace(std::make_pair(it["col"], tmp_not_in));
 						break;
 					}
 					case TypeQuery::kValues:
@@ -444,6 +462,56 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 						tmp_query.push_back("AND");
 						tmp_query.push_back("'" + it.second.second + "'");
 					}
+				}
+			}
+
+		// In
+			if(current_filters_.get_in().size() > 0)
+			{
+				auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+				if(found == tmp_query.end())
+					tmp_query.push_back("WHERE");
+
+				for(auto it : current_filters_.get_in())
+				{
+					if(found != tmp_query.end())
+						tmp_query.push_back("AND");
+
+					tmp_query.push_back(it.first);
+					tmp_query.push_back("IN (");
+					for(auto it_v : it.second)
+					{
+						if(it_v == it.second.front())
+							tmp_query.push_back("'" + it_v + "'");
+						else
+							tmp_query.push_back(", '" + it_v + "'");
+					}
+					tmp_query.push_back(")");
+				}
+			}
+
+		// Not In
+			if(current_filters_.get_not_in().size() > 0)
+			{
+				auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+				if(found == tmp_query.end())
+					tmp_query.push_back("WHERE");
+
+				for(auto it : current_filters_.get_not_in())
+				{
+					if(found != tmp_query.end())
+						tmp_query.push_back("AND");
+
+					tmp_query.push_back(it.first);
+					tmp_query.push_back("NOT IN (");
+					for(auto it_v : it.second)
+					{
+						if(it_v == it.second.front())
+							tmp_query.push_back("'" + it_v + "'");
+						else
+							tmp_query.push_back(", '" + it_v + "'");
+					}
+					tmp_query.push_back(")");
 				}
 			}
 
