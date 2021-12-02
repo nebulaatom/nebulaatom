@@ -217,6 +217,7 @@ class CPW::QueryActions : public ManageJSON
 		void IncorporeNotIqual_(std::vector<std::string>& tmp_query);
 		void IncorporeGreatherThan_(std::vector<std::string>& tmp_query);
 		void IncorporeSmallerThan_(std::vector<std::string>& tmp_query);
+		void IncorporeBetween_(std::vector<std::string>& tmp_query);
 
 	private:
 		void FillTypeActionsText_();

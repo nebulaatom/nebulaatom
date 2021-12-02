@@ -340,24 +340,7 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 			IncorporeSmallerThan_(tmp_query);
 
 		// Between
-			if(current_filters_.get_between().size() > 0)
-			{
-				auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
-				if(found == tmp_query.end())
-					tmp_query.push_back("WHERE");
-
-				for(auto it : current_filters_.get_between())
-				{
-					if(found != tmp_query.end())
-						tmp_query.push_back("AND " + it.first);
-
-					tmp_query.push_back(it.first);
-					tmp_query.push_back("BETWEEN");
-					tmp_query.push_back("'" + it.second.first + "'");
-					tmp_query.push_back("AND");
-					tmp_query.push_back("'" + it.second.second + "'");
-				}
-			}
+			IncorporeBetween_(tmp_query);
 
 		// In
 			if(current_filters_.get_in().size() > 0)
@@ -492,7 +475,7 @@ void QueryActions::IncorporeSort_(std::vector<std::string>& tmp_query)
 		for(auto it : current_filters_.get_sorts_conditions())
 		{
 			if(it != current_filters_.get_sorts_conditions().front())
-				tmp_query.push_back(", ");
+				tmp_query.push_back(",");
 
 			tmp_query.push_back(it);
 		}
@@ -575,6 +558,28 @@ void QueryActions::IncorporeSmallerThan_(std::vector<std::string>& tmp_query)
 			tmp_query.push_back(it.first);
 			tmp_query.push_back("<");
 			tmp_query.push_back("'" + it.second + "'");
+		}
+	}
+}
+
+void QueryActions::IncorporeBetween_(std::vector<std::string>& tmp_query)
+{
+	if(current_filters_.get_between().size() > 0)
+	{
+		auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+		if(found == tmp_query.end())
+			tmp_query.push_back("WHERE");
+
+		for(auto it : current_filters_.get_between())
+		{
+			if(found != tmp_query.end())
+				tmp_query.push_back("AND");
+
+			tmp_query.push_back(it.first);
+			tmp_query.push_back("BETWEEN");
+			tmp_query.push_back("'" + it.second.first + "'");
+			tmp_query.push_back("AND");
+			tmp_query.push_back("'" + it.second.second + "'");
 		}
 	}
 }
