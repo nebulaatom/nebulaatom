@@ -333,10 +333,10 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 		{
 			for(auto it : current_filters_.get_fields())
 			{
-				if(it == current_filters_.get_fields().front())
-					tmp_query.push_back(it);
-				else
-					tmp_query.push_back(", " + it);
+				if(it != current_filters_.get_fields().front())
+					tmp_query.push_back(",");
+
+				tmp_query.push_back(it);
 			}
 		}
 
@@ -347,21 +347,18 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 		// Iqual
 			if(current_filters_.get_iquals_conditions().size() > 0)
 			{
-				tmp_query.push_back("WHERE");
+				auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+				if(found == tmp_query.end())
+					tmp_query.push_back("WHERE");
+
 				for(auto it : current_filters_.get_iquals_conditions())
 				{
-					if(it == *current_filters_.get_iquals_conditions().begin())
-					{
-						tmp_query.push_back(it.first);
-						tmp_query.push_back("=");
-						tmp_query.push_back("'" + it.second + "'");
-					}
-					else
-					{
+					if(found != tmp_query.end())
 						tmp_query.push_back("AND " + it.first);
-						tmp_query.push_back("=");
-						tmp_query.push_back("'" + it.second + "'");
-					}
+
+					tmp_query.push_back(it.first);
+					tmp_query.push_back("=");
+					tmp_query.push_back("'" + it.second + "'");
 				}
 			}
 
@@ -374,18 +371,12 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 
 				for(auto it : current_filters_.get_not_iquals_conditions())
 				{
-					if(it == *current_filters_.get_not_iquals_conditions().begin() && found == tmp_query.end())
-					{
-						tmp_query.push_back(it.first);
-						tmp_query.push_back("!=");
-						tmp_query.push_back("'" + it.second + "'");
-					}
-					else
-					{
+					if(found != tmp_query.end())
 						tmp_query.push_back("AND " + it.first);
-						tmp_query.push_back("!=");
-						tmp_query.push_back("'" + it.second + "'");
-					}
+
+					tmp_query.push_back(it.first);
+					tmp_query.push_back("!=");
+					tmp_query.push_back("'" + it.second + "'");
 				}
 			}
 
@@ -398,18 +389,12 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 
 				for(auto it : current_filters_.get_greather_than())
 				{
-					if(it == *current_filters_.get_greather_than().begin() && found == tmp_query.end())
-					{
-						tmp_query.push_back(it.first);
-						tmp_query.push_back(">");
-						tmp_query.push_back("'" + it.second + "'");
-					}
-					else
-					{
+					if(found != tmp_query.end())
 						tmp_query.push_back("AND " + it.first);
-						tmp_query.push_back(">");
-						tmp_query.push_back("'" + it.second + "'");
-					}
+
+					tmp_query.push_back(it.first);
+					tmp_query.push_back(">");
+					tmp_query.push_back("'" + it.second + "'");
 				}
 			}
 
@@ -422,18 +407,12 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 
 				for(auto it : current_filters_.get_smaller_than())
 				{
-					if(it == *current_filters_.get_smaller_than().begin() && found == tmp_query.end())
-					{
-						tmp_query.push_back(it.first);
-						tmp_query.push_back("<");
-						tmp_query.push_back("'" + it.second + "'");
-					}
-					else
-					{
+					if(found != tmp_query.end())
 						tmp_query.push_back("AND " + it.first);
-						tmp_query.push_back("<");
-						tmp_query.push_back("'" + it.second + "'");
-					}
+
+					tmp_query.push_back(it.first);
+					tmp_query.push_back("<");
+					tmp_query.push_back("'" + it.second + "'");
 				}
 			}
 
@@ -446,22 +425,14 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 
 				for(auto it : current_filters_.get_between())
 				{
-					if(it == *current_filters_.get_between().begin() && found == tmp_query.end())
-					{
-						tmp_query.push_back(it.first);
-						tmp_query.push_back("BETWEEN");
-						tmp_query.push_back("'" + it.second.first + "'");
-						tmp_query.push_back("AND");
-						tmp_query.push_back("'" + it.second.second + "'");
-					}
-					else
-					{
+					if(found != tmp_query.end())
 						tmp_query.push_back("AND " + it.first);
-						tmp_query.push_back("BETWEEN");
-						tmp_query.push_back("'" + it.second.first + "'");
-						tmp_query.push_back("AND");
-						tmp_query.push_back("'" + it.second.second + "'");
-					}
+
+					tmp_query.push_back(it.first);
+					tmp_query.push_back("BETWEEN");
+					tmp_query.push_back("'" + it.second.first + "'");
+					tmp_query.push_back("AND");
+					tmp_query.push_back("'" + it.second.second + "'");
 				}
 			}
 
@@ -521,10 +492,10 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 			tmp_query.push_back("ORDER BY");
 			for(auto it : current_filters_.get_sorts_conditions())
 			{
-				if(it == current_filters_.get_sorts_conditions().front())
-					tmp_query.push_back(it);
-				else
-					tmp_query.push_back(", " + it);
+				if(it != current_filters_.get_sorts_conditions().front())
+					tmp_query.push_back(", ");
+
+				tmp_query.push_back(it);
 			}
 		}
 
