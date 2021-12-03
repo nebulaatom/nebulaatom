@@ -81,6 +81,7 @@ QueryActions::QueryActions() :
 	,query_(session_)
 	,app_(Application::instance())
 {
+	result_json_ = new JSON::Array;
 	table_rows_ = new std::map<std::string, std::string>;
 	FillTypeActionsText_();
 }
@@ -347,36 +348,27 @@ void QueryActions::ExecuteQuery_()
 void QueryActions::CreateJSONResult_()
 {
 	// Variables
-		std::string result_json = "[";
 		Poco::Dynamic::Var var;
 		Data::RecordSet results(query_);
 
 	// Make JSON string
+		int array_index = 0;
 		for (Data::RecordSet::Iterator it = results.begin(); it != results.end(); ++it)
 		{
-			if(it != results.begin())
-				result_json += ",";
+			JSON::Object::Ptr tmp_object = new JSON::Object();
 
-			result_json += "{";
 			for(size_t a = 0; a < it->fieldCount(); a++)
 			{
 				it->formatValues();
 				var = it->get(a);
 				if(!var.isEmpty())
 				{
-					if(a != 0)
-						result_json += ", ";
-
-					result_json += "\"" + results.columnName(a) + "\"" + ": " + "\"" + var.toString() + "\"";
+					tmp_object->set(results.columnName(a), var.toString());
 				}
 			}
-			result_json += "}";
+			result_json_->set(array_index, tmp_object);
+			array_index++;
 		}
-		result_json += "]";
-
-	// Make JSON array
-		app_.logger().information("- Final JSON: " + result_json);
-		result_json_ = JSON::Parser().parse(result_json).extract<JSON::Array::Ptr>();
 
 }
 
