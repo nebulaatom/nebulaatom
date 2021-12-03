@@ -28,10 +28,10 @@ add_library(route OBJECT "route.cc")
 target_include_directories(route PUBLIC ${HEADER})
 set_target_properties(route PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
-### errorreport
-add_library(errorreport OBJECT "error_report.cc")
-target_include_directories(errorreport PUBLIC ${HEADER})
-set_target_properties(errorreport PROPERTIES POSITION_INDEPENDENT_CODE 1)
+### commonresponses
+add_library(commonresponses OBJECT "common_responses.cc")
+target_include_directories(commonresponses PUBLIC ${HEADER})
+set_target_properties(commonresponses PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
 ## Shared and statics libraries
 
@@ -43,7 +43,7 @@ target_link_libraries(
 	handlerfactory
 	queryactions
 	route
-	errorreport
+	commonresponses
 	roothandler
 	nullhandler
 	businesshandler
