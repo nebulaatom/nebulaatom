@@ -41,7 +41,7 @@
 #include <Poco/Data/Statement.h>
 
 #include "route.h"
-#include "error_report.h"
+#include "common_responses.h"
 #include "Factory/root_handler.h"
 #include "Factory/null_handler.h"
 #include "Factory/business_handler.h"
@@ -86,7 +86,9 @@ class CPW::HandlerConnection
 		HandlerFunctor return_handler_;
 };
 
-class CPW::HandlerFactory : public HTTPRequestHandlerFactory, public ErrorReport
+class CPW::HandlerFactory :
+	public HTTPRequestHandlerFactory
+	,public CommonResponses
 {
 	public:
 		HandlerFactory();

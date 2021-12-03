@@ -50,7 +50,7 @@
 
 #include "query_actions.h"
 #include "route.h"
-#include "error_report.h"
+#include "common_responses.h"
 
 
 namespace CPW
@@ -111,7 +111,7 @@ class CPW::Factory::HTTPMethods:
 
 class CPW::Factory::SecurityVerification:
 	public HTTPMethods
-	,public ErrorReport
+	,public CommonResponses
 	,public ManageJSON
 {
 	public:

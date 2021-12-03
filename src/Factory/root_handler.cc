@@ -118,14 +118,14 @@ bool SecurityVerification::InitSecurityProccess_(HTTPServerRequest& request, HTT
 	{
 		if(!VerifyPermissions_(request))
 		{
-			BasicError_(response, "The user does not have the permissions to perform this operation.", HTTPResponse::HTTP_UNAUTHORIZED);
+			GenericResponse_(response, HTTPResponse::HTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
 			return false;
 		}
 		return true;
 	}
 	else
 	{
-		BasicError_(response, "Unauthorized user or wrong user or password.", HTTPResponse::HTTP_UNAUTHORIZED);
+		GenericResponse_(response, HTTPResponse::HTTP_UNAUTHORIZED, "Unauthorized user or wrong user or password.");
 		return false;
 	}
 }
@@ -251,7 +251,7 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 
 		if(!Parse_(ReadBody_(request.stream())))
 		{
-			BasicError_(response, "Something was wrong with the JSON data.", HTTPResponse::HTTP_BAD_REQUEST);
+			GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Something was wrong with the JSON data.");
 			return;
 		}
 
@@ -261,7 +261,7 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 		{
 			if(!IdentifyRoute_(request))
 			{
-				BasicError_(response, "The requested endpoint is not available.", HTTPResponse::HTTP_NOT_FOUND);
+				GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "The requested endpoint is not available.");
 				return;
 			}
 		}
@@ -278,15 +278,11 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 		else if(request.getMethod() == "DEL")
 			HandleDELMethod_(request, response);
 		else
-			BasicError_(response, "The client provided a bad HTTP method.", HTTPResponse::HTTP_BAD_REQUEST);
+			GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
 	}
 	catch(std::exception error)
 	{
 		app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
-	}
-	catch(JSON::JSONException& error)
-	{
-		std::cout << "\nError on root_handler.cc on handleRequest(): " << error.what();
 	}
 }
 

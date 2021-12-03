@@ -27,39 +27,25 @@ NullHandler::~NullHandler()
 
 void NullHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	NotFoundError_(request, response);
+	GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Sorry, content not found from" + request.getMethod() + " request.");
 }
 
 void NullHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	NotFoundError_(request, response);
+	GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Sorry, content not found from" + request.getMethod() + " request.");
 }
 
 void NullHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	NotFoundError_(request, response);
+	GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Sorry, content not found from" + request.getMethod() + " request.");
 }
 
 void NullHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	NotFoundError_(request, response);
+	GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Sorry, content not found from" + request.getMethod() + " request.");
 }
 
 void NullHandler::AddRoutes_()
 {
 
-}
-
-void NullHandler::NotFoundError_(HTTPServerRequest& request, HTTPServerResponse& response)
-{
-	response.setStatus(HTTPResponse::HTTP_NOT_FOUND);
-	response.setContentType("application/json");
-
-	Poco::JSON::Object::Ptr object_json = new Poco::JSON::Object;
-	object_json->set("Status", "404");
-	object_json->set("Message", "Sorry, content not found from" + request.getMethod() + " request.");
-
-	std::ostream& out = response.send();
-	object_json->stringify(out);
-	out.flush();
 }

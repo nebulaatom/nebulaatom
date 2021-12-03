@@ -43,9 +43,6 @@ class CPW::Factory::NullHandler : public RootHandler
 		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) override;
 		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response) override;
 		virtual void AddRoutes_() override;
-
-	private:
-		void NotFoundError_(HTTPServerRequest& request, HTTPServerResponse& response);
 };
 
 #endif // CPW_FACTORY_NULLHANDLER_H
