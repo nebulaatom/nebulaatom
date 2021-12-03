@@ -29,13 +29,13 @@ void BusinessHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRes
 {
 	get_current_query_actions()->IdentifyFilters_();
 	get_current_query_actions()->ComposeQuery_(TypeAction::kSelect, requested_route_->get_target());
-	//get_current_query_actions()->ExecuteQuery_();
+	get_current_query_actions()->ExecuteQuery_();
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("application/json");
 
 	std::ostream& out = response.send();
-	out << "{GET}";
+	get_current_query_actions()->get_result_json()->stringify(out);
 	out.flush();
 }
 
@@ -43,6 +43,7 @@ void BusinessHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerRe
 {
 	get_current_query_actions()->IdentifyFilters_();
 	get_current_query_actions()->ComposeQuery_(TypeAction::kInsert, requested_route_->get_target());
+	get_current_query_actions()->ExecuteQuery_();
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("application/json");
@@ -56,6 +57,7 @@ void BusinessHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerRes
 {
 	get_current_query_actions()->IdentifyFilters_();
 	get_current_query_actions()->ComposeQuery_(TypeAction::kUpdate, requested_route_->get_target());
+	get_current_query_actions()->ExecuteQuery_();
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("application/json");
@@ -69,6 +71,7 @@ void BusinessHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerRes
 {
 	get_current_query_actions()->IdentifyFilters_();
 	get_current_query_actions()->ComposeQuery_(TypeAction::kDelete, requested_route_->get_target());
+	get_current_query_actions()->ExecuteQuery_();
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("application/json");
