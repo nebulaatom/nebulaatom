@@ -213,6 +213,7 @@ class CPW::QueryActions : public ManageJSON
 		void ExecuteQuery_();
 
 	protected:
+		void CreateJSONResult_();
 		std::string ComposeInsertSentence_(std::string table);
 		std::string ComposeSelectSentence_(std::string table);
 		std::string ComposeUpdateSentence_(std::string table);

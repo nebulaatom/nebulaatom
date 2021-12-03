@@ -322,16 +322,36 @@ void QueryActions::ExecuteQuery_()
 {
 	try
 	{
-		std::string result_json = "[";
-		Poco::Dynamic::Var var;
-
 		ResetQuery_();
 		query_ << final_query_, now;
+		CreateJSONResult_();
+	}
+	catch(MySQL::MySQLException& error)
+	{
+		app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.message()));
+	}
+	catch(JSON::JSONException& error)
+	{
+		app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.displayText()));
+	}
+	catch(std::exception& error)
+	{
+		app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
+	}
+	catch(std::runtime_error& error)
+	{
+		app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
+	}
+}
 
-		// create a RecordSet
-			Data::RecordSet results(query_);
+void QueryActions::CreateJSONResult_()
+{
+	// Variables
+		std::string result_json = "[";
+		Poco::Dynamic::Var var;
+		Data::RecordSet results(query_);
 
-
+	// Make JSON string
 		for (Data::RecordSet::Iterator it = results.begin(); it != results.end(); ++it)
 		{
 			if(it != results.begin())
@@ -354,25 +374,10 @@ void QueryActions::ExecuteQuery_()
 		}
 		result_json += "]";
 
+	// Make JSON array
 		app_.logger().information("- Final JSON: " + result_json);
 		result_json_ = JSON::Parser().parse(result_json).extract<JSON::Array::Ptr>();
-	}
-	catch(MySQL::MySQLException& error)
-	{
-		app_.logger().error("- 4Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.message()));
-	}
-	catch(JSON::JSONException& error)
-	{
-		app_.logger().error("- 3Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.displayText()));
-	}
-	catch(std::exception& error)
-	{
-		app_.logger().error("- 1Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
-	}
-	catch(std::runtime_error& error)
-	{
-		app_.logger().error("- 2Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
-	}
+
 }
 
 std::string QueryActions::ComposeInsertSentence_(std::string table)
