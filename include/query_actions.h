@@ -208,14 +208,14 @@ class CPW::QueryActions : public ManageJSON
 
 		void ResetQuery_();
 		void IdentifyFilters_();
-		void ComposeQuery_(TypeAction action_type, std::string table, std::string bod);
+		void ComposeQuery_(TypeAction action_type, std::string table);
 		void ExecuteQuery_();
 
 	protected:
-		std::string ComposeInsertSentence_(std::string table, std::string body);
+		std::string ComposeInsertSentence_(std::string table);
 		std::string ComposeSelectSentence_(std::string table);
-		std::string ComposeUpdateSentence_(std::string table, std::string body);
-		std::string ComposeDeleteSentence_(std::string table, std::string body);
+		std::string ComposeUpdateSentence_(std::string table);
+		std::string ComposeDeleteSentence_(std::string table);
 		std::string MakeFinalQuery_(std::vector<std::string>& tmp_query);
 
 		void IncorporeWhere_(std::vector<std::string>& tmp_query);

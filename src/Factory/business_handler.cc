@@ -28,7 +28,7 @@ BusinessHandler::~BusinessHandler()
 void BusinessHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
 	get_current_query_actions()->IdentifyFilters_();
-	get_current_query_actions()->ComposeQuery_(TypeAction::kSelect, requested_route_->get_target(), "");
+	get_current_query_actions()->ComposeQuery_(TypeAction::kSelect, requested_route_->get_target());
 	//get_current_query_actions()->ExecuteQuery_();
 
 	response.setStatus(HTTPResponse::HTTP_OK);
@@ -42,7 +42,7 @@ void BusinessHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRes
 void BusinessHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
 	get_current_query_actions()->IdentifyFilters_();
-	get_current_query_actions()->ComposeQuery_(TypeAction::kInsert, requested_route_->get_target(), "");
+	get_current_query_actions()->ComposeQuery_(TypeAction::kInsert, requested_route_->get_target());
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("application/json");
@@ -55,7 +55,7 @@ void BusinessHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerRe
 void BusinessHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
 	get_current_query_actions()->IdentifyFilters_();
-	get_current_query_actions()->ComposeQuery_(TypeAction::kUpdate, requested_route_->get_target(), "");
+	get_current_query_actions()->ComposeQuery_(TypeAction::kUpdate, requested_route_->get_target());
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("application/json");
@@ -68,7 +68,7 @@ void BusinessHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerRes
 void BusinessHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
 	get_current_query_actions()->IdentifyFilters_();
-	get_current_query_actions()->ComposeQuery_(TypeAction::kDelete, requested_route_->get_target(), "");
+	get_current_query_actions()->ComposeQuery_(TypeAction::kDelete, requested_route_->get_target());
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("application/json");

@@ -288,7 +288,7 @@ void QueryActions::IdentifyFilters_()
 	}
 }
 
-void QueryActions::ComposeQuery_(TypeAction action_type, std::string table, std::string body)
+void QueryActions::ComposeQuery_(TypeAction action_type, std::string table)
 {
 	std::string tmp_query;
 
@@ -296,7 +296,7 @@ void QueryActions::ComposeQuery_(TypeAction action_type, std::string table, std:
 	{
 		case TypeAction::kInsert:
 		{
-			tmp_query = ComposeInsertSentence_(table, body);
+			tmp_query = ComposeInsertSentence_(table);
 			break;
 		}
 		case TypeAction::kSelect:
@@ -306,12 +306,12 @@ void QueryActions::ComposeQuery_(TypeAction action_type, std::string table, std:
 		}
 		case TypeAction::kUpdate:
 		{
-			tmp_query = ComposeUpdateSentence_(table, body);
+			tmp_query = ComposeUpdateSentence_(table);
 			break;
 		}
 		case TypeAction::kDelete:
 		{
-			tmp_query = ComposeDeleteSentence_(table, body);
+			tmp_query = ComposeDeleteSentence_(table);
 			break;
 		}
 	}
@@ -324,7 +324,7 @@ void QueryActions::ExecuteQuery_()
 
 }
 
-std::string QueryActions::ComposeInsertSentence_(std::string table, std::string body)
+std::string QueryActions::ComposeInsertSentence_(std::string table)
 {
 	// Sentence type and Table
 		std::vector<std::string> tmp_query = {"INSERT INTO " + table + " ("};
@@ -373,7 +373,7 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 	return MakeFinalQuery_(tmp_query);
 }
 
-std::string QueryActions::ComposeUpdateSentence_(std::string table, std::string body)
+std::string QueryActions::ComposeUpdateSentence_(std::string table)
 {
 	// Sentence type and table
 		std::vector<std::string> tmp_query = {"UPDATE"};
@@ -401,7 +401,7 @@ std::string QueryActions::ComposeUpdateSentence_(std::string table, std::string 
 	return MakeFinalQuery_(tmp_query);
 }
 
-std::string QueryActions::ComposeDeleteSentence_(std::string table, std::string body)
+std::string QueryActions::ComposeDeleteSentence_(std::string table)
 {
 	// Sentence type and Table
 		std::vector<std::string> tmp_query = {"DELETE FROM " + table};
