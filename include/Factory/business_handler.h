@@ -38,10 +38,6 @@ class CPW::Factory::BusinessHandler : public RootHandler
 		virtual ~BusinessHandler();
 
 	protected:
-		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) final;
-		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) final;
-		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) final;
-		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response) final;
 		virtual void AddRoutes_();
 
 	private:

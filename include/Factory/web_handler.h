@@ -52,11 +52,11 @@ class CPW::Factory::WebHandler : public RootHandler
 		~WebHandler();
 
 	protected:
-		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) final;
-		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) final;
-		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) final;
-		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response) final;
-		virtual void AddRoutes_();
+		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) override;
+		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) override;
+		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) override;
+		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response) override;
+		virtual void AddRoutes_() override;
 
 		void AddSupportedFiles_();
 		bool IsSupported_(std::string path);

@@ -38,11 +38,11 @@ class CPW::Factory::NullHandler : public RootHandler
 		virtual ~NullHandler();
 
 	protected:
-		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) final;
-		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) final;
-		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) final;
-		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response) final;
-		virtual void AddRoutes_();
+		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) override;
+		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) override;
+		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) override;
+		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response) override;
+		virtual void AddRoutes_() override;
 
 	private:
 		void NotFoundError_(HTTPServerRequest& request, HTTPServerResponse& response);

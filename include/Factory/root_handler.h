@@ -57,8 +57,8 @@ namespace CPW
 {
 	namespace Factory
 	{
-		class HTTPMethods;
 		class DynamicElements;
+		class HTTPMethods;
 		class SecurityVerification;
 		class RootHandler;
 	}
@@ -72,17 +72,6 @@ using namespace Poco::Data::Keywords;
 using Poco::Data::Session;
 using Poco::Data::Statement;
 
-class CPW::Factory::HTTPMethods
-{
-	public:
-		HTTPMethods();
-		~HTTPMethods();
-
-		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
-		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
-		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
-		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
-};
 
 class CPW::Factory::DynamicElements
 {
@@ -107,8 +96,21 @@ class CPW::Factory::DynamicElements
 		Application& app_;
 };
 
-class CPW::Factory::SecurityVerification:
+class CPW::Factory::HTTPMethods:
 	public DynamicElements
+{
+	public:
+		HTTPMethods();
+		~HTTPMethods();
+
+		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
+		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
+		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
+		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
+};
+
+class CPW::Factory::SecurityVerification:
+	public HTTPMethods
 	,public ErrorReport
 	,public ManageJSON
 {
@@ -125,7 +127,6 @@ class CPW::Factory::SecurityVerification:
 class CPW::Factory::RootHandler :
 	public HTTPRequestHandler
 	,public CPW::Factory::SecurityVerification
-	,public CPW::Factory::HTTPMethods
 {
 	public:
 		RootHandler(std::string api_version);
@@ -136,10 +137,6 @@ class CPW::Factory::RootHandler :
 		Application& get_app() const {return app_;};
 
 	protected:
-		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
-		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
-		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
-		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response) = 0;
 		virtual void AddRoutes_() = 0;
 		bool IdentifyRoute_(HTTPServerRequest& request);
 
