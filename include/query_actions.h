@@ -55,6 +55,7 @@ namespace CPW
 using namespace Poco;
 using namespace Poco::Util;
 using namespace Poco::Net;
+using namespace Poco::Data;
 using namespace Poco::Data::Keywords;
 
 
@@ -204,7 +205,7 @@ class CPW::QueryActions : public ManageJSON
 		Data::Session get_session() const {return session_;}
 		Data::Statement get_query() const {return query_;}
 		std::map<std::string, std::string>* get_table_rows() const {return table_rows_;}
-		Poco::JSON::Array* get_result_json() const {return result_json_;}
+		JSON::Array::Ptr get_result_json() const {return result_json_;}
 
 		void ResetQuery_();
 		void IdentifyFilters_();
@@ -242,7 +243,7 @@ class CPW::QueryActions : public ManageJSON
 		Data::Session session_;
 		Data::Statement query_;
 		std::map<std::string, std::string>* table_rows_;
-		Poco::JSON::Array* result_json_;
+		JSON::Array::Ptr result_json_;
 		std::map<std::string, TypeQuery> type_actions_map_;
 		Application& app_;
 };

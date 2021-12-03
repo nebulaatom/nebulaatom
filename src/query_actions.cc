@@ -81,14 +81,12 @@ QueryActions::QueryActions() :
 	,query_(session_)
 	,app_(Application::instance())
 {
-	result_json_ = new Poco::JSON::Array;
 	table_rows_ = new std::map<std::string, std::string>;
 	FillTypeActionsText_();
 }
 
 QueryActions::~QueryActions()
 {
-	delete result_json_;
 	delete table_rows_;
 }
 
@@ -316,12 +314,65 @@ void QueryActions::ComposeQuery_(TypeAction action_type, std::string table)
 		}
 	}
 
+	final_query_ = tmp_query;
 	app_.logger().information("- Final query: " + tmp_query);
 }
 
 void QueryActions::ExecuteQuery_()
 {
+	try
+	{
+		std::string result_json = "[";
+		Poco::Dynamic::Var var;
 
+		ResetQuery_();
+		query_ << final_query_, now;
+
+		// create a RecordSet
+			Data::RecordSet results(query_);
+
+
+		for (Data::RecordSet::Iterator it = results.begin(); it != results.end(); ++it)
+		{
+			if(it != results.begin())
+				result_json += ",";
+
+			result_json += "{";
+			for(size_t a = 0; a < it->fieldCount(); a++)
+			{
+				it->formatValues();
+				var = it->get(a);
+				if(!var.isEmpty())
+				{
+					if(a != 0)
+						result_json += ", ";
+
+					result_json += "\"" + results.columnName(a) + "\"" + ": " + "\"" + var.toString() + "\"";
+				}
+			}
+			result_json += "}";
+		}
+		result_json += "]";
+
+		app_.logger().information("- Final JSON: " + result_json);
+		result_json_ = JSON::Parser().parse(result_json).extract<JSON::Array::Ptr>();
+	}
+	catch(MySQL::MySQLException& error)
+	{
+		app_.logger().error("- 4Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.message()));
+	}
+	catch(JSON::JSONException& error)
+	{
+		app_.logger().error("- 3Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.displayText()));
+	}
+	catch(std::exception& error)
+	{
+		app_.logger().error("- 1Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
+	}
+	catch(std::runtime_error& error)
+	{
+		app_.logger().error("- 2Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
+	}
 }
 
 std::string QueryActions::ComposeInsertSentence_(std::string table)
