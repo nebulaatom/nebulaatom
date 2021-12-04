@@ -66,7 +66,7 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 			}
 			case RouteType::kEntrypoint:
 			{
-				return connections_[HandlerType::kWeb]->return_handler_();
+				return connections_[HandlerType::kFrontend]->return_handler_();
 				break;
 			}
 		}
@@ -101,11 +101,11 @@ void HandlerFactory::CreateConnections_()
 	));
 	connections_.insert(std::make_pair
 	(
-		HandlerType::kWeb,
+		HandlerType::kFrontend,
 		new HandlerConnection
 		{
 			Route("", std::vector<std::string>{""})
-			,[&](){return new CPW::Factory::WebHandler(api_version_);}
+			,[&](){return new CPW::Factory::FrontendHandler(api_version_);}
 		}
 	));
 }

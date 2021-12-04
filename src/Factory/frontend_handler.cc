@@ -16,28 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Factory/web_handler.h"
+#include "Factory/frontend_handler.h"
 
 using namespace CPW::Factory;
 
-WebHandler::WebHandler(std::string api_version) :
+FrontendHandler::FrontendHandler(std::string api_version) :
 	RootHandler(api_version)
 {
 	supported_files_ = new std::map<std::string, FileProperties>;
 	AddSupportedFiles_();
 }
 
-WebHandler::~WebHandler()
+FrontendHandler::~FrontendHandler()
 {
 	delete supported_files_;
 }
 
-void WebHandler::AddRoutes_()
+void FrontendHandler::AddRoutes_()
 {
 	get_routes_list().push_back(new Route("",std::vector<std::string>{""}));
 }
 
-void WebHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
 	if(!IsSupported_(request.getURI()))
 	{
@@ -47,24 +47,31 @@ void WebHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse
 	{
 		std::cout << "\nFile bad check";
 	}
+
+	response.setStatus(HTTPResponse::HTTP_OK);
+	response.setContentType("application/json");
+
+	std::ostream& out = response.send();
+	out << "{GET}";
+	out.flush();
 }
 
-void WebHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+void FrontendHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
 
 }
 
-void WebHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+void FrontendHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
 
 }
 
-void WebHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+void FrontendHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
 
 }
 
-void WebHandler::AddSupportedFiles_()
+void FrontendHandler::AddSupportedFiles_()
 {
 	supported_files_->insert(std::make_pair
 	(
@@ -83,7 +90,7 @@ void WebHandler::AddSupportedFiles_()
 	));
 }
 
-bool WebHandler::IsSupported_(std::string path)
+bool FrontendHandler::IsSupported_(std::string path)
 {
 	Path requested_path(path);
 	if(requested_path.isDirectory())
@@ -107,7 +114,7 @@ bool WebHandler::IsSupported_(std::string path)
 	}
 }
 
-bool WebHandler::CheckFile_(std::string path)
+bool FrontendHandler::CheckFile_(std::string path)
 {
 	Path requested_path(path);
 	if(requested_path.isDirectory())

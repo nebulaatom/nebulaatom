@@ -33,12 +33,12 @@ namespace CPW
 {
 	namespace Factory
 	{
-		class WebHandler;
+		class FrontendHandler;
 	}
 }
 
 
-class CPW::Factory::WebHandler : public RootHandler
+class CPW::Factory::FrontendHandler : public RootHandler
 {
 	public:
 		struct FileProperties
@@ -48,8 +48,8 @@ class CPW::Factory::WebHandler : public RootHandler
 			std::vector<std::string> other_extensions;
 		};
 
-		WebHandler(std::string api_version);
-		~WebHandler();
+		FrontendHandler(std::string api_version);
+		~FrontendHandler();
 
 	protected:
 		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) override;
