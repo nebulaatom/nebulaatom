@@ -45,7 +45,7 @@
 #include "Factory/root_handler.h"
 #include "Factory/null_handler.h"
 #include "Factory/backend_handler.h"
-#include "Factory/web_handler.h"
+#include "Factory/frontend_handler.h"
 
 using namespace Poco;
 using namespace Poco::Util;
@@ -63,7 +63,7 @@ namespace CPW
 enum class CPW::HandlerType
 {
 	kBackend
-	,kWeb
+	,kFrontend
 	,kNull
 };
 
