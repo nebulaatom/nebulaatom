@@ -46,7 +46,7 @@ target_link_libraries(
 	commonresponses
 	roothandler
 	nullhandler
-	businesshandler
+	backendhandler
 	webhandler
 	Poco::Foundation
 	Poco::Net

@@ -12,10 +12,10 @@ add_library(nullhandler OBJECT "null_handler.cc")
 target_include_directories(nullhandler PUBLIC ${HEADER})
 set_target_properties(nullhandler PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
-### businesshandler
-add_library(businesshandler OBJECT "business_handler.cc")
-target_include_directories(businesshandler PUBLIC ${HEADER})
-set_target_properties(businesshandler PROPERTIES POSITION_INDEPENDENT_CODE 1)
+### backendhandler
+add_library(backendhandler OBJECT "backend_handler.cc")
+target_include_directories(backendhandler PUBLIC ${HEADER})
+set_target_properties(backendhandler PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
 ### webhandler
 add_library(webhandler OBJECT "web_handler.cc")
