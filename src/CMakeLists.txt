@@ -47,7 +47,7 @@ target_link_libraries(
 	roothandler
 	nullhandler
 	backendhandler
-	webhandler
+	frontendhandler
 	Poco::Foundation
 	Poco::Net
 	Poco::Util

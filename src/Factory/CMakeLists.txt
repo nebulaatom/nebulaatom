@@ -17,7 +17,7 @@ add_library(backendhandler OBJECT "backend_handler.cc")
 target_include_directories(backendhandler PUBLIC ${HEADER})
 set_target_properties(backendhandler PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
-### webhandler
-add_library(webhandler OBJECT "web_handler.cc")
-target_include_directories(webhandler PUBLIC ${HEADER})
-set_target_properties(webhandler PROPERTIES POSITION_INDEPENDENT_CODE 1)
+### frontendhandler
+add_library(frontendhandler OBJECT "frontend_handler.cc")
+target_include_directories(frontendhandler PUBLIC ${HEADER})
+set_target_properties(frontendhandler PROPERTIES POSITION_INDEPENDENT_CODE 1)
