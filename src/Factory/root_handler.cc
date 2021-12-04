@@ -249,25 +249,45 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 	{
 		AddRoutes_();
 
-		if(!Parse_(ReadBody_(request.stream())))
-		{
-			GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Something was wrong with the JSON data.");
-			return;
-		}
+		URI initial_uri(request.getURI());
+		std::vector<std::string> segments;
 
-		get_current_query_actions()->get_dynamic_json_body() = get_dynamic_json_body();
+		initial_uri.getPathSegments(segments);
 
-		if(route_verification_)
+		std::unique_ptr<Route> requested_route(new Route("", segments));
+		requested_route_ = std::move(requested_route);
+
+		switch(requested_route_->get_current_route_type())
 		{
-			if(!IdentifyRoute_(request))
+			case RouteType::kEndpoint:
 			{
-				GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "The requested endpoint is not available.");
-				return;
+				if(!Parse_(ReadBody_(request.stream())))
+				{
+					GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Something was wrong with the JSON data.");
+					return;
+				}
+
+				get_current_query_actions()->get_dynamic_json_body() = get_dynamic_json_body();
+
+				if(route_verification_)
+				{
+					if(!IdentifyRoute_(request))
+					{
+						GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "The requested endpoint is not available.");
+						return;
+					}
+				}
+
+				if(!InitSecurityProccess_(request, response))
+					return;
+
+				break;
+			}
+			case RouteType::kEntrypoint:
+			{
+				break;
 			}
 		}
-
-		if(!InitSecurityProccess_(request, response))
-			return;
 
 		if(request.getMethod() == "GET")
 			HandleGETMethod_(request, response);
