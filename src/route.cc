@@ -35,7 +35,7 @@ Route::~Route()
 
 void Route::IdentifyRouteType_()
 {
-	if(segments_.front() != *segments_.end())
+	if(segments_.size() > 0)
 	{
 		if(segments_.front() == "api")
 			current_route_type_ = RouteType::kEndpoint;
