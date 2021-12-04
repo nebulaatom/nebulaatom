@@ -16,16 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Factory/business_handler.h"
+#include "Factory/backend_handler.h"
 
 using namespace CPW::Factory;
 
-BusinessHandler::~BusinessHandler()
+BackendHandler::~BackendHandler()
 {
 
 }
 
-void BusinessHandler::AddRoutes_()
+void BackendHandler::AddRoutes_()
 {
 	get_routes_list().push_back(new Route("business",std::vector<std::string>{"api", get_api_verion(), "business"}));
 	get_routes_list().push_back(new Route("levels",std::vector<std::string>{"api", get_api_verion(), "business", "levels"}));
