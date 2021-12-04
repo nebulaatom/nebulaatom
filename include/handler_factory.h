@@ -44,7 +44,7 @@
 #include "common_responses.h"
 #include "Factory/root_handler.h"
 #include "Factory/null_handler.h"
-#include "Factory/business_handler.h"
+#include "Factory/backend_handler.h"
 #include "Factory/web_handler.h"
 
 using namespace Poco;
@@ -62,13 +62,7 @@ namespace CPW
 
 enum class CPW::HandlerType
 {
-	kBusiness
-	,kAccounts
-	,kDeals
-	,kPays
-	,kCurrency
-	,kInventories
-	,kInvoices
+	kBackend
 	,kWeb
 	,kNull
 };
@@ -97,7 +91,6 @@ class CPW::HandlerFactory :
 
 	protected:
 		void CreateConnections_();
-		HandlerType FindHandler_(std::vector<std::string> segments);
 
 	private:
 		std::string api_version_;

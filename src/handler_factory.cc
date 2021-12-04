@@ -47,35 +47,21 @@ HandlerFactory::~HandlerFactory()
 
 HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest& request)
 {
-	auto return_null = [&]()->HTTPRequestHandler*
-	{
-		return connections_[HandlerType::kNull]->return_handler_();
-	};
-
 	try
 	{
 		URI initial_uri(request.getURI());
-
 		std::vector<std::string> segments;
+
 		initial_uri.getPathSegments(segments);
 
-
-		std::unique_ptr<Route> requested_route
-		(
-			new Route
-			(
-				""
-				,segments
-			)
-		);
+		std::unique_ptr<Route> requested_route(new Route("", segments));
 		requested_route_ = std::move(requested_route);
 
 		switch(requested_route_->get_current_route_type())
 		{
 			case RouteType::kEndpoint:
 			{
-				auto found = FindHandler_(requested_route_->get_segments());
-				return connections_[found]->return_handler_();
+				return connections_[HandlerType::kBackend]->return_handler_();
 				break;
 			}
 			case RouteType::kEntrypoint:
@@ -84,14 +70,13 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 				break;
 			}
 		}
-
 	}
 	catch (std::exception const& error)
 	{
 		app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + std::string(error.what()));
 	}
 
-	return return_null();
+	return connections_[HandlerType::kNull]->return_handler_();
 }
 
 void HandlerFactory::CreateConnections_()
@@ -101,25 +86,17 @@ void HandlerFactory::CreateConnections_()
 		HandlerType::kNull,
 		new HandlerConnection
 		{
-			Route
-			(
-				"null"
-				,std::vector<std::string>{""}
-			)
+			Route("null", std::vector<std::string>{""})
 			,[&](){return new CPW::Factory::NullHandler(api_version_);}
 		}
 	));
 	connections_.insert(std::make_pair
 	(
-		HandlerType::kBusiness,
+		HandlerType::kBackend,
 		new HandlerConnection
 		{
-			Route
-			(
-				"business"
-				,std::vector<std::string>{"api", api_version_, "business"}
-			)
-			,[&](){return new CPW::Factory::BusinessHandler(api_version_);}
+			Route("", std::vector<std::string>{"api", api_version_})
+			,[&](){return new CPW::Factory::BackendHandler(api_version_);}
 		}
 	));
 	connections_.insert(std::make_pair
@@ -127,28 +104,8 @@ void HandlerFactory::CreateConnections_()
 		HandlerType::kWeb,
 		new HandlerConnection
 		{
-			Route
-			(
-				"web"
-				,std::vector<std::string>{""}
-			)
+			Route("", std::vector<std::string>{""})
 			,[&](){return new CPW::Factory::WebHandler(api_version_);}
 		}
 	));
-}
-
-
-HandlerType HandlerFactory::FindHandler_(std::vector<std::string> segments)
-{
-	if(segments.size() < 3)
-		return HandlerType::kNull;
-
-	for(auto it : connections_)
-	{
-		auto target = it.second->current_route_.get_target();
-		if(segments[2] == target)
-			return it.first;
-	}
-
-	return HandlerType::kNull;
 }
