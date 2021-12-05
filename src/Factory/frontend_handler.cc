@@ -70,43 +70,7 @@ void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRes
 		return;
 	}
 
-	bool file_is_binary = supported_files_.at(requested_path_->getExtension()).get_binary();
-	if(file_is_binary)
-	{
-		response.setStatus(HTTPResponse::HTTP_OK);
-		response.setContentType(supported_files_.at(requested_path_->getExtension()).get_content_type());
-
-		std::ostream& out = response.send();
-		std::ifstream out_file(requested_path_->toString(), std::ios::binary | std::ios::ate);
-
-		auto size = out_file.tellg();
-		std::string text_line(size, '\0'); // construct string to stream size
-		out_file.seekg(0);
-		response.setContentLength(size);
-		if(out_file.read(&text_line[0], size))
-		{
-				out << text_line;
-
-		}
-
-		out_file.close();
-		out.flush();
-	}
-	else
-	{
-		response.setStatus(HTTPResponse::HTTP_OK);
-		response.setContentType(supported_files_.at(requested_path_->getExtension()).get_content_type());
-
-		std::string text_line;
-		std::ostream& out = response.send();
-		std::ifstream out_file(requested_path_->toString());
-		while (getline (out_file, text_line))
-		{
-			out << text_line;
-		}
-		out_file.close();
-		out.flush();
-	}
+	ManageFile_(response);
 }
 
 void FrontendHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
@@ -182,4 +146,55 @@ bool FrontendHandler::CheckFile_()
 		return false;
 	else
 		return true;
+}
+
+void FrontendHandler::ManageFile_(HTTPServerResponse& response)
+{
+	bool file_is_binary = supported_files_.at(requested_path_->getExtension()).get_binary();
+	if(file_is_binary)
+	{
+		ManageBinaryFile_(response);
+	}
+	else
+	{
+		ManageTextPlainFile_(response);
+	}
+}
+
+void FrontendHandler::ManageBinaryFile_(HTTPServerResponse& response)
+{
+	response.setStatus(HTTPResponse::HTTP_OK);
+	response.setContentType(supported_files_.at(requested_path_->getExtension()).get_content_type());
+
+	std::ostream& out = response.send();
+	std::ifstream out_file(requested_path_->toString(), std::ios::binary | std::ios::ate);
+
+	auto size = out_file.tellg();
+	std::string text_line(size, '\0');
+	out_file.seekg(0);
+	response.setContentLength(size);
+	if(out_file.read(&text_line[0], size))
+	{
+			out << text_line;
+
+	}
+
+	out_file.close();
+	out.flush();
+}
+
+void FrontendHandler::ManageTextPlainFile_(HTTPServerResponse& response)
+{
+	response.setStatus(HTTPResponse::HTTP_OK);
+	response.setContentType(supported_files_.at(requested_path_->getExtension()).get_content_type());
+
+	std::string text_line;
+	std::ostream& out = response.send();
+	std::ifstream out_file(requested_path_->toString());
+	while (getline (out_file, text_line))
+	{
+		out << text_line;
+	}
+	out_file.close();
+	out.flush();
 }

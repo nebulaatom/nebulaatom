@@ -83,6 +83,9 @@ class CPW::Factory::FrontendHandler : public RootHandler
 		void AddSupportedFiles_();
 		bool IsSupported_();
 		bool CheckFile_();
+		void ManageFile_(HTTPServerResponse& response);
+		void ManageBinaryFile_(HTTPServerResponse& response);
+		void ManageTextPlainFile_(HTTPServerResponse& response);
 
 	private:
 		std::string directory_base_;
