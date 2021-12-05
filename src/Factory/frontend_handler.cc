@@ -111,17 +111,20 @@ void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRes
 
 void FrontendHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-
+	GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "This method is not supported.");
+	return;
 }
 
 void FrontendHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-
+	GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "This method is not supported.");
+	return;
 }
 
 void FrontendHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-
+	GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "This method is not supported.");
+	return;
 }
 
 void FrontendHandler::AddSupportedFiles_()
