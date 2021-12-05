@@ -138,6 +138,17 @@ void FrontendHandler::AddSupportedFiles_()
 	supported_files_.emplace(std::make_pair("ttf",FileProperties{"font/ttf", true, {""}}));
 	supported_files_.emplace(std::make_pair("woff",FileProperties{"font/woff", true, {""}}));
 	supported_files_.emplace(std::make_pair("woff2",FileProperties{"font/woff2", true, {""}}));
+	supported_files_.emplace(std::make_pair("xhtml",FileProperties{"application/xhtml+xml", true, {""}}));
+	supported_files_.emplace(std::make_pair("webm",FileProperties{"video/webm", true, {""}}));
+	supported_files_.emplace(std::make_pair("xml",FileProperties{"application/xml", true, {""}}));
+	supported_files_.emplace(std::make_pair("zip",FileProperties{"application/zip", true, {""}}));
+	supported_files_.emplace(std::make_pair("wav",FileProperties{"audio/x-wav", true, {""}}));
+	supported_files_.emplace(std::make_pair("pdf",FileProperties{"application/pdf", true, {""}}));
+	supported_files_.emplace(std::make_pair("mpeg",FileProperties{"video/mpeg", true, {""}}));
+	supported_files_.emplace(std::make_pair("json",FileProperties{"application/json", true, {""}}));
+	supported_files_.emplace(std::make_pair("ico",FileProperties{"image/x-icon", true, {""}}));
+	supported_files_.emplace(std::make_pair("gif",FileProperties{"image/gif", true, {""}}));
+	supported_files_.emplace(std::make_pair("avi",FileProperties{"video/x-msvideo", true, {""}}));
 }
 
 bool FrontendHandler::IsSupported_()
