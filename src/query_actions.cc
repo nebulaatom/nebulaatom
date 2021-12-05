@@ -43,6 +43,9 @@ std::string ManageJSON::ReadBody_(std::istream& stream)
 
 bool ManageJSON::Parse_(std::string string_to_parse)
 {
+	if(string_to_parse.empty())
+		return false;
+
 	JSON::Parser parser;
 	JSON::Object::Ptr object_json = parser.parse(string_to_parse).extract<JSON::Object::Ptr>();
 	dynamic_json_body_ = *object_json;
