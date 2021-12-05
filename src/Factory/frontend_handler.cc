@@ -59,11 +59,6 @@ void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRes
 	if(requested_path_->isDirectory())
 		requested_path_->setFileName("index.html");
 
-	if(!IsSupported_())
-	{
-		GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Requested file not supported.");
-		return;
-	}
 	if(!CheckFile_())
 	{
 		GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
@@ -113,6 +108,7 @@ void FrontendHandler::AddSupportedFiles_()
 	supported_files_.emplace(std::make_pair("ico",FileProperties{"image/x-icon", true, {""}}));
 	supported_files_.emplace(std::make_pair("gif",FileProperties{"image/gif", true, {""}}));
 	supported_files_.emplace(std::make_pair("avi",FileProperties{"video/x-msvideo", true, {""}}));
+	supported_files_.emplace(std::make_pair("txt",FileProperties{"text/plain", true, {""}}));
 }
 
 bool FrontendHandler::IsSupported_()
@@ -150,21 +146,25 @@ bool FrontendHandler::CheckFile_()
 
 void FrontendHandler::ManageFile_(HTTPServerResponse& response)
 {
-	bool file_is_binary = supported_files_.at(requested_path_->getExtension()).get_binary();
-	if(file_is_binary)
+	if(IsSupported_())
 	{
-		ManageBinaryFile_(response);
+		bool file_is_binary = supported_files_.at(requested_path_->getExtension()).get_binary();
+		if(file_is_binary)
+			ManageBinaryFile_(response);
+		else
+			ManageTextPlainFile_(response);
 	}
 	else
-	{
-		ManageTextPlainFile_(response);
-	}
+		ManageBinaryFile_(response);
 }
 
 void FrontendHandler::ManageBinaryFile_(HTTPServerResponse& response)
 {
 	response.setStatus(HTTPResponse::HTTP_OK);
-	response.setContentType(supported_files_.at(requested_path_->getExtension()).get_content_type());
+	if(IsSupported_())
+		response.setContentType(supported_files_.at(requested_path_->getExtension()).get_content_type());
+	else
+		response.setContentType("application/octet-stream");
 
 	std::ostream& out = response.send();
 	std::ifstream out_file(requested_path_->toString(), std::ios::binary | std::ios::ate);
@@ -175,8 +175,7 @@ void FrontendHandler::ManageBinaryFile_(HTTPServerResponse& response)
 	response.setContentLength(size);
 	if(out_file.read(&text_line[0], size))
 	{
-			out << text_line;
-
+		out << text_line;
 	}
 
 	out_file.close();
@@ -186,7 +185,10 @@ void FrontendHandler::ManageBinaryFile_(HTTPServerResponse& response)
 void FrontendHandler::ManageTextPlainFile_(HTTPServerResponse& response)
 {
 	response.setStatus(HTTPResponse::HTTP_OK);
-	response.setContentType(supported_files_.at(requested_path_->getExtension()).get_content_type());
+	if(IsSupported_())
+		response.setContentType(supported_files_.at(requested_path_->getExtension()).get_content_type());
+	else
+		response.setContentType("text/plain");
 
 	std::string text_line;
 	std::ostream& out = response.send();
