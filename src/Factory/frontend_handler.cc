@@ -204,7 +204,7 @@ void FrontendHandler::ManageTextPlainFile_(HTTPServerResponse& response)
 	std::ifstream out_file(requested_path_->toString());
 	while (getline (out_file, text_line))
 	{
-		out << text_line;
+		out << text_line << "\n";
 	}
 	out_file.close();
 	out.flush();
