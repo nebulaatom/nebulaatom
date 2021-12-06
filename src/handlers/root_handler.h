@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_FACTORY_ROOTHANDLER_H
-#define CPW_FACTORY_ROOTHANDLER_H
+#ifndef CPW_HANDLERS_ROOTHANDLER_H
+#define CPW_HANDLERS_ROOTHANDLER_H
 
 
-#include <iostream>
 #include <istream>
 #include <string>
 #include <list>
@@ -48,18 +47,18 @@
 #include <Poco/Dynamic/Var.h>
 #include <Poco/Dynamic/Struct.h>
 
-#include "query_actions.h"
-#include "route.h"
-#include "common_responses.h"
+#include "core/query_actions.h"
+#include "tools/route.h"
+#include "tools/common_responses.h"
+#include "extras/security_verification.h"
+#include "extras/dynamic_elements.h"
+#include "extras/http_methods.h"
 
 
 namespace CPW
 {
-	namespace Factory
+	namespace Handlers
 	{
-		class DynamicElements;
-		class HTTPMethods;
-		class SecurityVerification;
 		class RootHandler;
 	}
 }
@@ -73,60 +72,9 @@ using Poco::Data::Session;
 using Poco::Data::Statement;
 
 
-class CPW::Factory::DynamicElements
-{
-	public:
-		DynamicElements();
-		~DynamicElements();
-
-		std::list<Route*>& get_routes_list()
-		{
-			std::list<Route*>& r = routes_list_;
-			return r;
-		}
-		QueryActions* get_current_query_actions() const {return current_query_actions_;}
-		Application& get_app() const {return app_;};
-
-	protected:
-		std::unique_ptr<Route> requested_route_;
-
-	private:
-		std::list<Route*> routes_list_;
-		QueryActions* current_query_actions_;
-		Application& app_;
-};
-
-class CPW::Factory::HTTPMethods:
-	public DynamicElements
-{
-	public:
-		HTTPMethods();
-		~HTTPMethods();
-
-		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
-		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
-		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
-		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
-};
-
-class CPW::Factory::SecurityVerification:
-	public HTTPMethods
-	,public CommonResponses
-	,public ManageJSON
-{
-	public:
-		SecurityVerification();
-		~SecurityVerification();
-
-		bool InitSecurityProccess_(HTTPServerRequest& request, HTTPServerResponse& response);
-		bool AuthenticateUser_();
-		bool VerifyPermissions_(HTTPServerRequest& request);
-		void SeePermissionsPerUser_(std::string user, std::string action_type, std::string target);
-};
-
-class CPW::Factory::RootHandler :
+class CPW::Handlers::RootHandler :
 	public HTTPRequestHandler
-	,public CPW::Factory::SecurityVerification
+	,public CPW::Extras::SecurityVerification
 {
 	public:
 		RootHandler(std::string api_version);
@@ -138,7 +86,7 @@ class CPW::Factory::RootHandler :
 
 	protected:
 		virtual void AddRoutes_() = 0;
-		bool IdentifyRoute_(HTTPServerRequest& request);
+		bool IdentifyRoute_();
 		bool ManageRequestBody_(HTTPServerRequest& request);
 
 		Application& app_;
@@ -148,4 +96,4 @@ class CPW::Factory::RootHandler :
 		bool route_verification_;
 };
 
-#endif // CPW_FACTORY_ROOTHANDLER_H
+#endif // CPW_HANDLERS_ROOTHANDLER_H
