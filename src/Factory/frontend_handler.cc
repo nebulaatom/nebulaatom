@@ -53,13 +53,7 @@ void FrontendHandler::AddRoutes_()
 
 void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	Path tmp_path(request.getURI());
-	requested_path_->append(tmp_path);
-
-	if(requested_path_->isDirectory())
-		requested_path_->setFileName("index.html");
-
-	if(!CheckFile_())
+	if(!CheckFile_(Path(request.getURI())))
 	{
 		GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
 		return;
@@ -132,13 +126,28 @@ bool FrontendHandler::IsSupported_()
 	}
 }
 
-bool FrontendHandler::CheckFile_()
+bool FrontendHandler::CheckFile_(Path path)
 {
-	File requested_file(*requested_path_);
+	requested_path_->append(path);
+	std::unique_ptr<File> tmp_file (new File(*requested_path_));
 
-	if(!requested_file.exists())
+	if(tmp_file->exists())
+	{
+		if(tmp_file->isDirectory())
+		{
+			requested_path_->makeDirectory();
+			requested_path_->setFileName("index.html");
+
+			tmp_file.reset(new File(*requested_path_));
+
+			if(!tmp_file->exists())
+				return false;
+		}
+	}
+	else
 		return false;
-	else if(!requested_file.canRead())
+
+	if(!tmp_file->canRead())
 		return false;
 	else
 		return true;

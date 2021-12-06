@@ -82,7 +82,7 @@ class CPW::Factory::FrontendHandler : public RootHandler
 
 		void AddSupportedFiles_();
 		bool IsSupported_();
-		bool CheckFile_();
+		bool CheckFile_(Path path);
 		void ManageFile_(HTTPServerResponse& response);
 		void ManageBinaryFile_(HTTPServerResponse& response);
 		void ManageTextPlainFile_(HTTPServerResponse& response);

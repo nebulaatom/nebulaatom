@@ -300,7 +300,19 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 		else
 			GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
 	}
-	catch(std::exception error)
+	catch(MySQL::MySQLException& error)
+	{
+		app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
+	}
+	catch(JSON::JSONException& error)
+	{
+		app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
+	}
+	catch(std::exception& error)
+	{
+		app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
+	}
+	catch(std::runtime_error& error)
 	{
 		app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
 	}
