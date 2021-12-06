@@ -1,6 +1,6 @@
 # Tests
 add_executable(test_gen test_gen.cc)
-add_test(testGen test_gen)
+add_test(TestGen test_gen)
 
 # Use PkgConfig
 include(FindPkgConfig)
