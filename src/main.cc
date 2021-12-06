@@ -20,7 +20,7 @@
 #include "Poco/Util/Application.h"
 #include "Poco/Format.h"
 
-#include "woodpecker_server.h"
+#include "core/woodpecker_server.h"
 
 using namespace Poco;
 using namespace Poco::Util;
@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		CPW::WoodpeckerServer app_main(8080);
+		CPW::Core::WoodpeckerServer app_main(8080);
 		return app_main.run(argc, argv);
 	}
 	catch (std::exception const& error)
