@@ -16,22 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_FACTORY_BACKENDHANDLER_H
-#define CPW_FACTORY_BACKENDHANDLER_H
+#ifndef CPW_HANDLERS_BACKENDHANDLER_H
+#define CPW_HANDLERS_BACKENDHANDLER_H
 
 
-#include "Factory/root_handler.h"
+#include "handlers/root_handler.h"
 
 namespace CPW
 {
-	namespace Factory
+	namespace Handlers
 	{
 		class BackendHandler;
 	}
 }
 
 
-class CPW::Factory::BackendHandler : public RootHandler
+class CPW::Handlers::BackendHandler : public RootHandler
 {
 	public:
 		using RootHandler::RootHandler;
@@ -43,4 +43,4 @@ class CPW::Factory::BackendHandler : public RootHandler
 	private:
 };
 
-#endif // CPW_FACTORY_BACKENDHANDLER_H
+#endif // CPW_HANDLERS_BACKENDHANDLER_H
