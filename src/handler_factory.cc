@@ -49,15 +49,13 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 {
 	try
 	{
-		URI initial_uri(request.getURI());
 		std::vector<std::string> segments;
 
-		initial_uri.getPathSegments(segments);
+		URI(request.getURI()).getPathSegments(segments);
 
-		std::unique_ptr<Route> requested_route(new Route("", segments));
-		requested_route_ = std::move(requested_route);
+		Route requested_route("", segments);
 
-		switch(requested_route_->get_current_route_type())
+		switch(requested_route.get_current_route_type())
 		{
 			case RouteType::kEndpoint:
 			{

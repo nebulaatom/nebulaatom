@@ -94,7 +94,6 @@ class CPW::HandlerFactory :
 
 	private:
 		std::string api_version_;
-		std::unique_ptr<Route> requested_route_;
 		std::map<HandlerType, HandlerConnection*> connections_;
 		Application& app_;
 };
