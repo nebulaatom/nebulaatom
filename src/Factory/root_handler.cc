@@ -249,25 +249,20 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 	{
 		AddRoutes_();
 
-		URI initial_uri(request.getURI());
 		std::vector<std::string> segments;
+		URI(request.getURI()).getPathSegments(segments);
 
-		initial_uri.getPathSegments(segments);
-
-		std::unique_ptr<Route> requested_route(new Route("", segments));
-		requested_route_ = std::move(requested_route);
+		requested_route_.reset(new Route("", segments));
 
 		switch(requested_route_->get_current_route_type())
 		{
 			case RouteType::kEndpoint:
 			{
-				if(!Parse_(ReadBody_(request.stream())))
+				if(!ManageRequestBody_(request))
 				{
-					GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Something was wrong with the JSON data.");
+					GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Something was wrong with the Request body.");
 					return;
 				}
-
-				get_current_query_actions()->get_dynamic_json_body() = get_dynamic_json_body();
 
 				if(route_verification_)
 				{
@@ -344,4 +339,31 @@ bool RootHandler::IdentifyRoute_(HTTPServerRequest& request)
 	}
 
 	return false;
+}
+
+bool RootHandler::ManageRequestBody_(HTTPServerRequest& request)
+{
+	std::string request_body = ReadBody_(request.stream());
+
+	if(request_body.empty())
+	{
+		URI tmp_uri(request.getURI());
+		if(!(tmp_uri.getQueryParameters().size() > 0))
+			return false;
+
+		if(tmp_uri.getQueryParameters()[0].first != "json")
+			return false;
+
+		if(tmp_uri.getQueryParameters()[0].second.empty())
+			return false;
+
+		request_body = tmp_uri.getQueryParameters()[0].second;
+	}
+
+	if(!Parse_(request_body))
+		return false;
+
+	get_current_query_actions()->get_dynamic_json_body() = get_dynamic_json_body();
+
+	return true;
 }

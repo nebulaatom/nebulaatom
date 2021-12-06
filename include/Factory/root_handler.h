@@ -139,6 +139,7 @@ class CPW::Factory::RootHandler :
 	protected:
 		virtual void AddRoutes_() = 0;
 		bool IdentifyRoute_(HTTPServerRequest& request);
+		bool ManageRequestBody_(HTTPServerRequest& request);
 
 		Application& app_;
 
