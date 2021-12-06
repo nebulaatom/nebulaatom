@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_WOODPECKERSERVER_H
-#define CPW_WOODPECKERSERVER_H
+#ifndef CPW_CORE_WOODPECKERSERVER_H
+#define CPW_CORE_WOODPECKERSERVER_H
 
 
 #include <string>
@@ -30,12 +30,15 @@
 #include <Poco/Net/HTTPServer.h>
 #include "Poco/Format.h"
 
-#include "handler_factory.h"
+#include "core/handler_factory.h"
 
 
 namespace CPW
 {
-	class WoodpeckerServer;
+	namespace Core
+	{
+		class WoodpeckerServer;
+	}
 }
 
 using namespace Poco;
@@ -43,7 +46,7 @@ using namespace Poco::Net;
 using namespace Poco::Util;
 
 
-class CPW::WoodpeckerServer : public ServerApplication
+class CPW::Core::WoodpeckerServer : public ServerApplication
 {
 	public:
 		WoodpeckerServer(int port);
@@ -62,4 +65,4 @@ class CPW::WoodpeckerServer : public ServerApplication
 		Application& app_;
 };
 
-#endif // CPW_WOODPECKERSERVER_H
+#endif // CPW_CORE_WOODPECKERSERVER_H
