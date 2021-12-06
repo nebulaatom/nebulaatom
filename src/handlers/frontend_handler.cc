@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Factory/frontend_handler.h"
+#include "handlers/frontend_handler.h"
 
-using namespace CPW::Factory;
+using namespace CPW::Handlers;
 
 FileProperties::FileProperties(std::string content_type, bool binary, std::vector<std::string> other_extensions) :
 	content_type_(content_type)
@@ -48,7 +48,7 @@ FrontendHandler::~FrontendHandler()
 
 void FrontendHandler::AddRoutes_()
 {
-	get_routes_list().push_back(new Route("",std::vector<std::string>{""}));
+	get_routes_list().push_back(new CPW::Tools::Route("",std::vector<std::string>{""}));
 }
 
 void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)

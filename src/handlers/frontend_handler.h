@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_FACTORY_WEBHANDLER_H
-#define CPW_FACTORY_WEBHANDLER_H
+#ifndef CPW_HANDLERS_FRONTENDHANDLER_H
+#define CPW_HANDLERS_FRONTENDHANDLER_H
 
 #include <string>
 #include <map>
@@ -27,19 +27,19 @@
 #include "Poco/Path.h"
 #include "Poco/File.h"
 
-#include "Factory/root_handler.h"
+#include "handlers/root_handler.h"
 
 
 namespace CPW
 {
-	namespace Factory
+	namespace Handlers
 	{
 		class FileProperties;
 		class FrontendHandler;
 	}
 }
 
-class CPW::Factory::FileProperties
+class CPW::Handlers::FileProperties
 {
 	public:
 		FileProperties(std::string content_type, bool binary, std::vector<std::string> other_extensions);
@@ -67,7 +67,7 @@ class CPW::Factory::FileProperties
 		std::vector<std::string> other_extensions_;
 };
 
-class CPW::Factory::FrontendHandler : public RootHandler
+class CPW::Handlers::FrontendHandler : public RootHandler
 {
 	public:
 		FrontendHandler(std::string api_version);
@@ -93,4 +93,4 @@ class CPW::Factory::FrontendHandler : public RootHandler
 		std::map<std::string, FileProperties> supported_files_;
 };
 
-#endif // CPW_FACTORY_WEBHANDLER_H
+#endif // CPW_HANDLERS_FRONTENDHANDLER_H
