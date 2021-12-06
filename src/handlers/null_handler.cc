@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Factory/null_handler.h"
+#include "handlers/null_handler.h"
 
-using namespace CPW::Factory;
+using namespace CPW::Handlers;
 
 NullHandler::~NullHandler()
 {

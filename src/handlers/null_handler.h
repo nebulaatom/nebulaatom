@@ -16,22 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_FACTORY_NULLHANDLER_H
-#define CPW_FACTORY_NULLHANDLER_H
+#ifndef CPW_HANDLERS_NULLHANDLER_H
+#define CPW_HANDLERS_NULLHANDLER_H
 
 
-#include "Factory/root_handler.h"
+#include "handlers/root_handler.h"
 
 namespace CPW
 {
-	namespace Factory
+	namespace Handlers
 	{
 		class NullHandler;
 	}
 }
 
 
-class CPW::Factory::NullHandler : public RootHandler
+class CPW::Handlers::NullHandler : public RootHandler
 {
 	public:
 		using RootHandler::RootHandler;
@@ -45,4 +45,4 @@ class CPW::Factory::NullHandler : public RootHandler
 		virtual void AddRoutes_() override;
 };
 
-#endif // CPW_FACTORY_NULLHANDLER_H
+#endif // CPW_HANDLERS_NULLHANDLER_H
