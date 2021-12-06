@@ -18,7 +18,7 @@
 
 #include "route.h"
 
-using namespace CPW;
+using namespace CPW::Tools;
 
 Route::Route(std::string target, std::vector<std::string> segments) :
 	target_(target)

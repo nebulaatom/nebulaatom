@@ -27,18 +27,21 @@
 
 namespace CPW
 {
-	enum class RouteType;
-	class Route;
+	namespace Tools
+	{
+		enum class RouteType;
+		class Route;
+	}
 }
 
-enum class CPW::RouteType
+enum class CPW::Tools::RouteType
 {
 	kEntrypoint
 	,kEndpoint
 };
 
 
-class CPW::Route
+class CPW::Tools::Route
 {
 	public:
 		Route(std::string target, std::vector<std::string> segments);
