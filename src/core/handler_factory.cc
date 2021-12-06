@@ -18,9 +18,9 @@
 
 #include "handler_factory.h"
 
-using namespace CPW;
+using namespace CPW::Core;
 
-HandlerConnection::HandlerConnection(Route route, HandlerFunctor handler) :
+HandlerConnection::HandlerConnection(CPW::Tools::Route route, HandlerFunctor handler) :
 	current_route_(route)
 	,return_handler_(handler)
 {
@@ -53,16 +53,16 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 
 		URI(request.getURI()).getPathSegments(segments);
 
-		Route requested_route("", segments);
+		CPW::Tools::Route requested_route("", segments);
 
 		switch(requested_route.get_current_route_type())
 		{
-			case RouteType::kEndpoint:
+			case CPW::Tools::RouteType::kEndpoint:
 			{
 				return connections_[HandlerType::kBackend]->return_handler_();
 				break;
 			}
-			case RouteType::kEntrypoint:
+			case CPW::Tools::RouteType::kEntrypoint:
 			{
 				return connections_[HandlerType::kFrontend]->return_handler_();
 				break;
@@ -84,8 +84,8 @@ void HandlerFactory::CreateConnections_()
 		HandlerType::kNull,
 		new HandlerConnection
 		{
-			Route("null", std::vector<std::string>{""})
-			,[&](){return new CPW::Factory::NullHandler(api_version_);}
+			CPW::Tools::Route("null", std::vector<std::string>{""})
+			,[&](){return new CPW::Handlers::NullHandler(api_version_);}
 		}
 	));
 	connections_.insert(std::make_pair
@@ -93,8 +93,8 @@ void HandlerFactory::CreateConnections_()
 		HandlerType::kBackend,
 		new HandlerConnection
 		{
-			Route("", std::vector<std::string>{"api", api_version_})
-			,[&](){return new CPW::Factory::BackendHandler(api_version_);}
+			CPW::Tools::Route("", std::vector<std::string>{"api", api_version_})
+			,[&](){return new CPW::Handlers::BackendHandler(api_version_);}
 		}
 	));
 	connections_.insert(std::make_pair
@@ -102,8 +102,8 @@ void HandlerFactory::CreateConnections_()
 		HandlerType::kFrontend,
 		new HandlerConnection
 		{
-			Route("", std::vector<std::string>{""})
-			,[&](){return new CPW::Factory::FrontendHandler(api_version_);}
+			CPW::Tools::Route("", std::vector<std::string>{""})
+			,[&](){return new CPW::Handlers::FrontendHandler(api_version_);}
 		}
 	));
 }

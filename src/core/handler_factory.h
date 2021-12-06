@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_HANDLERFACTORY_H
-#define CPW_HANDLERFACTORY_H
+#ifndef CPW_CORE_HANDLERFACTORY_H
+#define CPW_CORE_HANDLERFACTORY_H
 
 
 #include <map>
@@ -40,12 +40,12 @@
 #include <Poco/Data/MySQL/MySQLException.h>
 #include <Poco/Data/Statement.h>
 
-#include "route.h"
-#include "common_responses.h"
-#include "Factory/root_handler.h"
-#include "Factory/null_handler.h"
-#include "Factory/backend_handler.h"
-#include "Factory/frontend_handler.h"
+#include "tools/route.h"
+#include "tools/common_responses.h"
+#include "handlers/root_handler.h"
+#include "handlers/null_handler.h"
+#include "handlers/backend_handler.h"
+#include "handlers/frontend_handler.h"
 
 using namespace Poco;
 using namespace Poco::Util;
@@ -55,12 +55,15 @@ using namespace Poco::Data::Keywords;
 
 namespace CPW
 {
-	enum class HandlerType;
-	class HandlerConnection;
-	class HandlerFactory;
+	namespace Core
+	{
+		enum class HandlerType;
+		class HandlerConnection;
+		class HandlerFactory;
+	}
 }
 
-enum class CPW::HandlerType
+enum class CPW::Core::HandlerType
 {
 	kBackend
 	,kFrontend
@@ -68,21 +71,21 @@ enum class CPW::HandlerType
 };
 
 
-class CPW::HandlerConnection
+class CPW::Core::HandlerConnection
 {
 	public:
-		using HandlerFunctor = std::function<CPW::Factory::RootHandler*()>;
+		using HandlerFunctor = std::function<CPW::Handlers::RootHandler*()>;
 
-		HandlerConnection(Route route, HandlerFunctor handler);
+		HandlerConnection(CPW::Tools::Route route, HandlerFunctor handler);
 		~HandlerConnection();
 
-		Route current_route_;
+		CPW::Tools::Route current_route_;
 		HandlerFunctor return_handler_;
 };
 
-class CPW::HandlerFactory :
+class CPW::Core::HandlerFactory :
 	public HTTPRequestHandlerFactory
-	,public CommonResponses
+	,public CPW::Tools::CommonResponses
 {
 	public:
 		HandlerFactory();
@@ -98,4 +101,4 @@ class CPW::HandlerFactory :
 		Application& app_;
 };
 
-#endif // CPW_HANDLERFACTORY_H
+#endif // CPW_CORE_HANDLERFACTORY_H
