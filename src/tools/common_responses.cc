@@ -18,7 +18,7 @@
 
 #include "common_responses.h"
 
-using namespace CPW;
+using namespace CPW::Tools;
 
 CommonResponses::CommonResponses()
 {

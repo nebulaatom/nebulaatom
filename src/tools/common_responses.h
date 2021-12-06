@@ -30,15 +30,18 @@
 
 namespace CPW
 {
-	enum class ResponseType;
-	class CommonResponses;
+	namespace Tools
+	{
+		enum class ResponseType;
+		class CommonResponses;
+	}
 }
 
 using namespace Poco;
 using namespace Poco::Net;
 
 
-enum class CPW::ResponseType
+enum class CPW::Tools::ResponseType
 {
 	kError
 	,kWarning
@@ -46,7 +49,7 @@ enum class CPW::ResponseType
 	,kSuccess
 };
 
-class CPW::CommonResponses
+class CPW::Tools::CommonResponses
 {
 	public:
 		CommonResponses();
