@@ -21,3 +21,8 @@ set_target_properties(filters PROPERTIES POSITION_INDEPENDENT_CODE 1)
 add_library(managejson OBJECT "manage_json.cc")
 target_include_directories(managejson PUBLIC ${HEADER})
 set_target_properties(managejson PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
+### requestsmanager
+add_library(requestsmanager OBJECT "requests_manager.cc")
+target_include_directories(requestsmanager PUBLIC ${HEADER})
+set_target_properties(requestsmanager PROPERTIES POSITION_INDEPENDENT_CODE 1)

@@ -32,6 +32,7 @@ target_link_libraries(
 	commonresponses
 	filters
 	managejson
+	requestsmanager
 	Poco::Foundation
 	Poco::Net
 	Poco::Util
