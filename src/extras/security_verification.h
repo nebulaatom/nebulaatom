@@ -22,12 +22,6 @@
 
 #include <string>
 
-#include "Poco/Util/ServerApplication.h"
-#include <Poco/Net/HTTPServerRequest.h>
-#include <Poco/Net/HTTPResponse.h>
-#include <Poco/Net/HTTPServerResponse.h>
-
-#include "tools/common_responses.h"
 #include "tools/manage_json.h"
 #include "tools/requests_manager.h"
 
@@ -46,16 +40,14 @@ using namespace Poco::Util;
 
 class CPW::Extras::SecurityVerification:
 	public CPW::Tools::RequestsManager
-	,public CPW::Tools::CommonResponses
 	,public CPW::Tools::ManageJSON
 {
 	public:
 		SecurityVerification();
 		~SecurityVerification();
 
-		bool InitSecurityProccess_(HTTPServerRequest& request, HTTPServerResponse& response);
 		bool AuthenticateUser_();
-		bool VerifyPermissions_(HTTPServerRequest& request);
+		bool VerifyPermissions_(std::string method);
 		void SeePermissionsPerUser_(std::string user, std::string action_type, std::string target);
 };
 

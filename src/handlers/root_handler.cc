@@ -63,8 +63,7 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 					}
 				}
 
-				if(!InitSecurityProccess_(request, response))
-					return;
+				InitSecurityProccess_(request, response);
 
 				break;
 			}
@@ -100,6 +99,24 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 	{
 		app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
 		GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
+	}
+}
+
+
+void RootHandler::InitSecurityProccess_(HTTPServerRequest& request, HTTPServerResponse& response)
+{
+	if(AuthenticateUser_())
+	{
+		if(!VerifyPermissions_(request.getMethod()))
+		{
+			GenericResponse_(response, HTTPResponse::HTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
+			return;
+		}
+	}
+	else
+	{
+		GenericResponse_(response, HTTPResponse::HTTP_UNAUTHORIZED, "Unauthorized user or wrong user or password.");
+		return;
 	}
 }
 

@@ -30,24 +30,6 @@ SecurityVerification::~SecurityVerification()
 
 }
 
-bool SecurityVerification::InitSecurityProccess_(HTTPServerRequest& request, HTTPServerResponse& response)
-{
-	if(AuthenticateUser_())
-	{
-		if(!VerifyPermissions_(request))
-		{
-			GenericResponse_(response, HTTPResponse::HTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
-			return false;
-		}
-		return true;
-	}
-	else
-	{
-		GenericResponse_(response, HTTPResponse::HTTP_UNAUTHORIZED, "Unauthorized user or wrong user or password.");
-		return false;
-	}
-}
-
 bool SecurityVerification::AuthenticateUser_()
 {
 	// Variables
@@ -91,13 +73,13 @@ bool SecurityVerification::AuthenticateUser_()
 			return false;
 }
 
-bool SecurityVerification::VerifyPermissions_(HTTPServerRequest& request)
+bool SecurityVerification::VerifyPermissions_(std::string method)
 {
 	// Variables
 		auto query_actions = get_current_query_actions();
 
 		std::string user = query_actions->get_table_rows()->at("user");
-		std::string action_type = request.getMethod();
+		std::string action_type = method;
 		std::string target = requested_route_->get_target();
 		int granted = -1;
 		std::size_t rows = 0;

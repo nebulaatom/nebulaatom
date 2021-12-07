@@ -77,6 +77,7 @@ using Poco::Data::Statement;
 class CPW::Handlers::RootHandler :
 	public HTTPRequestHandler
 	,public CPW::Extras::SecurityVerification
+	,public CPW::Tools::CommonResponses
 {
 	public:
 		RootHandler(std::string api_version);
@@ -88,6 +89,7 @@ class CPW::Handlers::RootHandler :
 
 	protected:
 		virtual void AddRoutes_() = 0;
+		void InitSecurityProccess_(HTTPServerRequest& request, HTTPServerResponse& response);
 		bool IdentifyRoute_();
 		bool ManageRequestBody_(HTTPServerRequest& request);
 
