@@ -25,7 +25,42 @@ RootHandler::RootHandler(std::string api_version) :
 	,api_verion_(api_version)
 	,route_verification_(true)
 {
-
+	actions_strings_.emplace(std::make_pair
+	(
+		"GET"
+		,std::make_pair
+		(
+			TypeAction::kSelect
+			,[&](HTTPServerRequest& req, HTTPServerResponse& res){HandleGETMethod_(req, res);}
+		)
+	));
+	actions_strings_.emplace(std::make_pair
+	(
+		"POST"
+		,std::make_pair
+		(
+			TypeAction::kSelect
+			,[&](HTTPServerRequest& req, HTTPServerResponse& res){HandlePOSTMethod_(req, res);}
+		)
+	));
+	actions_strings_.emplace(std::make_pair
+	(
+		"PUT"
+		,std::make_pair
+		(
+			TypeAction::kSelect
+			,[&](HTTPServerRequest& req, HTTPServerResponse& res){HandlePUTMethod_(req, res);}
+		)
+	));
+	actions_strings_.emplace(std::make_pair
+	(
+		"DEL"
+		,std::make_pair
+		(
+			TypeAction::kSelect
+			,[&](HTTPServerRequest& req, HTTPServerResponse& res){HandleDELMethod_(req, res);}
+		)
+	));
 }
 
 RootHandler::~RootHandler()
@@ -74,16 +109,13 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 			}
 		}
 
-		if(request.getMethod() == "GET")
-			HandleGETMethod_(request, response);
-		else if(request.getMethod() == "POST")
-			HandlePOSTMethod_(request, response);
-		else if(request.getMethod() == "PUT")
-			HandlePUTMethod_(request, response);
-		else if(request.getMethod() == "DEL")
-			HandleDELMethod_(request, response);
-		else
-			GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
+		// Found the corresponding HTTP method
+			auto found = actions_strings_.find(request.getMethod());
+			if(found == actions_strings_.end())
+				GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
+
+		// Call the corresponding HTTP method
+			actions_strings_[request.getMethod()].second(request, response);
 	}
 	catch(MySQL::MySQLException& error)
 	{
