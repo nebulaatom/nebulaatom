@@ -88,18 +88,22 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 	catch(MySQL::MySQLException& error)
 	{
 		app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
+		GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Error with the database. " + error.displayText());
 	}
 	catch(JSON::JSONException& error)
 	{
 		app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
+		GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
 	}
 	catch(std::exception& error)
 	{
 		app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
+		GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
 	}
 	catch(std::runtime_error& error)
 	{
 		app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
+		GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
 	}
 }
 
