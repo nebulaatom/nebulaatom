@@ -21,9 +21,7 @@
 using namespace CPW;
 
 QueryActions::QueryActions() :
-	session_((Data::MySQL::Connector::registerConnector(), Data::Session("MySQL", "host=127.0.0.1;port=3306;db=cpw_woodpecker;user=root;password=mariadb_password;")))
-	,query_(session_)
-	,app_(Application::instance())
+	app_(Application::instance())
 {
 	result_json_ = new JSON::Array;
 	table_rows_ = new std::map<std::string, std::string>;
@@ -35,9 +33,16 @@ QueryActions::~QueryActions()
 	delete table_rows_;
 }
 
-void QueryActions::ResetQuery_()
+void QueryActions::StartDatabase_()
 {
-	query_.reset(session_);
+	Data::MySQL::Connector::registerConnector();
+	session_ = std::make_unique<Data::Session>("MySQL", "host=127.0.0.1;port=3306;db=cpw_woodpecker;user=root;password=mariadb_password;");
+	query_ = std::make_unique<Data::Statement>(*session_);
+}
+
+void QueryActions::StopDatabase_()
+{
+	session_->close();
 }
 
 void QueryActions::IdentifyFilters_()
@@ -267,8 +272,10 @@ void QueryActions::ExecuteQuery_()
 {
 	try
 	{
-		ResetQuery_();
-		query_ << final_query_, now;
+		StartDatabase_();
+		*query_ << final_query_, now;
+		StopDatabase_();
+
 		CreateJSONResult_();
 	}
 	catch(MySQL::MySQLException& error)
@@ -293,7 +300,7 @@ void QueryActions::CreateJSONResult_()
 {
 	// Variables
 		Poco::Dynamic::Var var;
-		Data::RecordSet results(query_);
+		Data::RecordSet results(*query_);
 
 	// Make JSON string
 		int array_index = 0;

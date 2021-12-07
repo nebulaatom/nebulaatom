@@ -77,14 +77,15 @@ bool SecurityVerification::AuthenticateUser_()
 		}
 
 	// Execute the query
-		query_actions->ResetQuery_();
-		query_actions->get_query() << "SELECT * FROM users WHERE username = ? AND password = ?",
-			use(table_rows->find("user")->second),
-			use(table_rows->find("password")->second)
+		query_actions->StartDatabase_();
+		*query_actions->get_query() << "SELECT * FROM users WHERE username = ? AND password = ?",
+			use(table_rows->find("user")->second)
+			,use(table_rows->find("password")->second)
+			,now
 		;
-		query_actions->get_query().execute();
+		query_actions->StopDatabase_();
 
-		if(query_actions->get_query().subTotalRowCount() > 0)
+		if(query_actions->get_query()->subTotalRowCount() > 0)
 			return true;
 		else
 			return false;
@@ -101,21 +102,26 @@ bool SecurityVerification::VerifyPermissions_(HTTPServerRequest& request)
 		int granted = -1;
 		std::size_t rows = 0;
 
-	get_app().logger().information("Target: " + target + ", user: " + user + ", action type: " + action_type);
-
 	// Verify permissions for the user
+		query_actions->StartDatabase_();
+
 		SeePermissionsPerUser_(user, action_type, target);
-		query_actions->get_query(), into(granted);
-		rows = query_actions->get_query().execute();
+
+		*query_actions->get_query(), into(granted);
+		rows = query_actions->get_query()->execute();
 
 		if(rows > 0)
 			return granted == 1 ? true : false;
 
 	// Verify permissions for the null user
 
+		query_actions->StartDatabase_();
 		SeePermissionsPerUser_("null", action_type, target);
-		query_actions->get_query(), into(granted);
-		rows = query_actions->get_query().execute();
+
+		*query_actions->get_query(), into(granted);
+		rows = query_actions->get_query()->execute();
+
+		query_actions->StopDatabase_();
 
 		if(rows > 0)
 			return granted == 1 ? true : false;
@@ -129,8 +135,7 @@ void SecurityVerification::SeePermissionsPerUser_(std::string user, std::string 
 	// Variables
 		auto query_actions = get_current_query_actions();
 
-	query_actions->ResetQuery_();
-	query_actions->get_query()
+	*query_actions->get_query()
 		<<
 			"SELECT "
 			"	pl.granted "
