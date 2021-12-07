@@ -25,42 +25,7 @@ RootHandler::RootHandler(std::string api_version) :
 	,api_verion_(api_version)
 	,route_verification_(true)
 {
-	actions_strings_.emplace(std::make_pair
-	(
-		"GET"
-		,std::make_pair
-		(
-			TypeAction::kSelect
-			,[&](HTTPServerRequest& req, HTTPServerResponse& res){HandleGETMethod_(req, res);}
-		)
-	));
-	actions_strings_.emplace(std::make_pair
-	(
-		"POST"
-		,std::make_pair
-		(
-			TypeAction::kSelect
-			,[&](HTTPServerRequest& req, HTTPServerResponse& res){HandlePOSTMethod_(req, res);}
-		)
-	));
-	actions_strings_.emplace(std::make_pair
-	(
-		"PUT"
-		,std::make_pair
-		(
-			TypeAction::kSelect
-			,[&](HTTPServerRequest& req, HTTPServerResponse& res){HandlePUTMethod_(req, res);}
-		)
-	));
-	actions_strings_.emplace(std::make_pair
-	(
-		"DEL"
-		,std::make_pair
-		(
-			TypeAction::kSelect
-			,[&](HTTPServerRequest& req, HTTPServerResponse& res){HandleDELMethod_(req, res);}
-		)
-	));
+
 }
 
 RootHandler::~RootHandler()
@@ -110,12 +75,11 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 		}
 
 		// Found the corresponding HTTP method
-			auto found = actions_strings_.find(request.getMethod());
-			if(found == actions_strings_.end())
+			if(get_actions_strings().find(request.getMethod()) == get_actions_strings().end())
 				GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
 
 		// Call the corresponding HTTP method
-			actions_strings_[request.getMethod()].second(request, response);
+			get_actions_strings()[request.getMethod()](request, response);
 	}
 	catch(MySQL::MySQLException& error)
 	{

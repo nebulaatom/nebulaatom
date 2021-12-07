@@ -29,7 +29,7 @@
 
 #include "tools/common_responses.h"
 #include "tools/manage_json.h"
-#include "extras/http_methods.h"
+#include "tools/requests_manager.h"
 
 
 namespace CPW
@@ -45,7 +45,7 @@ using namespace Poco::Util;
 
 
 class CPW::Extras::SecurityVerification:
-	public CPW::Extras::HTTPMethods
+	public CPW::Tools::RequestsManager
 	,public CPW::Tools::CommonResponses
 	,public CPW::Tools::ManageJSON
 {

@@ -26,6 +26,7 @@
 #include <map>
 #include <vector>
 #include <algorithm>
+#include <functional>
 
 #include "Poco/Util/ServerApplication.h"
 #include <Poco/Net/HTTPRequestHandler.h>
@@ -95,7 +96,6 @@ class CPW::Handlers::RootHandler :
 	private:
 		std::string api_verion_;
 		bool route_verification_;
-		std::map<std::string, std::pair<CPW::TypeAction, std::function<void(HTTPServerRequest&, HTTPServerResponse&)>>> actions_strings_;
 };
 
 #endif // CPW_HANDLERS_ROOTHANDLER_H
