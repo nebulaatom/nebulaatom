@@ -40,17 +40,22 @@ using namespace Poco::Net;
 using namespace Poco::Util;
 
 
-class CPW::Extras::HTTPMethods:
-	public CPW::Extras::DynamicElements
+class CPW::Extras::HTTPMethods
 {
 	public:
 		HTTPMethods();
 		~HTTPMethods();
 
+		std::shared_ptr<Extras::DynamicElements> get_dynamic_elements() const {return dynamic_elements_;}
+		void set_dynamic_elements(std::shared_ptr<Extras::DynamicElements> dynamic_elements) {dynamic_elements_ = dynamic_elements;}
+
 		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
 		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
 		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
 		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
+
+	private:
+		std::shared_ptr<Extras::DynamicElements> dynamic_elements_;
 };
 
 #endif // CPW_EXTRAS_HTTPMETHODS_H

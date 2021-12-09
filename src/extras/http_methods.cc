@@ -32,23 +32,23 @@ HTTPMethods::~HTTPMethods()
 
 void HTTPMethods::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	get_current_query_actions()->IdentifyFilters_();
-	get_current_query_actions()->ComposeQuery_(TypeAction::kSelect, requested_route_->get_target());
-	get_current_query_actions()->ExecuteQuery_();
+	dynamic_elements_->get_query_actions()->IdentifyFilters_();
+	dynamic_elements_->get_query_actions()->ComposeQuery_(Core::TypeAction::kSelect, dynamic_elements_->get_requested_route()->get_target());
+	dynamic_elements_->get_query_actions()->ExecuteQuery_();
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("application/json");
 
 	std::ostream& out = response.send();
-	get_current_query_actions()->get_result_json()->stringify(out);
+	dynamic_elements_->get_query_actions()->get_result_json()->stringify(out);
 	out.flush();
 }
 
 void HTTPMethods::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	get_current_query_actions()->IdentifyFilters_();
-	get_current_query_actions()->ComposeQuery_(TypeAction::kInsert, requested_route_->get_target());
-	get_current_query_actions()->ExecuteQuery_();
+	dynamic_elements_->get_query_actions()->IdentifyFilters_();
+	dynamic_elements_->get_query_actions()->ComposeQuery_(Core::TypeAction::kInsert, dynamic_elements_->get_requested_route()->get_target());
+	dynamic_elements_->get_query_actions()->ExecuteQuery_();
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("application/json");
@@ -60,9 +60,9 @@ void HTTPMethods::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerRespon
 
 void HTTPMethods::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	get_current_query_actions()->IdentifyFilters_();
-	get_current_query_actions()->ComposeQuery_(TypeAction::kUpdate, requested_route_->get_target());
-	get_current_query_actions()->ExecuteQuery_();
+	dynamic_elements_->get_query_actions()->IdentifyFilters_();
+	dynamic_elements_->get_query_actions()->ComposeQuery_(Core::TypeAction::kUpdate, dynamic_elements_->get_requested_route()->get_target());
+	dynamic_elements_->get_query_actions()->ExecuteQuery_();
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("application/json");
@@ -74,9 +74,9 @@ void HTTPMethods::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerRespons
 
 void HTTPMethods::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	get_current_query_actions()->IdentifyFilters_();
-	get_current_query_actions()->ComposeQuery_(TypeAction::kDelete, requested_route_->get_target());
-	get_current_query_actions()->ExecuteQuery_();
+	dynamic_elements_->get_query_actions()->IdentifyFilters_();
+	dynamic_elements_->get_query_actions()->ComposeQuery_(Core::TypeAction::kDelete, dynamic_elements_->get_requested_route()->get_target());
+	dynamic_elements_->get_query_actions()->ExecuteQuery_();
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("application/json");
