@@ -23,7 +23,7 @@
 #include <string>
 
 #include "tools/manage_json.h"
-#include "tools/requests_manager.h"
+#include "extras/dynamic_elements.h"
 
 
 namespace CPW
@@ -35,20 +35,26 @@ namespace CPW
 }
 
 using namespace Poco;
-using namespace Poco::Util;
 
 
-class CPW::Extras::SecurityVerification:
-	public CPW::Tools::RequestsManager
-	,public CPW::Tools::ManageJSON
+class CPW::Extras::SecurityVerification
 {
 	public:
 		SecurityVerification();
 		~SecurityVerification();
 
+		DynamicElements& get_dynamic_elements()
+		{
+			auto& var = dynamic_elements_;
+			return var;
+		}
+
 		bool AuthenticateUser_();
 		bool VerifyPermissions_(std::string method);
 		void SeePermissionsPerUser_(std::string user, std::string action_type, std::string target);
+
+	private:
+		DynamicElements dynamic_elements_;
 };
 
 

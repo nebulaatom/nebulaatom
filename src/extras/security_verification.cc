@@ -33,8 +33,8 @@ SecurityVerification::~SecurityVerification()
 bool SecurityVerification::AuthenticateUser_()
 {
 	// Variables
-		auto json_body = get_dynamic_json_body();
-		auto query_actions = get_current_query_actions();
+		auto query_actions = dynamic_elements_.get_query_actions();
+		auto json_body = query_actions->get_dynamic_json_body();
 		auto table_rows = query_actions->get_table_rows();
 
 	// Prepare the row
@@ -76,18 +76,16 @@ bool SecurityVerification::AuthenticateUser_()
 bool SecurityVerification::VerifyPermissions_(std::string method)
 {
 	// Variables
-		auto query_actions = get_current_query_actions();
-
+		auto query_actions = dynamic_elements_.get_query_actions();
 		std::string user = query_actions->get_table_rows()->at("user");
-		std::string action_type = method;
-		std::string target = requested_route_->get_target();
+		std::string target = dynamic_elements_.get_requested_route()->get_target();
 		int granted = -1;
 		std::size_t rows = 0;
 
 	// Verify permissions for the user
 		query_actions->StartDatabase_();
 
-		SeePermissionsPerUser_(user, action_type, target);
+		SeePermissionsPerUser_(user, method, target);
 
 		*query_actions->get_query(), into(granted);
 		rows = query_actions->get_query()->execute();
@@ -98,7 +96,7 @@ bool SecurityVerification::VerifyPermissions_(std::string method)
 	// Verify permissions for the null user
 
 		query_actions->StartDatabase_();
-		SeePermissionsPerUser_("null", action_type, target);
+		SeePermissionsPerUser_("null", method, target);
 
 		*query_actions->get_query(), into(granted);
 		rows = query_actions->get_query()->execute();
@@ -114,10 +112,7 @@ bool SecurityVerification::VerifyPermissions_(std::string method)
 
 void SecurityVerification::SeePermissionsPerUser_(std::string user, std::string action_type, std::string target)
 {
-	// Variables
-		auto query_actions = get_current_query_actions();
-
-	*query_actions->get_query()
+	*dynamic_elements_.get_query_actions()->get_query()
 		<<
 			"SELECT "
 			"	pl.granted "
