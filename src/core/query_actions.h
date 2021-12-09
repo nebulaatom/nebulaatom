@@ -48,9 +48,12 @@
 
 namespace CPW
 {
-	enum class TypeAction;
-	enum class TypeQuery;
-	class QueryActions;
+	namespace Core
+	{
+		enum class TypeAction;
+		enum class TypeQuery;
+		class QueryActions;
+	}
 }
 
 using namespace Poco;
@@ -60,7 +63,7 @@ using namespace Poco::Data;
 using namespace Poco::Data::Keywords;
 
 
-enum class CPW::TypeAction
+enum class CPW::Core::TypeAction
 {
 	kInsert
 	,kSelect
@@ -68,7 +71,7 @@ enum class CPW::TypeAction
 	,kDelete
 };
 
-enum class CPW::TypeQuery
+enum class CPW::Core::TypeQuery
 {
 	kFields
 	,kPage
@@ -86,7 +89,7 @@ enum class CPW::TypeQuery
 };
 
 
-class CPW::QueryActions : public CPW::Tools::ManageJSON
+class CPW::Core::QueryActions : public CPW::Tools::ManageJSON
 {
 	public:
 		QueryActions();

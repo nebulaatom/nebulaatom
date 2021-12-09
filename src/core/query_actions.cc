@@ -18,7 +18,7 @@
 
 #include "query_actions.h"
 
-using namespace CPW;
+using namespace CPW::Core;
 
 QueryActions::QueryActions() :
 	app_(Application::instance())
