@@ -54,6 +54,9 @@ class CPW::Extras::HTTPMethods
 		virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
 		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
 
+	protected:
+		void QueryProcess_(Core::TypeAction action);
+
 	private:
 		std::shared_ptr<Extras::DynamicElements> dynamic_elements_;
 };
