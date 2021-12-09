@@ -44,7 +44,6 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 
 		std::vector<std::string> segments;
 		URI(request.getURI()).getPathSegments(segments);
-
 		dynamic_elements_->set_requested_route(std::make_shared<Tools::Route>("", segments));
 
 		switch(dynamic_elements_->get_requested_route()->get_current_route_type())

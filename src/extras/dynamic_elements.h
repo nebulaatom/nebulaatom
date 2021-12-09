@@ -45,6 +45,8 @@ using namespace Poco::Util;
 class CPW::Extras::DynamicElements
 {
 	public:
+		using RouteSharedPtr = std::shared_ptr<CPW::Tools::Route>;
+
 		DynamicElements();
 		DynamicElements(DynamicElements& dynamic_elements);
 		~DynamicElements();
@@ -52,12 +54,12 @@ class CPW::Extras::DynamicElements
 		std::list<Tools::Route>* get_routes_list() const {return routes_list_;}
 		Core::QueryActions* get_query_actions() const {return query_actions_;}
 		Application& get_app() const {return app_;};
-		std::shared_ptr<CPW::Tools::Route> get_requested_route() const {return requested_route_;}
+		RouteSharedPtr get_requested_route() const {return requested_route_;}
 
-		void set_requested_route(std::shared_ptr<CPW::Tools::Route> requested_route) {requested_route_ = requested_route;}
+		void set_requested_route(std::shared_ptr<Tools::Route> requested_route) {requested_route_ = requested_route;}
 
 	protected:
-		std::shared_ptr<CPW::Tools::Route> requested_route_;
+		RouteSharedPtr requested_route_;
 
 	private:
 		std::list<Tools::Route>* routes_list_;
