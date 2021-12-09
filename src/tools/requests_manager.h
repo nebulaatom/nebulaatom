@@ -44,7 +44,7 @@ using namespace Poco;
 using namespace Poco::Net;
 
 
-class CPW::Tools::RequestsManager : public CPW::Extras::HTTPMethods
+class CPW::Tools::RequestsManager
 {
 	public:
 		RequestsManager();
@@ -55,12 +55,15 @@ class CPW::Tools::RequestsManager : public CPW::Extras::HTTPMethods
 			auto& var = actions_strings_;
 			return var;
 		}
+		Extras::HTTPMethods* get_http_methods() const {return http_methods_;}
+		void set_http_methods(Extras::HTTPMethods* http_methods){http_methods_ = http_methods;}
 
 	protected:
 		void PrepareMethods_();
 
 	private:
 		std::map<std::string, std::function<void(HTTPServerRequest&, HTTPServerResponse&)>> actions_strings_;
+		Extras::HTTPMethods* http_methods_;
 };
 
 #endif // CPW_TOOLS_REQUESTSMANAGER_H
