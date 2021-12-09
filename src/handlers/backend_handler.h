@@ -20,6 +20,9 @@
 #define CPW_HANDLERS_BACKENDHANDLER_H
 
 
+#include <string>
+#include <list>
+
 #include "handlers/root_handler.h"
 
 namespace CPW
