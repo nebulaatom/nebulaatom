@@ -48,7 +48,7 @@ FrontendHandler::~FrontendHandler()
 
 void FrontendHandler::AddRoutes_()
 {
-	get_routes_list().push_back(new CPW::Tools::Route("",std::vector<std::string>{""}));
+	get_dynamic_elements()->get_routes_list()->push_back({"",{""}});
 }
 
 void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
