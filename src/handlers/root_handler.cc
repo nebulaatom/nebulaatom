@@ -24,8 +24,11 @@ RootHandler::RootHandler(std::string api_version) :
 	app_(Application::instance())
 	,api_verion_(api_version)
 	,route_verification_(true)
+	,dynamic_elements_(new Extras::DynamicElements())
 {
-
+	requests_manager_.set_http_methods(this);
+	requests_manager_.get_http_methods()->set_dynamic_elements(dynamic_elements_);
+	HTTPMethods::set_dynamic_elements(dynamic_elements_);
 }
 
 RootHandler::~RootHandler()
@@ -42,9 +45,9 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 		std::vector<std::string> segments;
 		URI(request.getURI()).getPathSegments(segments);
 
-		requested_route_.reset(new CPW::Tools::Route("", segments));
+		dynamic_elements_->set_requested_route(std::make_shared<Tools::Route>("", segments));
 
-		switch(requested_route_->get_current_route_type())
+		switch(dynamic_elements_->get_requested_route()->get_current_route_type())
 		{
 			case CPW::Tools::RouteType::kEndpoint:
 			{
@@ -74,11 +77,11 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 		}
 
 		// Found the corresponding HTTP method
-			if(get_actions_strings().find(request.getMethod()) == get_actions_strings().end())
+			if(requests_manager_.get_actions_strings().find(request.getMethod()) == requests_manager_.get_actions_strings().end())
 				GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
 
 		// Call the corresponding HTTP method
-			get_actions_strings()[request.getMethod()](request, response);
+			requests_manager_.get_actions_strings()[request.getMethod()](request, response);
 	}
 	catch(MySQL::MySQLException& error)
 	{
@@ -89,6 +92,11 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 	{
 		app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
 		GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
+	}
+	catch(std::out_of_range& error)
+	{
+		app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
+		GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
 	}
 	catch(std::exception& error)
 	{
@@ -102,12 +110,12 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 	}
 }
 
-
 void RootHandler::InitSecurityProccess_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	if(AuthenticateUser_())
+	current_security_.get_dynamic_elements().set_requested_route(dynamic_elements_->get_requested_route());
+	if(current_security_.AuthenticateUser_())
 	{
-		if(!VerifyPermissions_(request.getMethod()))
+		if(!current_security_.VerifyPermissions_(request.getMethod()))
 		{
 			GenericResponse_(response, HTTPResponse::HTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
 			return;
@@ -122,11 +130,11 @@ void RootHandler::InitSecurityProccess_(HTTPServerRequest& request, HTTPServerRe
 
 bool RootHandler::IdentifyRoute_()
 {
-	for(auto& it : get_routes_list())
+	for(auto& it : *dynamic_elements_->get_routes_list())
 	{
-		if(requested_route_->SegmentsToString_() == it->SegmentsToString_())
+		if(dynamic_elements_->get_requested_route()->SegmentsToString_() == it.SegmentsToString_())
 		{
-			requested_route_->set_target(it->get_target());
+			dynamic_elements_->get_requested_route()->set_target(it.get_target());
 			return true;
 		}
 	}
@@ -136,7 +144,7 @@ bool RootHandler::IdentifyRoute_()
 
 bool RootHandler::ManageRequestBody_(HTTPServerRequest& request)
 {
-	std::string request_body = ReadBody_(request.stream());
+	std::string request_body = dynamic_elements_->get_query_actions()->ReadBody_(request.stream());
 
 	if(request_body.empty())
 	{
@@ -153,10 +161,8 @@ bool RootHandler::ManageRequestBody_(HTTPServerRequest& request)
 		request_body = tmp_uri.getQueryParameters()[0].second;
 	}
 
-	if(!Parse_(request_body))
+	if(!dynamic_elements_->get_query_actions()->Parse_(request_body))
 		return false;
-
-	get_current_query_actions()->get_dynamic_json_body() = get_dynamic_json_body();
 
 	return true;
 }

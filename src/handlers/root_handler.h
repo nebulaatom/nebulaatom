@@ -27,6 +27,7 @@
 #include <vector>
 #include <algorithm>
 #include <functional>
+#include <stdexcept>
 
 #include "Poco/Util/ServerApplication.h"
 #include <Poco/Net/HTTPRequestHandler.h>
@@ -49,12 +50,13 @@
 #include <Poco/Dynamic/Var.h>
 #include <Poco/Dynamic/Struct.h>
 
-#include "core/query_actions.h"
 #include "tools/route.h"
 #include "tools/common_responses.h"
 #include "extras/security_verification.h"
 #include "extras/dynamic_elements.h"
 #include "extras/http_methods.h"
+#include "tools/requests_manager.h"
+#include "tools/manage_json.h"
 
 
 namespace CPW
@@ -76,8 +78,8 @@ using Poco::Data::Statement;
 
 class CPW::Handlers::RootHandler :
 	public HTTPRequestHandler
-	,public CPW::Extras::SecurityVerification
 	,public CPW::Tools::CommonResponses
+	,public CPW::Extras::HTTPMethods
 {
 	public:
 		RootHandler(std::string api_version);
@@ -98,6 +100,9 @@ class CPW::Handlers::RootHandler :
 	private:
 		std::string api_verion_;
 		bool route_verification_;
+		CPW::Extras::SecurityVerification current_security_;
+		Tools::RequestsManager requests_manager_;
+		std::shared_ptr<Extras::DynamicElements> dynamic_elements_;
 };
 
 #endif // CPW_HANDLERS_ROOTHANDLER_H
