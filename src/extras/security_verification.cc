@@ -34,40 +34,35 @@ bool SecurityVerification::AuthenticateUser_()
 {
 	// Variables
 		auto query_actions = dynamic_elements_.get_query_actions();
-		auto json_body = query_actions->get_dynamic_json_body();
-		auto table_rows = query_actions->get_table_rows();
-
-	// Prepare the row
-		table_rows->insert(std::make_pair("user", ""));
-		table_rows->insert(std::make_pair("password", ""));
+		auto& json_auth = query_actions->get_dynamic_json_body()["pair-information"][0]["auth"];
+		auto& iquals = query_actions->get_current_filters_().get_iquals_conditions();
 
 	// Verify the key-values
-		if
-		(
-			json_body["pair-information"].isEmpty()
-			|| json_body["pair-information"][0]["auth"]["user"].isEmpty()
-			|| json_body["pair-information"][0]["auth"]["password"].isEmpty()
-		)
+		if(json_auth["user"].isEmpty() || json_auth["password"].isEmpty())
 		{
-			table_rows->find("user")->second = "null";
-			table_rows->find("password")->second = "null";
+			iquals.emplace(std::make_pair("username", "null"));
+			iquals.emplace(std::make_pair("password", "null"));
 		}
 		else
 		{
-			table_rows->find("user")->second = json_body["pair-information"][0]["auth"]["user"].toString();
-			table_rows->find("password")->second = json_body["pair-information"][0]["auth"]["password"].toString();
+			iquals.emplace(std::make_pair("username", json_auth["user"].toString()));
+			iquals.emplace(std::make_pair("password", json_auth["password"].toString()));
 		}
 
 	// Execute the query
-		query_actions->StartDatabase_();
-		*query_actions->get_query() << "SELECT * FROM users WHERE username = ? AND password = ?",
-			use(table_rows->find("user")->second)
-			,use(table_rows->find("password")->second)
-			,now
-		;
-		query_actions->StopDatabase_();
+		query_actions->ComposeQuery_(Core::TypeAction::kSelect, "users");
+		query_actions->ExecuteQuery_();
 
-		if(query_actions->get_query()->subTotalRowCount() > 0)
+		auto var_tmp = query_actions->get_result_json()->get("results");
+
+		if(var_tmp.isEmpty() || !var_tmp.isArray())
+			return false;
+
+		JSON::Array::Ptr object_tmp = var_tmp.extract<JSON::Array::Ptr>();
+
+		auto rows = object_tmp->size();
+
+		if(rows > 0)
 			return true;
 		else
 			return false;
@@ -77,55 +72,61 @@ bool SecurityVerification::VerifyPermissions_(std::string method)
 {
 	// Variables
 		auto query_actions = dynamic_elements_.get_query_actions();
-		std::string user = query_actions->get_table_rows()->at("user");
 		std::string target = dynamic_elements_.get_requested_route()->get_target();
+		auto& iquals = query_actions->get_current_filters_().get_iquals_conditions();
 		int granted = -1;
-		std::size_t rows = 0;
+
+	// Find user
+		std::string user;
+		auto found = iquals.find("username");
+		if(found != iquals.end())
+			user = found->second.get_value();
+		else
+			user = "null";
 
 	// Verify permissions for the user
-		query_actions->StartDatabase_();
+		iquals.clear();
 
 		SeePermissionsPerUser_(user, method, target);
 
-		*query_actions->get_query(), into(granted);
-		rows = query_actions->get_query()->execute();
+		auto var_tmp = query_actions->get_result_json()->get("results");
+		std::string  tmp = var_tmp.toString();
 
-		if(rows > 0)
-			return granted == 1 ? true : false;
-
-	// Verify permissions for the null user
-
-		query_actions->StartDatabase_();
-		SeePermissionsPerUser_("null", method, target);
-
-		*query_actions->get_query(), into(granted);
-		rows = query_actions->get_query()->execute();
-
-		query_actions->StopDatabase_();
-
-		if(rows > 0)
-			return granted == 1 ? true : false;
-		else
+		if(var_tmp.isEmpty() || !var_tmp.isArray())
 			return false;
 
+		auto array_tmp = var_tmp.extract<JSON::Array::Ptr>();
+
+		if(array_tmp->size() < 1)
+			return false;
+
+		var_tmp = array_tmp->get(0);
+		auto object_tmp = var_tmp.extract<JSON::Object::Ptr>();
+
+		if(!object_tmp->get("granted").isInteger())
+			return false;
+
+		granted = std::stoi(object_tmp->get("granted").toString());
+
+		return granted == 1 ? true : false;
 }
 
 void SecurityVerification::SeePermissionsPerUser_(std::string user, std::string action_type, std::string target)
 {
-	*dynamic_elements_.get_query_actions()->get_query()
-		<<
-			"SELECT "
-			"	pl.granted "
-			"FROM permissions_log pl, permissions p, users u "
-			"WHERE "
-			"	u.username = ? "
-			"	AND pl.type = ? "
-			"	AND p.name = ? "
-			"	AND pl.id_permission = p.id "
-			"	AND pl.id_user = u.id"
-			";"
-		,use(user)
-		,use(action_type)
-		,use(target)
-	;
+	// Variables
+		auto query_actions = dynamic_elements_.get_query_actions();
+		auto& iquals = query_actions->get_current_filters_().get_iquals_conditions();
+		auto& fields = query_actions->get_current_filters_().get_fields();
+
+	// Filters
+		fields.push_back({"pl.granted", false});
+		iquals.emplace(std::make_pair("u.username", Tools::ValuesProperties{user, true}));
+		iquals.emplace(std::make_pair("pl.type", Tools::ValuesProperties{action_type, true}));
+		iquals.emplace(std::make_pair("p.name", Tools::ValuesProperties{target, true}));
+		iquals.emplace(std::make_pair("pl.id_permission", Tools::ValuesProperties{"p.id", false}));
+		iquals.emplace(std::make_pair("pl.id_user", Tools::ValuesProperties{"u.id", false}));
+
+	// Data sentences
+		query_actions->ComposeQuery_(Core::TypeAction::kSelect, "permissions_log pl, permissions p, users u");
+		query_actions->ExecuteQuery_();
 }
