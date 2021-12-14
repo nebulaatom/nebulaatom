@@ -84,29 +84,32 @@ bool SecurityVerification::VerifyPermissions_(std::string method)
 		else
 			user = "null";
 
-	// Verify permissions for the user
-		iquals.clear();
+	// Verify permissions for the users
+		for(auto it : std::vector{user, std::string("null")})
+		{
+			SeePermissionsPerUser_(it, method, target);
 
-		SeePermissionsPerUser_(user, method, target);
+			auto var_tmp = query_actions->get_result_json()->get("results");
+			if(var_tmp.isEmpty() || !var_tmp.isArray())
+				continue;
 
-		auto var_tmp = query_actions->get_result_json()->get("results");
-		std::string  tmp = var_tmp.toString();
+			auto array_tmp = var_tmp.extract<JSON::Array::Ptr>();
+			if(array_tmp->size() < 1)
+				continue;
 
-		if(var_tmp.isEmpty() || !var_tmp.isArray())
-			return false;
+			var_tmp = array_tmp->get(0);
+			if(var_tmp.isEmpty())
+				continue;
 
-		auto array_tmp = var_tmp.extract<JSON::Array::Ptr>();
+			auto object_tmp = var_tmp.extract<JSON::Object::Ptr>();
 
-		if(array_tmp->size() < 1)
-			return false;
+			if(!object_tmp->get("granted").isInteger())
+				continue;
 
-		var_tmp = array_tmp->get(0);
-		auto object_tmp = var_tmp.extract<JSON::Object::Ptr>();
+			granted = std::stoi(object_tmp->get("granted").toString());
 
-		if(!object_tmp->get("granted").isInteger())
-			return false;
-
-		granted = std::stoi(object_tmp->get("granted").toString());
+			return granted == 1 ? true : false;
+		}
 
 		return granted == 1 ? true : false;
 }
@@ -117,6 +120,10 @@ void SecurityVerification::SeePermissionsPerUser_(std::string user, std::string 
 		auto query_actions = dynamic_elements_.get_query_actions();
 		auto& iquals = query_actions->get_current_filters_().get_iquals_conditions();
 		auto& fields = query_actions->get_current_filters_().get_fields();
+
+	// Clear previous values
+		iquals.clear();
+		fields.clear();
 
 	// Filters
 		fields.push_back({"pl.granted", false});
