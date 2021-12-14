@@ -143,7 +143,8 @@ bool RootHandler::IdentifyRoute_()
 
 bool RootHandler::ManageRequestBody_(HTTPServerRequest& request)
 {
-	std::string request_body = dynamic_elements_->get_query_actions()->ReadBody_(request.stream());
+	auto query_actions = dynamic_elements_->get_query_actions();
+	std::string request_body = query_actions->ReadBody_(request.stream());
 
 	if(request_body.empty())
 	{
@@ -162,6 +163,8 @@ bool RootHandler::ManageRequestBody_(HTTPServerRequest& request)
 
 	if(!dynamic_elements_->get_query_actions()->Parse_(request_body))
 		return false;
+
+	current_security_.get_dynamic_elements().get_query_actions()->get_dynamic_json_body() = query_actions->get_dynamic_json_body();
 
 	return true;
 }
