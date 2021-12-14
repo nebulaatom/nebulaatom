@@ -34,6 +34,7 @@ bool SecurityVerification::AuthenticateUser_()
 {
 	// Variables
 		auto query_actions = dynamic_elements_.get_query_actions();
+		auto result_json = query_actions->get_result_json();
 		auto& json_auth = query_actions->get_dynamic_json_body()["pair-information"][0]["auth"];
 		auto& iquals = query_actions->get_current_filters_().get_iquals_conditions();
 
@@ -53,7 +54,7 @@ bool SecurityVerification::AuthenticateUser_()
 		query_actions->ComposeQuery_(Core::TypeAction::kSelect, "users");
 		query_actions->ExecuteQuery_();
 
-		auto object_tmp = query_actions->ExtractArray_(query_actions->get_result_json()->get("results"));
+		auto object_tmp = query_actions->ExtractArray_(result_json->get("results"));
 
 		if(object_tmp->size() > 0)
 			return true;
@@ -65,6 +66,7 @@ bool SecurityVerification::VerifyPermissions_(std::string method)
 {
 	// Variables
 		auto query_actions = dynamic_elements_.get_query_actions();
+		auto result_json = query_actions->get_result_json();
 		std::string target = dynamic_elements_.get_requested_route()->get_target();
 		auto& iquals = query_actions->get_current_filters_().get_iquals_conditions();
 		int granted = -1;
@@ -82,7 +84,7 @@ bool SecurityVerification::VerifyPermissions_(std::string method)
 		{
 			SeePermissionsPerUser_(it, method, target);
 
-			auto array_tmp = query_actions->ExtractArray_(query_actions->get_result_json()->get("results"));
+			auto array_tmp = query_actions->ExtractArray_(result_json->get("results"));
 			if(array_tmp->size() < 1)
 				continue;
 
