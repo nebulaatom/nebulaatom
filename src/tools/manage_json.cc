@@ -58,6 +58,28 @@ bool ManageJSON::Parse_(std::string string_to_parse)
 	return VerifyJSON_();
 }
 
+JSON::Object::Ptr ManageJSON::ExtractObject_(Dynamic::Var object)
+{
+	auto final = JSON::Object::Ptr();
+
+	if(object.isEmpty() || object.isArray())
+		return final;
+
+	final = object.extract<JSON::Object::Ptr>();
+	return final;
+}
+
+JSON::Array::Ptr ManageJSON::ExtractArray_(Dynamic::Var object)
+{
+	auto final = JSON::Array::Ptr();
+
+	if(object.isEmpty() || !object.isArray())
+		return final;
+
+	final = object.extract<JSON::Array::Ptr>();
+	return final;
+}
+
 bool ManageJSON::VerifyJSON_()
 {
 	if

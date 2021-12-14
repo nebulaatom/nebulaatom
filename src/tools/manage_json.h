@@ -58,6 +58,8 @@ class CPW::Tools::ManageJSON
 
 		std::string ReadBody_(std::istream& stream);
 		bool Parse_(std::string string_to_parse);
+		JSON::Object::Ptr ExtractObject_(Dynamic::Var object);
+		JSON::Array::Ptr ExtractArray_(Dynamic::Var object);
 
 	protected:
 		bool VerifyJSON_();
