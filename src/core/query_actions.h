@@ -103,8 +103,7 @@ class CPW::Core::QueryActions : public CPW::Tools::ManageJSON
 		}
 		Data::Session* get_session() const {return session_.get();}
 		Data::Statement* get_query() const {return query_.get();}
-		std::map<std::string, std::string>* get_table_rows() const {return table_rows_;}
-		JSON::Array::Ptr get_result_json() const {return result_json_;}
+		JSON::Object::Ptr get_result_json() const {return result_json_;}
 
 		void StartDatabase_();
 		void StopDatabase_();
@@ -141,10 +140,9 @@ class CPW::Core::QueryActions : public CPW::Tools::ManageJSON
 
 		std::string final_query_;
 		CPW::Tools::Filters current_filters_;
-		std::unique_ptr<Data::Session> session_;
-		std::unique_ptr<Data::Statement> query_;
-		std::map<std::string, std::string>* table_rows_;
-		JSON::Array::Ptr result_json_;
+		std::shared_ptr<Data::Session> session_;
+		std::shared_ptr<Data::Statement> query_;
+		JSON::Object::Ptr result_json_;
 		std::map<std::string, TypeQuery> type_actions_map_;
 		Application& app_;
 };

@@ -23,21 +23,20 @@ using namespace CPW::Core;
 QueryActions::QueryActions() :
 	app_(Application::instance())
 {
-	result_json_ = new JSON::Array;
-	table_rows_ = new std::map<std::string, std::string>;
+	result_json_ = new JSON::Object;
 	FillTypeActionsText_();
 }
 
 QueryActions::~QueryActions()
 {
-	delete table_rows_;
+
 }
 
 void QueryActions::StartDatabase_()
 {
 	Data::MySQL::Connector::registerConnector();
-	session_ = std::make_unique<Data::Session>("MySQL", "host=127.0.0.1;port=3306;db=cpw_woodpecker;user=root;password=mariadb_password;");
-	query_ = std::make_unique<Data::Statement>(*session_);
+	session_ = std::make_shared<Data::Session>("MySQL", "host=127.0.0.1;port=3306;db=cpw_woodpecker;user=root;password=mariadb_password;");
+	query_ = std::make_shared<Data::Statement>(*session_);
 }
 
 void QueryActions::StopDatabase_()
@@ -78,7 +77,7 @@ void QueryActions::IdentifyFilters_()
 
 						for(std::size_t b = 0; b < it["contents"].size(); b++)
 						{
-							get_current_filters_().get_fields().push_back(it["contents"][b]);
+							get_current_filters_().get_fields().push_back({it["contents"][b], false});
 						}
 						break;
 					}
@@ -105,7 +104,7 @@ void QueryActions::IdentifyFilters_()
 
 						for(std::size_t b = 0; b < it["contents"].size(); b++)
 						{
-							get_current_filters_().get_sorts_conditions().push_back(it["contents"][b]);
+							get_current_filters_().get_sorts_conditions().push_back({it["contents"][b], false});
 						}
 						break;
 					}
@@ -117,7 +116,7 @@ void QueryActions::IdentifyFilters_()
 						get_current_filters_().get_iquals_conditions().emplace(std::make_pair
 						(
 							it["col"].toString()
-							,it["content"].toString()
+							,Tools::ValuesProperties{it["content"].toString(), true}
 						));
 						break;
 					}
@@ -129,7 +128,7 @@ void QueryActions::IdentifyFilters_()
 						get_current_filters_().get_not_iquals_conditions().emplace(std::make_pair
 						(
 							it["col"].toString()
-							,it["content"].toString()
+							,Tools::ValuesProperties{it["content"].toString(), true}
 						));
 						break;
 					}
@@ -141,7 +140,7 @@ void QueryActions::IdentifyFilters_()
 						get_current_filters_().get_greather_than().emplace(std::make_pair
 						(
 							it["col"].toString()
-							,it["content"].toString()
+							,Tools::ValuesProperties{it["content"].toString(), true}
 						));
 						break;
 					}
@@ -153,7 +152,7 @@ void QueryActions::IdentifyFilters_()
 						get_current_filters_().get_smaller_than().emplace(std::make_pair
 						(
 							it["col"].toString()
-							,it["content"].toString()
+							,Tools::ValuesProperties{it["content"].toString(), true}
 						));
 						break;
 					}
@@ -165,7 +164,11 @@ void QueryActions::IdentifyFilters_()
 						get_current_filters_().get_between().emplace(std::make_pair
 						(
 							it["col"].toString()
-							,std::make_pair(it["content1"].toString(), it["content2"].toString())
+							,std::make_pair
+							(
+								Tools::ValuesProperties{it["content1"].toString(), true}
+								,Tools::ValuesProperties{it["content2"].toString(), true}
+							)
 						));
 						break;
 					}
@@ -174,12 +177,16 @@ void QueryActions::IdentifyFilters_()
 						if(it["col"].isEmpty() || it["contents"].isEmpty())
 							throw std::runtime_error("col or contents in kIn is empty on data array index " + std::to_string(a));
 
-						std::vector<std::string> tmp_in;
+						std::vector<Tools::ValuesProperties> tmp_in;
 						for(std::size_t b = 0; b < it["contents"].size(); b++)
 						{
-							tmp_in.push_back(it["contents"][b]);
+							tmp_in.push_back({it["contents"][b], true});
 						}
-						get_current_filters_().get_in().emplace(std::make_pair(it["col"], tmp_in));
+						get_current_filters_().get_in().emplace(std::make_pair
+						(
+							it["col"]
+							,tmp_in
+						));
 						break;
 					}
 					case TypeQuery::kNotIn:
@@ -187,10 +194,10 @@ void QueryActions::IdentifyFilters_()
 						if(it["col"].isEmpty() || it["contents"].isEmpty())
 							throw std::runtime_error("col or contents in kNotIn is empty on data array index " + std::to_string(a));
 
-						std::vector<std::string> tmp_not_in;
+						std::vector<Tools::ValuesProperties> tmp_not_in;
 						for(std::size_t b = 0; b < it["contents"].size(); b++)
 						{
-							tmp_not_in.push_back(it["contents"][b]);
+							tmp_not_in.push_back({it["contents"][b], true});
 						}
 						get_current_filters_().get_not_in().emplace(std::make_pair(it["col"], tmp_not_in));
 						break;
@@ -202,11 +209,11 @@ void QueryActions::IdentifyFilters_()
 
 						for(std::size_t b = 0; b < it["contents"].size(); b++)
 						{
-							get_current_filters_().get_values().push_back(std::vector<std::string> {});
+							get_current_filters_().get_values().push_back(std::vector<Tools::ValuesProperties> {});
 
 							for(auto it_v: it["contents"][b])
 							{
-								get_current_filters_().get_values()[b].push_back(it_v.toString());
+								get_current_filters_().get_values()[b].push_back({it_v.toString(), true});
 							}
 						}
 						break;
@@ -219,7 +226,7 @@ void QueryActions::IdentifyFilters_()
 						get_current_filters_().get_set().emplace(std::make_pair
 						(
 							it["col"].toString()
-							,it["content"].toString()
+							,Tools::ValuesProperties{it["content"].toString(), true}
 						));
 						break;
 					}
@@ -301,6 +308,7 @@ void QueryActions::CreateJSONResult_()
 	// Variables
 		Poco::Dynamic::Var var;
 		Data::RecordSet results(*query_);
+		JSON::Array::Ptr tmp_array = new JSON::Array();
 
 	// Make JSON string
 		int array_index = 0;
@@ -314,12 +322,16 @@ void QueryActions::CreateJSONResult_()
 				var = it->get(a);
 				if(!var.isEmpty())
 				{
-					tmp_object->set(results.columnName(a), var.toString());
+					if(var.isInteger())
+						tmp_object->set(results.columnName(a), std::stoi(var.toString()));
+					else
+						tmp_object->set(results.columnName(a), var.toString());
 				}
 			}
-			result_json_->set(array_index, tmp_object);
+			tmp_array->set(array_index, tmp_object);
 			array_index++;
 		}
+		result_json_->set("results", tmp_array);
 
 }
 
@@ -461,7 +473,7 @@ void QueryActions::IncorporeFields_(std::vector<std::string>& tmp_query)
 			if(it != current_filters_.get_fields().front())
 				tmp_query.push_back(",");
 
-			tmp_query.push_back(it);
+			tmp_query.push_back(it.GetFinalValue());
 		}
 	}
 }
@@ -486,10 +498,10 @@ void QueryActions::IncorporeSort_(std::vector<std::string>& tmp_query)
 		tmp_query.push_back("ORDER BY");
 		for(auto it : current_filters_.get_sorts_conditions())
 		{
-			if(it != current_filters_.get_sorts_conditions().front())
+			if(it != *current_filters_.get_sorts_conditions().begin())
 				tmp_query.push_back(",");
 
-			tmp_query.push_back(it);
+			tmp_query.push_back(it.GetFinalValue());
 		}
 	}
 }
@@ -506,7 +518,7 @@ void QueryActions::IncorporeIqual_(std::vector<std::string>& tmp_query)
 
 			tmp_query.push_back(it.first);
 			tmp_query.push_back("=");
-			tmp_query.push_back("'" + it.second + "'");
+			tmp_query.push_back(it.second.GetFinalValue());
 		}
 	}
 }
@@ -523,7 +535,7 @@ void QueryActions::IncorporeNotIqual_(std::vector<std::string>& tmp_query)
 
 			tmp_query.push_back(it.first);
 			tmp_query.push_back("<>");
-			tmp_query.push_back("'" + it.second + "'");
+			tmp_query.push_back(it.second.GetFinalValue());
 		}
 	}
 }
@@ -540,7 +552,7 @@ void QueryActions::IncorporeGreatherThan_(std::vector<std::string>& tmp_query)
 
 			tmp_query.push_back(it.first);
 			tmp_query.push_back(">");
-			tmp_query.push_back("'" + it.second + "'");
+			tmp_query.push_back(it.second.GetFinalValue());
 		}
 	}
 }
@@ -557,7 +569,7 @@ void QueryActions::IncorporeSmallerThan_(std::vector<std::string>& tmp_query)
 
 			tmp_query.push_back(it.first);
 			tmp_query.push_back("<");
-			tmp_query.push_back("'" + it.second + "'");
+			tmp_query.push_back(it.second.GetFinalValue());
 		}
 	}
 }
@@ -574,9 +586,9 @@ void QueryActions::IncorporeBetween_(std::vector<std::string>& tmp_query)
 
 			tmp_query.push_back(it.first);
 			tmp_query.push_back("BETWEEN");
-			tmp_query.push_back("'" + it.second.first + "'");
+			tmp_query.push_back(it.second.first.GetFinalValue());
 			tmp_query.push_back("AND");
-			tmp_query.push_back("'" + it.second.second + "'");
+			tmp_query.push_back(it.second.second.GetFinalValue());
 		}
 	}
 }
@@ -595,10 +607,10 @@ void QueryActions::IncorporeIn_(std::vector<std::string>& tmp_query)
 			tmp_query.push_back("IN (");
 			for(auto it_v : it.second)
 			{
-				if(it_v == it.second.front())
-					tmp_query.push_back("'" + it_v + "'");
-				else
-					tmp_query.push_back(", '" + it_v + "'");
+				if(it_v != *it.second.begin())
+					tmp_query.push_back(",");
+
+				tmp_query.push_back(it_v.GetFinalValue());
 			}
 			tmp_query.push_back(")");
 		}
@@ -619,10 +631,10 @@ void QueryActions::IncorporeNotIn_(std::vector<std::string>& tmp_query)
 			tmp_query.push_back("NOT IN (");
 			for(auto it_v : it.second)
 			{
-				if(it_v == it.second.front())
-					tmp_query.push_back("'" + it_v + "'");
-				else
-					tmp_query.push_back(", '" + it_v + "'");
+				if(it_v != *it.second.begin())
+					tmp_query.push_back(",");
+
+				tmp_query.push_back(it_v.GetFinalValue());
 			}
 			tmp_query.push_back(")");
 		}
@@ -635,16 +647,16 @@ void QueryActions::IncorporeValues_(std::vector<std::string>& tmp_query)
 	{
 		for(auto it : current_filters_.get_values())
 		{
-			if(it != current_filters_.get_values().front())
+			if(&it != &*current_filters_.get_values().begin())
 				tmp_query.push_back(",");
 
 			tmp_query.push_back("(");
 			for(auto it_sub : it)
 			{
-				if(it_sub != it.front())
+				if(&it_sub != &it.front())
 					tmp_query.push_back(",");
 
-				tmp_query.push_back("'" + it_sub + "'");
+				tmp_query.push_back(it_sub.GetFinalValue());
 			}
 			tmp_query.push_back(")");
 		}
@@ -655,14 +667,14 @@ void QueryActions::IncorporeSet_(std::vector<std::string>& tmp_query)
 {
 	if(current_filters_.get_set().size() > 0)
 	{
-		for(auto it : current_filters_.get_set())
+		for(auto& it : current_filters_.get_set())
 		{
-			if(it != *current_filters_.get_set().begin())
+			if(&it != &*current_filters_.get_set().begin())
 				tmp_query.push_back(",");
 
 			tmp_query.push_back(it.first);
 			tmp_query.push_back("=");
-			tmp_query.push_back("'" + it.second + "'");
+			tmp_query.push_back(it.second.GetFinalValue());
 		}
 	}
 }
