@@ -20,6 +20,27 @@
 
 using namespace CPW::Tools;
 
+
+ValuesProperties::ValuesProperties(std::string value, bool quotes) :
+	value_(value)
+	,quotes_(quotes)
+{
+
+}
+
+ValuesProperties::~ValuesProperties()
+{
+
+}
+
+std::string ValuesProperties::GetFinalValue()
+{
+	if(quotes_)
+		return "'" + value_ + "'";
+	else
+		return value_;
+}
+
 Filters::Filters() :
 	page_("0")
 	,limit_("20")

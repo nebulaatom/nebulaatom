@@ -29,9 +29,45 @@ namespace CPW
 	namespace Tools
 	{
 		class Filters;
+		class ValuesProperties;
 	}
 }
 
+
+class CPW::Tools::ValuesProperties
+{
+	public:
+		ValuesProperties(std::string value, bool quotes = true);
+		~ValuesProperties();
+
+		friend bool operator==(ValuesProperties& a, ValuesProperties& b)
+		{
+			if(a.GetFinalValue() == b.get_value())
+				return true;
+			else
+				return false;
+		}
+
+		friend bool operator!=(ValuesProperties& a, ValuesProperties& b)
+		{
+			if(a.GetFinalValue() != b.GetFinalValue())
+				return true;
+			else
+				return false;
+		}
+
+		std::string get_value() const {return value_;}
+		bool get_quotes() const {return quotes_;}
+
+		void set_value(std::string value) {value_ = value;}
+		void set_quotes(bool quote) {quotes_ = quote;}
+
+		std::string GetFinalValue();
+
+	private:
+		std::string value_;
+		bool quotes_;
+};
 
 class CPW::Tools::Filters
 {
@@ -39,59 +75,59 @@ class CPW::Tools::Filters
 		Filters();
 		~Filters();
 
-		std::vector<std::string>& get_fields()
+		std::vector<ValuesProperties>& get_fields()
 		{
 			auto& var = fields_;
 			return var;
 		}
 		std::string get_page() const { return page_; }
 		std::string get_limit() const { return limit_; }
-		std::vector<std::string>& get_sorts_conditions()
+		std::vector<ValuesProperties>& get_sorts_conditions()
 		{
 			auto& var = sorts_conditions_;
 			return var;
 		}
-		std::map<std::string, std::string>& get_iquals_conditions()
+		std::map<std::string, ValuesProperties>& get_iquals_conditions()
 		{
 			auto& var = iquals_conditions_;
 			return var;
 		}
-		std::map<std::string, std::string>& get_not_iquals_conditions()
+		std::map<std::string, ValuesProperties>& get_not_iquals_conditions()
 		{
 			auto& var = not_iquals_conditions_;
 			return var;
 		}
-		std::map<std::string, std::string>& get_greather_than()
+		std::map<std::string, ValuesProperties>& get_greather_than()
 		{
 			auto& var = greather_than_;
 			return var;
 		}
-		std::map<std::string, std::string>& get_smaller_than()
+		std::map<std::string, ValuesProperties>& get_smaller_than()
 		{
 			auto& var = smaller_than_;
 			return var;
 		}
-		std::map<std::string, std::pair<std::string, std::string>>& get_between()
+		std::map<std::string, std::pair<ValuesProperties, ValuesProperties>>& get_between()
 		{
 			auto& var = between_;
 			return var;
 		}
-		std::map<std::string, std::vector<std::string>>& get_in()
+		std::map<std::string, std::vector<ValuesProperties>>& get_in()
 		{
 			auto& var = in_;
 			return var;
 		}
-		std::map<std::string, std::vector<std::string>>& get_not_in()
+		std::map<std::string, std::vector<ValuesProperties>>& get_not_in()
 		{
 			auto& var = not_in_;
 			return var;
 		}
-		std::vector<std::vector<std::string>>& get_values()
+		std::vector<std::vector<ValuesProperties>>& get_values()
 		{
 			auto& var = values_;
 			return var;
 		}
-		std::map<std::string, std::string>& get_set()
+		std::map<std::string, ValuesProperties>& get_set()
 		{
 			auto& var = set_;
 			return var;
@@ -101,19 +137,19 @@ class CPW::Tools::Filters
 		void set_limit(std::string limit) { limit_ = limit; }
 
 	private:
-		std::vector<std::string> fields_;
+		std::vector<ValuesProperties> fields_;
 		std::string page_;
 		std::string limit_;
-		std::vector<std::string> sorts_conditions_;
-		std::map<std::string, std::string> iquals_conditions_;
-		std::map<std::string, std::string> not_iquals_conditions_;
-		std::map<std::string, std::string> greather_than_;
-		std::map<std::string, std::string> smaller_than_;
-		std::map<std::string, std::pair<std::string, std::string>> between_;
-		std::map<std::string, std::vector<std::string>> in_;
-		std::map<std::string, std::vector<std::string>> not_in_;
-		std::vector<std::vector<std::string>> values_;
-		std::map<std::string, std::string> set_;
+		std::vector<ValuesProperties> sorts_conditions_;
+		std::map<std::string, ValuesProperties> iquals_conditions_;
+		std::map<std::string, ValuesProperties> not_iquals_conditions_;
+		std::map<std::string, ValuesProperties> greather_than_;
+		std::map<std::string, ValuesProperties> smaller_than_;
+		std::map<std::string, std::pair<ValuesProperties, ValuesProperties>> between_;
+		std::map<std::string, std::vector<ValuesProperties>> in_;
+		std::map<std::string, std::vector<ValuesProperties>> not_in_;
+		std::vector<std::vector<ValuesProperties>> values_;
+		std::map<std::string, ValuesProperties> set_;
 };
 
 
