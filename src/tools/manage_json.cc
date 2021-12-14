@@ -47,8 +47,13 @@ bool ManageJSON::Parse_(std::string string_to_parse)
 		return false;
 
 	JSON::Parser parser;
-	JSON::Object::Ptr object_json = parser.parse(string_to_parse).extract<JSON::Object::Ptr>();
-	dynamic_json_body_ = *object_json;
+
+	Dynamic::Var var_tmp = parser.parse(string_to_parse);
+
+	if(var_tmp.isArray())
+		return false;
+
+	dynamic_json_body_ = *var_tmp.extract<JSON::Object::Ptr>();
 
 	return VerifyJSON_();
 }
