@@ -53,16 +53,9 @@ bool SecurityVerification::AuthenticateUser_()
 		query_actions->ComposeQuery_(Core::TypeAction::kSelect, "users");
 		query_actions->ExecuteQuery_();
 
-		auto var_tmp = query_actions->get_result_json()->get("results");
+		auto object_tmp = query_actions->ExtractArray_(query_actions->get_result_json()->get("results"));
 
-		if(var_tmp.isEmpty() || !var_tmp.isArray())
-			return false;
-
-		JSON::Array::Ptr object_tmp = var_tmp.extract<JSON::Array::Ptr>();
-
-		auto rows = object_tmp->size();
-
-		if(rows > 0)
+		if(object_tmp->size() > 0)
 			return true;
 		else
 			return false;
@@ -89,20 +82,13 @@ bool SecurityVerification::VerifyPermissions_(std::string method)
 		{
 			SeePermissionsPerUser_(it, method, target);
 
-			auto var_tmp = query_actions->get_result_json()->get("results");
-			if(var_tmp.isEmpty() || !var_tmp.isArray())
-				continue;
-
-			auto array_tmp = var_tmp.extract<JSON::Array::Ptr>();
+			auto array_tmp = query_actions->ExtractArray_(query_actions->get_result_json()->get("results"));
 			if(array_tmp->size() < 1)
 				continue;
 
-			var_tmp = array_tmp->get(0);
-			if(var_tmp.isEmpty())
+			auto object_tmp = query_actions->ExtractObject_(array_tmp->get(0));
+			if(object_tmp->get("granted").isEmpty())
 				continue;
-
-			auto object_tmp = var_tmp.extract<JSON::Object::Ptr>();
-
 			if(!object_tmp->get("granted").isInteger())
 				continue;
 
@@ -111,7 +97,7 @@ bool SecurityVerification::VerifyPermissions_(std::string method)
 			return granted == 1 ? true : false;
 		}
 
-		return granted == 1 ? true : false;
+		return false;
 }
 
 void SecurityVerification::SeePermissionsPerUser_(std::string user, std::string action_type, std::string target)
