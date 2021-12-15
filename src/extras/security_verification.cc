@@ -36,7 +36,7 @@ bool SecurityVerification::AuthenticateUser_()
 		auto query_actions = dynamic_elements_.get_query_actions();
 		auto result_json = query_actions->get_result_json();
 		auto& json_auth = query_actions->get_dynamic_json_body()["pair-information"][0]["auth"];
-		auto& iquals = query_actions->get_current_filters_().get_iquals_conditions();
+		auto& iquals = query_actions->get_current_filters_()->get_iquals_conditions();
 
 	// Verify the key-values
 		if(json_auth["user"].isEmpty() || json_auth["password"].isEmpty())
@@ -68,7 +68,7 @@ bool SecurityVerification::VerifyPermissions_(std::string method)
 		auto query_actions = dynamic_elements_.get_query_actions();
 		auto result_json = query_actions->get_result_json();
 		std::string target = dynamic_elements_.get_requested_route()->get_target();
-		auto& iquals = query_actions->get_current_filters_().get_iquals_conditions();
+		auto& iquals = query_actions->get_current_filters_()->get_iquals_conditions();
 		int granted = -1;
 
 	// Find user
@@ -106,8 +106,8 @@ void SecurityVerification::SeePermissionsPerUser_(std::string user, std::string 
 {
 	// Variables
 		auto query_actions = dynamic_elements_.get_query_actions();
-		auto& iquals = query_actions->get_current_filters_().get_iquals_conditions();
-		auto& fields = query_actions->get_current_filters_().get_fields();
+		auto& iquals = query_actions->get_current_filters_()->get_iquals_conditions();
+		auto& fields = query_actions->get_current_filters_()->get_fields();
 
 	// Clear previous values
 		iquals.clear();
