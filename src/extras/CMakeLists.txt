@@ -16,3 +16,8 @@ set_target_properties(httpmethods PROPERTIES POSITION_INDEPENDENT_CODE 1)
 add_library(securityverification OBJECT "security_verification.cc")
 target_include_directories(securityverification PUBLIC ${HEADER})
 set_target_properties(securityverification PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
+### incorporatefilters
+add_library(incorporatefilters OBJECT "incorporate_filters.cc")
+target_include_directories(incorporatefilters PUBLIC ${HEADER})
+set_target_properties(incorporatefilters PROPERTIES POSITION_INDEPENDENT_CODE 1)
