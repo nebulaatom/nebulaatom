@@ -21,8 +21,10 @@
 using namespace CPW::Core;
 
 QueryActions::QueryActions() :
-	app_(Application::instance())
+	current_filters_(new Tools::Filters)
+	,app_(Application::instance())
 {
+	incorporate_ = std::make_unique<Extras::IncorporateFilters>(current_filters_);
 	result_json_ = new JSON::Object;
 	FillTypeActionsText_();
 }
@@ -77,7 +79,7 @@ void QueryActions::IdentifyFilters_()
 
 						for(std::size_t b = 0; b < it["contents"].size(); b++)
 						{
-							get_current_filters_().get_fields().push_back({it["contents"][b], false});
+							current_filters_->get_fields().push_back({it["contents"][b], false});
 						}
 						break;
 					}
@@ -86,7 +88,7 @@ void QueryActions::IdentifyFilters_()
 						if(it["content"].isEmpty())
 							throw std::runtime_error("content in kPage is empty on data array index " + std::to_string(a));
 
-						get_current_filters_().set_page(it["content"].toString());
+						current_filters_->set_page(it["content"].toString());
 						break;
 					}
 					case TypeQuery::kLimit:
@@ -94,7 +96,7 @@ void QueryActions::IdentifyFilters_()
 						if(it["content"].isEmpty())
 							throw std::runtime_error("content in kLimit is empty on data array index " + std::to_string(a));
 
-						get_current_filters_().set_limit(it["content"].toString());
+						current_filters_->set_limit(it["content"].toString());
 						break;
 					}
 					case TypeQuery::kSort:
@@ -104,7 +106,7 @@ void QueryActions::IdentifyFilters_()
 
 						for(std::size_t b = 0; b < it["contents"].size(); b++)
 						{
-							get_current_filters_().get_sorts_conditions().push_back({it["contents"][b], false});
+							current_filters_->get_sorts_conditions().push_back({it["contents"][b], false});
 						}
 						break;
 					}
@@ -113,7 +115,7 @@ void QueryActions::IdentifyFilters_()
 						if(it["content"].isEmpty() || it["col"].isEmpty())
 							throw std::runtime_error("content or col in kIqual is empty on data array index " + std::to_string(a));
 
-						get_current_filters_().get_iquals_conditions().emplace(std::make_pair
+						current_filters_->get_iquals_conditions().emplace(std::make_pair
 						(
 							it["col"].toString()
 							,Tools::ValuesProperties{it["content"].toString(), true}
@@ -125,7 +127,7 @@ void QueryActions::IdentifyFilters_()
 						if(it["content"].isEmpty() || it["col"].isEmpty())
 							throw std::runtime_error("content or col in kNotIqual is empty on data array index " + std::to_string(a));
 
-						get_current_filters_().get_not_iquals_conditions().emplace(std::make_pair
+						current_filters_->get_not_iquals_conditions().emplace(std::make_pair
 						(
 							it["col"].toString()
 							,Tools::ValuesProperties{it["content"].toString(), true}
@@ -137,7 +139,7 @@ void QueryActions::IdentifyFilters_()
 						if(it["content"].isEmpty() || it["col"].isEmpty())
 							throw std::runtime_error("content or col in kGreatherThan is empty on data array index " + std::to_string(a));
 
-						get_current_filters_().get_greather_than().emplace(std::make_pair
+						current_filters_->get_greather_than().emplace(std::make_pair
 						(
 							it["col"].toString()
 							,Tools::ValuesProperties{it["content"].toString(), true}
@@ -149,7 +151,7 @@ void QueryActions::IdentifyFilters_()
 						if(it["content"].isEmpty() || it["col"].isEmpty())
 							throw std::runtime_error("content or col in kSmallerThan is empty on data array index " + std::to_string(a));
 
-						get_current_filters_().get_smaller_than().emplace(std::make_pair
+						current_filters_->get_smaller_than().emplace(std::make_pair
 						(
 							it["col"].toString()
 							,Tools::ValuesProperties{it["content"].toString(), true}
@@ -161,7 +163,7 @@ void QueryActions::IdentifyFilters_()
 						if(it["col"].isEmpty() || it["content1"].isEmpty() || it["content2"].isEmpty())
 							throw std::runtime_error("col, content1 or content2 in kBetween is empty on data array index " + std::to_string(a));
 
-						get_current_filters_().get_between().emplace(std::make_pair
+						current_filters_->get_between().emplace(std::make_pair
 						(
 							it["col"].toString()
 							,std::make_pair
@@ -182,7 +184,7 @@ void QueryActions::IdentifyFilters_()
 						{
 							tmp_in.push_back({it["contents"][b], true});
 						}
-						get_current_filters_().get_in().emplace(std::make_pair
+						current_filters_->get_in().emplace(std::make_pair
 						(
 							it["col"]
 							,tmp_in
@@ -199,7 +201,7 @@ void QueryActions::IdentifyFilters_()
 						{
 							tmp_not_in.push_back({it["contents"][b], true});
 						}
-						get_current_filters_().get_not_in().emplace(std::make_pair(it["col"], tmp_not_in));
+						current_filters_->get_not_in().emplace(std::make_pair(it["col"], tmp_not_in));
 						break;
 					}
 					case TypeQuery::kValues:
@@ -209,11 +211,11 @@ void QueryActions::IdentifyFilters_()
 
 						for(std::size_t b = 0; b < it["contents"].size(); b++)
 						{
-							get_current_filters_().get_values().push_back(std::vector<Tools::ValuesProperties> {});
+							current_filters_->get_values().push_back(std::vector<Tools::ValuesProperties> {});
 
 							for(auto it_v: it["contents"][b])
 							{
-								get_current_filters_().get_values()[b].push_back({it_v.toString(), true});
+								current_filters_->get_values()[b].push_back({it_v.toString(), true});
 							}
 						}
 						break;
@@ -223,7 +225,7 @@ void QueryActions::IdentifyFilters_()
 						if(it["content"].isEmpty() || it["col"].isEmpty())
 							throw std::runtime_error("content or col in kSet is empty on data array index " + std::to_string(a));
 
-						get_current_filters_().get_set().emplace(std::make_pair
+						current_filters_->get_set().emplace(std::make_pair
 						(
 							it["col"].toString()
 							,Tools::ValuesProperties{it["content"].toString(), true}
@@ -341,12 +343,12 @@ std::string QueryActions::ComposeInsertSentence_(std::string table)
 		std::vector<std::string> tmp_query = {"INSERT INTO " + table + " ("};
 
 	// Fields
-		IncorporeFields_(tmp_query);
+		incorporate_->IncorporateFields_(tmp_query);
 		tmp_query.push_back(")");
 
 	// Values
 		tmp_query.push_back("VALUES");
-		IncorporeValues_(tmp_query);
+		incorporate_->IncorporateValues_(tmp_query);
 
 	tmp_query.push_back(";");
 
@@ -361,25 +363,25 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 {
 	// Sentence type and fields
 		std::vector<std::string> tmp_query = {"SELECT"};
-		IncorporeFields_(tmp_query);
+		incorporate_->IncorporateFields_(tmp_query);
 
 	// Table
 		tmp_query.push_back("FROM " + table);
 
 	// Conditions
-		IncorporeIqual_(tmp_query);
-		IncorporeNotIqual_(tmp_query);
-		IncorporeGreatherThan_(tmp_query);
-		IncorporeSmallerThan_(tmp_query);
-		IncorporeBetween_(tmp_query);
-		IncorporeIn_(tmp_query);
-		IncorporeNotIn_(tmp_query);
+		incorporate_->IncorporateIqual_(tmp_query);
+		incorporate_->IncorporateNotIqual_(tmp_query);
+		incorporate_->IncorporateGreatherThan_(tmp_query);
+		incorporate_->IncorporateSmallerThan_(tmp_query);
+		incorporate_->IncorporateBetween_(tmp_query);
+		incorporate_->IncorporateIn_(tmp_query);
+		incorporate_->IncorporateNotIn_(tmp_query);
 
 	// Sort conditions
-		IncorporeSort_(tmp_query);
+		incorporate_->IncorporateSort_(tmp_query);
 
 	// Page and Limit condition
-		IncorporePageLimit_(tmp_query);
+		incorporate_->IncorporatePageLimit_(tmp_query);
 
 	return MakeFinalQuery_(tmp_query);
 }
@@ -392,22 +394,22 @@ std::string QueryActions::ComposeUpdateSentence_(std::string table)
 
 	// Set
 		tmp_query.push_back("SET");
-		IncorporeSet_(tmp_query);
+		incorporate_->IncorporateSet_(tmp_query);
 
 	// Conditions
-		IncorporeIqual_(tmp_query);
-		IncorporeNotIqual_(tmp_query);
-		IncorporeGreatherThan_(tmp_query);
-		IncorporeSmallerThan_(tmp_query);
-		IncorporeBetween_(tmp_query);
-		IncorporeIn_(tmp_query);
-		IncorporeNotIn_(tmp_query);
+		incorporate_->IncorporateIqual_(tmp_query);
+		incorporate_->IncorporateNotIqual_(tmp_query);
+		incorporate_->IncorporateGreatherThan_(tmp_query);
+		incorporate_->IncorporateSmallerThan_(tmp_query);
+		incorporate_->IncorporateBetween_(tmp_query);
+		incorporate_->IncorporateIn_(tmp_query);
+		incorporate_->IncorporateNotIn_(tmp_query);
 
 	// Sort conditions
-		IncorporeSort_(tmp_query);
+		incorporate_->IncorporateSort_(tmp_query);
 
 	// Page and Limit condition
-		IncorporePageLimit_(tmp_query);
+		incorporate_->IncorporatePageLimit_(tmp_query);
 
 	return MakeFinalQuery_(tmp_query);
 }
@@ -418,19 +420,19 @@ std::string QueryActions::ComposeDeleteSentence_(std::string table)
 		std::vector<std::string> tmp_query = {"DELETE FROM " + table};
 
 	// Conditions
-		IncorporeIqual_(tmp_query);
-		IncorporeNotIqual_(tmp_query);
-		IncorporeGreatherThan_(tmp_query);
-		IncorporeSmallerThan_(tmp_query);
-		IncorporeBetween_(tmp_query);
-		IncorporeIn_(tmp_query);
-		IncorporeNotIn_(tmp_query);
+		incorporate_->IncorporateIqual_(tmp_query);
+		incorporate_->IncorporateNotIqual_(tmp_query);
+		incorporate_->IncorporateGreatherThan_(tmp_query);
+		incorporate_->IncorporateSmallerThan_(tmp_query);
+		incorporate_->IncorporateBetween_(tmp_query);
+		incorporate_->IncorporateIn_(tmp_query);
+		incorporate_->IncorporateNotIn_(tmp_query);
 
 	// Sort conditions
-		IncorporeSort_(tmp_query);
+		incorporate_->IncorporateSort_(tmp_query);
 
 	// Page and Limit condition
-		IncorporePageLimit_(tmp_query);
+		incorporate_->IncorporatePageLimit_(tmp_query);
 
 	return MakeFinalQuery_(tmp_query);
 }
@@ -444,239 +446,6 @@ std::string QueryActions::MakeFinalQuery_(std::vector<std::string>& tmp_query)
 		final_query += it + " ";
 
 	return final_query;
-}
-
-void QueryActions::IncorporeWhere_(std::vector<std::string>& tmp_query)
-{
-	auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
-
-	if(found == tmp_query.end())
-		tmp_query.push_back("WHERE");
-}
-
-void QueryActions::IncorporeAND_(std::vector<std::string>& tmp_query)
-{
-	auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
-
-	if(*found != tmp_query.back())
-		tmp_query.push_back("AND");
-}
-
-void QueryActions::IncorporeFields_(std::vector<std::string>& tmp_query)
-{
-	if(current_filters_.get_fields().size() == 0)
-		tmp_query.push_back("*");
-	else
-	{
-		for(auto it : current_filters_.get_fields())
-		{
-			if(it != current_filters_.get_fields().front())
-				tmp_query.push_back(",");
-
-			tmp_query.push_back(it.GetFinalValue());
-		}
-	}
-}
-
-void QueryActions::IncorporePageLimit_(std::vector<std::string>& tmp_query)
-{
-	if(std::stoi(current_filters_.get_limit()) > 0)
-	{
-		int offset = std::stoi(current_filters_.get_limit()) * std::stoi(current_filters_.get_page());
-		tmp_query.push_back("LIMIT");
-		tmp_query.push_back(std::to_string(offset));
-		tmp_query.push_back(", " + current_filters_.get_limit());
-	}
-	else
-		tmp_query.push_back("LIMIT 0, 20 ");
-}
-
-void QueryActions::IncorporeSort_(std::vector<std::string>& tmp_query)
-{
-	if(current_filters_.get_sorts_conditions().size() > 0)
-	{
-		tmp_query.push_back("ORDER BY");
-		for(auto it : current_filters_.get_sorts_conditions())
-		{
-			if(it != *current_filters_.get_sorts_conditions().begin())
-				tmp_query.push_back(",");
-
-			tmp_query.push_back(it.GetFinalValue());
-		}
-	}
-}
-
-void QueryActions::IncorporeIqual_(std::vector<std::string>& tmp_query)
-{
-	if(current_filters_.get_iquals_conditions().size() > 0)
-	{
-		IncorporeWhere_(tmp_query);
-
-		for(auto it : current_filters_.get_iquals_conditions())
-		{
-			IncorporeAND_(tmp_query);
-
-			tmp_query.push_back(it.first);
-			tmp_query.push_back("=");
-			tmp_query.push_back(it.second.GetFinalValue());
-		}
-	}
-}
-
-void QueryActions::IncorporeNotIqual_(std::vector<std::string>& tmp_query)
-{
-	if(current_filters_.get_not_iquals_conditions().size() > 0)
-	{
-		IncorporeWhere_(tmp_query);
-
-		for(auto it : current_filters_.get_not_iquals_conditions())
-		{
-			IncorporeAND_(tmp_query);
-
-			tmp_query.push_back(it.first);
-			tmp_query.push_back("<>");
-			tmp_query.push_back(it.second.GetFinalValue());
-		}
-	}
-}
-
-void QueryActions::IncorporeGreatherThan_(std::vector<std::string>& tmp_query)
-{
-	if(current_filters_.get_greather_than().size() > 0)
-	{
-		IncorporeWhere_(tmp_query);
-
-		for(auto it : current_filters_.get_greather_than())
-		{
-			IncorporeAND_(tmp_query);
-
-			tmp_query.push_back(it.first);
-			tmp_query.push_back(">");
-			tmp_query.push_back(it.second.GetFinalValue());
-		}
-	}
-}
-
-void QueryActions::IncorporeSmallerThan_(std::vector<std::string>& tmp_query)
-{
-	if(current_filters_.get_smaller_than().size() > 0)
-	{
-		IncorporeWhere_(tmp_query);
-
-		for(auto it : current_filters_.get_smaller_than())
-		{
-			IncorporeAND_(tmp_query);
-
-			tmp_query.push_back(it.first);
-			tmp_query.push_back("<");
-			tmp_query.push_back(it.second.GetFinalValue());
-		}
-	}
-}
-
-void QueryActions::IncorporeBetween_(std::vector<std::string>& tmp_query)
-{
-	if(current_filters_.get_between().size() > 0)
-	{
-		IncorporeWhere_(tmp_query);
-
-		for(auto it : current_filters_.get_between())
-		{
-			IncorporeAND_(tmp_query);
-
-			tmp_query.push_back(it.first);
-			tmp_query.push_back("BETWEEN");
-			tmp_query.push_back(it.second.first.GetFinalValue());
-			tmp_query.push_back("AND");
-			tmp_query.push_back(it.second.second.GetFinalValue());
-		}
-	}
-}
-
-void QueryActions::IncorporeIn_(std::vector<std::string>& tmp_query)
-{
-	if(current_filters_.get_in().size() > 0)
-	{
-		IncorporeWhere_(tmp_query);
-
-		for(auto it : current_filters_.get_in())
-		{
-			IncorporeAND_(tmp_query);
-
-			tmp_query.push_back(it.first);
-			tmp_query.push_back("IN (");
-			for(auto it_v : it.second)
-			{
-				if(it_v != *it.second.begin())
-					tmp_query.push_back(",");
-
-				tmp_query.push_back(it_v.GetFinalValue());
-			}
-			tmp_query.push_back(")");
-		}
-	}
-}
-
-void QueryActions::IncorporeNotIn_(std::vector<std::string>& tmp_query)
-{
-	if(current_filters_.get_not_in().size() > 0)
-	{
-		IncorporeWhere_(tmp_query);
-
-		for(auto it : current_filters_.get_not_in())
-		{
-			IncorporeAND_(tmp_query);
-
-			tmp_query.push_back(it.first);
-			tmp_query.push_back("NOT IN (");
-			for(auto it_v : it.second)
-			{
-				if(it_v != *it.second.begin())
-					tmp_query.push_back(",");
-
-				tmp_query.push_back(it_v.GetFinalValue());
-			}
-			tmp_query.push_back(")");
-		}
-	}
-}
-
-void QueryActions::IncorporeValues_(std::vector<std::string>& tmp_query)
-{
-	if(current_filters_.get_values().size() > 0)
-	{
-		for(auto it : current_filters_.get_values())
-		{
-			if(&it != &*current_filters_.get_values().begin())
-				tmp_query.push_back(",");
-
-			tmp_query.push_back("(");
-			for(auto it_sub : it)
-			{
-				if(&it_sub != &it.front())
-					tmp_query.push_back(",");
-
-				tmp_query.push_back(it_sub.GetFinalValue());
-			}
-			tmp_query.push_back(")");
-		}
-	}
-}
-
-void QueryActions::IncorporeSet_(std::vector<std::string>& tmp_query)
-{
-	if(current_filters_.get_set().size() > 0)
-	{
-		for(auto& it : current_filters_.get_set())
-		{
-			if(&it != &*current_filters_.get_set().begin())
-				tmp_query.push_back(",");
-
-			tmp_query.push_back(it.first);
-			tmp_query.push_back("=");
-			tmp_query.push_back(it.second.GetFinalValue());
-		}
-	}
 }
 
 void QueryActions::FillTypeActionsText_()

@@ -44,6 +44,7 @@
 
 #include "tools/manage_json.h"
 #include "tools/filters.h"
+#include "extras/incorporate_filters.h"
 
 
 namespace CPW
@@ -96,11 +97,7 @@ class CPW::Core::QueryActions : public CPW::Tools::ManageJSON
 		~QueryActions();
 
 		std::string get_final_query() const {return final_query_;}
-		CPW::Tools::Filters& get_current_filters_()
-		{
-			auto& var = current_filters_;
-			return var;
-		}
+		Tools::Filters* get_current_filters_() const {return current_filters_.get();}
 		Data::Session* get_session() const {return session_.get();}
 		Data::Statement* get_query() const {return query_.get();}
 		JSON::Object::Ptr get_result_json() const {return result_json_;}
@@ -119,27 +116,13 @@ class CPW::Core::QueryActions : public CPW::Tools::ManageJSON
 		std::string ComposeDeleteSentence_(std::string table);
 		std::string MakeFinalQuery_(std::vector<std::string>& tmp_query);
 
-		void IncorporeWhere_(std::vector<std::string>& tmp_query);
-		void IncorporeAND_(std::vector<std::string>& tmp_query);
-		void IncorporeFields_(std::vector<std::string>& tmp_query);
-		void IncorporePageLimit_(std::vector<std::string>& tmp_query);
-		void IncorporeSort_(std::vector<std::string>& tmp_query);
-		void IncorporeIqual_(std::vector<std::string>& tmp_query);
-		void IncorporeNotIqual_(std::vector<std::string>& tmp_query);
-		void IncorporeGreatherThan_(std::vector<std::string>& tmp_query);
-		void IncorporeSmallerThan_(std::vector<std::string>& tmp_query);
-		void IncorporeBetween_(std::vector<std::string>& tmp_query);
-		void IncorporeIn_(std::vector<std::string>& tmp_query);
-		void IncorporeNotIn_(std::vector<std::string>& tmp_query);
-		void IncorporeValues_(std::vector<std::string>& tmp_query);
-		void IncorporeSet_(std::vector<std::string>& tmp_query);
-
 	private:
 		void FillTypeActionsText_();
 		bool ExistsType_(std::string type);
 
 		std::string final_query_;
-		CPW::Tools::Filters current_filters_;
+		std::unique_ptr<Extras::IncorporateFilters> incorporate_;
+		std::shared_ptr<Tools::Filters> current_filters_;
 		std::shared_ptr<Data::Session> session_;
 		std::shared_ptr<Data::Statement> query_;
 		JSON::Object::Ptr result_json_;
