@@ -44,6 +44,7 @@
 
 #include "tools/manage_json.h"
 #include "tools/filters.h"
+#include "tools/common_responses.h"
 #include "extras/incorporate_filters.h"
 
 
@@ -90,7 +91,9 @@ enum class CPW::Core::TypeQuery
 };
 
 
-class CPW::Core::QueryActions : public CPW::Tools::ManageJSON
+class CPW::Core::QueryActions :
+	public Tools::ManageJSON
+	,public Tools::CommonResponses
 {
 	public:
 		QueryActions();
@@ -102,13 +105,14 @@ class CPW::Core::QueryActions : public CPW::Tools::ManageJSON
 		Data::Statement* get_query() const {return query_.get();}
 		JSON::Object::Ptr get_result_json() const {return result_json_;}
 
-		void StartDatabase_();
-		void StopDatabase_();
 		void IdentifyFilters_();
 		void ComposeQuery_(TypeAction action_type, std::string table);
-		void ExecuteQuery_();
+		bool ExecuteQuery_(HTTPServerResponse& response);
+		bool ExecuteQuery_();
 
 	protected:
+		void StartDatabase_();
+		void StopDatabase_();
 		void CreateJSONResult_();
 		std::string ComposeInsertSentence_(std::string table);
 		std::string ComposeSelectSentence_(std::string table);

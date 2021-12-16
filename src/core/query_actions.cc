@@ -277,7 +277,45 @@ void QueryActions::ComposeQuery_(TypeAction action_type, std::string table)
 	app_.logger().information("- Final query: " + tmp_query);
 }
 
-void QueryActions::ExecuteQuery_()
+bool QueryActions::ExecuteQuery_(HTTPServerResponse& response)
+{
+	try
+	{
+		StartDatabase_();
+		*query_ << final_query_, now;
+		StopDatabase_();
+
+		CreateJSONResult_();
+	}
+	catch(MySQL::MySQLException& error)
+	{
+		GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, std::string(error.message()));
+		app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.message()));
+		return false;
+	}
+	catch(JSON::JSONException& error)
+	{
+		GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, std::string(error.message()));
+		app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.displayText()));
+		return false;
+	}
+	catch(std::exception& error)
+	{
+		GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, std::string(error.what()));
+		app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
+		return false;
+	}
+	catch(std::runtime_error& error)
+	{
+		GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, std::string(error.what()));
+		app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
+		return false;
+	}
+
+	return true;
+}
+
+bool QueryActions::ExecuteQuery_()
 {
 	try
 	{
@@ -290,19 +328,25 @@ void QueryActions::ExecuteQuery_()
 	catch(MySQL::MySQLException& error)
 	{
 		app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.message()));
+		return false;
 	}
 	catch(JSON::JSONException& error)
 	{
 		app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.displayText()));
+		return false;
 	}
 	catch(std::exception& error)
 	{
 		app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
+		return false;
 	}
 	catch(std::runtime_error& error)
 	{
 		app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
+		return false;
 	}
+
+	return true;
 }
 
 void QueryActions::CreateJSONResult_()
