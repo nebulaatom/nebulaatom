@@ -45,7 +45,7 @@ class CPW::Extras::IncorporateFilters
 		void IncorporateWhere_(std::vector<std::string>& tmp_query);
 		void IncorporateAND_(std::vector<std::string>& tmp_query);
 		void IncorporateFields_(std::vector<std::string>& tmp_query);
-		void IncorporatePageLimit_(std::vector<std::string>& tmp_query);
+		void IncorporatePageLimit_(std::vector<std::string>& tmp_query, bool pagination);
 		void IncorporateSort_(std::vector<std::string>& tmp_query);
 		void IncorporateIqual_(std::vector<std::string>& tmp_query);
 		void IncorporateNotIqual_(std::vector<std::string>& tmp_query);

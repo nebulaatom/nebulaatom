@@ -63,17 +63,25 @@ void IncorporateFilters::IncorporateFields_(std::vector<std::string>& tmp_query)
 	}
 }
 
-void IncorporateFilters::IncorporatePageLimit_(std::vector<std::string>& tmp_query)
+void IncorporateFilters::IncorporatePageLimit_(std::vector<std::string>& tmp_query, bool pagination)
 {
 	if(std::stoi(current_filters_->get_limit()) > 0)
 	{
-		int offset = std::stoi(current_filters_->get_limit()) * std::stoi(current_filters_->get_page());
 		tmp_query.push_back("LIMIT");
-		tmp_query.push_back(std::to_string(offset));
-		tmp_query.push_back(", " + current_filters_->get_limit());
+		if(pagination)
+		{
+			int offset = std::stoi(current_filters_->get_limit()) * std::stoi(current_filters_->get_page());
+			tmp_query.push_back(std::to_string(offset));
+			tmp_query.push_back(", " + current_filters_->get_limit());
+		}
+		else
+			tmp_query.push_back(current_filters_->get_limit());
 	}
 	else
-		tmp_query.push_back("LIMIT 0, 20 ");
+		if(pagination)
+			tmp_query.push_back("LIMIT 0, 20");
+		else
+			tmp_query.push_back("LIMIT 20");
 }
 
 void IncorporateFilters::IncorporateSort_(std::vector<std::string>& tmp_query)
@@ -230,18 +238,18 @@ void IncorporateFilters::IncorporateValues_(std::vector<std::string>& tmp_query)
 {
 	if(current_filters_->get_values().size() > 0)
 	{
-		for(auto it : current_filters_->get_values())
+		for(auto it = current_filters_->get_values().begin(); it != current_filters_->get_values().end(); ++it)
 		{
-			if(&it != &*current_filters_->get_values().begin())
+			if(&*it != &*current_filters_->get_values().begin())
 				tmp_query.push_back(",");
 
 			tmp_query.push_back("(");
-			for(auto it_sub : it)
+			for(auto it_sub = it->begin(); it_sub != it->end(); ++it_sub)
 			{
-				if(&it_sub != &it.front())
+				if(&*it_sub != &*it->begin())
 					tmp_query.push_back(",");
 
-				tmp_query.push_back(it_sub.GetFinalValue());
+				tmp_query.push_back(it_sub->GetFinalValue());
 			}
 			tmp_query.push_back(")");
 		}
