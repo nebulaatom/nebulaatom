@@ -32,7 +32,7 @@ HTTPMethods::~HTTPMethods()
 
 void HTTPMethods::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	QueryProcess_(Core::TypeAction::kSelect);
+	QueryProcess_(Core::TypeAction::kSelect, response);
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("application/json");
@@ -44,7 +44,7 @@ void HTTPMethods::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRespons
 
 void HTTPMethods::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	QueryProcess_(Core::TypeAction::kInsert);
+	QueryProcess_(Core::TypeAction::kInsert, response);
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("plain/text");
@@ -55,7 +55,7 @@ void HTTPMethods::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerRespon
 
 void HTTPMethods::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	QueryProcess_(Core::TypeAction::kUpdate);
+	QueryProcess_(Core::TypeAction::kUpdate, response);
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("plain/text");
@@ -66,7 +66,7 @@ void HTTPMethods::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerRespons
 
 void HTTPMethods::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	QueryProcess_(Core::TypeAction::kDelete);
+	QueryProcess_(Core::TypeAction::kDelete, response);
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("plain/text");
@@ -75,10 +75,10 @@ void HTTPMethods::HandleDELMethod_(HTTPServerRequest& request, HTTPServerRespons
 	out.flush();
 }
 
-void HTTPMethods::QueryProcess_(Core::TypeAction action)
+void HTTPMethods::QueryProcess_(Core::TypeAction action, HTTPServerResponse& response)
 {
 	dynamic_elements_->get_query_actions()->IdentifyFilters_();
 	dynamic_elements_->get_query_actions()->ComposeQuery_(action, dynamic_elements_->get_requested_route()->get_target());
-	dynamic_elements_->get_query_actions()->ExecuteQuery_();
-
+	if(!dynamic_elements_->get_query_actions()->ExecuteQuery_(response))
+		return;
 }
