@@ -51,7 +51,7 @@ class CPW::Extras::SecurityVerification
 
 		bool AuthenticateUser_();
 		bool VerifyPermissions_(std::string method);
-		void SeePermissionsPerUser_(std::string user, std::string action_type, std::string target);
+		bool SeePermissionsPerUser_(std::string user, std::string action_type, std::string target);
 
 	private:
 		DynamicElements dynamic_elements_;

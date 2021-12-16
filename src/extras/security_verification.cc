@@ -52,7 +52,8 @@ bool SecurityVerification::AuthenticateUser_()
 
 	// Execute the query
 		query_actions->ComposeQuery_(Core::TypeAction::kSelect, "users");
-		query_actions->ExecuteQuery_();
+		if(!query_actions->ExecuteQuery_())
+			return false;
 
 		auto object_tmp = query_actions->ExtractArray_(result_json->get("results"));
 
@@ -82,7 +83,8 @@ bool SecurityVerification::VerifyPermissions_(std::string method)
 	// Verify permissions for the users
 		for(auto it : std::vector{user, std::string("null")})
 		{
-			SeePermissionsPerUser_(it, method, target);
+			if(!SeePermissionsPerUser_(it, method, target))
+				return false;
 
 			auto array_tmp = query_actions->ExtractArray_(result_json->get("results"));
 			if(array_tmp->size() < 1)
@@ -102,7 +104,7 @@ bool SecurityVerification::VerifyPermissions_(std::string method)
 		return false;
 }
 
-void SecurityVerification::SeePermissionsPerUser_(std::string user, std::string action_type, std::string target)
+bool SecurityVerification::SeePermissionsPerUser_(std::string user, std::string action_type, std::string target)
 {
 	// Variables
 		auto query_actions = dynamic_elements_.get_query_actions();
@@ -123,5 +125,8 @@ void SecurityVerification::SeePermissionsPerUser_(std::string user, std::string 
 
 	// Data sentences
 		query_actions->ComposeQuery_(Core::TypeAction::kSelect, "permissions_log pl, permissions p, users u");
-		query_actions->ExecuteQuery_();
+		if(query_actions->ExecuteQuery_())
+			return true;
+		else
+			return false;
 }
