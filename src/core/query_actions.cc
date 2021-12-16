@@ -381,7 +381,7 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 		incorporate_->IncorporateSort_(tmp_query);
 
 	// Page and Limit condition
-		incorporate_->IncorporatePageLimit_(tmp_query);
+		incorporate_->IncorporatePageLimit_(tmp_query, true);
 
 	return MakeFinalQuery_(tmp_query);
 }
@@ -409,7 +409,7 @@ std::string QueryActions::ComposeUpdateSentence_(std::string table)
 		incorporate_->IncorporateSort_(tmp_query);
 
 	// Page and Limit condition
-		incorporate_->IncorporatePageLimit_(tmp_query);
+		incorporate_->IncorporatePageLimit_(tmp_query, false);
 
 	return MakeFinalQuery_(tmp_query);
 }
@@ -432,7 +432,7 @@ std::string QueryActions::ComposeDeleteSentence_(std::string table)
 		incorporate_->IncorporateSort_(tmp_query);
 
 	// Page and Limit condition
-		incorporate_->IncorporatePageLimit_(tmp_query);
+		incorporate_->IncorporatePageLimit_(tmp_query, false);
 
 	return MakeFinalQuery_(tmp_query);
 }

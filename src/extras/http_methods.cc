@@ -47,10 +47,9 @@ void HTTPMethods::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerRespon
 	QueryProcess_(Core::TypeAction::kInsert);
 
 	response.setStatus(HTTPResponse::HTTP_OK);
-	response.setContentType("application/json");
+	response.setContentType("plain/text");
 
 	std::ostream& out = response.send();
-	out << "{POST}";
 	out.flush();
 }
 
@@ -59,10 +58,9 @@ void HTTPMethods::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerRespons
 	QueryProcess_(Core::TypeAction::kUpdate);
 
 	response.setStatus(HTTPResponse::HTTP_OK);
-	response.setContentType("application/json");
+	response.setContentType("plain/text");
 
 	std::ostream& out = response.send();
-	out << "{PUT}";
 	out.flush();
 }
 
@@ -71,10 +69,9 @@ void HTTPMethods::HandleDELMethod_(HTTPServerRequest& request, HTTPServerRespons
 	QueryProcess_(Core::TypeAction::kDelete);
 
 	response.setStatus(HTTPResponse::HTTP_OK);
-	response.setContentType("application/json");
+	response.setContentType("plain/text");
 
 	std::ostream& out = response.send();
-	out << "{DEL}";
 	out.flush();
 }
 
