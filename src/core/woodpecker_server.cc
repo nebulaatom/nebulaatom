@@ -30,7 +30,7 @@ WoodpeckerServer::WoodpeckerServer(int port) :
 
 WoodpeckerServer::~WoodpeckerServer()
 {
-	delete handler_factory_;
+
 }
 
 int WoodpeckerServer::main(const std::vector<std::string>& args)
@@ -39,8 +39,7 @@ int WoodpeckerServer::main(const std::vector<std::string>& args)
 	server_params_->setMaxQueued(100);
 	server_params_->setMaxThreads(16);
 
-	std::unique_ptr<HTTPServer> srv_test(new HTTPServer(handler_factory_, server_socket_, server_params_));
-	server_ = std::move(srv_test);
+	server_ = std::make_unique<HTTPServer>(handler_factory_, server_socket_, server_params_);
 
 	return Init_();
 }

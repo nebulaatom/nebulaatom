@@ -57,9 +57,9 @@ class CPW::Core::WoodpeckerServer : public ServerApplication
 		int Init_();
 
 	private:
-		Poco::UInt16 port_;
-		Poco::Net::HTTPServerParams* server_params_;
-		Poco::Net::ServerSocket server_socket_;
+		UInt16 port_;
+		HTTPServerParams::Ptr server_params_;
+		ServerSocket server_socket_;
 		std::unique_ptr<HTTPServer> server_;
 		HandlerFactory* handler_factory_;
 		Application& app_;
