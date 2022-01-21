@@ -20,18 +20,6 @@
 
 using namespace CPW::Core;
 
-HandlerConnection::HandlerConnection(CPW::Tools::Route route, HandlerFunctor handler) :
-	current_route_(route)
-	,return_handler_(handler)
-{
-
-}
-
-HandlerConnection::~HandlerConnection()
-{
-
-}
-
 HandlerFactory::HandlerFactory() :
 	api_version_("v0")
 	,app_(Application::instance())
@@ -98,7 +86,7 @@ void HandlerFactory::CreateConnections_()
 	connections_.insert(std::make_pair
 	(
 		HandlerType::kNull,
-		new HandlerConnection
+		new Tools::HandlerConnection
 		{
 			CPW::Tools::Route("null", std::vector<std::string>{""})
 			,[&](){return new CPW::Handlers::NullHandler(api_version_);}
@@ -107,7 +95,7 @@ void HandlerFactory::CreateConnections_()
 	connections_.insert(std::make_pair
 	(
 		HandlerType::kBackend,
-		new HandlerConnection
+		new Tools::HandlerConnection
 		{
 			CPW::Tools::Route("", std::vector<std::string>{"api", api_version_})
 			,[&](){return new CPW::Handlers::BackendHandler(api_version_);}
@@ -116,7 +104,7 @@ void HandlerFactory::CreateConnections_()
 	connections_.insert(std::make_pair
 	(
 		HandlerType::kFrontend,
-		new HandlerConnection
+		new Tools::HandlerConnection
 		{
 			CPW::Tools::Route("", std::vector<std::string>{""})
 			,[&](){return new CPW::Handlers::FrontendHandler(api_version_);}

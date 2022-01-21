@@ -21,7 +21,6 @@
 
 
 #include <map>
-#include <functional>
 #include <exception>
 #include <vector>
 
@@ -40,6 +39,7 @@
 #include <Poco/Data/MySQL/MySQLException.h>
 #include <Poco/Data/Statement.h>
 
+#include "tools/handler_connection.h"
 #include "tools/route.h"
 #include "tools/common_responses.h"
 #include "handlers/root_handler.h"
@@ -58,7 +58,6 @@ namespace CPW
 	namespace Core
 	{
 		enum class HandlerType;
-		class HandlerConnection;
 		class HandlerFactory;
 	}
 }
@@ -70,18 +69,6 @@ enum class CPW::Core::HandlerType
 	,kNull
 };
 
-
-class CPW::Core::HandlerConnection
-{
-	public:
-		using HandlerFunctor = std::function<CPW::Handlers::RootHandler*()>;
-
-		HandlerConnection(CPW::Tools::Route route, HandlerFunctor handler);
-		~HandlerConnection();
-
-		CPW::Tools::Route current_route_;
-		HandlerFunctor return_handler_;
-};
 
 class CPW::Core::HandlerFactory :
 	public HTTPRequestHandlerFactory
@@ -97,7 +84,7 @@ class CPW::Core::HandlerFactory :
 
 	private:
 		std::string api_version_;
-		std::map<HandlerType, HandlerConnection*> connections_;
+		std::map<HandlerType, Tools::HandlerConnection*> connections_;
 		Application& app_;
 };
 
