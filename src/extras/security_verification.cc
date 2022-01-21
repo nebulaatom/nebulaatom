@@ -122,16 +122,16 @@ bool SecurityVerification::SeePermissionsPerUser_(std::string user, std::string 
 		joins.emplace(std::make_pair
 		(
 			std::array<std::string, 2>{"LEFT", "permissions p"}
-			,std::map<std::string, Tools::ValuesProperties> {{"p.id", Tools::ValuesProperties{"pl.id_permission", false}}}
+			,std::map<std::string, Extras::ValuesProperties> {{"p.id", Extras::ValuesProperties{"pl.id_permission", false}}}
 		));
 		joins.emplace(std::make_pair
 		(
 			std::array<std::string, 2>{"LEFT", "users u"}
-			,std::map<std::string, Tools::ValuesProperties> {{"u.id", Tools::ValuesProperties{"pl.id_user", false}}}
+			,std::map<std::string, Extras::ValuesProperties> {{"u.id", Extras::ValuesProperties{"pl.id_user", false}}}
 		));
-		iquals.emplace(std::make_pair("u.username", Tools::ValuesProperties{user, true}));
-		iquals.emplace(std::make_pair("pl.type", Tools::ValuesProperties{action_type, true}));
-		iquals.emplace(std::make_pair("p.name", Tools::ValuesProperties{target, true}));
+		iquals.emplace(std::make_pair("u.username", Extras::ValuesProperties{user, true}));
+		iquals.emplace(std::make_pair("pl.type", Extras::ValuesProperties{action_type, true}));
+		iquals.emplace(std::make_pair("p.name", Extras::ValuesProperties{target, true}));
 
 	// Data sentences
 		query_actions->ComposeQuery_(Core::TypeAction::kSelect, "permissions_log pl");
