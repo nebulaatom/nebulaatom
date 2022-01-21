@@ -271,3 +271,27 @@ void IncorporateFilters::IncorporateSet_(std::vector<std::string>& tmp_query)
 		}
 	}
 }
+
+void IncorporateFilters::IncorporateJoins_(std::vector<std::string>& tmp_query)
+{
+	if(current_filters_->get_joins().size() > 0)
+	{
+		for(auto it : current_filters_->get_joins())
+		{
+			tmp_query.push_back(it.first[0]);
+			tmp_query.push_back("JOIN");
+			tmp_query.push_back(it.first[1]);
+			tmp_query.push_back("ON (");
+			for(auto it_v : it.second)
+			{
+				if(it_v != *it.second.begin())
+					tmp_query.push_back("AND");
+
+				tmp_query.push_back(it_v.first);
+				tmp_query.push_back("=");
+				tmp_query.push_back(it_v.second.GetFinalValue());
+			}
+			tmp_query.push_back(")");
+		}
+	}
+}

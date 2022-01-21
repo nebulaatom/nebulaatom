@@ -56,6 +56,7 @@ class CPW::Extras::IncorporateFilters
 		void IncorporateNotIn_(std::vector<std::string>& tmp_query);
 		void IncorporateValues_(std::vector<std::string>& tmp_query);
 		void IncorporateSet_(std::vector<std::string>& tmp_query);
+		void IncorporateJoins_(std::vector<std::string>& tmp_query);
 
 	private:
 		std::shared_ptr<Tools::Filters> current_filters_;
