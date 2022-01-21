@@ -35,6 +35,7 @@ target_link_libraries(
 	requestsmanager
 	incorporatefilters
 	handlerconnection
+	valuesproperties
 	Poco::Foundation
 	Poco::Net
 	Poco::Util
