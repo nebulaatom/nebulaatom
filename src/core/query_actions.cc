@@ -232,6 +232,31 @@ void QueryActions::IdentifyFilters_()
 						));
 						break;
 					}
+					case TypeQuery::kJoins:
+					{
+						if(it["join-type"].isEmpty() || it["table"].isEmpty() || it["on"].isEmpty())
+							throw std::runtime_error("join-type, table or on in kJoins is empty on data array index " + std::to_string(a));
+
+						std::map<std::string, Tools::ValuesProperties> tmp_joins;
+
+						for(std::size_t b = 0; b < it["on"].size(); b++)
+						{
+							tmp_joins.emplace(std::make_pair
+							(
+								it["on"][b]["col"].toString()
+								,Tools::ValuesProperties{it["on"][b]["value"].toString(), false}
+							));
+						}
+						current_filters_->get_joins().emplace
+						(
+							std::make_pair
+							(
+								std::array<std::string, 2>{it["join-type"].toString(), it["table"].toString()}
+								,tmp_joins
+							)
+						);
+						break;
+					}
 				}
 		}
 	}
@@ -412,6 +437,9 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 	// Table
 		tmp_query.push_back("FROM " + table);
 
+	// Joins
+		incorporate_->IncorporateJoins_(tmp_query);
+
 	// Conditions
 		incorporate_->IncorporateIqual_(tmp_query);
 		incorporate_->IncorporateNotIqual_(tmp_query);
@@ -435,6 +463,9 @@ std::string QueryActions::ComposeUpdateSentence_(std::string table)
 	// Sentence type and table
 		std::vector<std::string> tmp_query = {"UPDATE"};
 		tmp_query.push_back(table);
+
+	// Joins
+		incorporate_->IncorporateJoins_(tmp_query);
 
 	// Set
 		tmp_query.push_back("SET");
@@ -462,6 +493,9 @@ std::string QueryActions::ComposeDeleteSentence_(std::string table)
 {
 	// Sentence type and Table
 		std::vector<std::string> tmp_query = {"DELETE FROM " + table};
+
+	// Joins
+		incorporate_->IncorporateJoins_(tmp_query);
 
 	// Conditions
 		incorporate_->IncorporateIqual_(tmp_query);

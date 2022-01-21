@@ -22,6 +22,7 @@
 
 #include <istream>
 #include <string>
+#include <array>
 #include <map>
 #include <stdexcept>
 
@@ -88,6 +89,7 @@ enum class CPW::Core::TypeQuery
 	,kNotIn
 	,kValues
 	,kSet
+	,kJoins
 };
 
 
