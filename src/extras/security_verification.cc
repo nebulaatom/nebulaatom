@@ -110,21 +110,31 @@ bool SecurityVerification::SeePermissionsPerUser_(std::string user, std::string 
 		auto query_actions = dynamic_elements_.get_query_actions();
 		auto& iquals = query_actions->get_current_filters_()->get_iquals_conditions();
 		auto& fields = query_actions->get_current_filters_()->get_fields();
+		auto& joins = query_actions->get_current_filters_()->get_joins();
 
 	// Clear previous values
 		iquals.clear();
 		fields.clear();
+		joins.clear();
 
 	// Filters
 		fields.push_back({"pl.granted", false});
+		joins.emplace(std::make_pair
+		(
+			std::array<std::string, 2>{"LEFT", "permissions p"}
+			,std::map<std::string, Tools::ValuesProperties> {{"p.id", Tools::ValuesProperties{"pl.id_permission", false}}}
+		));
+		joins.emplace(std::make_pair
+		(
+			std::array<std::string, 2>{"LEFT", "users u"}
+			,std::map<std::string, Tools::ValuesProperties> {{"u.id", Tools::ValuesProperties{"pl.id_user", false}}}
+		));
 		iquals.emplace(std::make_pair("u.username", Tools::ValuesProperties{user, true}));
 		iquals.emplace(std::make_pair("pl.type", Tools::ValuesProperties{action_type, true}));
 		iquals.emplace(std::make_pair("p.name", Tools::ValuesProperties{target, true}));
-		iquals.emplace(std::make_pair("pl.id_permission", Tools::ValuesProperties{"p.id", false}));
-		iquals.emplace(std::make_pair("pl.id_user", Tools::ValuesProperties{"u.id", false}));
 
 	// Data sentences
-		query_actions->ComposeQuery_(Core::TypeAction::kSelect, "permissions_log pl, permissions p, users u");
+		query_actions->ComposeQuery_(Core::TypeAction::kSelect, "permissions_log pl");
 		if(query_actions->ExecuteQuery_())
 			return true;
 		else
