@@ -118,7 +118,7 @@ void QueryActions::IdentifyFilters_()
 						current_filters_->get_iquals_conditions().emplace(std::make_pair
 						(
 							it["col"].toString()
-							,Tools::ValuesProperties{it["content"].toString(), true}
+							,Extras::ValuesProperties{it["content"].toString(), true}
 						));
 						break;
 					}
@@ -130,7 +130,7 @@ void QueryActions::IdentifyFilters_()
 						current_filters_->get_not_iquals_conditions().emplace(std::make_pair
 						(
 							it["col"].toString()
-							,Tools::ValuesProperties{it["content"].toString(), true}
+							,Extras::ValuesProperties{it["content"].toString(), true}
 						));
 						break;
 					}
@@ -142,7 +142,7 @@ void QueryActions::IdentifyFilters_()
 						current_filters_->get_greather_than().emplace(std::make_pair
 						(
 							it["col"].toString()
-							,Tools::ValuesProperties{it["content"].toString(), true}
+							,Extras::ValuesProperties{it["content"].toString(), true}
 						));
 						break;
 					}
@@ -154,7 +154,7 @@ void QueryActions::IdentifyFilters_()
 						current_filters_->get_smaller_than().emplace(std::make_pair
 						(
 							it["col"].toString()
-							,Tools::ValuesProperties{it["content"].toString(), true}
+							,Extras::ValuesProperties{it["content"].toString(), true}
 						));
 						break;
 					}
@@ -168,8 +168,8 @@ void QueryActions::IdentifyFilters_()
 							it["col"].toString()
 							,std::make_pair
 							(
-								Tools::ValuesProperties{it["content1"].toString(), true}
-								,Tools::ValuesProperties{it["content2"].toString(), true}
+								Extras::ValuesProperties{it["content1"].toString(), true}
+								,Extras::ValuesProperties{it["content2"].toString(), true}
 							)
 						));
 						break;
@@ -179,7 +179,7 @@ void QueryActions::IdentifyFilters_()
 						if(it["col"].isEmpty() || it["contents"].isEmpty())
 							throw std::runtime_error("col or contents in kIn is empty on data array index " + std::to_string(a));
 
-						std::vector<Tools::ValuesProperties> tmp_in;
+						std::vector<Extras::ValuesProperties> tmp_in;
 						for(std::size_t b = 0; b < it["contents"].size(); b++)
 						{
 							tmp_in.push_back({it["contents"][b], true});
@@ -196,7 +196,7 @@ void QueryActions::IdentifyFilters_()
 						if(it["col"].isEmpty() || it["contents"].isEmpty())
 							throw std::runtime_error("col or contents in kNotIn is empty on data array index " + std::to_string(a));
 
-						std::vector<Tools::ValuesProperties> tmp_not_in;
+						std::vector<Extras::ValuesProperties> tmp_not_in;
 						for(std::size_t b = 0; b < it["contents"].size(); b++)
 						{
 							tmp_not_in.push_back({it["contents"][b], true});
@@ -211,7 +211,7 @@ void QueryActions::IdentifyFilters_()
 
 						for(std::size_t b = 0; b < it["contents"].size(); b++)
 						{
-							current_filters_->get_values().push_back(std::vector<Tools::ValuesProperties> {});
+							current_filters_->get_values().push_back(std::vector<Extras::ValuesProperties> {});
 
 							for(auto it_v: it["contents"][b])
 							{
@@ -228,7 +228,7 @@ void QueryActions::IdentifyFilters_()
 						current_filters_->get_set().emplace(std::make_pair
 						(
 							it["col"].toString()
-							,Tools::ValuesProperties{it["content"].toString(), true}
+							,Extras::ValuesProperties{it["content"].toString(), true}
 						));
 						break;
 					}
@@ -237,14 +237,14 @@ void QueryActions::IdentifyFilters_()
 						if(it["join-type"].isEmpty() || it["table"].isEmpty() || it["on"].isEmpty())
 							throw std::runtime_error("join-type, table or on in kJoins is empty on data array index " + std::to_string(a));
 
-						std::map<std::string, Tools::ValuesProperties> tmp_joins;
+						std::map<std::string, Extras::ValuesProperties> tmp_joins;
 
 						for(std::size_t b = 0; b < it["on"].size(); b++)
 						{
 							tmp_joins.emplace(std::make_pair
 							(
 								it["on"][b]["col"].toString()
-								,Tools::ValuesProperties{it["on"][b]["value"].toString(), false}
+								,Extras::ValuesProperties{it["on"][b]["value"].toString(), false}
 							));
 						}
 						current_filters_->get_joins().emplace
