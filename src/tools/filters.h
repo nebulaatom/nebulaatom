@@ -55,6 +55,21 @@ class CPW::Tools::ValuesProperties
 			else
 				return false;
 		}
+		friend bool operator==(const ValuesProperties& a, const ValuesProperties& b)
+		{
+			if(a.GetFinalValue() == b.get_value())
+				return true;
+			else
+				return false;
+		}
+
+		friend bool operator!=(const ValuesProperties& a, const ValuesProperties& b)
+		{
+			if(a.GetFinalValue() != b.GetFinalValue())
+				return true;
+			else
+				return false;
+		}
 
 		std::string get_value() const {return value_;}
 		bool get_quotes() const {return quotes_;}
@@ -63,6 +78,7 @@ class CPW::Tools::ValuesProperties
 		void set_quotes(bool quote) {quotes_ = quote;}
 
 		std::string GetFinalValue();
+		std::string GetFinalValue() const;
 
 	private:
 		std::string value_;

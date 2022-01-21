@@ -41,6 +41,14 @@ std::string ValuesProperties::GetFinalValue()
 		return value_;
 }
 
+std::string ValuesProperties::GetFinalValue() const
+{
+	if(quotes_)
+		return "'" + value_ + "'";
+	else
+		return value_;
+}
+
 Filters::Filters() :
 	page_("0")
 	,limit_("20")

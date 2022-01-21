@@ -55,7 +55,7 @@ void IncorporateFilters::IncorporateFields_(std::vector<std::string>& tmp_query)
 	{
 		for(auto it : current_filters_->get_fields())
 		{
-			if(it != current_filters_->get_fields().front())
+			if(it != *current_filters_->get_fields().begin())
 				tmp_query.push_back(",");
 
 			tmp_query.push_back(it.GetFinalValue());
@@ -246,7 +246,7 @@ void IncorporateFilters::IncorporateValues_(std::vector<std::string>& tmp_query)
 			tmp_query.push_back("(");
 			for(auto it_sub = it->begin(); it_sub != it->end(); ++it_sub)
 			{
-				if(&*it_sub != &*it->begin())
+				if(it_sub != it->begin())
 					tmp_query.push_back(",");
 
 				tmp_query.push_back(it_sub->GetFinalValue());
@@ -262,7 +262,7 @@ void IncorporateFilters::IncorporateSet_(std::vector<std::string>& tmp_query)
 	{
 		for(auto& it : current_filters_->get_set())
 		{
-			if(&it != &*current_filters_->get_set().begin())
+			if(it != *current_filters_->get_set().begin())
 				tmp_query.push_back(",");
 
 			tmp_query.push_back(it.first);
