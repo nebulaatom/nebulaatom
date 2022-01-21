@@ -132,6 +132,11 @@ class CPW::Tools::Filters
 			auto& var = set_;
 			return var;
 		}
+		std::map<std::array<std::string, 2>, std::map<std::string, ValuesProperties>>& get_joins()
+		{
+			auto& var = joins_;
+			return var;
+		}
 
 		void set_page(std::string page) { page_ = page; }
 		void set_limit(std::string limit) { limit_ = limit; }
@@ -150,6 +155,7 @@ class CPW::Tools::Filters
 		std::map<std::string, std::vector<ValuesProperties>> not_in_;
 		std::vector<std::vector<ValuesProperties>> values_;
 		std::map<std::string, ValuesProperties> set_;
+		std::map<std::array<std::string, 2>, std::map<std::string, ValuesProperties>> joins_;
 };
 
 
