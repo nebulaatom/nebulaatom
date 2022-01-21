@@ -34,6 +34,7 @@ target_link_libraries(
 	managejson
 	requestsmanager
 	incorporatefilters
+	handlerconnection
 	Poco::Foundation
 	Poco::Net
 	Poco::Util

@@ -26,3 +26,8 @@ set_target_properties(managejson PROPERTIES POSITION_INDEPENDENT_CODE 1)
 add_library(requestsmanager OBJECT "requests_manager.cc")
 target_include_directories(requestsmanager PUBLIC ${HEADER})
 set_target_properties(requestsmanager PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
+### handlerconnection
+add_library(handlerconnection OBJECT "handler_connection.cc")
+target_include_directories(handlerconnection PUBLIC ${HEADER})
+set_target_properties(handlerconnection PROPERTIES POSITION_INDEPENDENT_CODE 1)
