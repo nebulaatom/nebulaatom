@@ -78,8 +78,8 @@ using Poco::Data::Statement;
 
 class CPW::Handlers::RootHandler :
 	public HTTPRequestHandler
-	,public CPW::Tools::CommonResponses
-	,public CPW::Extras::HTTPMethods
+	,public Tools::CommonResponses
+	,public Extras::HTTPMethods
 {
 	public:
 		RootHandler(std::string api_version);
@@ -100,7 +100,7 @@ class CPW::Handlers::RootHandler :
 	private:
 		std::string api_verion_;
 		bool route_verification_;
-		CPW::Extras::SecurityVerification current_security_;
+		Extras::SecurityVerification current_security_;
 		Tools::RequestsManager requests_manager_;
 		std::shared_ptr<Extras::DynamicElements> dynamic_elements_;
 };
