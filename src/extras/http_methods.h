@@ -43,11 +43,13 @@ using namespace Poco::Util;
 class CPW::Extras::HTTPMethods
 {
 	public:
+		using DynamicElementSharedPtr = std::shared_ptr<Extras::DynamicElements>;
+
 		HTTPMethods();
 		~HTTPMethods();
 
-		std::shared_ptr<Extras::DynamicElements> get_dynamic_elements() const {return dynamic_elements_;}
-		void set_dynamic_elements(std::shared_ptr<Extras::DynamicElements> dynamic_elements) {dynamic_elements_ = dynamic_elements;}
+		DynamicElementSharedPtr get_dynamic_elements() const {return dynamic_elements_;}
+		void set_dynamic_elements(DynamicElementSharedPtr dynamic_elements) {dynamic_elements_ = dynamic_elements;}
 
 		virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
 		virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
@@ -58,7 +60,7 @@ class CPW::Extras::HTTPMethods
 		void QueryProcess_(Core::TypeAction action, HTTPServerResponse& response);
 
 	private:
-		std::shared_ptr<Extras::DynamicElements> dynamic_elements_;
+		DynamicElementSharedPtr dynamic_elements_;
 };
 
 #endif // CPW_EXTRAS_HTTPMETHODS_H
