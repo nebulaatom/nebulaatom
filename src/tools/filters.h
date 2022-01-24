@@ -35,70 +35,76 @@ namespace CPW
 }
 
 
+using namespace CPW::Extras;
+
+
 class CPW::Tools::Filters
 {
 	public:
+		using ValuesPropertiesVector = std::vector<ValuesProperties>;
+		using MapForValues = std::map<std::string, ValuesProperties>;
+
 		Filters();
 		~Filters();
 
-		std::vector<Extras::ValuesProperties>& get_fields()
+		ValuesPropertiesVector& get_fields()
 		{
 			auto& var = fields_;
 			return var;
 		}
 		std::string get_page() const { return page_; }
 		std::string get_limit() const { return limit_; }
-		std::vector<Extras::ValuesProperties>& get_sorts_conditions()
+		ValuesPropertiesVector& get_sorts_conditions()
 		{
 			auto& var = sorts_conditions_;
 			return var;
 		}
-		std::map<std::string, Extras::ValuesProperties>& get_iquals_conditions()
+		MapForValues& get_iquals_conditions()
 		{
 			auto& var = iquals_conditions_;
 			return var;
 		}
-		std::map<std::string, Extras::ValuesProperties>& get_not_iquals_conditions()
+		MapForValues& get_not_iquals_conditions()
 		{
 			auto& var = not_iquals_conditions_;
 			return var;
 		}
-		std::map<std::string, Extras::ValuesProperties>& get_greather_than()
+		MapForValues& get_greather_than()
 		{
 			auto& var = greather_than_;
 			return var;
 		}
-		std::map<std::string, Extras::ValuesProperties>& get_smaller_than()
+		MapForValues& get_smaller_than()
 		{
 			auto& var = smaller_than_;
 			return var;
 		}
-		std::map<std::string, std::pair<Extras::ValuesProperties, Extras::ValuesProperties>>& get_between()
+		std::map<std::string, std::pair<ValuesProperties, ValuesProperties>>& get_between()
 		{
 			auto& var = between_;
 			return var;
 		}
-		std::map<std::string, std::vector<Extras::ValuesProperties>>& get_in()
+		std::map<std::string, ValuesPropertiesVector>& get_in()
 		{
 			auto& var = in_;
 			return var;
 		}
-		std::map<std::string, std::vector<Extras::ValuesProperties>>& get_not_in()
+		std::map<std::string, ValuesPropertiesVector>& get_not_in()
 		{
 			auto& var = not_in_;
 			return var;
 		}
-		std::vector<std::vector<Extras::ValuesProperties>>& get_values()
+		std::vector<ValuesPropertiesVector>& get_values()
 		{
 			auto& var = values_;
 			return var;
 		}
-		std::map<std::string, Extras::ValuesProperties>& get_set()
+		MapForValues& get_set()
 		{
 			auto& var = set_;
 			return var;
 		}
-		std::map<std::array<std::string, 2>, std::map<std::string, Extras::ValuesProperties>>& get_joins()
+		std::map<std::array<std::string, 2>, MapForValues>& get_joins()
 		{
 			auto& var = joins_;
 			return var;
@@ -108,20 +114,20 @@ class CPW::Tools::Filters
 		void set_limit(std::string limit) { limit_ = limit; }
 
 	private:
-		std::vector<Extras::ValuesProperties> fields_;
+		ValuesPropertiesVector fields_;
 		std::string page_;
 		std::string limit_;
-		std::vector<Extras::ValuesProperties> sorts_conditions_;
-		std::map<std::string, Extras::ValuesProperties> iquals_conditions_;
-		std::map<std::string, Extras::ValuesProperties> not_iquals_conditions_;
-		std::map<std::string, Extras::ValuesProperties> greather_than_;
-		std::map<std::string, Extras::ValuesProperties> smaller_than_;
-		std::map<std::string, std::pair<Extras::ValuesProperties, Extras::ValuesProperties>> between_;
-		std::map<std::string, std::vector<Extras::ValuesProperties>> in_;
-		std::map<std::string, std::vector<Extras::ValuesProperties>> not_in_;
-		std::vector<std::vector<Extras::ValuesProperties>> values_;
-		std::map<std::string, Extras::ValuesProperties> set_;
-		std::map<std::array<std::string, 2>, std::map<std::string, Extras::ValuesProperties>> joins_;
+		ValuesPropertiesVector sorts_conditions_;
+		MapForValues iquals_conditions_;
+		MapForValues not_iquals_conditions_;
+		MapForValues greather_than_;
+		MapForValues smaller_than_;
+		std::map<std::string, std::pair<ValuesProperties, ValuesProperties>> between_;
+		std::map<std::string, ValuesPropertiesVector> in_;
+		std::map<std::string, ValuesPropertiesVector> not_in_;
+		std::vector<ValuesPropertiesVector> values_;
+		MapForValues set_;
+		std::map<std::array<std::string, 2>, MapForValues> joins_;
 };
 
 
