@@ -56,7 +56,7 @@ class CPW::Extras::DynamicElements
 		Application& get_app() const {return app_;};
 		RouteSharedPtr get_requested_route() const {return requested_route_;}
 
-		void set_requested_route(std::shared_ptr<Tools::Route> requested_route) {requested_route_ = requested_route;}
+		void set_requested_route(RouteSharedPtr requested_route) {requested_route_ = requested_route;}
 
 	protected:
 		RouteSharedPtr requested_route_;
