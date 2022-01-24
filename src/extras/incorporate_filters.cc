@@ -20,7 +20,7 @@
 
 using namespace CPW::Extras;
 
-IncorporateFilters::IncorporateFilters(std::shared_ptr<Tools::Filters> filters) :
+IncorporateFilters::IncorporateFilters(FiltersSharedPtr filters) :
 	current_filters_(filters)
 {
 
@@ -31,7 +31,7 @@ IncorporateFilters::~IncorporateFilters()
 
 }
 
-void IncorporateFilters::IncorporateWhere_(std::vector<std::string>& tmp_query)
+void IncorporateFilters::IncorporateWhere_(VectorString& tmp_query)
 {
 	auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
 
@@ -39,7 +39,7 @@ void IncorporateFilters::IncorporateWhere_(std::vector<std::string>& tmp_query)
 		tmp_query.push_back("WHERE");
 }
 
-void IncorporateFilters::IncorporateAND_(std::vector<std::string>& tmp_query)
+void IncorporateFilters::IncorporateAND_(VectorString& tmp_query)
 {
 	auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
 
@@ -47,7 +47,7 @@ void IncorporateFilters::IncorporateAND_(std::vector<std::string>& tmp_query)
 		tmp_query.push_back("AND");
 }
 
-void IncorporateFilters::IncorporateFields_(std::vector<std::string>& tmp_query)
+void IncorporateFilters::IncorporateFields_(VectorString& tmp_query)
 {
 	if(current_filters_->get_fields().size() == 0)
 		tmp_query.push_back("*");
@@ -63,7 +63,7 @@ void IncorporateFilters::IncorporateFields_(std::vector<std::string>& tmp_query)
 	}
 }
 
-void IncorporateFilters::IncorporatePageLimit_(std::vector<std::string>& tmp_query, bool pagination)
+void IncorporateFilters::IncorporatePageLimit_(VectorString& tmp_query, bool pagination)
 {
 	if(std::stoi(current_filters_->get_limit()) > 0)
 	{
@@ -84,7 +84,7 @@ void IncorporateFilters::IncorporatePageLimit_(std::vector<std::string>& tmp_que
 			tmp_query.push_back("LIMIT 20");
 }
 
-void IncorporateFilters::IncorporateSort_(std::vector<std::string>& tmp_query)
+void IncorporateFilters::IncorporateSort_(VectorString& tmp_query)
 {
 	if(current_filters_->get_sorts_conditions().size() > 0)
 	{
@@ -99,7 +99,7 @@ void IncorporateFilters::IncorporateSort_(std::vector<std::string>& tmp_query)
 	}
 }
 
-void IncorporateFilters::IncorporateIqual_(std::vector<std::string>& tmp_query)
+void IncorporateFilters::IncorporateIqual_(VectorString& tmp_query)
 {
 	if(current_filters_->get_iquals_conditions().size() > 0)
 	{
@@ -116,7 +116,7 @@ void IncorporateFilters::IncorporateIqual_(std::vector<std::string>& tmp_query)
 	}
 }
 
-void IncorporateFilters::IncorporateNotIqual_(std::vector<std::string>& tmp_query)
+void IncorporateFilters::IncorporateNotIqual_(VectorString& tmp_query)
 {
 	if(current_filters_->get_not_iquals_conditions().size() > 0)
 	{
@@ -133,7 +133,7 @@ void IncorporateFilters::IncorporateNotIqual_(std::vector<std::string>& tmp_quer
 	}
 }
 
-void IncorporateFilters::IncorporateGreatherThan_(std::vector<std::string>& tmp_query)
+void IncorporateFilters::IncorporateGreatherThan_(VectorString& tmp_query)
 {
 	if(current_filters_->get_greather_than().size() > 0)
 	{
@@ -150,7 +150,7 @@ void IncorporateFilters::IncorporateGreatherThan_(std::vector<std::string>& tmp_
 	}
 }
 
-void IncorporateFilters::IncorporateSmallerThan_(std::vector<std::string>& tmp_query)
+void IncorporateFilters::IncorporateSmallerThan_(VectorString& tmp_query)
 {
 	if(current_filters_->get_smaller_than().size() > 0)
 	{
@@ -167,7 +167,7 @@ void IncorporateFilters::IncorporateSmallerThan_(std::vector<std::string>& tmp_q
 	}
 }
 
-void IncorporateFilters::IncorporateBetween_(std::vector<std::string>& tmp_query)
+void IncorporateFilters::IncorporateBetween_(VectorString& tmp_query)
 {
 	if(current_filters_->get_between().size() > 0)
 	{
@@ -186,7 +186,7 @@ void IncorporateFilters::IncorporateBetween_(std::vector<std::string>& tmp_query
 	}
 }
 
-void IncorporateFilters::IncorporateIn_(std::vector<std::string>& tmp_query)
+void IncorporateFilters::IncorporateIn_(VectorString& tmp_query)
 {
 	if(current_filters_->get_in().size() > 0)
 	{
@@ -210,7 +210,7 @@ void IncorporateFilters::IncorporateIn_(std::vector<std::string>& tmp_query)
 	}
 }
 
-void IncorporateFilters::IncorporateNotIn_(std::vector<std::string>& tmp_query)
+void IncorporateFilters::IncorporateNotIn_(VectorString& tmp_query)
 {
 	if(current_filters_->get_not_in().size() > 0)
 	{
@@ -234,7 +234,7 @@ void IncorporateFilters::IncorporateNotIn_(std::vector<std::string>& tmp_query)
 	}
 }
 
-void IncorporateFilters::IncorporateValues_(std::vector<std::string>& tmp_query)
+void IncorporateFilters::IncorporateValues_(VectorString& tmp_query)
 {
 	if(current_filters_->get_values().size() > 0)
 	{
@@ -256,7 +256,7 @@ void IncorporateFilters::IncorporateValues_(std::vector<std::string>& tmp_query)
 	}
 }
 
-void IncorporateFilters::IncorporateSet_(std::vector<std::string>& tmp_query)
+void IncorporateFilters::IncorporateSet_(VectorString& tmp_query)
 {
 	if(current_filters_->get_set().size() > 0)
 	{
@@ -272,7 +272,7 @@ void IncorporateFilters::IncorporateSet_(std::vector<std::string>& tmp_query)
 	}
 }
 
-void IncorporateFilters::IncorporateJoins_(std::vector<std::string>& tmp_query)
+void IncorporateFilters::IncorporateJoins_(VectorString& tmp_query)
 {
 	if(current_filters_->get_joins().size() > 0)
 	{

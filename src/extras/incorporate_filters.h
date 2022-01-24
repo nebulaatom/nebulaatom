@@ -39,27 +39,30 @@ namespace CPW
 class CPW::Extras::IncorporateFilters
 {
 	public:
-		IncorporateFilters(std::shared_ptr<Tools::Filters> filters);
+		using FiltersSharedPtr = std::shared_ptr<Tools::Filters>;
+		using VectorString = std::vector<std::string>;
+
+		IncorporateFilters(FiltersSharedPtr filters);
 		~IncorporateFilters();
 
-		void IncorporateWhere_(std::vector<std::string>& tmp_query);
-		void IncorporateAND_(std::vector<std::string>& tmp_query);
-		void IncorporateFields_(std::vector<std::string>& tmp_query);
-		void IncorporatePageLimit_(std::vector<std::string>& tmp_query, bool pagination);
-		void IncorporateSort_(std::vector<std::string>& tmp_query);
-		void IncorporateIqual_(std::vector<std::string>& tmp_query);
-		void IncorporateNotIqual_(std::vector<std::string>& tmp_query);
-		void IncorporateGreatherThan_(std::vector<std::string>& tmp_query);
-		void IncorporateSmallerThan_(std::vector<std::string>& tmp_query);
-		void IncorporateBetween_(std::vector<std::string>& tmp_query);
-		void IncorporateIn_(std::vector<std::string>& tmp_query);
-		void IncorporateNotIn_(std::vector<std::string>& tmp_query);
-		void IncorporateValues_(std::vector<std::string>& tmp_query);
-		void IncorporateSet_(std::vector<std::string>& tmp_query);
-		void IncorporateJoins_(std::vector<std::string>& tmp_query);
+		void IncorporateWhere_(VectorString& tmp_query);
+		void IncorporateAND_(VectorString& tmp_query);
+		void IncorporateFields_(VectorString& tmp_query);
+		void IncorporatePageLimit_(VectorString& tmp_query, bool pagination);
+		void IncorporateSort_(VectorString& tmp_query);
+		void IncorporateIqual_(VectorString& tmp_query);
+		void IncorporateNotIqual_(VectorString& tmp_query);
+		void IncorporateGreatherThan_(VectorString& tmp_query);
+		void IncorporateSmallerThan_(VectorString& tmp_query);
+		void IncorporateBetween_(VectorString& tmp_query);
+		void IncorporateIn_(VectorString& tmp_query);
+		void IncorporateNotIn_(VectorString& tmp_query);
+		void IncorporateValues_(VectorString& tmp_query);
+		void IncorporateSet_(VectorString& tmp_query);
+		void IncorporateJoins_(VectorString& tmp_query);
 
 	private:
-		std::shared_ptr<Tools::Filters> current_filters_;
+		FiltersSharedPtr current_filters_;
 };
 
 #endif // CPW_EXTRAS_INCORPORATEFILTERS_H
