@@ -47,10 +47,12 @@ using namespace Poco::Net;
 class CPW::Tools::RequestsManager
 {
 	public:
+		using MainFunctor = std::function<void(HTTPServerRequest&, HTTPServerResponse&)>;
+
 		RequestsManager();
 		~RequestsManager();
 
-		std::map<std::string, std::function<void(HTTPServerRequest&, HTTPServerResponse&)>> get_actions_strings()
+		std::map<std::string, MainFunctor> get_actions_strings()
 		{
 			auto& var = actions_strings_;
 			return var;
@@ -62,7 +64,7 @@ class CPW::Tools::RequestsManager
 		void PrepareMethods_();
 
 	private:
-		std::map<std::string, std::function<void(HTTPServerRequest&, HTTPServerResponse&)>> actions_strings_;
+		std::map<std::string, MainFunctor> actions_strings_;
 		Extras::HTTPMethods* http_methods_;
 };
 
