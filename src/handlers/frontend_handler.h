@@ -22,50 +22,19 @@
 #include <string>
 #include <map>
 #include <vector>
-#include <fstream>
-
-#include "Poco/Path.h"
-#include "Poco/File.h"
 
 #include "handlers/root_handler.h"
+#include "tools/file_manager.h"
 
 
 namespace CPW
 {
 	namespace Handlers
 	{
-		class FileProperties;
 		class FrontendHandler;
 	}
 }
 
-class CPW::Handlers::FileProperties
-{
-	public:
-		FileProperties(std::string content_type, bool binary, std::vector<std::string> other_extensions);
-		~FileProperties();
-
-		std::string get_content_type()
-		{
-			auto& var = content_type_;
-			return var;
-		}
-		bool get_binary()
-		{
-			auto& var = binary_;
-			return var;
-		}
-		std::vector<std::string> get_other_extensions()
-		{
-			auto& var = other_extensions_;
-			return var;
-		}
-
-	private:
-		std::string content_type_;
-		bool binary_;
-		std::vector<std::string> other_extensions_;
-};
 
 class CPW::Handlers::FrontendHandler : public RootHandler
 {
@@ -80,17 +49,8 @@ class CPW::Handlers::FrontendHandler : public RootHandler
 		virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response) override;
 		virtual void AddRoutes_() override;
 
-		void AddSupportedFiles_();
-		bool IsSupported_();
-		bool CheckFile_(Path path);
-		void ManageFile_(HTTPServerResponse& response);
-		void ManageBinaryFile_(HTTPServerResponse& response);
-		void ManageTextPlainFile_(HTTPServerResponse& response);
-
 	private:
-		std::string directory_base_;
-		Path* requested_path_;
-		std::map<std::string, FileProperties> supported_files_;
+		Tools::FileManager file_manager_;
 };
 
 #endif // CPW_HANDLERS_FRONTENDHANDLER_H
