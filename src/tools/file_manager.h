@@ -25,12 +25,20 @@
 #include <vector>
 #include <fstream>
 #include <memory>
-#include <sstream>
 
 #include "Poco/Path.h"
 #include "Poco/File.h"
 #include "Poco/DateTime.h"
 #include "Poco/Random.h"
+#include "Poco/StreamCopier.h"
+#include "Poco/Net/HTMLForm.h"
+#include "Poco/Net/PartHandler.h"
+#include "Poco/Net/MessageHeader.h"
+#include "Poco/CountingStream.h"
+#include <Poco/JSON/JSON.h>
+#include <Poco/JSON/JSONException.h>
+#include <Poco/JSON/Array.h>
+#include <Poco/JSON/Object.h>
 
 #include "extras/file_properties.h"
 
