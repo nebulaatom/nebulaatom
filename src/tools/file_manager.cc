@@ -35,6 +35,35 @@ FileManager::~FileManager()
 
 }
 
+void FileManager::handlePart(const MessageHeader& header, std::istream& stream)
+{
+	content_type_ = header.get("Content-Type", "(unspecified)");
+	if (header.has("Content-Disposition"))
+	{
+		std::string disp;
+		NameValueCollection params;
+		MessageHeader::splitParameters(header["Content-Disposition"], disp, params);
+		name_ = params.get("name", "(unnamed)");
+		filename_ = params.get("filename", "(unnamed)");
+	}
+
+	CountingInputStream istr(stream);
+	std::ofstream ostr;
+	ostr.open(directory_for_temp_files_ + "/" + filename_);
+	StreamCopier::copyStream(istr, ostr);
+	content_length_ = istr.chars();
+	ostr.close();
+
+	bool check = false;
+	do
+	{
+		Path p(GenerateName_(filename_));
+		check = CheckFile_(p);
+	}
+	while(!check);
+
+}
+
 bool FileManager::CheckFile_(Path path)
 {
 	switch(operation_type_)

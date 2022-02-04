@@ -103,6 +103,7 @@ class CPW::Tools::FileManager: public Net::PartHandler
 		void set_operation_type(OperationType operation_type){operation_type_ = operation_type;}
 		void set_filename(std::string filename) {filename_ = filename;}
 
+		void handlePart(const MessageHeader& header, std::istream& stream) override;
 		bool CheckFile_(Path path);
 		bool IsSupported_();
 		void ProcessContentType_();
