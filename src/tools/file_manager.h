@@ -84,13 +84,24 @@ class CPW::Tools::FileManager: public Net::PartHandler
 			auto& var = supported_files_;
 			return var;
 		}
+		std::shared_ptr<File>& get_requested_file()
+		{
+			auto& var = requested_file_;
+			return var;
+		}
 		OperationType get_operation_type() const{return operation_type_;}
+		FileType get_file_type() const{return file_type_;}
 		std::string get_directory_base() const{return directory_base_;}
 		std::string get_directory_for_uploaded_files() const{return directory_for_uploaded_files_;}
+		std::string get_directory_for_temp_files() const{return directory_for_temp_files_;}
 		std::size_t get_content_length() const{return content_length_;}
 		std::string get_content_type() const{return content_type_;}
+		std::string get_name() const {return name_;}
+		std::string get_filename() const {return filename_;}
+		JSON::Array::Ptr get_result() const {return result_;}
 
 		void set_operation_type(OperationType operation_type){operation_type_ = operation_type;}
+		void set_filename(std::string filename) {filename_ = filename;}
 
 		bool CheckFile_(Path path);
 		bool IsSupported_();
