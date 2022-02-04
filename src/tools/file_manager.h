@@ -105,12 +105,19 @@ class CPW::Tools::FileManager: public Net::PartHandler
 		void AddSupportedFiles_();
 
 		std::shared_ptr<Path> requested_path_;
+		std::shared_ptr<File> requested_file_;
 		std::map<std::string, Extras::FileProperties> supported_files_;
 		OperationType operation_type_;
+		FileType file_type_;
 		std::string directory_base_;
 		std::string directory_for_uploaded_files_;
+		std::string directory_for_temp_files_;
 		std::size_t content_length_;
 		std::string content_type_;
+		std::string name_;
+		std::string filename_;
+		Extras::FileProperties* file_properties_;
+		JSON::Array::Ptr result_;
 };
 
 #endif // CPW_TOOLS_FILEMANAGER_H
