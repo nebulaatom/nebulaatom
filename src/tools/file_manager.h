@@ -71,7 +71,8 @@ enum class CPW::Tools::FileType
 	,kTextPlain
 };
 
-class CPW::Tools::FileManager
+
+class CPW::Tools::FileManager: public Net::PartHandler
 {
 	public:
 		FileManager();
