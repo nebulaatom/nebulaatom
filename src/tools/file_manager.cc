@@ -21,10 +21,13 @@
 using namespace CPW::Tools;
 
 FileManager::FileManager() :
-	directory_base_("/srv/www")
+	operation_type_(OperationType::kDownload)
+	,directory_base_("/srv/www")
 	,directory_for_uploaded_files_("/srv/www/uploaded-files")
+	,directory_for_temp_files_("/tmp")
 {
 	AddSupportedFiles_();
+	result_ = new JSON::Array();
 }
 
 FileManager::~FileManager()
