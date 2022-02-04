@@ -48,11 +48,13 @@ namespace CPW
 	namespace Tools
 	{
 		enum class OperationType;
+		enum class FileType;
 		class FileManager;
 	}
 }
 
 using namespace Poco;
+using namespace Poco::Net;
 
 
 enum class CPW::Tools::OperationType
@@ -63,6 +65,11 @@ enum class CPW::Tools::OperationType
 	,kDelete
 };
 
+enum class CPW::Tools::FileType
+{
+	kBinary
+	,kTextPlain
+};
 
 class CPW::Tools::FileManager
 {
