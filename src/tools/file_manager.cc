@@ -64,6 +64,29 @@ void FileManager::handlePart(const MessageHeader& header, std::istream& stream)
 
 }
 
+std::string FileManager::GenerateName_(std::string name)
+{
+	DateTime now_time;
+	Random random_number;
+
+	random_number.seed();
+	std::string new_name =
+		std::to_string(now_time.year())
+		+ std::to_string(now_time.month())
+		+ std::to_string(now_time.day())
+		+ "_"
+		+ std::to_string(now_time.hour())
+		+ std::to_string(now_time.minute())
+		+ std::to_string(now_time.second())
+		+ std::to_string(now_time.millisecond())
+		+ "_"
+		+ std::to_string(random_number.next())
+		+ "_"
+		+ name
+	;
+	return new_name;
+}
+
 bool FileManager::CheckFile_(Path path)
 {
 	switch(operation_type_)

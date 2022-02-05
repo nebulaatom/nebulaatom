@@ -104,6 +104,7 @@ class CPW::Tools::FileManager: public Net::PartHandler
 		void set_filename(std::string filename) {filename_ = filename;}
 
 		void handlePart(const MessageHeader& header, std::istream& stream) override;
+		std::string GenerateName_(std::string name);
 		bool CheckFile_(Path path);
 		bool IsSupported_();
 		void ProcessContentType_();
