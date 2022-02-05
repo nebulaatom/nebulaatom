@@ -141,6 +141,7 @@ bool FileManager::IsSupported_()
 	auto file_found = supported_files_.find(extension);
 	if(file_found != supported_files_.end())
 	{
+		file_properties_ = &file_found->second;
 		return true;
 	}
 	else
