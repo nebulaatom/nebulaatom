@@ -107,12 +107,10 @@ class CPW::Tools::FileManager: public Net::PartHandler
 		std::string GenerateName_(std::string name);
 		bool CheckFile_(Path path);
 		bool IsSupported_();
-		void ProcessContentType_();
-		void ManageFile_(std::ostream& out_response);
-
-	protected:
-		void ManageBinaryFile_(std::ostream& out_response);
-		void ManageTextPlainFile_(std::ostream& out_response);
+		void DownloadFile_(std::ostream& out_response);
+		void UploadFile_();
+		void RemoveFile_();
+		void ProcessFileType_();
 
 	private:
 		void AddSupportedFiles_();

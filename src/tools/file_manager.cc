@@ -151,62 +151,86 @@ bool FileManager::IsSupported_()
 			auto extensions = it.second.get_other_extensions();
 			auto find_depth = std::find(extensions.begin(), extensions.end(), extension);
 			if(find_depth != extensions.end())
+			{
+				file_properties_ = &it.second;
 				return true;
+			}
 		}
 		return false;
 	}
 }
 
-void FileManager::ProcessContentType_()
+void FileManager::DownloadFile_(std::ostream& out_response)
 {
-	if(IsSupported_())
-		content_type_ = supported_files_.at(requested_path_->getExtension()).get_content_type();
-	else
-		content_type_ = "application/octet-stream";
+	switch(file_type_)
+	{
+		case FileType::kBinary:
+		{
+			std::ifstream requested_file(requested_path_->toString(), std::ios::binary | std::ios::ate);
+
+			content_length_ = requested_file.tellg();
+			std::string text_line(content_length_, '\0');
+			requested_file.seekg(0);
+			if(requested_file.read(&text_line[0], content_length_))
+			{
+				out_response << text_line;
+			}
+			requested_file.close();
+			break;
+		}
+		case FileType::kTextPlain:
+		{
+			std::string text_line;
+			std::ifstream requested_file(requested_path_->toString());
+			while (getline (requested_file, text_line))
+			{
+				out_response << text_line << "\n";
+			}
+			requested_file.close();
+			break;
+		}
+	}
 }
 
-void FileManager::ManageFile_(std::ostream& out_response)
+void FileManager::UploadFile_()
 {
-	ProcessContentType_();
+	JSON::Object::Ptr object = new JSON::Object();
 
+	if (!name_.empty())
+	{
+		std::ifstream  istr(directory_for_temp_files_ + "/" + filename_);
+		std::ofstream  ostr(requested_file_->path());
+		StreamCopier::copyStream(istr, ostr);
+		istr.close();
+		ostr.close();
+
+		object->set("name", name_);
+		object->set("filename", requested_path_->getFileName());
+		object->set("type" ,content_type_);
+		object->set("size", content_length_);
+
+		result_->set(result_->size(), object);
+	}
+}
+
+void FileManager::RemoveFile_()
+{
+
+}
+
+void FileManager::ProcessFileType_()
+{
 	if(IsSupported_())
 	{
-		bool file_is_binary = supported_files_.at(requested_path_->getExtension()).get_binary();
+		bool file_is_binary = file_properties_->get_binary();
 
 		if(file_is_binary)
-			ManageBinaryFile_(out_response);
+			file_type_ = FileType::kBinary;
 		else
-			ManageTextPlainFile_(out_response);
+			file_type_ = FileType::kTextPlain;
 	}
 	else
-	{
-		ManageBinaryFile_(out_response);
-	}
-}
-
-void FileManager::ManageBinaryFile_(std::ostream& out_response)
-{
-	std::ifstream requested_file(requested_path_->toString(), std::ios::binary | std::ios::ate);
-
-	content_length_ = requested_file.tellg();
-	std::string text_line(content_length_, '\0');
-	requested_file.seekg(0);
-	if(requested_file.read(&text_line[0], content_length_))
-	{
-		out_response << text_line;
-	}
-	requested_file.close();
-}
-
-void FileManager::ManageTextPlainFile_(std::ostream& out_response)
-{
-	std::string text_line;
-	std::ifstream requested_file(requested_path_->toString());
-	while (getline (requested_file, text_line))
-	{
-		out_response << text_line << "\n";
-	}
-	requested_file.close();
+		file_type_ = FileType::kBinary;
 }
 
 void FileManager::AddSupportedFiles_()
