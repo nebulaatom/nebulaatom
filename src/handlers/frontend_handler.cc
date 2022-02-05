@@ -34,6 +34,7 @@ FrontendHandler::~FrontendHandler()
 void FrontendHandler::AddRoutes_()
 {
 	get_dynamic_elements()->get_routes_list()->push_back({"",{""}});
+	get_dynamic_elements()->get_routes_list()->push_back({"uploaded-files",{"uploaded-files"}});
 }
 
 void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
@@ -50,7 +51,7 @@ void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRes
 		return;
 	}
 
-	file_manager_.ProcessContentType_();
+	file_manager_.ProcessFileType_();
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType(file_manager_.get_content_type());
@@ -58,13 +59,36 @@ void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRes
 	std::ostream& out_reponse = response.send();
 	response.setContentLength(file_manager_.get_content_length());
 
-	file_manager_.ManageFile_(out_reponse);
+	file_manager_.DownloadFile_(out_reponse);
 
 	out_reponse.flush();
 }
 
 void FrontendHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
+	file_manager_.set_operation_type(Tools::OperationType::kUpload);
+	HTMLForm form(request, request.stream(), file_manager_);
+
+	if(!file_manager_.IsSupported_())
+	{
+		GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
+		return;
+	}
+
+	app_.logger().information("File: " + file_manager_.get_requested_file()->path());
+
+	file_manager_.ProcessFileType_();
+	file_manager_.UploadFile_();
+
+	response.setStatus(HTTPResponse::HTTP_OK);
+	response.setContentType("application/json");
+
+	std::ostream& out_reponse = response.send();
+	response.setContentLength(file_manager_.get_content_length());
+
+	file_manager_.get_result()->stringify(out_reponse);
+
+	out_reponse.flush();
 }
 
 void FrontendHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
