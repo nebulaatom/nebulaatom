@@ -31,3 +31,8 @@ set_target_properties(requestsmanager PROPERTIES POSITION_INDEPENDENT_CODE 1)
 add_library(handlerconnection OBJECT "handler_connection.cc")
 target_include_directories(handlerconnection PUBLIC ${HEADER})
 set_target_properties(handlerconnection PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
+### filemanager
+add_library(filemanager OBJECT "file_manager.cc")
+target_include_directories(filemanager PUBLIC ${HEADER})
+set_target_properties(filemanager PROPERTIES POSITION_INDEPENDENT_CODE 1)

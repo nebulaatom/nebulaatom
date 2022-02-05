@@ -36,6 +36,8 @@ target_link_libraries(
 	incorporatefilters
 	handlerconnection
 	valuesproperties
+	fileproperties
+	filemanager
 	Poco::Foundation
 	Poco::Net
 	Poco::Util

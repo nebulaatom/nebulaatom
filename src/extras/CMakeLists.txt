@@ -26,3 +26,8 @@ set_target_properties(incorporatefilters PROPERTIES POSITION_INDEPENDENT_CODE 1)
 add_library(valuesproperties OBJECT "values_properties.cc")
 target_include_directories(valuesproperties PUBLIC ${HEADER})
 set_target_properties(valuesproperties PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
+### fileproperties
+add_library(fileproperties OBJECT "file_properties.cc")
+target_include_directories(fileproperties PUBLIC ${HEADER})
+set_target_properties(fileproperties PROPERTIES POSITION_INDEPENDENT_CODE 1)
