@@ -198,11 +198,8 @@ void FileManager::UploadFile_()
 
 	if (!name_.empty())
 	{
-		std::ifstream  istr(directory_for_temp_files_ + "/" + filename_);
-		std::ofstream  ostr(requested_file_->path());
-		StreamCopier::copyStream(istr, ostr);
-		istr.close();
-		ostr.close();
+		std::unique_ptr<File> tmp_file = std::make_unique<File>(Path(directory_for_temp_files_ + "/" + filename_));
+		tmp_file->moveTo(requested_file_->path());
 
 		object->set("name", name_);
 		object->set("filename", requested_path_->getFileName());
