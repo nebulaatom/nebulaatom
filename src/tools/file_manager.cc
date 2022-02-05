@@ -97,25 +97,25 @@ bool FileManager::CheckFile_(Path path)
 		{
 			requested_path_ = std::make_shared<Path>(directory_base_, Path::PATH_NATIVE);
 			requested_path_->append(path);
-			std::unique_ptr<File> tmp_file (new File(*requested_path_));
+			requested_file_ = std::make_shared<File>(*requested_path_);
 
-			if(tmp_file->exists())
+			if(requested_file_->exists())
 			{
-				if(tmp_file->isDirectory())
+				if(requested_file_->isDirectory())
 				{
 					requested_path_->makeDirectory();
 					requested_path_->setFileName("index.html");
 
-					tmp_file.reset(new File(*requested_path_));
+					requested_file_.reset(new File(*requested_path_));
 
-					if(!tmp_file->exists())
+					if(!requested_file_->exists())
 						return false;
 				}
 			}
 			else
 				return false;
 
-			if(!tmp_file->canRead())
+			if(!requested_file_->canRead())
 				return false;
 			else
 				return true;
@@ -123,28 +123,11 @@ bool FileManager::CheckFile_(Path path)
 		}
 		case OperationType::kUpload:
 		{
-			DateTime now_time;
-			Random random_number;
-
-			random_number.seed();
-			std::string new_name =
-				std::to_string(now_time.year())
-				+ std::to_string(now_time.month())
-				+ std::to_string(now_time.day())
-				+ "_"
-				+ std::to_string(now_time.hour())
-				+ std::to_string(now_time.minute())
-				+ std::to_string(now_time.second())
-				+ std::to_string(now_time.millisecond())
-				+ "_"
-				+ std::to_string(random_number.next())
-			;
-
 			requested_path_ = std::make_shared<Path>(directory_for_uploaded_files_, Path::PATH_NATIVE);
 			requested_path_->append(path);
-			std::unique_ptr<File> tmp_file (new File(*requested_path_));
+			requested_file_ = std::make_shared<File>(*requested_path_);
 
-			if(tmp_file->exists())
+			if(requested_file_->exists())
 				return false;
 			else
 				return true;
