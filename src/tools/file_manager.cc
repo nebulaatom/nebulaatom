@@ -205,29 +205,32 @@ bool FileManager::CheckFiles_()
     return true;
 }
 
-bool FileManager::IsSupported_()
+bool FileManager::IsSupported_(Extras::File& file)
 {
-	std::string extension = requested_path_->getExtension();
-	auto file_found = supported_files_.find(extension);
-	if(file_found != supported_files_.end())
-	{
-		file_properties_ = &file_found->second;
-		return true;
-	}
-	else
-	{
-		for(auto it : supported_files_)
-		{
-			auto extensions = it.second.get_other_extensions();
-			auto find_depth = std::find(extensions.begin(), extensions.end(), extension);
-			if(find_depth != extensions.end())
-			{
-				file_properties_ = &it.second;
-				return true;
-			}
-		}
-		return false;
-	}
+    if(file.get_requested_path() == nullptr)
+        return false;
+
+    std::string extension = file.get_requested_path()->getExtension();
+    auto file_found = supported_files_.find(extension);
+    if(file_found != supported_files_.end())
+    {
+        file.set_file_properties(file_found->second);
+        return true;
+    }
+    else
+    {
+        for(auto it : supported_files_)
+        {
+            auto extensions = it.second.get_other_extensions();
+            auto find_depth = std::find(extensions.begin(), extensions.end(), extension);
+            if(find_depth != extensions.end())
+            {
+                file.set_file_properties(it.second);
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 void FileManager::DownloadFile_(std::ostream& out_response)
