@@ -31,3 +31,8 @@ set_target_properties(valuesproperties PROPERTIES POSITION_INDEPENDENT_CODE 1)
 add_library(fileproperties OBJECT "file_properties.cc")
 target_include_directories(fileproperties PUBLIC ${HEADER})
 set_target_properties(fileproperties PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
+### file
+add_library(file OBJECT "file.cc")
+target_include_directories(file PUBLIC ${HEADER})
+set_target_properties(file PROPERTIES POSITION_INDEPENDENT_CODE 1)

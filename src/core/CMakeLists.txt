@@ -38,6 +38,7 @@ target_link_libraries(
 	valuesproperties
 	fileproperties
 	filemanager
+	file
 	Poco::Foundation
 	Poco::Net
 	Poco::Util
