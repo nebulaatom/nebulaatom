@@ -303,17 +303,20 @@ void FileManager::RemoveFile_()
 
 void FileManager::ProcessFileType_()
 {
-	if(IsSupported_())
-	{
-		bool file_is_binary = file_properties_->get_binary();
+    for(auto& file_it : files_)
+    {
+        if(IsSupported_(file_it))
+        {
+            bool file_is_binary = file_it.get_file_properties()->get_binary();
 
-		if(file_is_binary)
-			file_type_ = FileType::kBinary;
-		else
-			file_type_ = FileType::kTextPlain;
-	}
-	else
-		file_type_ = FileType::kBinary;
+            if(file_is_binary)
+                file_it.set_file_type(Extras::FileType::kBinary);
+            else
+                file_it.set_file_type(Extras::FileType::kTextPlain);
+        }
+        else
+            file_it.set_file_type(Extras::FileType::kBinary);
+    }
 }
 
 void FileManager::AddSupportedFiles_()
