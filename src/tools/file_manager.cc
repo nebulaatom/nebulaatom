@@ -96,52 +96,113 @@ std::string FileManager::GenerateName_(std::string name)
 	return new_name;
 }
 
-bool FileManager::CheckFile_(Path path)
+bool FileManager::CheckFile_(Extras::File& current_file)
 {
-	switch(operation_type_)
-	{
-		case OperationType::kDownload:
-		case OperationType::kReplace:
-		case OperationType::kDelete:
-		{
-			requested_path_ = std::make_shared<Path>(directory_base_, Path::PATH_NATIVE);
-			requested_path_->append(path);
-			requested_file_ = std::make_shared<File>(*requested_path_);
 
-			if(requested_file_->exists())
-			{
-				if(requested_file_->isDirectory())
-				{
-					requested_path_->makeDirectory();
-					requested_path_->setFileName("index.html");
+    auto& requested_path = current_file.get_requested_path();
+    auto& requested_file = current_file.get_requested_file();
 
-					requested_file_.reset(new File(*requested_path_));
+    switch(operation_type_)
+    {
+        case OperationType::kDownload:
+        case OperationType::kReplace:
+        case OperationType::kDelete:
+        {
+            auto filename = requested_path->getFileName();
+            requested_path.reset(new Path(directory_base_, Path::PATH_NATIVE));
+            requested_path->append(Path(filename));
+            requested_file.reset(new File(*requested_path));
 
-					if(!requested_file_->exists())
-						return false;
-				}
-			}
-			else
-				return false;
+            if(requested_file->exists())
+            {
+                if(requested_file->isDirectory())
+                {
+                    requested_path->makeDirectory();
+                    requested_path->setFileName("index.html");
 
-			if(!requested_file_->canRead())
-				return false;
-			else
-				return true;
-			break;
-		}
-		case OperationType::kUpload:
-		{
-			requested_path_ = std::make_shared<Path>(directory_for_uploaded_files_, Path::PATH_NATIVE);
-			requested_path_->append(path);
-			requested_file_ = std::make_shared<File>(*requested_path_);
+                    requested_file.reset(new File(*requested_path));
 
-			if(requested_file_->exists())
-				return false;
-			else
-				return true;
-		}
-	}
+                    if(!requested_file->exists())
+                        return false;
+                }
+            }
+            else
+                return false;
+
+            if(!requested_file->canRead())
+                return false;
+
+            break;
+        }
+        case OperationType::kUpload:
+        {
+            auto filename = requested_path->getFileName();
+            requested_path.reset(new Path(directory_for_uploaded_files_, Path::PATH_NATIVE));
+            requested_path->append(Path(filename));
+            requested_file.reset(new File(*requested_path));
+
+            if(requested_file->exists())
+                return false;
+        }
+    }
+
+    return true;
+}
+
+bool FileManager::CheckFiles_()
+{
+    for(auto& file_it : files_)
+    {
+        auto& requested_path = file_it.get_requested_path();
+        auto& requested_file = file_it.get_requested_file();
+
+        switch(operation_type_)
+        {
+            case OperationType::kDownload:
+            case OperationType::kReplace:
+            case OperationType::kDelete:
+            {
+                auto filename = requested_path->toString();
+                requested_path.reset(new Path(directory_base_, Path::PATH_NATIVE));
+                requested_path->append(Path(filename));
+                auto test_path = requested_path->toString();
+                requested_file.reset(new File(*requested_path));
+
+                if(requested_file->exists())
+                {
+                    if(requested_file->isDirectory())
+                    {
+                        requested_path->makeDirectory();
+                        requested_path->setFileName("index.html");
+
+                        requested_file.reset(new File(*requested_path));
+
+                        if(!requested_file->exists())
+                            return false;
+                    }
+                }
+                else
+                    return false;
+
+                if(!requested_file->canRead())
+                    return false;
+
+                break;
+            }
+            case OperationType::kUpload:
+            {
+                auto filename = requested_path->getFileName();
+                requested_path.reset(new Path(directory_for_uploaded_files_, Path::PATH_NATIVE));
+                requested_path->append(Path(filename));
+                requested_file.reset(new File(*requested_path));
+
+                if(requested_file->exists())
+                    return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 bool FileManager::IsSupported_()
