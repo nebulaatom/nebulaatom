@@ -235,26 +235,31 @@ bool FileManager::IsSupported_(Extras::File& file)
 
 void FileManager::DownloadFile_(std::ostream& out_response)
 {
-	switch(file_type_)
-	{
-		case FileType::kBinary:
-		{
-			std::ifstream requested_file(requested_path_->toString(), std::ios::binary | std::ios::ate);
+    std::size_t content_length = 0;
 
-			content_length_ = requested_file.tellg();
-			std::string text_line(content_length_, '\0');
+	switch(files_.front().get_file_type())
+	{
+        case Extras::FileType::kBinary:
+		{
+			std::ifstream requested_file(files_.front().get_requested_path()->toString(), std::ios::binary | std::ios::ate);
+
+			content_length = requested_file.tellg();
+			std::string text_line(content_length, '\0');
 			requested_file.seekg(0);
-			if(requested_file.read(&text_line[0], content_length_))
+
+			if(requested_file.read(&text_line[0], content_length))
 			{
 				out_response << text_line;
 			}
 			requested_file.close();
 			break;
 		}
-		case FileType::kTextPlain:
+		case Extras::FileType::kTextPlain:
 		{
 			std::string text_line;
-			std::ifstream requested_file(requested_path_->toString());
+			std::ifstream requested_file(files_.front().get_requested_path()->toString());
+			content_length = requested_file.tellg();
+
 			while (getline (requested_file, text_line))
 			{
 				out_response << text_line << "\n";
@@ -263,6 +268,8 @@ void FileManager::DownloadFile_(std::ostream& out_response)
 			break;
 		}
 	}
+
+	files_.front().set_content_length(content_length);
 }
 
 void FileManager::UploadFile_()
