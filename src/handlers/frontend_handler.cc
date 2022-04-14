@@ -77,13 +77,15 @@ void FrontendHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerRe
 	file_manager_.set_operation_type(Tools::OperationType::kUpload);
 	HTMLForm form(request, request.stream(), file_manager_);
 
-	if(!file_manager_.IsSupported_())
-	{
-		GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
-		return;
-	}
-
-	app_.logger().information("File: " + file_manager_.get_requested_file()->path());
+    for(auto& file_it : file_manager_.get_files())
+    {
+        if(!file_manager_.IsSupported_(file_it))
+        {
+            GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
+            return;
+        }
+        app_.logger().information("File: " + file_it.get_requested_file()->path());
+    }
 
 	file_manager_.ProcessFileType_();
 	file_manager_.UploadFile_();
@@ -92,7 +94,7 @@ void FrontendHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerRe
 	response.setContentType("application/json");
 
 	std::ostream& out_reponse = response.send();
-	response.setContentLength(file_manager_.get_content_length());
+	response.setChunkedTransferEncoding(true);
 
 	file_manager_.get_result()->stringify(out_reponse);
 
