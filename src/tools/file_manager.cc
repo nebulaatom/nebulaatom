@@ -274,20 +274,26 @@ void FileManager::DownloadFile_(std::ostream& out_response)
 
 void FileManager::UploadFile_()
 {
-	JSON::Object::Ptr object = new JSON::Object();
+    for(auto& file_it : files_)
+    {
+        JSON::Object::Ptr object = new JSON::Object();
 
-	if (!name_.empty())
-	{
-		std::unique_ptr<File> tmp_file = std::make_unique<File>(Path(directory_for_temp_files_ + "/" + filename_));
-		tmp_file->moveTo(requested_file_->path());
+        if (!file_it.get_name().empty())
+        {
+            std::string target = directory_for_temp_files_ + "/" + file_it.get_filename();
+            std::string destiny = file_it.get_requested_file()->path();
 
-		object->set("name", name_);
-		object->set("filename", requested_path_->getFileName());
-		object->set("type" ,content_type_);
-		object->set("size", content_length_);
+            auto tmp_file = File(Path(target));
+            tmp_file.moveTo(destiny);
 
-		result_->set(result_->size(), object);
-	}
+            object->set("name", file_it.get_name());
+            object->set("filename", file_it.get_requested_path()->getFileName());
+            object->set("type", file_it.get_content_type());
+            object->set("size", file_it.get_content_length());
+
+            result_->set(result_->size(), object);
+        }
+    }
 }
 
 void FileManager::RemoveFile_()
