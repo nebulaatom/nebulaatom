@@ -37,31 +37,40 @@ FileManager::~FileManager()
 
 void FileManager::handlePart(const MessageHeader& header, std::istream& stream)
 {
-	content_type_ = header.get("Content-Type", "(unspecified)");
+    std::string filename, name;
+
+	std::string content_type = header.get("Content-Type", "(unspecified)");
 	if (header.has("Content-Disposition"))
 	{
 		std::string disp;
 		NameValueCollection params;
 		MessageHeader::splitParameters(header["Content-Disposition"], disp, params);
-		name_ = params.get("name", "(unnamed)");
-		filename_ = params.get("filename", "(unnamed)");
+		name = params.get("name", "(unnamed)");
+		filename = params.get("filename", "(unnamed)");
 	}
 
 	CountingInputStream istr(stream);
 	std::ofstream ostr;
-	ostr.open(directory_for_temp_files_ + "/" + filename_);
+	ostr.open(directory_for_temp_files_ + "/" + filename);
 	StreamCopier::copyStream(istr, ostr);
-	content_length_ = istr.chars();
+	std::size_t content_length = istr.chars();
 	ostr.close();
 
 	bool check = false;
+    Extras::File current_file(name, filename, content_type, content_length);
+    std::shared_ptr<Path> tmp_path;
 	do
 	{
-		Path p(GenerateName_(filename_));
-		check = CheckFile_(p);
+		tmp_path.reset(new Path(GenerateName_(filename)));
+        current_file.get_requested_path() = tmp_path;
+
+		check = CheckFile_(current_file);
 	}
 	while(!check);
 
+    current_file.get_requested_file().reset(new File(*current_file.get_requested_path()));
+
+    files_.push_back(current_file);
 }
 
 std::string FileManager::GenerateName_(std::string name)
