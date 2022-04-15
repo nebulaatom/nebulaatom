@@ -98,7 +98,6 @@ std::string FileManager::GenerateName_(std::string name)
 
 bool FileManager::CheckFile_(Extras::File& current_file)
 {
-
     auto& requested_path = current_file.get_requested_path();
     auto& requested_file = current_file.get_requested_file();
 
@@ -298,7 +297,14 @@ void FileManager::UploadFile_()
 
 void FileManager::RemoveFile_()
 {
+    for(auto& file_it : files_)
+    {
+        file_it.get_requested_file()->remove();
 
+        JSON::Object::Ptr object = new JSON::Object();
+        object->set("file", file_it.get_filename());
+        result_->set(result_->size(), object);
+    }
 }
 
 void FileManager::ProcessFileType_()
