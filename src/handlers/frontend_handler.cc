@@ -107,4 +107,29 @@ void FrontendHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerRes
 
 void FrontendHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
+    auto tmp_file = Extras::File("file", request.getURI(), "", 0);
+    tmp_file.get_requested_path().reset(new Path(request.getURI()));
+    tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
+    auto var = tmp_file.get_requested_path()->toString();
+
+    file_manager_.get_files().push_back(tmp_file);
+
+    file_manager_.set_operation_type(Tools::OperationType::kDelete);
+    if(!file_manager_.CheckFiles_())
+    {
+        GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
+        return;
+    }
+
+    file_manager_.RemoveFile_();
+
+    response.setStatus(HTTPResponse::HTTP_OK);
+    response.setContentType("application/json");
+
+    std::ostream& out_reponse = response.send();
+    response.setChunkedTransferEncoding(true);
+
+    file_manager_.get_result()->stringify(out_reponse);
+
+    out_reponse.flush();
 }
