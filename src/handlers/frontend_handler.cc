@@ -42,7 +42,6 @@ void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRes
     auto tmp_file = Extras::File("file", request.getURI(), "", 0);
     tmp_file.get_requested_path().reset(new Path(request.getURI()));
     tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
-    auto var = tmp_file.get_requested_path()->toString();
 
     file_manager_.get_files().push_back(tmp_file);
 
@@ -103,6 +102,47 @@ void FrontendHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerRe
 
 void FrontendHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
+    // Remove file
+        file_manager_.set_operation_type(Tools::OperationType::kDelete);
+        auto tmp_file = Extras::File("file", request.getURI(), "", 0);
+        tmp_file.get_requested_path().reset(new Path(request.getURI()));
+        tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
+
+        file_manager_.get_files().push_back(tmp_file);
+
+        if(!file_manager_.CheckFiles_())
+        {
+            GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
+            return;
+        }
+
+        file_manager_.RemoveFile_();
+        file_manager_.get_files().clear();
+
+    // Upload
+        file_manager_.get_result()->clear();
+        file_manager_.set_operation_type(Tools::OperationType::kUpload);
+        HTMLForm form(request, request.stream(), file_manager_);
+
+        if(!file_manager_.IsSupported_(file_manager_.get_files().front()))
+        {
+            GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
+            return;
+        }
+        app_.logger().information("File: " + file_manager_.get_files().front().get_requested_file()->path());
+
+        file_manager_.ProcessFileType_();
+        file_manager_.UploadFile_();
+
+    response.setStatus(HTTPResponse::HTTP_OK);
+    response.setContentType("application/json");
+
+    std::ostream& out_reponse = response.send();
+    response.setChunkedTransferEncoding(true);
+
+    file_manager_.get_result()->stringify(out_reponse);
+
+    out_reponse.flush();
 }
 
 void FrontendHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
