@@ -63,7 +63,6 @@ enum class CPW::Tools::OperationType
 {
 	kDownload
 	,kUpload
-	,kReplace
 	,kDelete
 };
 

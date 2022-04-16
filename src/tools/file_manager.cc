@@ -104,7 +104,6 @@ bool FileManager::CheckFile_(Extras::File& current_file)
     switch(operation_type_)
     {
         case OperationType::kDownload:
-        case OperationType::kReplace:
         case OperationType::kDelete:
         {
             auto filename = requested_path->getFileName();
@@ -158,7 +157,6 @@ bool FileManager::CheckFiles_()
         switch(operation_type_)
         {
             case OperationType::kDownload:
-            case OperationType::kReplace:
             case OperationType::kDelete:
             {
                 auto filename = requested_path->toString();
