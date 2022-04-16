@@ -106,7 +106,7 @@ bool FileManager::CheckFile_(Extras::File& current_file)
         case OperationType::kDownload:
         case OperationType::kDelete:
         {
-            auto filename = requested_path->getFileName();
+            auto filename = requested_path->toString();
             requested_path.reset(new Path(directory_base_, Path::PATH_NATIVE));
             requested_path->append(Path(filename));
             requested_file.reset(new File(*requested_path));
@@ -151,52 +151,8 @@ bool FileManager::CheckFiles_()
 {
     for(auto& file_it : files_)
     {
-        auto& requested_path = file_it.get_requested_path();
-        auto& requested_file = file_it.get_requested_file();
-
-        switch(operation_type_)
-        {
-            case OperationType::kDownload:
-            case OperationType::kDelete:
-            {
-                auto filename = requested_path->toString();
-                requested_path.reset(new Path(directory_base_, Path::PATH_NATIVE));
-                requested_path->append(Path(filename));
-                auto test_path = requested_path->toString();
-                requested_file.reset(new File(*requested_path));
-
-                if(requested_file->exists())
-                {
-                    if(requested_file->isDirectory())
-                    {
-                        requested_path->makeDirectory();
-                        requested_path->setFileName("index.html");
-
-                        requested_file.reset(new File(*requested_path));
-
-                        if(!requested_file->exists())
-                            return false;
-                    }
-                }
-                else
-                    return false;
-
-                if(!requested_file->canRead())
-                    return false;
-
-                break;
-            }
-            case OperationType::kUpload:
-            {
-                auto filename = requested_path->getFileName();
-                requested_path.reset(new Path(directory_for_uploaded_files_, Path::PATH_NATIVE));
-                requested_path->append(Path(filename));
-                requested_file.reset(new File(*requested_path));
-
-                if(requested_file->exists())
-                    return false;
-            }
-        }
+        if(!CheckFile_(file_it))
+            return false;
     }
 
     return true;
