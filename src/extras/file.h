@@ -37,6 +37,7 @@ enum class CPW::Extras::FileType
 class CPW::Extras::File
 {
     public:
+        File();
         File(std::string name, std::string filename, std::string content_type, std::size_t content_length);
 
         FileType get_file_type() const{return file_type_;}
@@ -56,6 +57,12 @@ class CPW::Extras::File
             auto& var = requested_file_;
             return var;
         }
+		std::shared_ptr<Poco::File>& get_tmp_file()
+        {
+            auto& var = tmp_file_;
+            return var;
+        }
+
 
         void set_file_type(FileType file_type) {file_type_ = file_type;}
         void set_filename(std::size_t content_length) {content_length_ = content_length;}
@@ -74,6 +81,7 @@ class CPW::Extras::File
         Extras::FileProperties* file_properties_;
         std::shared_ptr<Path> requested_path_;
         std::shared_ptr<Poco::File> requested_file_;
+        std::shared_ptr<Poco::File> tmp_file_;
 };
 
 #endif // EXTRAS_FILE_H
