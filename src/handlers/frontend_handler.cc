@@ -39,34 +39,36 @@ void FrontendHandler::AddRoutes_()
 
 void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-    auto tmp_file = Extras::File("file", request.getURI(), "", 0);
-    tmp_file.get_requested_path().reset(new Path(request.getURI()));
-    tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
+    // Create the file
+        auto tmp_file = Extras::File("file", request.getURI(), "", 0);
+        tmp_file.get_requested_path().reset(new Path(request.getURI()));
+        tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
 
-    file_manager_.get_files().push_back(tmp_file);
+        file_manager_.get_files().push_back(tmp_file);
 
+	// Basic operations
+        file_manager_.set_operation_type(Tools::OperationType::kDownload);
+        if(!file_manager_.CheckFiles_())
+        {
+            GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
+            return;
+        }
+        if(!file_manager_.IsSupported_(file_manager_.get_files().front()))
+        {
+            GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
+            return;
+        }
 
-	file_manager_.set_operation_type(Tools::OperationType::kDownload);
-	if(!file_manager_.CheckFiles_())
-	{
-		GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
-		return;
-	}
-	if(!file_manager_.IsSupported_(file_manager_.get_files().front()))
-	{
-		GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
-		return;
-	}
+        file_manager_.ProcessFileType_();
+        file_manager_.ProcessContentLength_(file_manager_.get_files().front());
 
-	file_manager_.ProcessFileType_();
+        response.setStatus(HTTPResponse::HTTP_OK);
+        response.setContentType(file_manager_.get_files().front().get_content_type());
+        response.setContentLength(file_manager_.get_files().front().get_content_length());
+        std::ostream& out_reponse = response.send();
 
-	response.setStatus(HTTPResponse::HTTP_OK);
-
-	std::ostream& out_reponse = response.send();
-
-	file_manager_.DownloadFile_(out_reponse);
-	response.setContentType(file_manager_.get_files().front().get_content_type());
-	response.setContentLength(file_manager_.get_files().front().get_content_length());
+    // Download file
+        file_manager_.DownloadFile_(out_reponse);
 
 	out_reponse.flush();
 }
@@ -91,9 +93,9 @@ void FrontendHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerRe
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("application/json");
+    response.setChunkedTransferEncoding(true);
 
 	std::ostream& out_reponse = response.send();
-	response.setChunkedTransferEncoding(true);
 
 	file_manager_.get_result()->stringify(out_reponse);
 
@@ -136,9 +138,9 @@ void FrontendHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerRes
 
     response.setStatus(HTTPResponse::HTTP_OK);
     response.setContentType("application/json");
+    response.setChunkedTransferEncoding(true);
 
     std::ostream& out_reponse = response.send();
-    response.setChunkedTransferEncoding(true);
 
     file_manager_.get_result()->stringify(out_reponse);
 
@@ -165,9 +167,9 @@ void FrontendHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerRes
 
     response.setStatus(HTTPResponse::HTTP_OK);
     response.setContentType("application/json");
+    response.setChunkedTransferEncoding(true);
 
     std::ostream& out_reponse = response.send();
-    response.setChunkedTransferEncoding(true);
 
     file_manager_.get_result()->stringify(out_reponse);
 
