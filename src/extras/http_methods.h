@@ -25,6 +25,7 @@
 #include <Poco/Net/HTTPServerResponse.h>
 
 #include "extras/dynamic_elements.h"
+#include "tools/common_responses.h"
 
 
 namespace CPW
@@ -61,6 +62,7 @@ class CPW::Extras::HTTPMethods
 
 	private:
 		DynamicElementSharedPtr dynamic_elements_;
+        Tools::CommonResponses responses_;
 };
 
 #endif // CPW_EXTRAS_HTTPMETHODS_H

@@ -36,6 +36,7 @@ void HTTPMethods::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRespons
 
 	response.setStatus(HTTPResponse::HTTP_OK);
 	response.setContentType("application/json");
+    response.setChunkedTransferEncoding(true);
 
 	std::ostream& out = response.send();
 	dynamic_elements_->get_query_actions()->get_result_json()->stringify(out);
@@ -46,33 +47,21 @@ void HTTPMethods::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerRespon
 {
 	QueryProcess_(Core::TypeAction::kInsert, response);
 
-	response.setStatus(HTTPResponse::HTTP_OK);
-	response.setContentType("plain/text");
-
-	std::ostream& out = response.send();
-	out.flush();
+    responses_.GenericResponse_(response, HTTPResponse::HTTP_OK, "Ok.");
 }
 
 void HTTPMethods::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
 	QueryProcess_(Core::TypeAction::kUpdate, response);
 
-	response.setStatus(HTTPResponse::HTTP_OK);
-	response.setContentType("plain/text");
-
-	std::ostream& out = response.send();
-	out.flush();
+    responses_.GenericResponse_(response, HTTPResponse::HTTP_OK, "Ok.");
 }
 
 void HTTPMethods::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
 	QueryProcess_(Core::TypeAction::kDelete, response);
 
-	response.setStatus(HTTPResponse::HTTP_OK);
-	response.setContentType("plain/text");
-
-	std::ostream& out = response.send();
-	out.flush();
+    responses_.GenericResponse_(response, HTTPResponse::HTTP_OK, "Ok.");
 }
 
 void HTTPMethods::QueryProcess_(Core::TypeAction action, HTTPServerResponse& response)
