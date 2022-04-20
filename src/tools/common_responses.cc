@@ -34,19 +34,20 @@ void CommonResponses::GenericResponse_(HTTPServerResponse& response, HTTPRespons
 {
 	response.setStatus(status);
 	response.setContentType("application/json");
+    response.setChunkedTransferEncoding(true);
 
 	JSON::Object::Ptr object_json = new JSON::Object;
 
 	auto found = responses_.find(status);
 	if(found != responses_.end())
 	{
-		object_json->set("Status", responses_[status].second);
-		object_json->set("Message", message);
+		object_json->set("status", responses_[status].second);
+		object_json->set("message", message);
 	}
 	else
 	{
-		object_json->set("Status", responses_[HTTPResponse::HTTP_INTERNAL_SERVER_ERROR].second);
-		object_json->set("Message", "Error on HTTPStatus");
+		object_json->set("status", responses_[HTTPResponse::HTTP_INTERNAL_SERVER_ERROR].second);
+		object_json->set("message", "Error on HTTPStatus");
 	}
 
 	std::ostream& out = response.send();
@@ -58,37 +59,42 @@ void CommonResponses::FillResponses_()
 {
 	responses_.emplace(std::make_pair
 	(
+		HTTPResponse::HTTP_OK
+		,std::make_pair(ResponseType::kSuccess, "Ok")
+	));
+	responses_.emplace(std::make_pair
+	(
 		HTTPResponse::HTTP_BAD_REQUEST
-		,std::make_pair(ResponseType::kWarning, "Client-side input fails validation.")
+		,std::make_pair(ResponseType::kWarning, "Client-side input fails validation")
 	));
 	responses_.emplace(std::make_pair
 	(
 		HTTPResponse::HTTP_UNAUTHORIZED
-		,std::make_pair(ResponseType::kWarning, "The user isn’t not authorized to access to this resource.")
+		,std::make_pair(ResponseType::kWarning, "The user isn’t not authorized to access to this resource")
 	));
 	responses_.emplace(std::make_pair
 	(
 		HTTPResponse::HTTP_FORBIDDEN
-		,std::make_pair(ResponseType::kWarning, "The user is authenticated, but it’s not allowed to access to this resource.")
+		,std::make_pair(ResponseType::kWarning, "The user is authenticated, but it’s not allowed to access to this resource")
 	));
 	responses_.emplace(std::make_pair
 	(
 		HTTPResponse::HTTP_NOT_FOUND
-		,std::make_pair(ResponseType::kWarning, "Resource is not found.")
+		,std::make_pair(ResponseType::kWarning, "Resource is not found")
 	));
 	responses_.emplace(std::make_pair
 	(
 		HTTPResponse::HTTP_INTERNAL_SERVER_ERROR
-		,std::make_pair(ResponseType::kError, "Something was wrong.")
+		,std::make_pair(ResponseType::kError, "Something was wrong")
 	));
 	responses_.emplace(std::make_pair
 	(
 		HTTPResponse::HTTP_BAD_GATEWAY
-		,std::make_pair(ResponseType::kError, "Invalid response from an upstream server.")
+		,std::make_pair(ResponseType::kError, "Invalid response from an upstream server")
 	));
 	responses_.emplace(std::make_pair
 	(
 		HTTPResponse::HTTP_SERVICE_UNAVAILABLE
-		,std::make_pair(ResponseType::kError, "Something unexpected happened on server side.")
+		,std::make_pair(ResponseType::kError, "Something unexpected happened on server side")
 	));
 }
