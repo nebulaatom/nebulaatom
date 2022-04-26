@@ -253,7 +253,7 @@ void FileManager::UploadFile_()
 
         if (!file_it.get_name().empty())
         {
-            std::string target = directory_for_temp_files_ + "/" + file_it.get_filename();
+            std::string target = file_it.get_tmp_file()->path();
             std::string destiny = file_it.get_requested_file()->path();
 
             auto tmp_file = File(Path(target));
