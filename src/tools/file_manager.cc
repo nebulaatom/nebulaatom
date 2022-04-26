@@ -175,22 +175,28 @@ bool FileManager::IsSupported_(Extras::File& file)
     if(file.get_requested_path() == nullptr)
         return false;
 
+    auto basic_operations = [&file](Extras::FileProperties& properties)
+    {
+        file.set_file_properties(properties);
+        file.set_content_type(properties.get_content_type());
+    };
+
     std::string extension = file.get_requested_path()->getExtension();
     auto file_found = supported_files_.find(extension);
     if(file_found != supported_files_.end())
     {
-        file.set_file_properties(file_found->second);
+        basic_operations(file_found->second);
         return true;
     }
     else
     {
-        for(auto it : supported_files_)
+        for(auto& it : supported_files_)
         {
             auto extensions = it.second.get_other_extensions();
             auto find_depth = std::find(extensions.begin(), extensions.end(), extension);
             if(find_depth != extensions.end())
             {
-                file.set_file_properties(it.second);
+                basic_operations(it.second);
                 return true;
             }
         }
