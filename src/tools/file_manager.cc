@@ -209,13 +209,15 @@ void FileManager::ProcessContentLength_(Extras::File& file)
     file.set_content_length(file.get_requested_file()->getSize());
 }
 
+void FileManager::DownloadFile_(std::ostream& out_response)
+{
 	switch(files_.front().get_file_type())
 	{
         case Extras::FileType::kBinary:
 		{
 			std::ifstream requested_file(files_.front().get_requested_path()->toString(), std::ios::binary | std::ios::ate);
 
-			content_length = requested_file.tellg();
+            std::size_t content_length = requested_file.tellg();
 			std::string text_line(content_length, '\0');
 			requested_file.seekg(0);
 
@@ -224,24 +226,23 @@ void FileManager::ProcessContentLength_(Extras::File& file)
 				out_response << text_line;
 			}
 			requested_file.close();
+
 			break;
 		}
 		case Extras::FileType::kTextPlain:
 		{
 			std::string text_line;
 			std::ifstream requested_file(files_.front().get_requested_path()->toString());
-			content_length = requested_file.tellg();
 
 			while (getline (requested_file, text_line))
 			{
 				out_response << text_line << "\n";
 			}
 			requested_file.close();
+
 			break;
 		}
 	}
-
-	files_.front().set_content_length(content_length);
 }
 
 void FileManager::UploadFile_()
