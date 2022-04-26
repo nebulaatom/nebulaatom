@@ -316,7 +316,7 @@ void FileManager::ProcessFileType_()
 void FileManager::AddSupportedFiles_()
 {
 	supported_files_.emplace(std::make_pair("html", Extras::FileProperties{"text/html", false, {"htm", "html5"}}));
-	supported_files_.emplace(std::make_pair("js", Extras::FileProperties{"text/javascript", false, {"js5"}}));
+	supported_files_.emplace(std::make_pair("js", Extras::FileProperties{"application/javascript", false, {"js5"}}));
 	supported_files_.emplace(std::make_pair("css",Extras::FileProperties{"text/css", false, {"css3"}}));
 	supported_files_.emplace(std::make_pair("jpeg",Extras::FileProperties{"image/jpeg", false, {"jpeg", "jpg"}}));
 	supported_files_.emplace(std::make_pair("png",Extras::FileProperties{"image/png", true, {""}}));
