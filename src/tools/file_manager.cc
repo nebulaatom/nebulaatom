@@ -204,9 +204,10 @@ bool FileManager::IsSupported_(Extras::File& file)
     }
 }
 
-void FileManager::DownloadFile_(std::ostream& out_response)
+void FileManager::ProcessContentLength_(Extras::File& file)
 {
-    std::size_t content_length = 0;
+    file.set_content_length(file.get_requested_file()->getSize());
+}
 
 	switch(files_.front().get_file_type())
 	{

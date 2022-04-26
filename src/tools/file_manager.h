@@ -96,6 +96,7 @@ class CPW::Tools::FileManager: public Net::PartHandler
 		bool CheckFile_(Extras::File& current_file);
 		bool CheckFiles_();
 		bool IsSupported_(Extras::File& file);
+        void ProcessContentLength_(Extras::File& file);
 		void DownloadFile_(std::ostream& out_response);
 		void UploadFile_();
 		void RemoveFile_();
