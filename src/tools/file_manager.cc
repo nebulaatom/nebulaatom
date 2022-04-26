@@ -37,40 +37,52 @@ FileManager::~FileManager()
 
 void FileManager::handlePart(const MessageHeader& header, std::istream& stream)
 {
-    std::string filename, name;
+    Extras::File tmp_file;
+    Extras::File current_file;
+    bool check = false;
 
-	std::string content_type = header.get("Content-Type", "(unspecified)");
-	if (header.has("Content-Disposition"))
-	{
-		std::string disp;
-		NameValueCollection params;
-		MessageHeader::splitParameters(header["Content-Disposition"], disp, params);
-		name = params.get("name", "(unnamed)");
-		filename = params.get("filename", "(unnamed)");
-	}
+    // Get header parameters
+        current_file.set_content_type(header.get("Content-Type", "(unspecified)"));
+        current_file.set_name(SplitHeaderValue_(header, "Content-Disposition", "name"));
+        current_file.set_filename(SplitHeaderValue_(header, "Content-Disposition", "filename"));
+        tmp_file.set_filename(SplitHeaderValue_(header, "Content-Disposition", "filename"));
 
-	CountingInputStream istr(stream);
-	std::ofstream ostr;
-	ostr.open(directory_for_temp_files_ + "/" + filename);
-	StreamCopier::copyStream(istr, ostr);
-	std::size_t content_length = istr.chars();
-	ostr.close();
+    // Check temporary file
+        do
+        {
+            tmp_file.get_requested_path().reset
+            (
+                new Path(GenerateName_(directory_for_temp_files_ + "/" + tmp_file.get_filename()))
+            );
 
-	bool check = false;
-    Extras::File current_file(name, filename, content_type, content_length);
-    std::shared_ptr<Path> tmp_path;
-	do
-	{
-		tmp_path.reset(new Path(GenerateName_(filename)));
-        current_file.get_requested_path() = tmp_path;
+            check = CheckFile_(tmp_file);
+        }
+        while(!check);
 
-		check = CheckFile_(current_file);
-	}
-	while(!check);
+    // Create temporary file
+        CountingInputStream istr(stream);
+        std::ofstream ostr;
+        ostr.open(tmp_file.get_requested_path()->toString());
+        StreamCopier::copyStream(istr, ostr);
+        ostr.close();
 
-    current_file.get_requested_file().reset(new File(*current_file.get_requested_path()));
+    // Check final target file
+        check = false;
+        do
+        {
+            current_file.get_requested_path().reset
+            (
+                new Path(GenerateName_(current_file.get_filename()))
+            );
 
-    files_.push_back(current_file);
+            check = CheckFile_(current_file);
+        }
+        while(!check);
+
+    // Add new file
+        current_file.get_requested_file().reset(new File(*current_file.get_requested_path()));
+        current_file.get_tmp_file().reset(new File(*tmp_file.get_requested_path()));
+        files_.push_back(current_file);
 }
 
 std::string FileManager::GenerateName_(std::string name)
