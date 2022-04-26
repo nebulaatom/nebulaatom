@@ -97,10 +97,13 @@ class CPW::Tools::FileManager: public Net::PartHandler
 		bool CheckFiles_();
 		bool IsSupported_(Extras::File& file);
         void ProcessContentLength_(Extras::File& file);
+		void ProcessFileType_();
 		void DownloadFile_(std::ostream& out_response);
 		void UploadFile_();
 		void RemoveFile_();
-		void ProcessFileType_();
+
+    protected:
+        std::string SplitHeaderValue_(const MessageHeader& header, std::string header_name, std::string parameter);
 
 	private:
 		void AddSupportedFiles_();

@@ -281,6 +281,20 @@ void FileManager::RemoveFile_()
     }
 }
 
+std::string FileManager::SplitHeaderValue_(const MessageHeader& header, std::string header_name, std::string parameter)
+{
+    if (header.has(header_name))
+    {
+        std::string disp;
+        NameValueCollection params;
+
+        MessageHeader::splitParameters(header[header_name], disp, params);
+        return params.get(parameter, "(unnamed)");
+    }
+    else
+        return "";
+}
+
 void FileManager::ProcessFileType_()
 {
     for(auto& file_it : files_)
