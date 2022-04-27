@@ -39,9 +39,9 @@ void FrontendHandler::AddRoutes_()
 
 void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-    // Create the file
-        auto tmp_file = Extras::File("file", request.getURI(), "", 0);
-        tmp_file.get_requested_path().reset(new Path(request.getURI()));
+    // Manage the file
+        auto tmp_file = Extras::File("file", Path(request.getURI()).getFileName(), "", 0);
+        tmp_file.get_requested_path().reset(new Path(file_manager_.get_directory_base() + request.getURI(), Path::PATH_NATIVE));
         tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
 
         file_manager_.get_files().push_back(tmp_file);
@@ -62,6 +62,7 @@ void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRes
         file_manager_.ProcessFileType_();
         file_manager_.ProcessContentLength_(file_manager_.get_files().front());
 
+    // Reponse
         response.setStatus(HTTPResponse::HTTP_OK);
         response.setContentType(file_manager_.get_files().front().get_content_type());
         response.setContentLength(file_manager_.get_files().front().get_content_length());
@@ -75,49 +76,54 @@ void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRes
 
 void FrontendHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	file_manager_.set_operation_type(Tools::OperationType::kUpload);
-	HTMLForm form(request, request.stream(), file_manager_);
+    // Manage the file
+        file_manager_.set_operation_type(Tools::OperationType::kUpload);
+        HTMLForm form(request, request.stream(), file_manager_);
 
-    for(auto& file_it : file_manager_.get_files())
-    {
-        if(!file_manager_.IsSupported_(file_it))
+	// Basic operations
+        for(auto& file_it : file_manager_.get_files())
         {
-            GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
-            return;
+            if(!file_manager_.IsSupported_(file_it))
+            {
+                GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
+                return;
+            }
+            app_.logger().information("File: " + file_it.get_requested_file()->path());
         }
-        app_.logger().information("File: " + file_it.get_requested_file()->path());
-    }
 
-	file_manager_.ProcessFileType_();
-	file_manager_.UploadFile_();
+        file_manager_.ProcessFileType_();
+        file_manager_.UploadFile_();
 
-	response.setStatus(HTTPResponse::HTTP_OK);
-	response.setContentType("application/json");
-    response.setChunkedTransferEncoding(true);
+    // Response
+        response.setStatus(HTTPResponse::HTTP_OK);
+        response.setContentType("application/json");
+        response.setChunkedTransferEncoding(true);
 
-	std::ostream& out_reponse = response.send();
+        std::ostream& out_reponse = response.send();
 
-	file_manager_.get_result()->stringify(out_reponse);
+        file_manager_.get_result()->stringify(out_reponse);
 
-	out_reponse.flush();
+        out_reponse.flush();
 }
 
 void FrontendHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-    // Remove file
-        file_manager_.set_operation_type(Tools::OperationType::kDelete);
-        auto tmp_file = Extras::File("file", request.getURI(), "", 0);
-        tmp_file.get_requested_path().reset(new Path(request.getURI()));
+    // Manage the file
+        auto tmp_file = Extras::File("file", Path(request.getURI()).getFileName(), "", 0);
+        tmp_file.get_requested_path().reset(new Path(file_manager_.get_directory_base() + request.getURI(), Path::PATH_NATIVE));
         tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
 
         file_manager_.get_files().push_back(tmp_file);
 
+    // Basic operations
+        file_manager_.set_operation_type(Tools::OperationType::kDelete);
         if(!file_manager_.CheckFiles_())
         {
             GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
             return;
         }
 
+    // Remove the file
         file_manager_.RemoveFile_();
         file_manager_.get_files().clear();
 
@@ -136,42 +142,45 @@ void FrontendHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerRes
         file_manager_.ProcessFileType_();
         file_manager_.UploadFile_();
 
-    response.setStatus(HTTPResponse::HTTP_OK);
-    response.setContentType("application/json");
-    response.setChunkedTransferEncoding(true);
+    // Response
+        response.setStatus(HTTPResponse::HTTP_OK);
+        response.setContentType("application/json");
+        response.setChunkedTransferEncoding(true);
 
-    std::ostream& out_reponse = response.send();
+        std::ostream& out_reponse = response.send();
 
-    file_manager_.get_result()->stringify(out_reponse);
+        file_manager_.get_result()->stringify(out_reponse);
 
-    out_reponse.flush();
+        out_reponse.flush();
 }
 
 void FrontendHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-    auto tmp_file = Extras::File("file", request.getURI(), "", 0);
-    tmp_file.get_requested_path().reset(new Path(request.getURI()));
-    tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
-    auto var = tmp_file.get_requested_path()->toString();
+    // Manage file
+        auto tmp_file = Extras::File("file", Path(request.getURI()).getFileName(), "", 0);
+        tmp_file.get_requested_path().reset(new Path(file_manager_.get_directory_base() + request.getURI(), Path::PATH_NATIVE));
+        tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
 
-    file_manager_.get_files().push_back(tmp_file);
+        file_manager_.get_files().push_back(tmp_file);
 
-    file_manager_.set_operation_type(Tools::OperationType::kDelete);
-    if(!file_manager_.CheckFiles_())
-    {
-        GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
-        return;
-    }
+    // Basic operations
+        file_manager_.set_operation_type(Tools::OperationType::kDelete);
+        if(!file_manager_.CheckFiles_())
+        {
+            GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
+            return;
+        }
 
-    file_manager_.RemoveFile_();
+        file_manager_.RemoveFile_();
 
-    response.setStatus(HTTPResponse::HTTP_OK);
-    response.setContentType("application/json");
-    response.setChunkedTransferEncoding(true);
+    // Response
+        response.setStatus(HTTPResponse::HTTP_OK);
+        response.setContentType("application/json");
+        response.setChunkedTransferEncoding(true);
 
-    std::ostream& out_reponse = response.send();
+        std::ostream& out_reponse = response.send();
 
-    file_manager_.get_result()->stringify(out_reponse);
+        file_manager_.get_result()->stringify(out_reponse);
 
-    out_reponse.flush();
+        out_reponse.flush();
 }
