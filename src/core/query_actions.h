@@ -42,6 +42,11 @@
 #include <Poco/Dynamic/Var.h>
 #include <Poco/Dynamic/Struct.h>
 #include <Poco/Data/RecordSet.h>
+#include "Poco/DateTimeParser.h"
+#include "Poco/DateTime.h"
+#include "Poco/DateTimeFormat.h"
+#include "Poco/DateTimeFormatter.h"
+#include "Poco/Timestamp.h"
 
 #include "tools/manage_json.h"
 #include "tools/filters.h"

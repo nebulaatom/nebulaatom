@@ -377,30 +377,44 @@ bool QueryActions::ExecuteQuery_()
 void QueryActions::CreateJSONResult_()
 {
 	// Variables
-		Poco::Dynamic::Var var;
 		Data::RecordSet results(*query_);
 		JSON::Array::Ptr tmp_array = new JSON::Array();
 
 	// Make JSON string
-		int array_index = 0;
-		for (Data::RecordSet::Iterator it = results.begin(); it != results.end(); ++it)
+		for(auto& it : results)
 		{
 			JSON::Object::Ptr tmp_object = new JSON::Object();
 
-			for(size_t a = 0; a < it->fieldCount(); a++)
+			for(size_t a = 0; a < it.fieldCount(); a++)
 			{
-				it->formatValues();
-				var = it->get(a);
-				if(!var.isEmpty())
-				{
-					if(var.isInteger())
-						tmp_object->set(results.columnName(a), std::stoi(var.toString()));
-					else
-						tmp_object->set(results.columnName(a), var.toString());
-				}
+				auto var = it.get(a);
+
+				if(var.isEmpty())
+                    tmp_object->set(results.columnName(a), "");
+                else if(var.isNumeric())
+                    if(var.isInteger())
+                        tmp_object->set(results.columnName(a), std::stoi(var.toString()));
+                	else
+                        tmp_object->set(results.columnName(a), std::stof(var.toString()));
+                else if(var.isDate() || var.isDateTime())
+                {
+                    DateTime date;
+                    int diff;
+
+                    if(DateTimeParser::tryParse(DateTimeFormat::ISO8601_FORMAT, var.toString(), date, diff))
+                    {
+                        DateTimeParser::parse(DateTimeFormat::ISO8601_FORMAT, var.toString(), date, diff);
+                        auto date_string = DateTimeFormatter::format(date, DateTimeFormat::SORTABLE_FORMAT);
+
+                        tmp_object->set(results.columnName(a), date_string);
+                    }
+                    else
+                        tmp_object->set(results.columnName(a), var.toString());
+                }
+                else
+                    tmp_object->set(results.columnName(a), var.toString());
 			}
-			tmp_array->set(array_index, tmp_object);
-			array_index++;
+			tmp_array->set(tmp_array->size(), tmp_object);
 		}
 		result_json_->set("results", tmp_array);
 
