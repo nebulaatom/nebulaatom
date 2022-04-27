@@ -262,7 +262,7 @@ void IncorporateFilters::IncorporateSet_(VectorString& tmp_query)
 	{
 		for(auto& it : current_filters_->get_set())
 		{
-			if(it != *current_filters_->get_set().begin())
+			if(&it != &*current_filters_->get_set().begin())
 				tmp_query.push_back(",");
 
 			tmp_query.push_back(it.first);
