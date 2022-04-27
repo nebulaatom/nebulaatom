@@ -295,6 +295,24 @@ std::string FileManager::SplitHeaderValue_(const MessageHeader& header, std::str
         return "";
 }
 
+void FileManager::CheckTargetFilename_(Extras::File& file, std::string directory)
+{
+    bool check = false;
+
+    do
+    {
+        file.get_requested_path().reset
+        (
+            new Path(directory + "/" + GenerateName_(file.get_filename()))
+        );
+        file.get_requested_file().reset(new File(*file.get_requested_path()));
+
+        check = CheckFile_(file);
+    }
+    while(!check);
+
+}
+
 void FileManager::ProcessFileType_()
 {
     for(auto& file_it : files_)

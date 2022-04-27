@@ -104,6 +104,7 @@ class CPW::Tools::FileManager: public Net::PartHandler
 
     protected:
         std::string SplitHeaderValue_(const MessageHeader& header, std::string header_name, std::string parameter);
+        void CheckTargetFilename_(Extras::File& file, std::string directory);
 
 	private:
 		void AddSupportedFiles_();
