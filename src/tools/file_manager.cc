@@ -39,8 +39,6 @@ void FileManager::handlePart(const MessageHeader& header, std::istream& stream)
 {
     Extras::File tmp_file;
     Extras::File current_file;
-    bool check = false;
-
     // Get header parameters
         current_file.set_content_type(header.get("Content-Type", "(unspecified)"));
         current_file.set_name(SplitHeaderValue_(header, "Content-Disposition", "name"));
@@ -48,16 +46,7 @@ void FileManager::handlePart(const MessageHeader& header, std::istream& stream)
         tmp_file.set_filename(SplitHeaderValue_(header, "Content-Disposition", "filename"));
 
     // Check temporary file
-        do
-        {
-            tmp_file.get_requested_path().reset
-            (
-                new Path(GenerateName_(directory_for_temp_files_ + "/" + tmp_file.get_filename()))
-            );
-
-            check = CheckFile_(tmp_file);
-        }
-        while(!check);
+        CheckTargetFilename_(tmp_file, directory_for_temp_files_);
 
     // Create temporary file
         CountingInputStream istr(stream);
@@ -67,19 +56,9 @@ void FileManager::handlePart(const MessageHeader& header, std::istream& stream)
         ostr.close();
 
     // Check final target file
-        check = false;
-        do
-        {
-            current_file.get_requested_path().reset
-            (
-                new Path(GenerateName_(current_file.get_filename()))
-            );
+        CheckTargetFilename_(current_file, directory_for_uploaded_files_);
 
-            check = CheckFile_(current_file);
-        }
-        while(!check);
-
-    // Add new file
+    // Add new file and its temporal file
         current_file.get_requested_file().reset(new File(*current_file.get_requested_path()));
         current_file.get_tmp_file().reset(new File(*tmp_file.get_requested_path()));
         files_.push_back(current_file);
@@ -113,16 +92,14 @@ bool FileManager::CheckFile_(Extras::File& current_file)
     auto& requested_path = current_file.get_requested_path();
     auto& requested_file = current_file.get_requested_file();
 
+    if(requested_path == nullptr || requested_file == nullptr)
+        return false;
+
     switch(operation_type_)
     {
         case OperationType::kDownload:
         case OperationType::kDelete:
         {
-            auto filename = requested_path->toString();
-            requested_path.reset(new Path(directory_base_, Path::PATH_NATIVE));
-            requested_path->append(Path(filename));
-            requested_file.reset(new File(*requested_path));
-
             if(requested_file->exists())
             {
                 if(requested_file->isDirectory())
@@ -146,11 +123,6 @@ bool FileManager::CheckFile_(Extras::File& current_file)
         }
         case OperationType::kUpload:
         {
-            auto filename = requested_path->getFileName();
-            requested_path.reset(new Path(directory_for_uploaded_files_, Path::PATH_NATIVE));
-            requested_path->append(Path(filename));
-            requested_file.reset(new File(*requested_path));
-
             if(requested_file->exists())
                 return false;
         }
