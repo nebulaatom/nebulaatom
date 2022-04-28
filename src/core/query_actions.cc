@@ -389,20 +389,21 @@ void QueryActions::CreateJSONResult_()
 			{
 				auto var = it.get(a);
 
-                row_value_formatter_.Format_(var);
-                switch(row_value_formatter_.get_row_value_type())
+                row_value_formatter_.reset(new Tools::RowValueFormatter(var));
+                row_value_formatter_->Format_();
+                switch(row_value_formatter_->get_row_value_type())
                 {
                     case Tools::RowValueType::kEmpty:
                         tmp_object->set(results.columnName(a), "");
                         break;
                     case Tools::RowValueType::kString:
-                        tmp_object->set(results.columnName(a), row_value_formatter_.get_value_string());
+                        tmp_object->set(results.columnName(a), row_value_formatter_->get_value_string());
                         break;
                     case Tools::RowValueType::kInteger:
-                        tmp_object->set(results.columnName(a), row_value_formatter_.get_value_int());
+                        tmp_object->set(results.columnName(a), row_value_formatter_->get_value_int());
                         break;
                     case Tools::RowValueType::kFloat:
-                        tmp_object->set(results.columnName(a), row_value_formatter_.get_value_float());
+                        tmp_object->set(results.columnName(a), row_value_formatter_->get_value_float());
                         break;
                     default:
                         tmp_object->set(results.columnName(a), "");

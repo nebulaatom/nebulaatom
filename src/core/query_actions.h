@@ -135,7 +135,7 @@ class CPW::Core::QueryActions :
 		JSON::Object::Ptr result_json_;
 		std::map<std::string, TypeQuery> type_actions_map_;
 		Application& app_;
-        Tools::RowValueFormatter row_value_formatter_;
+        std::shared_ptr<Tools::RowValueFormatter> row_value_formatter_;
 };
 
 
