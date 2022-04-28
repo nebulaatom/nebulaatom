@@ -65,7 +65,8 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 					}
 				}
 
-				InitSecurityProccess_(request, response);
+				if(!InitSecurityProccess_(request, response))
+                    return;
 
 				break;
 			}
@@ -109,7 +110,7 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 	}
 }
 
-void RootHandler::InitSecurityProccess_(HTTPServerRequest& request, HTTPServerResponse& response)
+bool RootHandler::InitSecurityProccess_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
 	current_security_.get_dynamic_elements().set_requested_route(dynamic_elements_->get_requested_route());
 	if(current_security_.AuthenticateUser_())
@@ -117,14 +118,16 @@ void RootHandler::InitSecurityProccess_(HTTPServerRequest& request, HTTPServerRe
 		if(!current_security_.VerifyPermissions_(request.getMethod()))
 		{
 			GenericResponse_(response, HTTPResponse::HTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
-			return;
+			return false;
 		}
 	}
 	else
 	{
 		GenericResponse_(response, HTTPResponse::HTTP_UNAUTHORIZED, "Unauthorized user or wrong user or password.");
-		return;
+		return false;
 	}
+
+	return true;
 }
 
 bool RootHandler::IdentifyRoute_()
