@@ -389,35 +389,29 @@ void QueryActions::CreateJSONResult_()
 			{
 				auto var = it.get(a);
 
-				if(var.isEmpty())
-                    tmp_object->set(results.columnName(a), "");
-                else if(var.isNumeric())
-                    if(var.isInteger())
-                        tmp_object->set(results.columnName(a), std::stoi(var.toString()));
-                	else
-                        tmp_object->set(results.columnName(a), std::stof(var.toString()));
-                else if(var.isDate() || var.isDateTime())
+                row_value_formatter_.Format_(var);
+                switch(row_value_formatter_.get_row_value_type())
                 {
-                    DateTime date;
-                    int diff;
-
-                    if(DateTimeParser::tryParse(DateTimeFormat::ISO8601_FORMAT, var.toString(), date, diff))
-                    {
-                        DateTimeParser::parse(DateTimeFormat::ISO8601_FORMAT, var.toString(), date, diff);
-                        auto date_string = DateTimeFormatter::format(date, DateTimeFormat::SORTABLE_FORMAT);
-
-                        tmp_object->set(results.columnName(a), date_string);
-                    }
-                    else
-                        tmp_object->set(results.columnName(a), var.toString());
+                    case Tools::RowValueType::kEmpty:
+                        tmp_object->set(results.columnName(a), "");
+                        break;
+                    case Tools::RowValueType::kString:
+                        tmp_object->set(results.columnName(a), row_value_formatter_.get_value_string());
+                        break;
+                    case Tools::RowValueType::kInteger:
+                        tmp_object->set(results.columnName(a), row_value_formatter_.get_value_int());
+                        break;
+                    case Tools::RowValueType::kFloat:
+                        tmp_object->set(results.columnName(a), row_value_formatter_.get_value_float());
+                        break;
+                    default:
+                        tmp_object->set(results.columnName(a), "");
+                        break;
                 }
-                else
-                    tmp_object->set(results.columnName(a), var.toString());
 			}
 			tmp_array->set(tmp_array->size(), tmp_object);
 		}
 		result_json_->set("results", tmp_array);
-
 }
 
 std::string QueryActions::ComposeInsertSentence_(std::string table)

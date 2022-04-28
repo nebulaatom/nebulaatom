@@ -42,16 +42,12 @@
 #include <Poco/Dynamic/Var.h>
 #include <Poco/Dynamic/Struct.h>
 #include <Poco/Data/RecordSet.h>
-#include "Poco/DateTimeParser.h"
-#include "Poco/DateTime.h"
-#include "Poco/DateTimeFormat.h"
-#include "Poco/DateTimeFormatter.h"
-#include "Poco/Timestamp.h"
 
 #include "tools/manage_json.h"
 #include "tools/filters.h"
 #include "tools/common_responses.h"
 #include "extras/incorporate_filters.h"
+#include "tools/row_value_formatter.h"
 
 
 namespace CPW
@@ -139,6 +135,7 @@ class CPW::Core::QueryActions :
 		JSON::Object::Ptr result_json_;
 		std::map<std::string, TypeQuery> type_actions_map_;
 		Application& app_;
+        Tools::RowValueFormatter row_value_formatter_;
 };
 
 
