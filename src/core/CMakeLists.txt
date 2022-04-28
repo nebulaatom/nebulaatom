@@ -39,6 +39,7 @@ target_link_libraries(
 	fileproperties
 	filemanager
 	file
+	rowvalueformatter
 	Poco::Foundation
 	Poco::Net
 	Poco::Util

@@ -36,3 +36,8 @@ set_target_properties(handlerconnection PROPERTIES POSITION_INDEPENDENT_CODE 1)
 add_library(filemanager OBJECT "file_manager.cc")
 target_include_directories(filemanager PUBLIC ${HEADER})
 set_target_properties(filemanager PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
+### rowvalueformatter
+add_library(rowvalueformatter OBJECT "row_value_formatter.cc")
+target_include_directories(rowvalueformatter PUBLIC ${HEADER})
+set_target_properties(rowvalueformatter PROPERTIES POSITION_INDEPENDENT_CODE 1)
