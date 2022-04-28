@@ -54,7 +54,7 @@ enum class CPW::Tools::RowValueType
 class CPW::Tools::RowValueFormatter
 {
     public:
-        RowValueFormatter();
+        RowValueFormatter(Poco::Dynamic::Var& value);
         ~RowValueFormatter();
 
         RowValueType get_row_value_type() const{return row_value_type_;}
@@ -62,7 +62,7 @@ class CPW::Tools::RowValueFormatter
         int get_value_int() const{return value_int_;}
         float get_value_float() const{return value_float_;}
 
-        void Format_(Poco::Dynamic::Var& value);
+        void Format_();
 
     private:
         RowValueType row_value_type_;

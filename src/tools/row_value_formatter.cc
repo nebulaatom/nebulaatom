@@ -21,13 +21,13 @@
 
 using namespace CPW::Tools;
 
-RowValueFormatter::RowValueFormatter() :
+RowValueFormatter::RowValueFormatter(Poco::Dynamic::Var& value) :
     row_value_type_(RowValueType::kString)
     ,value_string_("")
     ,value_int_(0)
     ,value_float_(0.f)
 {
-
+	value_ = &value;
 }
 
 RowValueFormatter::~RowValueFormatter()
@@ -35,38 +35,36 @@ RowValueFormatter::~RowValueFormatter()
 
 }
 
-void RowValueFormatter::Format_(Poco::Dynamic::Var& value)
+void RowValueFormatter::Format_()
 {
-    value_ = &value;
-
     if(value_ == nullptr)
     {
         row_value_type_ = RowValueType::kEmpty;
         return;
     }
 
-    if(value.isEmpty())
+    if(value_->isEmpty())
         row_value_type_ = RowValueType::kEmpty;
 
-    else if(value.isNumeric())
-        if(value.isInteger())
+    else if(value_->isNumeric())
+        if(value_->isInteger())
         {
-            value_int_ = std::stoi(value.toString());
+            value_int_ = std::stoi(value_->toString());
             row_value_type_ = RowValueType::kInteger;
         }
         else
         {
-            value_float_ = std::stof(value.toString());
+            value_float_ = std::stof(value_->toString());
             row_value_type_ = RowValueType::kFloat;
         }
-    else if(value.isDate() || value.isDateTime())
+    else if(value_->isDate() || value_->isDateTime())
     {
         DateTime date;
         int diff;
 
-        if(DateTimeParser::tryParse(DateTimeFormat::ISO8601_FORMAT, value.toString(), date, diff))
+        if(DateTimeParser::tryParse(DateTimeFormat::ISO8601_FORMAT, value_->toString(), date, diff))
         {
-            DateTimeParser::parse(DateTimeFormat::ISO8601_FORMAT, value.toString(), date, diff);
+            DateTimeParser::parse(DateTimeFormat::ISO8601_FORMAT, value_->toString(), date, diff);
             auto date_string = DateTimeFormatter::format(date, DateTimeFormat::SORTABLE_FORMAT);
 
             value_string_ = date_string;
@@ -74,13 +72,13 @@ void RowValueFormatter::Format_(Poco::Dynamic::Var& value)
         }
         else
         {
-            value_string_ = value.toString();
+            value_string_ = value_->toString();
             row_value_type_ = RowValueType::kString;
         }
     }
     else
     {
-        value_string_ = value.toString();
+        value_string_ = value_->toString();
         row_value_type_ = RowValueType::kString;
     }
 }
