@@ -46,7 +46,11 @@ void IdentifyFilter::Fields_(Dynamic::Var& filter)
 
 void IdentifyFilter::Page_(Dynamic::Var& filter)
 {
+    auto filter_json = manage_json_.ExtractObject_(filter);
+    if(filter_json->get("content").isEmpty())
+        throw std::runtime_error("content in kPage is empty");
 
+    current_filters_->set_page(filter_json->get("content").toString());
 }
 
 void IdentifyFilter::Limit_(Dynamic::Var& filter)
