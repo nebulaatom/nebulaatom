@@ -55,9 +55,9 @@ bool SecurityVerification::AuthenticateUser_()
 		if(!query_actions->ExecuteQuery_())
 			return false;
 
-		auto object_tmp = query_actions->ExtractArray_(result_json->get("results"));
+		auto results = query_actions->ExtractArray_(result_json->get("results"));
 
-		if(object_tmp->size() > 0)
+		if(results->size() > 0)
 			return true;
 		else
 			return false;
@@ -86,17 +86,18 @@ bool SecurityVerification::VerifyPermissions_(std::string method)
 			if(!SeePermissionsPerUser_(it, method, target))
 				return false;
 
-			auto array_tmp = query_actions->ExtractArray_(result_json->get("results"));
-			if(array_tmp->size() < 1)
+			auto results_array = query_actions->ExtractArray_(result_json->get("results"));
+			if(results_array->size() < 1)
 				continue;
 
-			auto object_tmp = query_actions->ExtractObject_(array_tmp->get(0));
-			if(object_tmp->get("granted").isEmpty())
+			auto object_tmp = query_actions->ExtractArray_(results_array->get(0));
+
+			if(object_tmp->get(0).isEmpty())
 				continue;
-			if(!object_tmp->get("granted").isInteger())
+			if(!object_tmp->get(0).isInteger())
 				continue;
 
-			granted = std::stoi(object_tmp->get("granted").toString());
+			granted = std::stoi(object_tmp->get(0).toString());
 
 			return granted == 1 ? true : false;
 		}
