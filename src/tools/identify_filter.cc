@@ -129,7 +129,19 @@ void IdentifyFilter::SmallerThan_(Dynamic::Var& filter)
 
 void IdentifyFilter::Between_(Dynamic::Var& filter)
 {
+    auto filter_json = manage_json_.ExtractObject_(filter);
+    if(filter_json->get("col").isEmpty() || filter_json->get("content1").isEmpty() || filter_json->get("content2").isEmpty())
+        throw std::runtime_error("col, content1 or content2 in kBetween is empty");
 
+    current_filters_->get_between().emplace(std::make_pair
+    (
+        filter_json->get("col").toString()
+        ,std::make_pair
+        (
+            Extras::ValuesProperties{filter_json->get("content1").toString(), true}
+            ,Extras::ValuesProperties{filter_json->get("content2").toString(), true}
+        )
+    ));
 }
 
 void IdentifyFilter::In_(Dynamic::Var& filter)
