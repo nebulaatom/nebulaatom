@@ -378,12 +378,17 @@ void QueryActions::CreateJSONResult_()
 {
 	// Variables
 		Data::RecordSet results(*query_);
-		JSON::Array::Ptr tmp_array = new JSON::Array();
+		JSON::Array::Ptr results_array = new JSON::Array();
+		JSON::Array::Ptr columns_array = new JSON::Array();
 
-	// Make JSON string
+    // Save columns names
+		for (std::size_t col = 0; col < results.columnCount(); ++col)
+            columns_array->set(columns_array->size(), results.columnName(col));
+
+	// Make JSON data
 		for(auto& it : results)
 		{
-			JSON::Object::Ptr tmp_object = new JSON::Object();
+			JSON::Array::Ptr row_fields = new JSON::Array();
 
 			for(size_t a = 0; a < it.fieldCount(); a++)
 			{
@@ -394,25 +399,28 @@ void QueryActions::CreateJSONResult_()
                 switch(row_value_formatter_->get_row_value_type())
                 {
                     case Tools::RowValueType::kEmpty:
-                        tmp_object->set(results.columnName(a), "");
+                        row_fields->set(row_fields->size(), "");
                         break;
                     case Tools::RowValueType::kString:
-                        tmp_object->set(results.columnName(a), row_value_formatter_->get_value_string());
+                        row_fields->set(row_fields->size(), row_value_formatter_->get_value_string());
                         break;
                     case Tools::RowValueType::kInteger:
-                        tmp_object->set(results.columnName(a), row_value_formatter_->get_value_int());
+                        row_fields->set(row_fields->size(), row_value_formatter_->get_value_int());
                         break;
                     case Tools::RowValueType::kFloat:
-                        tmp_object->set(results.columnName(a), row_value_formatter_->get_value_float());
+                        row_fields->set(row_fields->size(), row_value_formatter_->get_value_float());
                         break;
                     default:
-                        tmp_object->set(results.columnName(a), "");
+                        row_fields->set(row_fields->size(), "");
                         break;
                 }
 			}
-			tmp_array->set(tmp_array->size(), tmp_object);
+
+			results_array->set(results_array->size(), row_fields);
 		}
-		result_json_->set("results", tmp_array);
+
+		result_json_->set("columns", columns_array);
+		result_json_->set("results", results_array);
 }
 
 std::string QueryActions::ComposeInsertSentence_(std::string table)
