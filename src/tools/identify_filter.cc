@@ -103,7 +103,15 @@ void IdentifyFilter::NotIqual_(Dynamic::Var& filter)
 
 void IdentifyFilter::GreatherThan_(Dynamic::Var& filter)
 {
+    auto filter_json = manage_json_.ExtractObject_(filter);
+    if(filter_json->get("content").isEmpty() || filter_json->get("col").isEmpty())
+        throw std::runtime_error("content or col in kGreatherThan is empty");
 
+    current_filters_->get_greather_than().emplace(std::make_pair
+    (
+        filter_json->get("col").toString()
+        ,Extras::ValuesProperties{filter_json->get("content").toString(), true}
+    ));
 }
 
 void IdentifyFilter::SmallerThan_(Dynamic::Var& filter)
