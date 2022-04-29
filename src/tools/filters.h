@@ -30,12 +30,32 @@ namespace CPW
 {
 	namespace Tools
 	{
+        enum class FilterType;
 		class Filters;
 	}
 }
 
 
 using namespace CPW::Extras;
+
+
+enum class CPW::Tools::FilterType
+{
+	kFields
+	,kPage
+	,kLimit
+	,kSort
+	,kIqual
+	,kNotIqual
+	,kGreatherThan
+	,kSmallerThan
+	,kBetween
+	,kIn
+	,kNotIn
+	,kValues
+	,kSet
+	,kJoins
+};
 
 
 class CPW::Tools::Filters
