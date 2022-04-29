@@ -175,7 +175,25 @@ void IdentifyFilter::NotIn_(Dynamic::Var& filter)
     current_filters_->get_not_in().emplace(std::make_pair(filter_json->get("col"), tmp_not_in));
 }
 
+void IdentifyFilter::Values_(Dynamic::Var& filter)
+{
+    auto filter_json = manage_json_.ExtractObject_(filter);
+    if(filter_json->get("contents").isEmpty())
+        throw std::runtime_error("contents in kValues is empty");
 
+    auto contents_array = filter_json->getArray("contents");
+    for(std::size_t a = 0; a < contents_array->size(); a++)
+    {
+        std::vector<Extras::ValuesProperties> tmp_values;
+
+        auto value_array = contents_array->getArray(a);
+        for(std::size_t b = 0; b < value_array->size(); b++)
+        {
+            tmp_values.push_back({value_array->get(b).toString(), true});
+        }
+
+        current_filters_->get_values().push_back(tmp_values);
+    }
 }
 
 void IdentifyFilter::Set_(Dynamic::Var& filter)
