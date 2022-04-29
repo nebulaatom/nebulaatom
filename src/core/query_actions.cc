@@ -377,33 +377,50 @@ bool QueryActions::ExecuteQuery_()
 void QueryActions::CreateJSONResult_()
 {
 	// Variables
-		Poco::Dynamic::Var var;
 		Data::RecordSet results(*query_);
-		JSON::Array::Ptr tmp_array = new JSON::Array();
+		JSON::Array::Ptr results_array = new JSON::Array();
+		JSON::Array::Ptr columns_array = new JSON::Array();
 
-	// Make JSON string
-		int array_index = 0;
-		for (Data::RecordSet::Iterator it = results.begin(); it != results.end(); ++it)
+    // Save columns names
+		for (std::size_t col = 0; col < results.columnCount(); ++col)
+            columns_array->set(columns_array->size(), results.columnName(col));
+
+	// Make JSON data
+		for(auto& it : results)
 		{
-			JSON::Object::Ptr tmp_object = new JSON::Object();
+			JSON::Array::Ptr row_fields = new JSON::Array();
 
-			for(size_t a = 0; a < it->fieldCount(); a++)
+			for(size_t a = 0; a < it.fieldCount(); a++)
 			{
-				it->formatValues();
-				var = it->get(a);
-				if(!var.isEmpty())
-				{
-					if(var.isInteger())
-						tmp_object->set(results.columnName(a), std::stoi(var.toString()));
-					else
-						tmp_object->set(results.columnName(a), var.toString());
-				}
-			}
-			tmp_array->set(array_index, tmp_object);
-			array_index++;
-		}
-		result_json_->set("results", tmp_array);
+				auto var = it.get(a);
 
+                row_value_formatter_.reset(new Tools::RowValueFormatter(var));
+                row_value_formatter_->Format_();
+                switch(row_value_formatter_->get_row_value_type())
+                {
+                    case Tools::RowValueType::kEmpty:
+                        row_fields->set(row_fields->size(), "");
+                        break;
+                    case Tools::RowValueType::kString:
+                        row_fields->set(row_fields->size(), row_value_formatter_->get_value_string());
+                        break;
+                    case Tools::RowValueType::kInteger:
+                        row_fields->set(row_fields->size(), row_value_formatter_->get_value_int());
+                        break;
+                    case Tools::RowValueType::kFloat:
+                        row_fields->set(row_fields->size(), row_value_formatter_->get_value_float());
+                        break;
+                    default:
+                        row_fields->set(row_fields->size(), "");
+                        break;
+                }
+			}
+
+			results_array->set(results_array->size(), row_fields);
+		}
+
+		result_json_->set("columns", columns_array);
+		result_json_->set("results", results_array);
 }
 
 std::string QueryActions::ComposeInsertSentence_(std::string table)

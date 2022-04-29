@@ -47,6 +47,7 @@
 #include "tools/filters.h"
 #include "tools/common_responses.h"
 #include "extras/incorporate_filters.h"
+#include "tools/row_value_formatter.h"
 
 
 namespace CPW
@@ -134,6 +135,7 @@ class CPW::Core::QueryActions :
 		JSON::Object::Ptr result_json_;
 		std::map<std::string, TypeQuery> type_actions_map_;
 		Application& app_;
+        std::shared_ptr<Tools::RowValueFormatter> row_value_formatter_;
 };
 
 

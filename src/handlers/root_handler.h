@@ -91,7 +91,7 @@ class CPW::Handlers::RootHandler :
 
 	protected:
 		virtual void AddRoutes_() = 0;
-		void InitSecurityProccess_(HTTPServerRequest& request, HTTPServerResponse& response);
+		bool InitSecurityProccess_(HTTPServerRequest& request, HTTPServerResponse& response);
 		bool IdentifyRoute_();
 		bool ManageRequestBody_(HTTPServerRequest& request);
 
