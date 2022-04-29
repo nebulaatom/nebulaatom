@@ -35,19 +35,19 @@ bool SecurityVerification::AuthenticateUser_()
 	// Variables
 		auto query_actions = dynamic_elements_.get_query_actions();
 		auto result_json = query_actions->get_result_json();
-		auto& json_auth = query_actions->get_dynamic_json_body()["pair-information"][0]["auth"];
+		auto json_auth = query_actions->get_json_body()->getArray("pair-information")->getObject(0)->getObject("auth");
 		auto& iquals = query_actions->get_current_filters_()->get_iquals_conditions();
 
 	// Verify the key-values
-		if(json_auth["user"].isEmpty() || json_auth["password"].isEmpty())
+		if(json_auth->get("user").isEmpty() || json_auth->get("password").isEmpty())
 		{
 			iquals.emplace(std::make_pair("username", "null"));
 			iquals.emplace(std::make_pair("password", "null"));
 		}
 		else
 		{
-			iquals.emplace(std::make_pair("username", json_auth["user"].toString()));
-			iquals.emplace(std::make_pair("password", json_auth["password"].toString()));
+			iquals.emplace(std::make_pair("username", json_auth->get("user").toString()));
+			iquals.emplace(std::make_pair("password", json_auth->get("password").toString()));
 		}
 
 	// Execute the query
@@ -55,7 +55,7 @@ bool SecurityVerification::AuthenticateUser_()
 		if(!query_actions->ExecuteQuery_())
 			return false;
 
-		auto results = query_actions->ExtractArray_(result_json->get("results"));
+		auto results = result_json->getArray("results");
 
 		if(results->size() > 0)
 			return true;
@@ -86,18 +86,17 @@ bool SecurityVerification::VerifyPermissions_(std::string method)
 			if(!SeePermissionsPerUser_(it, method, target))
 				return false;
 
-			auto results_array = query_actions->ExtractArray_(result_json->get("results"));
-			if(results_array->size() < 1)
+            if(result_json->get("results").isEmpty())
+                continue;
+
+			auto results_array = result_json->getArray("results");
+
+			if(results_array->getArray(0)->get(0).isEmpty())
+				continue;
+			if(!results_array->getArray(0)->get(0).isInteger())
 				continue;
 
-			auto object_tmp = query_actions->ExtractArray_(results_array->get(0));
-
-			if(object_tmp->get(0).isEmpty())
-				continue;
-			if(!object_tmp->get(0).isInteger())
-				continue;
-
-			granted = std::stoi(object_tmp->get(0).toString());
+			granted = std::stoi(results_array->getArray(0)->get(0).toString());
 
 			return granted == 1 ? true : false;
 		}
