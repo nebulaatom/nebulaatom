@@ -88,6 +88,11 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 		app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
 		GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Error with the database. " + error.displayText());
 	}
+	catch(RuntimeException& error)
+	{
+		app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
+		GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Error with the database. " + error.displayText());
+	}
 	catch(JSON::JSONException& error)
 	{
 		app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
@@ -167,7 +172,7 @@ bool RootHandler::ManageRequestBody_(HTTPServerRequest& request)
 	if(!dynamic_elements_->get_query_actions()->Parse_(request_body))
 		return false;
 
-	current_security_.get_dynamic_elements().get_query_actions()->get_dynamic_json_body() = query_actions->get_dynamic_json_body();
+	current_security_.get_dynamic_elements().get_query_actions()->get_json_body() = query_actions->get_json_body();
 
 	return true;
 }

@@ -29,6 +29,7 @@
 #include <functional>
 #include <stdexcept>
 
+#include "Poco/Exception.h"
 #include "Poco/Util/ServerApplication.h"
 #include <Poco/Net/HTTPRequestHandler.h>
 #include <Poco/Net/HTTPServerRequest.h>
