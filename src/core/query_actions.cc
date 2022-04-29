@@ -23,6 +23,7 @@ using namespace CPW::Core;
 QueryActions::QueryActions() :
 	current_filters_(new Tools::Filters)
 	,app_(Application::instance())
+    ,identify_filter_(current_filters_)
 {
 	incorporate_ = std::make_unique<Extras::IncorporateFilters>(current_filters_);
 	result_json_ = new JSON::Object;
@@ -50,211 +51,98 @@ void QueryActions::IdentifyFilters_()
 {
 	try
 	{
-		TypeQuery type;
-		Dynamic::Var& data_array = get_dynamic_json_body()["pair-information"][1]["data"];
+		Tools::FilterType type;
+		auto data_array = get_json_body()->getArray("pair-information")->getObject(1)->getArray("data");
 
-		for (std::size_t a = 0; a < data_array.size(); a++)
+		for (std::size_t a = 0; a < data_array->size(); a++)
 		{
 			// Get the temporal objects
-				if(data_array[a].isEmpty())
+				if(data_array->get(a).isEmpty())
 					throw std::runtime_error("Data array haves a empty object.");
 
-				Dynamic::Var& it = data_array[a];
-				if(it["type"].isEmpty())
+				auto filter = data_array->getObject(a);
+				if(filter->get("type").isEmpty())
 					throw std::runtime_error("An array object don't haves a type.");
 
 			// Search if exists
-				if(ExistsType_(it["type"].toString()))
-					type = type_actions_map_.find(it["type"].toString())->second;
+				if(ExistsType_(filter->get("type").toString()))
+					type = type_actions_map_.find(filter->get("type").toString())->second;
 				else
 					continue;
+
+                auto filter_var = data_array->get(a);
 
 			// Manage the type
 				switch(type)
 				{
-					case TypeQuery::kFields:
+					case Tools::FilterType::kFields:
 					{
-						if(it["contents"].isEmpty())
-							throw std::runtime_error("contents in kFields is empty on data array index " + std::to_string(a));
-
-						for(std::size_t b = 0; b < it["contents"].size(); b++)
-						{
-							current_filters_->get_fields().push_back({it["contents"][b], false});
-						}
+                        identify_filter_.Fields_(filter_var);
 						break;
 					}
-					case TypeQuery::kPage:
+					case Tools::FilterType::kPage:
 					{
-						if(it["content"].isEmpty())
-							throw std::runtime_error("content in kPage is empty on data array index " + std::to_string(a));
-
-						current_filters_->set_page(it["content"].toString());
+                        identify_filter_.Page_(filter_var);
 						break;
 					}
-					case TypeQuery::kLimit:
+					case Tools::FilterType::kLimit:
 					{
-						if(it["content"].isEmpty())
-							throw std::runtime_error("content in kLimit is empty on data array index " + std::to_string(a));
-
-						current_filters_->set_limit(it["content"].toString());
+                        identify_filter_.Limit_(filter_var);
 						break;
 					}
-					case TypeQuery::kSort:
+					case Tools::FilterType::kSort:
 					{
-						if(it["contents"].isEmpty())
-							throw std::runtime_error("contents in kSort is empty on data array index " + std::to_string(a));
-
-						for(std::size_t b = 0; b < it["contents"].size(); b++)
-						{
-							current_filters_->get_sorts_conditions().push_back({it["contents"][b], false});
-						}
+                        identify_filter_.Sort_(filter_var);
 						break;
 					}
-					case TypeQuery::kIqual:
+					case Tools::FilterType::kIqual:
 					{
-						if(it["content"].isEmpty() || it["col"].isEmpty())
-							throw std::runtime_error("content or col in kIqual is empty on data array index " + std::to_string(a));
-
-						current_filters_->get_iquals_conditions().emplace(std::make_pair
-						(
-							it["col"].toString()
-							,Extras::ValuesProperties{it["content"].toString(), true}
-						));
+                        identify_filter_.Iqual_(filter_var);
 						break;
 					}
-					case TypeQuery::kNotIqual:
+					case Tools::FilterType::kNotIqual:
 					{
-						if(it["content"].isEmpty() || it["col"].isEmpty())
-							throw std::runtime_error("content or col in kNotIqual is empty on data array index " + std::to_string(a));
-
-						current_filters_->get_not_iquals_conditions().emplace(std::make_pair
-						(
-							it["col"].toString()
-							,Extras::ValuesProperties{it["content"].toString(), true}
-						));
+                        identify_filter_.NotIqual_(filter_var);
 						break;
 					}
-					case TypeQuery::kGreatherThan:
+					case Tools::FilterType::kGreatherThan:
 					{
-						if(it["content"].isEmpty() || it["col"].isEmpty())
-							throw std::runtime_error("content or col in kGreatherThan is empty on data array index " + std::to_string(a));
-
-						current_filters_->get_greather_than().emplace(std::make_pair
-						(
-							it["col"].toString()
-							,Extras::ValuesProperties{it["content"].toString(), true}
-						));
+                        identify_filter_.GreatherThan_(filter_var);
 						break;
 					}
-					case TypeQuery::kSmallerThan:
+					case Tools::FilterType::kSmallerThan:
 					{
-						if(it["content"].isEmpty() || it["col"].isEmpty())
-							throw std::runtime_error("content or col in kSmallerThan is empty on data array index " + std::to_string(a));
-
-						current_filters_->get_smaller_than().emplace(std::make_pair
-						(
-							it["col"].toString()
-							,Extras::ValuesProperties{it["content"].toString(), true}
-						));
+                        identify_filter_.SmallerThan_(filter_var);
 						break;
 					}
-					case TypeQuery::kBetween:
+					case Tools::FilterType::kBetween:
 					{
-						if(it["col"].isEmpty() || it["content1"].isEmpty() || it["content2"].isEmpty())
-							throw std::runtime_error("col, content1 or content2 in kBetween is empty on data array index " + std::to_string(a));
-
-						current_filters_->get_between().emplace(std::make_pair
-						(
-							it["col"].toString()
-							,std::make_pair
-							(
-								Extras::ValuesProperties{it["content1"].toString(), true}
-								,Extras::ValuesProperties{it["content2"].toString(), true}
-							)
-						));
+                        identify_filter_.Between_(filter_var);
 						break;
 					}
-					case TypeQuery::kIn:
+					case Tools::FilterType::kIn:
 					{
-						if(it["col"].isEmpty() || it["contents"].isEmpty())
-							throw std::runtime_error("col or contents in kIn is empty on data array index " + std::to_string(a));
-
-						std::vector<Extras::ValuesProperties> tmp_in;
-						for(std::size_t b = 0; b < it["contents"].size(); b++)
-						{
-							tmp_in.push_back({it["contents"][b], true});
-						}
-						current_filters_->get_in().emplace(std::make_pair
-						(
-							it["col"]
-							,tmp_in
-						));
+                        identify_filter_.In_(filter_var);
 						break;
 					}
-					case TypeQuery::kNotIn:
+					case Tools::FilterType::kNotIn:
 					{
-						if(it["col"].isEmpty() || it["contents"].isEmpty())
-							throw std::runtime_error("col or contents in kNotIn is empty on data array index " + std::to_string(a));
-
-						std::vector<Extras::ValuesProperties> tmp_not_in;
-						for(std::size_t b = 0; b < it["contents"].size(); b++)
-						{
-							tmp_not_in.push_back({it["contents"][b], true});
-						}
-						current_filters_->get_not_in().emplace(std::make_pair(it["col"], tmp_not_in));
+                        identify_filter_.NotIn_(filter_var);
 						break;
 					}
-					case TypeQuery::kValues:
+					case Tools::FilterType::kValues:
 					{
-						if(it["contents"].isEmpty())
-							throw std::runtime_error("contents in kValues is empty on data array index " + std::to_string(a));
-
-						for(std::size_t b = 0; b < it["contents"].size(); b++)
-						{
-							current_filters_->get_values().push_back(std::vector<Extras::ValuesProperties> {});
-
-							for(auto it_v: it["contents"][b])
-							{
-								current_filters_->get_values()[b].push_back({it_v.toString(), true});
-							}
-						}
+                        identify_filter_.Values_(filter_var);
 						break;
 					}
-					case TypeQuery::kSet:
+					case Tools::FilterType::kSet:
 					{
-						if(it["content"].isEmpty() || it["col"].isEmpty())
-							throw std::runtime_error("content or col in kSet is empty on data array index " + std::to_string(a));
-
-						current_filters_->get_set().emplace(std::make_pair
-						(
-							it["col"].toString()
-							,Extras::ValuesProperties{it["content"].toString(), true}
-						));
+                        identify_filter_.Set_(filter_var);
 						break;
 					}
-					case TypeQuery::kJoins:
+					case Tools::FilterType::kJoins:
 					{
-						if(it["join-type"].isEmpty() || it["table"].isEmpty() || it["on"].isEmpty())
-							throw std::runtime_error("join-type, table or on in kJoins is empty on data array index " + std::to_string(a));
-
-						std::map<std::string, Extras::ValuesProperties> tmp_joins;
-
-						for(std::size_t b = 0; b < it["on"].size(); b++)
-						{
-							tmp_joins.emplace(std::make_pair
-							(
-								it["on"][b]["col"].toString()
-								,Extras::ValuesProperties{it["on"][b]["value"].toString(), false}
-							));
-						}
-						current_filters_->get_joins().emplace
-						(
-							std::make_pair
-							(
-								std::array<std::string, 2>{it["join-type"].toString(), it["table"].toString()}
-								,tmp_joins
-							)
-						);
+                        identify_filter_.Joins_(filter_var);
 						break;
 					}
 				}
@@ -545,20 +433,20 @@ std::string QueryActions::MakeFinalQuery_(std::vector<std::string>& tmp_query)
 
 void QueryActions::FillTypeActionsText_()
 {
-	type_actions_map_.emplace(std::make_pair("fields", TypeQuery::kFields));
-	type_actions_map_.emplace(std::make_pair("page", TypeQuery::kPage));
-	type_actions_map_.emplace(std::make_pair("limit", TypeQuery::kLimit));
-	type_actions_map_.emplace(std::make_pair("sort", TypeQuery::kSort));
-	type_actions_map_.emplace(std::make_pair("iqual", TypeQuery::kIqual));
-	type_actions_map_.emplace(std::make_pair("notiqual", TypeQuery::kNotIqual));
-	type_actions_map_.emplace(std::make_pair("greatherthan", TypeQuery::kGreatherThan));
-	type_actions_map_.emplace(std::make_pair("smallerthan", TypeQuery::kSmallerThan));
-	type_actions_map_.emplace(std::make_pair("between", TypeQuery::kBetween));
-	type_actions_map_.emplace(std::make_pair("in", TypeQuery::kIn));
-	type_actions_map_.emplace(std::make_pair("notin", TypeQuery::kNotIn));
-	type_actions_map_.emplace(std::make_pair("values", TypeQuery::kValues));
-	type_actions_map_.emplace(std::make_pair("set", TypeQuery::kSet));
-	type_actions_map_.emplace(std::make_pair("joins", TypeQuery::kJoins));
+    type_actions_map_.emplace(std::make_pair("fields", Tools::FilterType::kFields));
+    type_actions_map_.emplace(std::make_pair("page", Tools::FilterType::kPage));
+    type_actions_map_.emplace(std::make_pair("limit", Tools::FilterType::kLimit));
+    type_actions_map_.emplace(std::make_pair("sort", Tools::FilterType::kSort));
+    type_actions_map_.emplace(std::make_pair("iqual", Tools::FilterType::kIqual));
+    type_actions_map_.emplace(std::make_pair("notiqual", Tools::FilterType::kNotIqual));
+    type_actions_map_.emplace(std::make_pair("greatherthan", Tools::FilterType::kGreatherThan));
+    type_actions_map_.emplace(std::make_pair("smallerthan", Tools::FilterType::kSmallerThan));
+    type_actions_map_.emplace(std::make_pair("between", Tools::FilterType::kBetween));
+    type_actions_map_.emplace(std::make_pair("in", Tools::FilterType::kIn));
+    type_actions_map_.emplace(std::make_pair("notin", Tools::FilterType::kNotIn));
+    type_actions_map_.emplace(std::make_pair("values", Tools::FilterType::kValues));
+    type_actions_map_.emplace(std::make_pair("set", Tools::FilterType::kSet));
+    type_actions_map_.emplace(std::make_pair("joins", Tools::FilterType::kJoins));
 }
 
 bool QueryActions::ExistsType_(std::string type)

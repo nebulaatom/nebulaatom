@@ -45,6 +45,7 @@
 
 #include "tools/manage_json.h"
 #include "tools/filters.h"
+#include "tools/identify_filter.h"
 #include "tools/common_responses.h"
 #include "extras/incorporate_filters.h"
 #include "tools/row_value_formatter.h"
@@ -55,7 +56,6 @@ namespace CPW
 	namespace Core
 	{
 		enum class TypeAction;
-		enum class TypeQuery;
 		class QueryActions;
 	}
 }
@@ -73,24 +73,6 @@ enum class CPW::Core::TypeAction
 	,kSelect
 	,kUpdate
 	,kDelete
-};
-
-enum class CPW::Core::TypeQuery
-{
-	kFields
-	,kPage
-	,kLimit
-	,kSort
-	,kIqual
-	,kNotIqual
-	,kGreatherThan
-	,kSmallerThan
-	,kBetween
-	,kIn
-	,kNotIn
-	,kValues
-	,kSet
-	,kJoins
 };
 
 
@@ -133,9 +115,10 @@ class CPW::Core::QueryActions :
 		std::shared_ptr<Data::Session> session_;
 		std::shared_ptr<Data::Statement> query_;
 		JSON::Object::Ptr result_json_;
-		std::map<std::string, TypeQuery> type_actions_map_;
+		std::map<std::string, Tools::FilterType> type_actions_map_;
 		Application& app_;
         std::shared_ptr<Tools::RowValueFormatter> row_value_formatter_;
+        Tools::IdentifyFilter identify_filter_;
 };
 
 
