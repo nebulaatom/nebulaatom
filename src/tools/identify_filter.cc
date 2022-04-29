@@ -90,7 +90,15 @@ void IdentifyFilter::Iqual_(Dynamic::Var& filter)
 
 void IdentifyFilter::NotIqual_(Dynamic::Var& filter)
 {
+    auto filter_json = manage_json_.ExtractObject_(filter);
+    if(filter_json->get("content").isEmpty() || filter_json->get("col").isEmpty())
+        throw std::runtime_error("content or col in kNotIqual is empty");
 
+    current_filters_->get_not_iquals_conditions().emplace(std::make_pair
+    (
+        filter_json->get("col").toString()
+        ,Extras::ValuesProperties{filter_json->get("content").toString(), true}
+    ));
 }
 
 void IdentifyFilter::GreatherThan_(Dynamic::Var& filter)
