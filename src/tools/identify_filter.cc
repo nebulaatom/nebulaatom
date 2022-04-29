@@ -211,5 +211,30 @@ void IdentifyFilter::Set_(Dynamic::Var& filter)
 
 void IdentifyFilter::Joins_(Dynamic::Var& filter)
 {
+    auto filter_json = manage_json_.ExtractObject_(filter);
+    if(filter_json->get("join-type").isEmpty() || filter_json->get("table").isEmpty() || filter_json->get("on").isEmpty())
+        throw std::runtime_error("join-type, table or on in kJoins is empty");
 
+    std::map<std::string, Extras::ValuesProperties> tmp_joins;
+
+    auto on_array = manage_json_.ExtractArray_(filter_json->get("on"));
+    for(std::size_t a = 0; a < on_array->size(); a++)
+    {
+        auto on_element = on_array->getObject(a);
+
+        tmp_joins.emplace(std::make_pair
+        (
+            on_element->get("col").toString()
+            ,Extras::ValuesProperties{on_element->get("value").toString(), false}
+        ));
+    }
+
+    current_filters_->get_joins().emplace
+    (
+        std::make_pair
+        (
+            std::array<std::string, 2>{filter_json->get("join-type").toString(), filter_json->get("table").toString()}
+            ,tmp_joins
+        )
+    );
 }
