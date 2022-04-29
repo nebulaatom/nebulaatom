@@ -50,22 +50,18 @@ class CPW::Tools::ManageJSON
 		ManageJSON();
 		~ManageJSON();
 
-		Dynamic::Struct<std::string>& get_dynamic_json_body()
-		{
-			Dynamic::Struct<std::string>& d = dynamic_json_body_;
-			return d;
-		}
+		JSON::Object::Ptr& get_json_body(){return json_body_;}
 
 		std::string ReadBody_(std::istream& stream);
 		bool Parse_(std::string string_to_parse);
-		JSON::Object::Ptr ExtractObject_(Dynamic::Var object);
+		JSON::Object::Ptr ExtractObject_(Dynamic::Var& object);
 		JSON::Array::Ptr ExtractArray_(Dynamic::Var object);
 
 	protected:
 		bool VerifyJSON_();
 
 	private:
-		Dynamic::Struct<std::string> dynamic_json_body_;
+		JSON::Object::Ptr json_body_;
 };
 
 #endif // CPW_TOOLS_MANAGEJSON_H

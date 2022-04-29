@@ -53,20 +53,17 @@ bool ManageJSON::Parse_(std::string string_to_parse)
 	if(var_tmp.isArray())
 		return false;
 
-	dynamic_json_body_ = *var_tmp.extract<JSON::Object::Ptr>();
+	json_body_ = var_tmp.extract<JSON::Object::Ptr>();
 
 	return VerifyJSON_();
 }
 
-JSON::Object::Ptr ManageJSON::ExtractObject_(Dynamic::Var object)
+JSON::Object::Ptr ManageJSON::ExtractObject_(Dynamic::Var& object)
 {
-	JSON::Object::Ptr final = new JSON::Object();
-
 	if(object.isEmpty() || object.isArray())
-		return final;
+		return JSON::Object::Ptr();
 
-	final = object.extract<JSON::Object::Ptr>();
-	return final;
+	return object.extract<JSON::Object::Ptr>();
 }
 
 JSON::Array::Ptr ManageJSON::ExtractArray_(Dynamic::Var object)
@@ -82,14 +79,16 @@ JSON::Array::Ptr ManageJSON::ExtractArray_(Dynamic::Var object)
 
 bool ManageJSON::VerifyJSON_()
 {
-	if
-	(
-		dynamic_json_body_["pair-information"].isEmpty()
-		|| dynamic_json_body_["pair-information"][0]["auth"].isEmpty()
-		|| dynamic_json_body_["pair-information"][1]["data"].isEmpty()
-		|| dynamic_json_body_["pair-information"][1]["data"].size() < 1
-	)
-		return false;
-	else{
-		return true;}
+    if(json_body_->get("pair-information").isEmpty())
+        return false;
+
+    auto pair_info = json_body_->getArray("pair-information");
+
+    if(pair_info->getObject(0)->get("auth").isEmpty())
+        return false;
+
+    if(pair_info->getObject(1)->get("data").isEmpty())
+        return false;
+
+    return true;
 }
