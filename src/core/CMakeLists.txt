@@ -40,6 +40,7 @@ target_link_libraries(
 	filemanager
 	file
 	rowvalueformatter
+	identifyfilter
 	Poco::Foundation
 	Poco::Net
 	Poco::Util
