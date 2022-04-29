@@ -55,7 +55,11 @@ void IdentifyFilter::Page_(Dynamic::Var& filter)
 
 void IdentifyFilter::Limit_(Dynamic::Var& filter)
 {
+    auto filter_json = manage_json_.ExtractObject_(filter);
+    if(filter_json->get("content").isEmpty())
+        throw std::runtime_error("content in kLimit is empty");
 
+    current_filters_->set_limit(filter_json->get("content").toString());
 }
 
 void IdentifyFilter::Sort_(Dynamic::Var& filter)
