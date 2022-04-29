@@ -60,7 +60,7 @@ bool ManageJSON::Parse_(std::string string_to_parse)
 
 JSON::Object::Ptr ManageJSON::ExtractObject_(Dynamic::Var object)
 {
-	auto final = JSON::Object::Ptr();
+	JSON::Object::Ptr final = new JSON::Object();
 
 	if(object.isEmpty() || object.isArray())
 		return final;
