@@ -20,7 +20,73 @@
 
 using namespace CPW::Tools;
 
-IdentifyFilter::IdentifyFilter()
+IdentifyFilter::IdentifyFilter(std::shared_ptr<Tools::Filters> current_filters) :
+    current_filters_(current_filters)
+{
+
+}
+
+void IdentifyFilter::Fields_(Dynamic::Var& filter)
+{
+
+}
+
+void IdentifyFilter::Page_(Dynamic::Var& filter)
+{
+
+}
+
+void IdentifyFilter::Limit_(Dynamic::Var& filter)
+{
+
+}
+
+void IdentifyFilter::Sort_(Dynamic::Var& filter)
+{
+
+}
+
+void IdentifyFilter::Iqual_(Dynamic::Var& filter)
+{
+
+}
+
+void IdentifyFilter::NotIqual_(Dynamic::Var& filter)
+{
+
+}
+
+void IdentifyFilter::GreatherThan_(Dynamic::Var& filter)
+{
+
+}
+
+void IdentifyFilter::SmallerThan_(Dynamic::Var& filter)
+{
+
+}
+
+void IdentifyFilter::Between_(Dynamic::Var& filter)
+{
+
+}
+
+void IdentifyFilter::In_(Dynamic::Var& filter)
+{
+
+}
+
+void IdentifyFilter::NotIn_(Dynamic::Var& filter)
+{
+
+}
+
+void IdentifyFilter::Set_(Dynamic::Var& filter)
+{
+
+}
+
+void IdentifyFilter::Joins_(Dynamic::Var& filter)
 {
 
 }
