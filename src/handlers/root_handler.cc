@@ -137,7 +137,7 @@ bool RootHandler::InitSecurityProccess_(HTTPServerRequest& request, HTTPServerRe
 
 bool RootHandler::IdentifyRoute_()
 {
-	for(auto& it : *dynamic_elements_->get_routes_list())
+	for(auto& it : dynamic_elements_->get_routes_list())
 	{
 		if(dynamic_elements_->get_requested_route()->SegmentsToString_() == it.SegmentsToString_())
 		{

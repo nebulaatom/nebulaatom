@@ -33,8 +33,8 @@ FrontendHandler::~FrontendHandler()
 
 void FrontendHandler::AddRoutes_()
 {
-	get_dynamic_elements()->get_routes_list()->push_back({"",{""}});
-	get_dynamic_elements()->get_routes_list()->push_back({"uploaded-files",{"uploaded-files"}});
+	get_dynamic_elements()->get_routes_list().push_back({"",{""}});
+	get_dynamic_elements()->get_routes_list().push_back({"uploaded-files",{"uploaded-files"}});
 }
 
 void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
