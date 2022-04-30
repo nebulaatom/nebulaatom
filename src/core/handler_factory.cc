@@ -29,8 +29,7 @@ HandlerFactory::HandlerFactory() :
 
 HandlerFactory::~HandlerFactory()
 {
-	for(auto it = connections_.begin(); it != connections_.end(); ++it)
-		delete it->second;
+
 }
 
 HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest& request)
@@ -85,8 +84,8 @@ void HandlerFactory::CreateConnections_()
 {
 	connections_.insert(std::make_pair
 	(
-		HandlerType::kNull,
-		new Tools::HandlerConnection
+		HandlerType::kNull
+		,new Tools::HandlerConnection
 		{
 			CPW::Tools::Route("null", std::vector<std::string>{""})
 			,[&](){return new CPW::Handlers::NullHandler(api_version_);}
@@ -94,8 +93,8 @@ void HandlerFactory::CreateConnections_()
 	));
 	connections_.insert(std::make_pair
 	(
-		HandlerType::kBackend,
-		new Tools::HandlerConnection
+		HandlerType::kBackend
+        ,new Tools::HandlerConnection
 		{
 			CPW::Tools::Route("", std::vector<std::string>{"api", api_version_})
 			,[&](){return new CPW::Handlers::BackendHandler(api_version_);}
@@ -103,8 +102,8 @@ void HandlerFactory::CreateConnections_()
 	));
 	connections_.insert(std::make_pair
 	(
-		HandlerType::kFrontend,
-		new Tools::HandlerConnection
+		HandlerType::kFrontend
+		,new Tools::HandlerConnection
 		{
 			CPW::Tools::Route("", std::vector<std::string>{""})
 			,[&](){return new CPW::Handlers::FrontendHandler(api_version_);}

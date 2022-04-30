@@ -23,6 +23,7 @@
 #include <map>
 #include <exception>
 #include <vector>
+#include <memory>
 
 #include "Poco/Util/Application.h"
 #include "Poco/Format.h"
@@ -84,7 +85,7 @@ class CPW::Core::HandlerFactory :
 
 	private:
 		std::string api_version_;
-		std::map<HandlerType, Tools::HandlerConnection*> connections_;
+		std::map<HandlerType, std::unique_ptr<Tools::HandlerConnection>> connections_;
 		Application& app_;
 };
 
