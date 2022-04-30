@@ -23,7 +23,7 @@ using namespace CPW::Tools;
 IdentifyFilter::IdentifyFilter(std::shared_ptr<Tools::Filters> current_filters) :
     current_filters_(current_filters)
 {
-
+    MapFilterTypeFunctors_();
 }
 
 IdentifyFilter::~IdentifyFilter()
@@ -237,4 +237,22 @@ void IdentifyFilter::Joins_(Dynamic::Var& filter)
             ,tmp_joins
         )
     );
+}
+
+void IdentifyFilter::MapFilterTypeFunctors_()
+{
+    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kFields, [&](Dynamic::Var& filter){Fields_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kPage, [&](Dynamic::Var& filter){Page_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kLimit, [&](Dynamic::Var& filter){Limit_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kSort, [&](Dynamic::Var& filter){Sort_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kIqual, [&](Dynamic::Var& filter){Iqual_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kNotIqual, [&](Dynamic::Var& filter){NotIqual_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kGreatherThan, [&](Dynamic::Var& filter){GreatherThan_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kSmallerThan, [&](Dynamic::Var& filter){SmallerThan_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kBetween, [&](Dynamic::Var& filter){Between_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kIn, [&](Dynamic::Var& filter){In_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kNotIn, [&](Dynamic::Var& filter){NotIn_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kValues, [&](Dynamic::Var& filter){Values_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kSet, [&](Dynamic::Var& filter){Set_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kJoins, [&](Dynamic::Var& filter){Joins_(filter);}));
 }

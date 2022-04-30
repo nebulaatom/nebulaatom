@@ -51,6 +51,12 @@ class CPW::Tools::IdentifyFilter
         IdentifyFilter(std::shared_ptr<Tools::Filters> current_filters);
         ~IdentifyFilter();
 
+		std::map<Tools::FilterType, std::function<void(Dynamic::Var&)>>& get_filter_type_functors()
+        {
+            auto& var = filter_type_functors_;
+            return var;
+        }
+
         void Fields_(Dynamic::Var& filter);
         void Page_(Dynamic::Var& filter);
         void Limit_(Dynamic::Var& filter);
@@ -68,10 +74,13 @@ class CPW::Tools::IdentifyFilter
 
     protected:
         bool BasicVerification_();
-        Tools::ManageJSON manage_json_;
 
     private:
+		void MapFilterTypeFunctors_();
+
+        Tools::ManageJSON manage_json_;
 		std::shared_ptr<Tools::Filters> current_filters_;
+		std::map<Tools::FilterType, std::function<void(Dynamic::Var&)>> filter_type_functors_;
 };
 
 #endif // CPW_TOOLS_IDENTIFYFILTER_H
