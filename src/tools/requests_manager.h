@@ -23,6 +23,7 @@
 #include <string>
 #include <map>
 #include <functional>
+#include <memory>
 
 #include <Poco/Net/HTTPRequestHandler.h>
 #include <Poco/Net/HTTPServerRequest.h>
@@ -57,8 +58,11 @@ class CPW::Tools::RequestsManager
 			auto& var = actions_strings_;
 			return var;
 		}
-		Extras::HTTPMethods* get_http_methods() const {return http_methods_;}
-		void set_http_methods(Extras::HTTPMethods* http_methods){http_methods_ = http_methods;}
+		Extras::HTTPMethods* get_http_methods(){return http_methods_;}
+		void set_http_methods(Extras::HTTPMethods& http_methods)
+        {
+            http_methods_ = &http_methods;
+        }
 
 	protected:
 		void PrepareMethods_();

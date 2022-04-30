@@ -26,7 +26,7 @@ RootHandler::RootHandler(std::string api_version) :
 	,route_verification_(true)
 	,dynamic_elements_(new Extras::DynamicElements())
 {
-	requests_manager_.set_http_methods(this);
+	requests_manager_.set_http_methods(*this);
 	requests_manager_.get_http_methods()->set_dynamic_elements(dynamic_elements_);
 	HTTPMethods::set_dynamic_elements(dynamic_elements_);
 }

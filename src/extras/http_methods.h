@@ -47,7 +47,7 @@ class CPW::Extras::HTTPMethods
 		using DynamicElementSharedPtr = std::shared_ptr<Extras::DynamicElements>;
 
 		HTTPMethods();
-		~HTTPMethods();
+		virtual ~HTTPMethods();
 
 		DynamicElementSharedPtr get_dynamic_elements() const {return dynamic_elements_;}
 		void set_dynamic_elements(DynamicElementSharedPtr dynamic_elements) {dynamic_elements_ = dynamic_elements;}
