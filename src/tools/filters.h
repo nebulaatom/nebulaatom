@@ -23,6 +23,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <functional>
 
 #include "extras/values_properties.h"
 
@@ -129,11 +130,20 @@ class CPW::Tools::Filters
 			auto& var = joins_;
 			return var;
 		}
+		std::map<std::string, Tools::FilterType>& get_filters_type_map()
+        {
+            auto& var = filters_type_map_;
+            return var;
+        }
 
 		void set_page(std::string page) { page_ = page; }
 		void set_limit(std::string limit) { limit_ = limit; }
 
+		bool ExistsType_(std::string type);
+
 	private:
+		void MapFilterType_();
+
 		ValuesPropertiesVector fields_;
 		std::string page_;
 		std::string limit_;
@@ -148,6 +158,7 @@ class CPW::Tools::Filters
 		std::vector<ValuesPropertiesVector> values_;
 		MapForValues set_;
 		std::map<std::array<std::string, 2>, MapForValues> joins_;
+		std::map<std::string, Tools::FilterType> filters_type_map_;
 };
 
 

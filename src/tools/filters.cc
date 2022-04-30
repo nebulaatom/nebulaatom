@@ -24,10 +24,37 @@ Filters::Filters() :
 	page_("0")
 	,limit_("20")
 {
-
+    MapFilterType_();
 }
 
 Filters::~Filters()
 {
 
+}
+
+void Filters::MapFilterType_()
+{
+    filters_type_map_.emplace(std::make_pair("fields", Tools::FilterType::kFields));
+    filters_type_map_.emplace(std::make_pair("page", Tools::FilterType::kPage));
+    filters_type_map_.emplace(std::make_pair("limit", Tools::FilterType::kLimit));
+    filters_type_map_.emplace(std::make_pair("sort", Tools::FilterType::kSort));
+    filters_type_map_.emplace(std::make_pair("iqual", Tools::FilterType::kIqual));
+    filters_type_map_.emplace(std::make_pair("notiqual", Tools::FilterType::kNotIqual));
+    filters_type_map_.emplace(std::make_pair("greatherthan", Tools::FilterType::kGreatherThan));
+    filters_type_map_.emplace(std::make_pair("smallerthan", Tools::FilterType::kSmallerThan));
+    filters_type_map_.emplace(std::make_pair("between", Tools::FilterType::kBetween));
+    filters_type_map_.emplace(std::make_pair("in", Tools::FilterType::kIn));
+    filters_type_map_.emplace(std::make_pair("notin", Tools::FilterType::kNotIn));
+    filters_type_map_.emplace(std::make_pair("values", Tools::FilterType::kValues));
+    filters_type_map_.emplace(std::make_pair("set", Tools::FilterType::kSet));
+    filters_type_map_.emplace(std::make_pair("joins", Tools::FilterType::kJoins));
+}
+
+bool Filters::ExistsType_(std::string type)
+{
+    auto found = filters_type_map_.find(type);
+    if(found != filters_type_map_.end())
+        return true;
+    else
+        return false;
 }
