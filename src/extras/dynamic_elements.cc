@@ -24,12 +24,10 @@ DynamicElements::DynamicElements() :
 	app_(Application::instance())
 {
 	query_actions_ = new Core::QueryActions();
-	routes_list_ = new std::list<Tools::Route>;
 	requested_route_ = std::make_shared<Tools::Route>("", std::vector<std::string>{""});
 }
 
 DynamicElements::~DynamicElements()
 {
 	delete query_actions_;
-	delete routes_list_;
 }
