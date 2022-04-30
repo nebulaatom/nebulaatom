@@ -63,6 +63,7 @@ class CPW::Core::WoodpeckerServer : public ServerApplication
 		std::unique_ptr<HTTPServer> server_;
 		HandlerFactory* handler_factory_;
 		Application& app_;
+        const std::vector<std::string>* arguments_;
 };
 
 #endif // CPW_CORE_WOODPECKERSERVER_H

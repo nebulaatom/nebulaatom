@@ -35,6 +35,7 @@ WoodpeckerServer::~WoodpeckerServer()
 
 int WoodpeckerServer::main(const std::vector<std::string>& args)
 {
+    arguments_ = &args;
 	server_params_ = new HTTPServerParams();
 	server_params_->setMaxQueued(100);
 	server_params_->setMaxThreads(16);
