@@ -21,13 +21,13 @@
 using namespace CPW::Extras;
 
 DynamicElements::DynamicElements() :
-	app_(Application::instance())
+    query_actions_(new Core::QueryActions)
+    ,app_(Application::instance())
 {
-	query_actions_ = new Core::QueryActions();
 	requested_route_ = std::make_shared<Tools::Route>("", std::vector<std::string>{""});
 }
 
 DynamicElements::~DynamicElements()
 {
-	delete query_actions_;
+
 }

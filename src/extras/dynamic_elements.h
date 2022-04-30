@@ -56,7 +56,11 @@ class CPW::Extras::DynamicElements
             auto& var = routes_list_;
             return var;
         }
-		Core::QueryActions* get_query_actions() const {return query_actions_;}
+		std::shared_ptr<Core::QueryActions>& get_query_actions()
+        {
+            auto& var = query_actions_;
+            return var;
+        }
 		Application& get_app() const {return app_;};
 		RouteSharedPtr get_requested_route() const {return requested_route_;}
 
@@ -67,7 +71,7 @@ class CPW::Extras::DynamicElements
 
 	private:
 		std::list<Tools::Route> routes_list_;
-		Core::QueryActions* query_actions_;
+		std::shared_ptr<Core::QueryActions> query_actions_;
 		Application& app_;
 };
 
