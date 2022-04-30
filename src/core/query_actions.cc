@@ -27,7 +27,6 @@ QueryActions::QueryActions() :
 {
 	incorporate_ = std::make_unique<Extras::IncorporateFilters>(current_filters_);
 	result_json_ = new JSON::Object;
-	FillTypeActionsText_();
 }
 
 QueryActions::~QueryActions()
@@ -65,87 +64,16 @@ void QueryActions::IdentifyFilters_()
 					throw std::runtime_error("An array object don't haves a type.");
 
 			// Search if exists
-				if(ExistsType_(filter->get("type").toString()))
-					type = type_actions_map_.find(filter->get("type").toString())->second;
+				if(current_filters_->ExistsType_(filter->get("type").toString()))
+					type = current_filters_->get_filters_type_map().find(filter->get("type").toString())->second;
 				else
 					continue;
 
                 auto filter_var = data_array->get(a);
 
 			// Manage the type
-				switch(type)
-				{
-					case Tools::FilterType::kFields:
-					{
-                        identify_filter_.Fields_(filter_var);
-						break;
-					}
-					case Tools::FilterType::kPage:
-					{
-                        identify_filter_.Page_(filter_var);
-						break;
-					}
-					case Tools::FilterType::kLimit:
-					{
-                        identify_filter_.Limit_(filter_var);
-						break;
-					}
-					case Tools::FilterType::kSort:
-					{
-                        identify_filter_.Sort_(filter_var);
-						break;
-					}
-					case Tools::FilterType::kIqual:
-					{
-                        identify_filter_.Iqual_(filter_var);
-						break;
-					}
-					case Tools::FilterType::kNotIqual:
-					{
-                        identify_filter_.NotIqual_(filter_var);
-						break;
-					}
-					case Tools::FilterType::kGreatherThan:
-					{
-                        identify_filter_.GreatherThan_(filter_var);
-						break;
-					}
-					case Tools::FilterType::kSmallerThan:
-					{
-                        identify_filter_.SmallerThan_(filter_var);
-						break;
-					}
-					case Tools::FilterType::kBetween:
-					{
-                        identify_filter_.Between_(filter_var);
-						break;
-					}
-					case Tools::FilterType::kIn:
-					{
-                        identify_filter_.In_(filter_var);
-						break;
-					}
-					case Tools::FilterType::kNotIn:
-					{
-                        identify_filter_.NotIn_(filter_var);
-						break;
-					}
-					case Tools::FilterType::kValues:
-					{
-                        identify_filter_.Values_(filter_var);
-						break;
-					}
-					case Tools::FilterType::kSet:
-					{
-                        identify_filter_.Set_(filter_var);
-						break;
-					}
-					case Tools::FilterType::kJoins:
-					{
-                        identify_filter_.Joins_(filter_var);
-						break;
-					}
-				}
+                auto functor = identify_filter_.get_filter_type_functors();
+                functor[type](filter_var);
 		}
 	}
 	catch(std::runtime_error& error)
@@ -429,31 +357,4 @@ std::string QueryActions::MakeFinalQuery_(std::vector<std::string>& tmp_query)
 		final_query += it + " ";
 
 	return final_query;
-}
-
-void QueryActions::FillTypeActionsText_()
-{
-    type_actions_map_.emplace(std::make_pair("fields", Tools::FilterType::kFields));
-    type_actions_map_.emplace(std::make_pair("page", Tools::FilterType::kPage));
-    type_actions_map_.emplace(std::make_pair("limit", Tools::FilterType::kLimit));
-    type_actions_map_.emplace(std::make_pair("sort", Tools::FilterType::kSort));
-    type_actions_map_.emplace(std::make_pair("iqual", Tools::FilterType::kIqual));
-    type_actions_map_.emplace(std::make_pair("notiqual", Tools::FilterType::kNotIqual));
-    type_actions_map_.emplace(std::make_pair("greatherthan", Tools::FilterType::kGreatherThan));
-    type_actions_map_.emplace(std::make_pair("smallerthan", Tools::FilterType::kSmallerThan));
-    type_actions_map_.emplace(std::make_pair("between", Tools::FilterType::kBetween));
-    type_actions_map_.emplace(std::make_pair("in", Tools::FilterType::kIn));
-    type_actions_map_.emplace(std::make_pair("notin", Tools::FilterType::kNotIn));
-    type_actions_map_.emplace(std::make_pair("values", Tools::FilterType::kValues));
-    type_actions_map_.emplace(std::make_pair("set", Tools::FilterType::kSet));
-    type_actions_map_.emplace(std::make_pair("joins", Tools::FilterType::kJoins));
-}
-
-bool QueryActions::ExistsType_(std::string type)
-{
-	auto found = type_actions_map_.find(type);
-	if(found != type_actions_map_.end())
-		return true;
-	else
-		return false;
 }

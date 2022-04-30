@@ -106,16 +106,12 @@ class CPW::Core::QueryActions :
 		std::string MakeFinalQuery_(std::vector<std::string>& tmp_query);
 
 	private:
-		void FillTypeActionsText_();
-		bool ExistsType_(std::string type);
-
 		std::string final_query_;
 		std::unique_ptr<Extras::IncorporateFilters> incorporate_;
 		std::shared_ptr<Tools::Filters> current_filters_;
 		std::shared_ptr<Data::Session> session_;
 		std::shared_ptr<Data::Statement> query_;
 		JSON::Object::Ptr result_json_;
-		std::map<std::string, Tools::FilterType> type_actions_map_;
 		Application& app_;
         std::shared_ptr<Tools::RowValueFormatter> row_value_formatter_;
         Tools::IdentifyFilter identify_filter_;
