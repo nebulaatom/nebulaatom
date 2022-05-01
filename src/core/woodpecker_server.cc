@@ -22,10 +22,11 @@ using namespace CPW::Core;
 
 WoodpeckerServer::WoodpeckerServer(int port) :
 	port_(port)
+    ,server_params_(new HTTPServerParams())
 	,server_socket_(port_)
+	,handler_factory_(new HandlerFactory())
 	,app_(Application::instance())
 {
-	handler_factory_ = new HandlerFactory();
 }
 
 WoodpeckerServer::~WoodpeckerServer()
@@ -36,7 +37,6 @@ WoodpeckerServer::~WoodpeckerServer()
 int WoodpeckerServer::main(const std::vector<std::string>& args)
 {
     arguments_ = &args;
-	server_params_ = new HTTPServerParams();
 	server_params_->setMaxQueued(100);
 	server_params_->setMaxThreads(16);
 
