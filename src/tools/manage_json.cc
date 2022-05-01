@@ -20,7 +20,8 @@
 
 using namespace CPW::Tools;
 
-ManageJSON::ManageJSON()
+ManageJSON::ManageJSON() :
+    json_body_(new JSON::Object())
 {
 
 }
