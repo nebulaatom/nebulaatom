@@ -21,7 +21,8 @@
 using namespace CPW::Tools;
 
 Route::Route(std::string target, std::vector<std::string> segments) :
-	target_(target)
+    current_route_type_(RouteType::kEntrypoint)
+	,target_(target)
 	,segments_(segments)
 {
 	IdentifyRouteType_();
