@@ -11,8 +11,12 @@ CPW::Extras::File::File() :
     ,content_type_("")
     ,name_("")
     ,filename_("")
+    ,file_type_(FileType::kBinary)
+    ,requested_path_(new Path())
+    ,requested_file_(new Poco::File(*requested_path_))
+    ,tmp_file_(new Poco::File())
 {
-	file_type_ = FileType::kBinary;
+
 }
 
 CPW::Extras::File::File(std::string name, std::string filename, std::string content_type, std::size_t content_length) :
@@ -20,6 +24,10 @@ CPW::Extras::File::File(std::string name, std::string filename, std::string cont
     ,content_type_(content_type)
     ,name_(name)
     ,filename_(filename)
+    ,file_type_(FileType::kBinary)
+    ,requested_path_(new Path())
+    ,requested_file_(new Poco::File(*requested_path_))
+    ,tmp_file_(new Poco::File())
 {
-	file_type_ = FileType::kBinary;
+
 }
