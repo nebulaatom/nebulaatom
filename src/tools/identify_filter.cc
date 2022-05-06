@@ -232,15 +232,20 @@ void IdentifyFilter::Joins_(Dynamic::Var& filter)
 
     std::map<std::string, Extras::ValuesProperties> tmp_joins;
 
-    auto on_array = manage_json_.ExtractArray_(filter_json->get("on"));
+    auto on_array = filter_json->getArray("on");
+    if(on_array->size() < 1)
+        throw std::runtime_error("on array in kJoins is empty");
+
     for(std::size_t a = 0; a < on_array->size(); a++)
     {
         auto on_element = on_array->getObject(a);
+        if(on_element->get("col").isEmpty() || on_element->get("value").isEmpty())
+            throw std::runtime_error("col or value is empty on array element in kJoins");
 
         tmp_joins.emplace(std::make_pair
         (
             on_element->get("col").toString()
-            ,Extras::ValuesProperties{on_element->get("value").toString(), false}
+            ,Extras::ValuesProperties{on_element->get("value").toString(), true}
         ));
     }
 
