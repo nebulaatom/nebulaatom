@@ -93,6 +93,8 @@ bool SecurityVerification::VerifyPermissions_(std::string method)
 
             if(results_array->size() < 1)
                 continue;
+			if(results_array->getArray(0)->size() < 1)
+				continue;
 			if(results_array->getArray(0)->get(0).isEmpty())
 				continue;
 			if(!results_array->getArray(0)->get(0).isInteger())
