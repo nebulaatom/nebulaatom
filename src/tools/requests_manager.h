@@ -53,7 +53,7 @@ class CPW::Tools::RequestsManager
 		RequestsManager();
 		~RequestsManager();
 
-		std::map<std::string, MainFunctor> get_actions_strings()
+		std::map<std::string, MainFunctor>& get_actions_strings()
 		{
 			auto& var = actions_strings_;
 			return var;
