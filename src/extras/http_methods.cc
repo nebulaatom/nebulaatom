@@ -32,10 +32,11 @@ HTTPMethods::~HTTPMethods()
 
 void HTTPMethods::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	QueryProcess_(Core::TypeAction::kSelect, response);
+    if(!QueryProcess_(Core::TypeAction::kSelect, response))
+        return;
 
-	response.setStatus(HTTPResponse::HTTP_OK);
-	response.setContentType("application/json");
+    response.setStatus(HTTPResponse::HTTP_OK);
+    response.setContentType("application/json");
     response.setChunkedTransferEncoding(true);
 
 	std::ostream& out = response.send();
@@ -45,29 +46,31 @@ void HTTPMethods::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRespons
 
 void HTTPMethods::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	QueryProcess_(Core::TypeAction::kInsert, response);
+    if(!QueryProcess_(Core::TypeAction::kInsert, response))
+        return;
 
     responses_.GenericResponse_(response, HTTPResponse::HTTP_OK, "Ok.");
 }
 
 void HTTPMethods::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	QueryProcess_(Core::TypeAction::kUpdate, response);
+    if(!QueryProcess_(Core::TypeAction::kUpdate, response))
+        return;
 
     responses_.GenericResponse_(response, HTTPResponse::HTTP_OK, "Ok.");
 }
 
 void HTTPMethods::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-	QueryProcess_(Core::TypeAction::kDelete, response);
+    if(!QueryProcess_(Core::TypeAction::kDelete, response))
+        return;
 
     responses_.GenericResponse_(response, HTTPResponse::HTTP_OK, "Ok.");
 }
 
-void HTTPMethods::QueryProcess_(Core::TypeAction action, HTTPServerResponse& response)
+bool HTTPMethods::QueryProcess_(Core::TypeAction action, HTTPServerResponse& response)
 {
 	dynamic_elements_->get_query_actions()->IdentifyFilters_();
 	dynamic_elements_->get_query_actions()->ComposeQuery_(action, dynamic_elements_->get_requested_route()->get_target());
-	if(!dynamic_elements_->get_query_actions()->ExecuteQuery_(response))
-		return;
+	return dynamic_elements_->get_query_actions()->ExecuteQuery_(response);
 }
