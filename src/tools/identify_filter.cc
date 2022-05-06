@@ -71,7 +71,10 @@ void IdentifyFilter::Sort_(Dynamic::Var& filter)
     if(filter_json->get("contents").isEmpty())
         throw std::runtime_error("contents in kSort is empty");
 
-    auto contents_array = manage_json_.ExtractArray_(filter_json->get("contents"));
+    auto contents_array = filter_json->getArray("contents");
+    if(contents_array->size() < 1)
+        throw std::runtime_error("contents_array in kSort is empty");
+
     for(std::size_t a = 0; a < contents_array->size(); a++)
     {
         current_filters_->get_sorts_conditions().push_back({contents_array->get(a), false});
