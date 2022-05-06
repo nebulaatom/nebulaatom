@@ -85,9 +85,21 @@ class CPW::Core::QueryActions :
 		~QueryActions();
 
 		std::string get_final_query() const {return final_query_;}
-		Tools::Filters* get_current_filters_() const {return current_filters_.get();}
-		Data::Session* get_session() const {return session_.get();}
-		Data::Statement* get_query() const {return query_.get();}
+		std::shared_ptr<Tools::Filters>& get_current_filters_()
+        {
+            auto& var = current_filters_;
+            return var;
+        }
+		std::shared_ptr<Data::Session>& get_session()
+        {
+            auto& var = session_;
+            return var;
+        }
+		std::shared_ptr<Data::Statement>& get_query()
+        {
+            auto& var = query_;
+            return var;
+        }
 		JSON::Object::Ptr get_result_json() const {return result_json_;}
 
 		void IdentifyFilters_();
