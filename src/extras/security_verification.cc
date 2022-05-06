@@ -91,6 +91,8 @@ bool SecurityVerification::VerifyPermissions_(std::string method)
 
 			auto results_array = result_json->getArray("results");
 
+            if(results_array->size() < 1)
+                continue;
 			if(results_array->getArray(0)->get(0).isEmpty())
 				continue;
 			if(!results_array->getArray(0)->get(0).isInteger())
