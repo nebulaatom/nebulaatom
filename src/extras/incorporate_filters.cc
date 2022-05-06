@@ -284,7 +284,7 @@ void IncorporateFilters::IncorporateJoins_(VectorString& tmp_query)
 			tmp_query.push_back("ON (");
 			for(auto it_v : it.second)
 			{
-				if(it_v != *it.second.begin())
+				if(it_v.first != it.second.begin()->first)
 					tmp_query.push_back("AND");
 
 				tmp_query.push_back(it_v.first);
