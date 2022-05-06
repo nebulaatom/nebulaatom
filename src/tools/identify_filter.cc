@@ -35,9 +35,12 @@ void IdentifyFilter::Fields_(Dynamic::Var& filter)
 {
     auto filter_json = manage_json_.ExtractObject_(filter);
     if(filter_json->get("contents").isEmpty())
-        throw std::runtime_error("\"contents\" in kFields is empty");
+        throw std::runtime_error("contents in kFields is empty");
 
     auto contents_array = filter_json->getArray("contents");
+    if(contents_array->size() < 1)
+        throw std::runtime_error("contents_array in kFields is empty");
+
     for(std::size_t a = 0; a < contents_array->size(); a++)
     {
         current_filters_->get_fields().push_back({contents_array->get(a), false});
