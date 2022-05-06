@@ -53,6 +53,13 @@ void QueryActions::IdentifyFilters_()
 	try
 	{
 		Tools::FilterType type;
+        auto pair = get_json_body()->getArray("pair-information");
+
+        if(pair->size() < 1)
+            throw std::runtime_error("pair-information size is < 1.");
+        if(pair->get(1).isEmpty())
+            throw std::runtime_error("pair object 1 is empty.");
+
 		auto data_array = get_json_body()->getArray("pair-information")->getObject(1)->getArray("data");
 
 		for (std::size_t a = 0; a < data_array->size(); a++)
