@@ -176,7 +176,10 @@ void IdentifyFilter::NotIn_(Dynamic::Var& filter)
         throw std::runtime_error("col or contents in kNotIn is empty");
 
     std::vector<Extras::ValuesProperties> tmp_not_in;
-    auto contents_array = manage_json_.ExtractArray_(filter_json->get("contents"));
+    auto contents_array = filter_json->getArray("contents");
+    if(contents_array->size() < 1)
+        throw std::runtime_error("contents_array in kNotIn is empty");
+
     for(std::size_t a = 0; a < contents_array->size(); a++)
     {
         tmp_not_in.push_back({contents_array->get(a), true});
