@@ -77,7 +77,8 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 		}
 
 		// Found the corresponding HTTP method
-			if(requests_manager_.get_actions_strings().find(request.getMethod()) == requests_manager_.get_actions_strings().end())
+            auto method = requests_manager_.get_actions_strings().find(request.getMethod());
+			if(method == requests_manager_.get_actions_strings().end())
 				GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
 
 		// Call the corresponding HTTP method
