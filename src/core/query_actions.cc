@@ -21,12 +21,14 @@
 using namespace CPW::Core;
 
 QueryActions::QueryActions() :
-	current_filters_(new Tools::Filters)
+    final_query_("")
+    ,current_filters_(new Tools::Filters)
+    ,incorporate_(new Extras::IncorporateFilters(current_filters_))
+    ,result_json_(new JSON::Object)
 	,app_(Application::instance())
     ,identify_filter_(current_filters_)
 {
-	incorporate_ = std::make_unique<Extras::IncorporateFilters>(current_filters_);
-	result_json_ = new JSON::Object;
+
 }
 
 QueryActions::~QueryActions()
