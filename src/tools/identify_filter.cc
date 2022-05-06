@@ -199,6 +199,9 @@ void IdentifyFilter::Values_(Dynamic::Var& filter)
         std::vector<Extras::ValuesProperties> tmp_values;
 
         auto value_array = contents_array->getArray(a);
+        if(value_array->size() < 1)
+            throw std::runtime_error("value_array in kValues is empty");
+
         for(std::size_t b = 0; b < value_array->size(); b++)
         {
             tmp_values.push_back({value_array->get(b).toString(), true});
