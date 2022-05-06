@@ -178,16 +178,28 @@ bool FileManager::IsSupported_(Extras::File& file)
 
 void FileManager::ProcessContentLength_(Extras::File& file)
 {
+    if(file.get_requested_file() == nullptr)
+    {
+        file.set_content_length(0);
+        return;
+    }
+
     file.set_content_length(file.get_requested_file()->getSize());
 }
 
 void FileManager::DownloadFile_(std::ostream& out_response)
 {
+    if(files_.empty() || files_.front().get_requested_file()->path() == "")
+    {
+        out_response << "";
+        return;
+    }
+
 	switch(files_.front().get_file_type())
 	{
         case Extras::FileType::kBinary:
 		{
-			std::ifstream requested_file(files_.front().get_requested_path()->toString(), std::ios::binary | std::ios::ate);
+			std::ifstream requested_file(files_.front().get_requested_file()->path(), std::ios::binary | std::ios::ate);
 
             std::size_t content_length = requested_file.tellg();
 			std::string text_line(content_length, '\0');
@@ -204,7 +216,7 @@ void FileManager::DownloadFile_(std::ostream& out_response)
 		case Extras::FileType::kTextPlain:
 		{
 			std::string text_line;
-			std::ifstream requested_file(files_.front().get_requested_path()->toString());
+			std::ifstream requested_file(files_.front().get_requested_file()->path());
 
 			while (getline (requested_file, text_line))
 			{
