@@ -35,6 +35,7 @@ namespace CPW
 class CPW::Extras::ValuesProperties
 {
 	public:
+		ValuesProperties();
 		ValuesProperties(std::string value, bool quotes = true);
 		~ValuesProperties();
 

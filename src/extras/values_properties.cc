@@ -20,6 +20,13 @@
 
 using namespace CPW::Extras;
 
+ValuesProperties::ValuesProperties() :
+	value_("")
+	,quotes_(true)
+{
+
+}
+
 ValuesProperties::ValuesProperties(std::string value, bool quotes) :
 	value_(value)
 	,quotes_(quotes)
