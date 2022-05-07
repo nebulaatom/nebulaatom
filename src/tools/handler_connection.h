@@ -16,22 +16,22 @@
 
 namespace CPW
 {
-	namespace Tools
-	{
-		class HandlerConnection;
-	}
+    namespace Tools
+    {
+        class HandlerConnection;
+    }
 }
 
 class CPW::Tools::HandlerConnection
 {
-	public:
-		using HandlerFunctor = std::function<CPW::Handlers::RootHandler*()>;
+    public:
+        using HandlerFunctor = std::function<CPW::Handlers::RootHandler*()>;
 
-		HandlerConnection(CPW::Tools::Route route, HandlerFunctor handler);
-		~HandlerConnection();
+        HandlerConnection(CPW::Tools::Route route, HandlerFunctor handler);
+        ~HandlerConnection();
 
-		CPW::Tools::Route current_route_;
-		HandlerFunctor return_handler_;
+        CPW::Tools::Route current_route_;
+        HandlerFunctor return_handler_;
 };
 
 
