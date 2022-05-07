@@ -32,6 +32,7 @@
 
 #include "tools/filters.h"
 #include "tools/manage_json.h"
+#include "tools/row_value_formatter.h"
 
 
 namespace CPW
@@ -73,7 +74,7 @@ class CPW::Tools::IdentifyFilter
         void Joins_(Dynamic::Var& filter);
 
     protected:
-        bool BasicVerification_();
+        ValuesProperties GetValue_(Dynamic::Var& var);
 
     private:
 		void MapFilterTypeFunctors_();

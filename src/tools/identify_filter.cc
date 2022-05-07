@@ -34,17 +34,10 @@ IdentifyFilter::~IdentifyFilter()
 void IdentifyFilter::Fields_(Dynamic::Var& filter)
 {
     auto filter_json = manage_json_.ExtractObject_(filter);
-    if(filter_json->get("contents").isEmpty())
-        throw std::runtime_error("contents in kFields is empty");
 
     auto contents_array = filter_json->getArray("contents");
-    if(contents_array->size() < 1)
-        throw std::runtime_error("contents_array in kFields is empty");
-
     for(std::size_t a = 0; a < contents_array->size(); a++)
-    {
         current_filters_->get_fields().push_back({contents_array->get(a), false});
-    }
 }
 
 void IdentifyFilter::Page_(Dynamic::Var& filter)
@@ -84,68 +77,79 @@ void IdentifyFilter::Sort_(Dynamic::Var& filter)
 void IdentifyFilter::Iqual_(Dynamic::Var& filter)
 {
     auto filter_json = manage_json_.ExtractObject_(filter);
-    if(filter_json->get("content").isEmpty() || filter_json->get("col").isEmpty())
-        throw std::runtime_error("content or col in kIqual is empty");
+    if(filter_json->get("col").isEmpty())
+        throw std::runtime_error("col in kIqual is empty");
+
+    auto var = filter_json->get("content");
 
     current_filters_->get_iquals_conditions().emplace(std::make_pair
     (
         filter_json->get("col").toString()
-        ,Extras::ValuesProperties{filter_json->get("content").toString(), true}
+        ,GetValue_(var)
     ));
 }
 
 void IdentifyFilter::NotIqual_(Dynamic::Var& filter)
 {
     auto filter_json = manage_json_.ExtractObject_(filter);
-    if(filter_json->get("content").isEmpty() || filter_json->get("col").isEmpty())
-        throw std::runtime_error("content or col in kNotIqual is empty");
+    if(filter_json->get("col").isEmpty())
+        throw std::runtime_error("col in kNotIqual is empty");
+
+    auto var = filter_json->get("content");
 
     current_filters_->get_not_iquals_conditions().emplace(std::make_pair
     (
         filter_json->get("col").toString()
-        ,Extras::ValuesProperties{filter_json->get("content").toString(), true}
+        ,GetValue_(var)
     ));
 }
 
 void IdentifyFilter::GreatherThan_(Dynamic::Var& filter)
 {
     auto filter_json = manage_json_.ExtractObject_(filter);
-    if(filter_json->get("content").isEmpty() || filter_json->get("col").isEmpty())
-        throw std::runtime_error("content or col in kGreatherThan is empty");
+    if(filter_json->get("col").isEmpty())
+        throw std::runtime_error("col in kGreatherThan is empty");
+
+    auto var = filter_json->get("content");
 
     current_filters_->get_greather_than().emplace(std::make_pair
     (
         filter_json->get("col").toString()
-        ,Extras::ValuesProperties{filter_json->get("content").toString(), true}
+        ,GetValue_(var)
     ));
 }
 
 void IdentifyFilter::SmallerThan_(Dynamic::Var& filter)
 {
     auto filter_json = manage_json_.ExtractObject_(filter);
-    if(filter_json->get("content").isEmpty() || filter_json->get("col").isEmpty())
-        throw std::runtime_error("content or col in kSmallerThan is empty");
+    if(filter_json->get("col").isEmpty())
+        throw std::runtime_error("col in kSmallerThan is empty");
+
+    auto var = filter_json->get("content");
 
     current_filters_->get_smaller_than().emplace(std::make_pair
     (
         filter_json->get("col").toString()
-        ,Extras::ValuesProperties{filter_json->get("content").toString(), true}
+        ,GetValue_(var)
     ));
 }
 
 void IdentifyFilter::Between_(Dynamic::Var& filter)
 {
     auto filter_json = manage_json_.ExtractObject_(filter);
-    if(filter_json->get("col").isEmpty() || filter_json->get("content1").isEmpty() || filter_json->get("content2").isEmpty())
-        throw std::runtime_error("col, content1 or content2 in kBetween is empty");
+    if(filter_json->get("col").isEmpty())
+        throw std::runtime_error("col in kBetween is empty");
+
+    auto var1 = filter_json->get("content1");
+    auto var2 = filter_json->get("content2");
 
     current_filters_->get_between().emplace(std::make_pair
     (
         filter_json->get("col").toString()
         ,std::make_pair
         (
-            Extras::ValuesProperties{filter_json->get("content1").toString(), true}
-            ,Extras::ValuesProperties{filter_json->get("content2").toString(), true}
+            GetValue_(var1)
+            ,GetValue_(var2)
         )
     ));
 }
@@ -153,8 +157,8 @@ void IdentifyFilter::Between_(Dynamic::Var& filter)
 void IdentifyFilter::In_(Dynamic::Var& filter)
 {
     auto filter_json = manage_json_.ExtractObject_(filter);
-    if(filter_json->get("contents").isEmpty() || filter_json->get("col").isEmpty())
-        throw std::runtime_error("col or contents in kIn is empty");
+    if(filter_json->get("col").isEmpty())
+        throw std::runtime_error("col in kIn is empty");
 
     std::vector<Extras::ValuesProperties> tmp_in;
     auto contents_array = filter_json->getArray("contents");
@@ -163,7 +167,8 @@ void IdentifyFilter::In_(Dynamic::Var& filter)
 
     for(std::size_t a = 0; a < contents_array->size(); a++)
     {
-        tmp_in.push_back({contents_array->get(a), true});
+        auto var = contents_array->get(a);
+        tmp_in.push_back(GetValue_(var));
     }
 
     current_filters_->get_in().emplace(std::make_pair(filter_json->get("col"), tmp_in));
@@ -172,8 +177,8 @@ void IdentifyFilter::In_(Dynamic::Var& filter)
 void IdentifyFilter::NotIn_(Dynamic::Var& filter)
 {
     auto filter_json = manage_json_.ExtractObject_(filter);
-    if(filter_json->get("contents").isEmpty() || filter_json->get("col").isEmpty())
-        throw std::runtime_error("col or contents in kNotIn is empty");
+    if(filter_json->get("col").isEmpty())
+        throw std::runtime_error("col in kNotIn is empty");
 
     std::vector<Extras::ValuesProperties> tmp_not_in;
     auto contents_array = filter_json->getArray("contents");
@@ -182,7 +187,8 @@ void IdentifyFilter::NotIn_(Dynamic::Var& filter)
 
     for(std::size_t a = 0; a < contents_array->size(); a++)
     {
-        tmp_not_in.push_back({contents_array->get(a), true});
+        auto var = contents_array->get(a);
+        tmp_not_in.push_back(GetValue_(var));
     }
     current_filters_->get_not_in().emplace(std::make_pair(filter_json->get("col"), tmp_not_in));
 }
@@ -204,7 +210,8 @@ void IdentifyFilter::Values_(Dynamic::Var& filter)
 
         for(std::size_t b = 0; b < value_array->size(); b++)
         {
-            tmp_values.push_back({value_array->get(b).toString(), true});
+            auto var = value_array->get(b);
+            tmp_values.push_back(GetValue_(var));
         }
 
         current_filters_->get_values().push_back(tmp_values);
@@ -214,13 +221,15 @@ void IdentifyFilter::Values_(Dynamic::Var& filter)
 void IdentifyFilter::Set_(Dynamic::Var& filter)
 {
     auto filter_json = manage_json_.ExtractObject_(filter);
-    if(filter_json->get("content").isEmpty() || filter_json->get("col").isEmpty())
-        throw std::runtime_error("content or col in kSet is empty");
+    if(filter_json->get("col").isEmpty())
+        throw std::runtime_error("col in kSet is empty");
+
+    auto var = filter_json->get("content");
 
     current_filters_->get_set().emplace(std::make_pair
     (
         filter_json->get("col").toString()
-        ,Extras::ValuesProperties{filter_json->get("content").toString(), true}
+        ,GetValue_(var)
     ));
 }
 
@@ -245,7 +254,7 @@ void IdentifyFilter::Joins_(Dynamic::Var& filter)
         tmp_joins.emplace(std::make_pair
         (
             on_element->get("col").toString()
-            ,Extras::ValuesProperties{on_element->get("value").toString(), true}
+            ,Extras::ValuesProperties{on_element->get("value").toString(), false}
         ));
     }
 
@@ -257,6 +266,35 @@ void IdentifyFilter::Joins_(Dynamic::Var& filter)
             ,tmp_joins
         )
     );
+}
+
+
+ValuesProperties IdentifyFilter::GetValue_(Dynamic::Var& var)
+{
+    RowValueFormatter row(var);
+    row.Format_();
+
+    Extras::ValuesProperties value_properties;
+    switch(row.get_row_value_type())
+    {
+        case Tools::RowValueType::kEmpty:
+            return Extras::ValuesProperties{"NULL", false};
+            break;
+        case Tools::RowValueType::kString:
+            return Extras::ValuesProperties{var.toString(), true};
+            break;
+        case Tools::RowValueType::kInteger:
+            return Extras::ValuesProperties{var.toString(), false};
+            break;
+        case Tools::RowValueType::kFloat:
+            return Extras::ValuesProperties{var.toString(), false};
+            break;
+        default:
+            return Extras::ValuesProperties{"", true};
+            break;
+    }
+
+    return value_properties;
 }
 
 void IdentifyFilter::MapFilterTypeFunctors_()
