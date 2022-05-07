@@ -1,20 +1,20 @@
 /*
- * CPW Woodpecker Server
- * Copyright (C) 2021 CPW Online support@cpwonline.org
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+* CPW Woodpecker Server
+* Copyright (C) 2021 CPW Online support@cpwonline.org
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #ifndef CPW_HANDLERS_ROOTHANDLER_H
 #define CPW_HANDLERS_ROOTHANDLER_H
@@ -62,10 +62,10 @@
 
 namespace CPW
 {
-	namespace Handlers
-	{
-		class RootHandler;
-	}
+    namespace Handlers
+    {
+        class RootHandler;
+    }
 }
 
 using namespace Poco;
@@ -78,32 +78,32 @@ using Poco::Data::Statement;
 
 
 class CPW::Handlers::RootHandler :
-	public HTTPRequestHandler
-	,public Tools::CommonResponses
-	,public Extras::HTTPMethods
+    public HTTPRequestHandler
+    ,public Tools::CommonResponses
+    ,public Extras::HTTPMethods
 {
-	public:
-		RootHandler(std::string api_version);
-		virtual ~RootHandler();
-		virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
+    public:
+        RootHandler(std::string api_version);
+        virtual ~RootHandler();
+        virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
-		std::string get_api_verion() const {return api_verion_;}
-		Application& get_app() const {return app_;};
+        std::string get_api_verion() const {return api_verion_;}
+        Application& get_app() const {return app_;};
 
-	protected:
-		virtual void AddRoutes_() = 0;
-		bool InitSecurityProccess_(HTTPServerRequest& request, HTTPServerResponse& response);
-		bool IdentifyRoute_();
-		bool ManageRequestBody_(HTTPServerRequest& request);
+    protected:
+        virtual void AddRoutes_() = 0;
+        bool InitSecurityProccess_(HTTPServerRequest& request, HTTPServerResponse& response);
+        bool IdentifyRoute_();
+        bool ManageRequestBody_(HTTPServerRequest& request);
 
-		Application& app_;
+        Application& app_;
 
-	private:
-		std::string api_verion_;
-		bool route_verification_;
-		Extras::SecurityVerification current_security_;
-		Tools::RequestsManager requests_manager_;
-		std::shared_ptr<Extras::DynamicElements> dynamic_elements_;
+    private:
+        std::string api_verion_;
+        bool route_verification_;
+        Extras::SecurityVerification current_security_;
+        Tools::RequestsManager requests_manager_;
+        std::shared_ptr<Extras::DynamicElements> dynamic_elements_;
 };
 
 #endif // CPW_HANDLERS_ROOTHANDLER_H
