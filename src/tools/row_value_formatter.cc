@@ -45,7 +45,6 @@ void RowValueFormatter::Format_()
 
     if(value_->isEmpty())
         row_value_type_ = RowValueType::kEmpty;
-
     else if(value_->isNumeric())
         if(value_->isInteger())
         {
