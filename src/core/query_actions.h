@@ -1,20 +1,20 @@
 /*
- * CPW Woodpecker Server
- * Copyright (C) 2021 CPW Online support@cpwonline.org
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+* CPW Woodpecker Server
+* Copyright (C) 2021 CPW Online support@cpwonline.org
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #ifndef CPW_QUERYACTIONS_H
 #define CPW_QUERYACTIONS_H
@@ -53,11 +53,11 @@
 
 namespace CPW
 {
-	namespace Core
-	{
-		enum class TypeAction;
-		class QueryActions;
-	}
+    namespace Core
+    {
+        enum class TypeAction;
+        class QueryActions;
+    }
 }
 
 using namespace Poco;
@@ -69,62 +69,62 @@ using namespace Poco::Data::Keywords;
 
 enum class CPW::Core::TypeAction
 {
-	kInsert
-	,kSelect
-	,kUpdate
-	,kDelete
+    kInsert
+    ,kSelect
+    ,kUpdate
+    ,kDelete
 };
 
 
 class CPW::Core::QueryActions :
-	public Tools::ManageJSON
-	,public Tools::CommonResponses
+    public Tools::ManageJSON
+    ,public Tools::CommonResponses
 {
-	public:
-		QueryActions();
-		~QueryActions();
+    public:
+        QueryActions();
+        ~QueryActions();
 
-		std::string get_final_query() const {return final_query_;}
-		std::shared_ptr<Tools::Filters>& get_current_filters_()
+        std::string get_final_query() const {return final_query_;}
+        std::shared_ptr<Tools::Filters>& get_current_filters_()
         {
             auto& var = current_filters_;
             return var;
         }
-		std::shared_ptr<Data::Session>& get_session()
+        std::shared_ptr<Data::Session>& get_session()
         {
             auto& var = session_;
             return var;
         }
-		std::shared_ptr<Data::Statement>& get_query()
+        std::shared_ptr<Data::Statement>& get_query()
         {
             auto& var = query_;
             return var;
         }
-		JSON::Object::Ptr get_result_json() const {return result_json_;}
+        JSON::Object::Ptr get_result_json() const {return result_json_;}
 
-		void IdentifyFilters_();
-		void ComposeQuery_(TypeAction action_type, std::string table);
-		bool ExecuteQuery_(HTTPServerResponse& response);
-		bool ExecuteQuery_();
+        void IdentifyFilters_();
+        void ComposeQuery_(TypeAction action_type, std::string table);
+        bool ExecuteQuery_(HTTPServerResponse& response);
+        bool ExecuteQuery_();
 
-	protected:
-		void StartDatabase_();
-		void StopDatabase_();
-		void CreateJSONResult_();
-		std::string ComposeInsertSentence_(std::string table);
-		std::string ComposeSelectSentence_(std::string table);
-		std::string ComposeUpdateSentence_(std::string table);
-		std::string ComposeDeleteSentence_(std::string table);
-		std::string MakeFinalQuery_(std::vector<std::string>& tmp_query);
+    protected:
+        void StartDatabase_();
+        void StopDatabase_();
+        void CreateJSONResult_();
+        std::string ComposeInsertSentence_(std::string table);
+        std::string ComposeSelectSentence_(std::string table);
+        std::string ComposeUpdateSentence_(std::string table);
+        std::string ComposeDeleteSentence_(std::string table);
+        std::string MakeFinalQuery_(std::vector<std::string>& tmp_query);
 
-	private:
-		std::string final_query_;
-		std::shared_ptr<Tools::Filters> current_filters_;
-		std::unique_ptr<Extras::IncorporateFilters> incorporate_;
-		std::shared_ptr<Data::Session> session_;
-		std::shared_ptr<Data::Statement> query_;
-		JSON::Object::Ptr result_json_;
-		Application& app_;
+    private:
+        std::string final_query_;
+        std::shared_ptr<Tools::Filters> current_filters_;
+        std::unique_ptr<Extras::IncorporateFilters> incorporate_;
+        std::shared_ptr<Data::Session> session_;
+        std::shared_ptr<Data::Statement> query_;
+        JSON::Object::Ptr result_json_;
+        Application& app_;
         std::shared_ptr<Tools::RowValueFormatter> row_value_formatter_;
         Tools::IdentifyFilter identify_filter_;
 };
