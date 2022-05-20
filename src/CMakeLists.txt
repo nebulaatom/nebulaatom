@@ -19,5 +19,5 @@ add_subdirectory(tools)
 
 ## Main executable
 add_executable(${PROJECT_NAME} "main.cc")
-target_include_directories(${PROJECT_NAME} PUBLIC ${HEADER})
+target_include_directories(${PROJECT_NAME} PUBLIC ${HEADER} ${PROJECT_BINARY_DIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC woodpeckerserver)
