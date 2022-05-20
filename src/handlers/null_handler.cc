@@ -27,22 +27,22 @@ NullHandler::~NullHandler()
 
 void NullHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-    GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Sorry, content not found from" + request.getMethod() + " request.");
+    HTMLResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Sorry, content not found from" + request.getMethod() + " request.");
 }
 
 void NullHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-    GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Sorry, content not found from" + request.getMethod() + " request.");
+    HTMLResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Sorry, content not found from" + request.getMethod() + " request.");
 }
 
 void NullHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-    GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Sorry, content not found from" + request.getMethod() + " request.");
+    HTMLResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Sorry, content not found from" + request.getMethod() + " request.");
 }
 
 void NullHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-    GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Sorry, content not found from" + request.getMethod() + " request.");
+    HTMLResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Sorry, content not found from" + request.getMethod() + " request.");
 }
 
 void NullHandler::AddRoutes_()
