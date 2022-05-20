@@ -27,6 +27,8 @@
 #include <Poco/JSON/JSON.h>
 #include <Poco/JSON/Object.h>
 
+#include "cpw-woodpecker-serverConfig.h"
+
 
 namespace CPW
 {
@@ -62,6 +64,7 @@ class CPW::Tools::CommonResponses
         }
 
         void GenericResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message);
+        void HTMLResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message);
 
     protected:
         void FillResponses_();

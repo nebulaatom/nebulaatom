@@ -55,6 +55,43 @@ void CommonResponses::GenericResponse_(HTTPServerResponse& response, HTTPRespons
     out.flush();
 }
 
+void CommonResponses::HTMLResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message)
+{
+    response.setStatus(status);
+    response.setContentType("application/json");
+    response.setChunkedTransferEncoding(true);
+
+    std::ostream& out = response.send();
+
+    auto found = responses_.find(status);
+    if(found != responses_.end())
+    {
+        out <<
+            "<hmtl>"
+                "<head><title>" << responses_[status].second << " | CPW Woodpecker</head>"
+                "<body>"
+                    "<center><h1>" << message << "</h1></center>"
+                    "<center>CPW Woodpecker/" << PACKAGE_VERSION_COMPLETE << "</center>"
+                "</body>"
+            "</html>"
+        ;
+    }
+    else
+    {
+        out <<
+            "<hmtl>"
+                "<head><title>" << responses_[HTTPResponse::HTTP_INTERNAL_SERVER_ERROR].second << " | CPW Woodpecker</head>"
+                "<body>"
+                    "<center><h1>Error on HTTPStatus</h1></center>"
+                    "<center>CPW Woodpecker/" << PACKAGE_VERSION_COMPLETE << "</center>"
+                "</body>"
+            "</html>"
+        ;
+    }
+
+    out.flush();
+}
+
 void CommonResponses::FillResponses_()
 {
     responses_.emplace(std::make_pair
