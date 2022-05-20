@@ -50,12 +50,12 @@ void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRes
         file_manager_.set_operation_type(Tools::OperationType::kDownload);
         if(!file_manager_.CheckFiles_())
         {
-            GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
+            HTMLResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
             return;
         }
         if(!file_manager_.IsSupported_(file_manager_.get_files().front()))
         {
-            GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
+            HTMLResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
             return;
         }
 
@@ -85,7 +85,7 @@ void FrontendHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerRe
         {
             if(!file_manager_.IsSupported_(file_it))
             {
-                GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
+                HTMLResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
                 return;
             }
             app_.logger().information("File: " + file_it.get_requested_file()->path());
@@ -119,7 +119,7 @@ void FrontendHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerRes
         file_manager_.set_operation_type(Tools::OperationType::kDelete);
         if(!file_manager_.CheckFiles_())
         {
-            GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
+            HTMLResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
             return;
         }
 
@@ -134,7 +134,7 @@ void FrontendHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerRes
 
         if(!file_manager_.IsSupported_(file_manager_.get_files().front()))
         {
-            GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
+            HTMLResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
             return;
         }
         app_.logger().information("File: " + file_manager_.get_files().front().get_requested_file()->path());
@@ -167,7 +167,7 @@ void FrontendHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerRes
         file_manager_.set_operation_type(Tools::OperationType::kDelete);
         if(!file_manager_.CheckFiles_())
         {
-            GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
+            HTMLResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
             return;
         }
 
