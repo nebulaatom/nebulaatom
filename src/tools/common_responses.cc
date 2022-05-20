@@ -58,7 +58,7 @@ void CommonResponses::GenericResponse_(HTTPServerResponse& response, HTTPRespons
 void CommonResponses::HTMLResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message)
 {
     response.setStatus(status);
-    response.setContentType("application/json");
+    response.setContentType("text/html");
     response.setChunkedTransferEncoding(true);
 
     std::ostream& out = response.send();
@@ -67,11 +67,12 @@ void CommonResponses::HTMLResponse_(HTTPServerResponse& response, HTTPResponse::
     if(found != responses_.end())
     {
         out <<
-            "<hmtl>"
-                "<head><title>" << responses_[status].second << " | CPW Woodpecker</head>"
+            "<html>"
+                "<head><title>" << status << " " << responses_[status].second << " | CPW Woodpecker</title></head>"
                 "<body>"
-                    "<center><h1>" << message << "</h1></center>"
-                    "<center>CPW Woodpecker/" << PACKAGE_VERSION_COMPLETE << "</center>"
+                    "<center><h1>Status: " << status << " " << responses_[status].second << "</h1></center>"
+                    "<center><h3>Message: " << message << "</h3></center>"
+                    "<center><hr>CPW Woodpecker/" << PACKAGE_VERSION_COMPLETE << "</center>"
                 "</body>"
             "</html>"
         ;
@@ -79,10 +80,11 @@ void CommonResponses::HTMLResponse_(HTTPServerResponse& response, HTTPResponse::
     else
     {
         out <<
-            "<hmtl>"
-                "<head><title>" << responses_[HTTPResponse::HTTP_INTERNAL_SERVER_ERROR].second << " | CPW Woodpecker</head>"
+            "<html>"
+                "<head><title>" << responses_[HTTPResponse::HTTP_INTERNAL_SERVER_ERROR].second << " | CPW Woodpecker</title></head>"
                 "<body>"
-                    "<center><h1>Error on HTTPStatus</h1></center>"
+                    "<center><h1>Status: " << HTTPResponse::HTTP_INTERNAL_SERVER_ERROR << " " << responses_[HTTPResponse::HTTP_INTERNAL_SERVER_ERROR].second << "</h1></center>"
+                    "<center><h3>Message: " << "Error in HTTPStatus." << "</h3></center>"
                     "<center>CPW Woodpecker/" << PACKAGE_VERSION_COMPLETE << "</center>"
                 "</body>"
             "</html>"
