@@ -13,13 +13,13 @@ variables:
 build-dependencies:
   stage: build
   script:
-    - apk --no-cache add \
-    make \
-    binutils \
-    g++ \
-    cmake \
-    poco-dev \
-    mariadb-dev
+    - apk --no-cache add
+      make
+      binutils
+      g++
+      cmake
+      poco-dev
+      mariadb-dev
 
 build-application:
   stage: build
