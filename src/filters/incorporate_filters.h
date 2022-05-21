@@ -16,30 +16,30 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_EXTRAS_INCORPORATEFILTERS_H
-#define CPW_EXTRAS_INCORPORATEFILTERS_H
+#ifndef CPW_FILTERS_INCORPORATEFILTERS_H
+#define CPW_FILTERS_INCORPORATEFILTERS_H
 
 
 #include <string>
 #include <vector>
 #include <memory>
 
-#include "tools/filters.h"
+#include "filters/filters.h"
 
 
 namespace CPW
 {
-    namespace Extras
+    namespace Filters
     {
         class IncorporateFilters;
     }
 }
 
 
-class CPW::Extras::IncorporateFilters
+class CPW::Filters::IncorporateFilters
 {
     public:
-        using FiltersSharedPtr = std::shared_ptr<Tools::Filters>;
+        using FiltersSharedPtr = std::shared_ptr<Filters>;
         using VectorString = std::vector<std::string>;
 
         IncorporateFilters(FiltersSharedPtr filters);
@@ -65,4 +65,4 @@ class CPW::Extras::IncorporateFilters
         FiltersSharedPtr current_filters_;
 };
 
-#endif // CPW_EXTRAS_INCORPORATEFILTERS_H
+#endif // CPW_FILTERS_INCORPORATEFILTERS_H

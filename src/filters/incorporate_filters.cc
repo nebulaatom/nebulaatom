@@ -16,9 +16,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "extras/incorporate_filters.h"
+#include "filters/incorporate_filters.h"
 
-using namespace CPW::Extras;
+using namespace CPW::Filters;
 
 IncorporateFilters::IncorporateFilters(FiltersSharedPtr filters) :
     current_filters_(filters)
