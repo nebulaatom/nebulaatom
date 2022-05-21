@@ -48,7 +48,7 @@ using namespace Poco::Net;
 class CPW::Tools::RequestsManager
 {
     public:
-        using MainFunctor = std::function<void(HTTPServerRequest&, HTTPServerResponse&)>;
+        using MainFunctor = std::function<void()>;
 
         RequestsManager();
         ~RequestsManager();

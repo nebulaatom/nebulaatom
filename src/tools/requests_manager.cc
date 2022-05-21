@@ -35,21 +35,21 @@ void RequestsManager::PrepareMethods_()
     actions_strings_.emplace(std::make_pair
     (
         "GET"
-        ,[&](HTTPServerRequest& req, HTTPServerResponse& res){http_methods_->HandleGETMethod_(req, res);}
+        ,[&](){http_methods_->HandleGETMethod_();}
     ));
     actions_strings_.emplace(std::make_pair
     (
         "POST"
-        ,[&](HTTPServerRequest& req, HTTPServerResponse& res){http_methods_->HandlePOSTMethod_(req, res);}
+        ,[&](){http_methods_->HandlePOSTMethod_();}
     ));
     actions_strings_.emplace(std::make_pair
     (
         "PUT"
-        ,[&](HTTPServerRequest& req, HTTPServerResponse& res){http_methods_->HandlePUTMethod_(req, res);}
+        ,[&](){http_methods_->HandlePUTMethod_();}
     ));
     actions_strings_.emplace(std::make_pair
     (
         "DEL"
-        ,[&](HTTPServerRequest& req, HTTPServerResponse& res){http_methods_->HandleDELMethod_(req, res);}
+        ,[&](){http_methods_->HandleDELMethod_();}
     ));
 }
