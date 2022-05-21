@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_TOOLS_FILTERS_H
-#define CPW_TOOLS_FILTERS_H
+#ifndef CPW_FILTERS_FILTERS_H
+#define CPW_FILTERS_FILTERS_H
 
 
 #include <string>
@@ -29,7 +29,7 @@
 
 namespace CPW
 {
-    namespace Tools
+    namespace Filters
     {
         enum class FilterType;
         class Filters;
@@ -40,7 +40,7 @@ namespace CPW
 using namespace CPW::Extras;
 
 
-enum class CPW::Tools::FilterType
+enum class CPW::Filters::FilterType
 {
     kFields
     ,kPage
@@ -59,7 +59,7 @@ enum class CPW::Tools::FilterType
 };
 
 
-class CPW::Tools::Filters
+class CPW::Filters::Filters
 {
     public:
         using ValuesPropertiesVector = std::vector<ValuesProperties>;
@@ -130,7 +130,7 @@ class CPW::Tools::Filters
             auto& var = joins_;
             return var;
         }
-        std::map<std::string, Tools::FilterType>& get_filters_type_map()
+        std::map<std::string, FilterType>& get_filters_type_map()
         {
             auto& var = filters_type_map_;
             return var;
@@ -158,8 +158,8 @@ class CPW::Tools::Filters
         std::vector<ValuesPropertiesVector> values_;
         MapForValues set_;
         std::map<std::array<std::string, 2>, MapForValues> joins_;
-        std::map<std::string, Tools::FilterType> filters_type_map_;
+        std::map<std::string, FilterType> filters_type_map_;
 };
 
 
-#endif // CPW_TOOLS_FILTERS_H
+#endif // CPW_FILTERS_FILTERS_H
