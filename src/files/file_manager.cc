@@ -16,9 +16,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "tools/file_manager.h"
+#include "files/file_manager.h"
 
-using namespace CPW::Tools;
+using namespace CPW::Files;
 
 FileManager::FileManager() :
     operation_type_(OperationType::kDownload)
@@ -37,8 +37,8 @@ FileManager::~FileManager()
 
 void FileManager::handlePart(const MessageHeader& header, std::istream& stream)
 {
-    Extras::File tmp_file;
-    Extras::File current_file;
+    Files::File tmp_file;
+    Files::File current_file;
     // Get header parameters
         current_file.set_content_type(header.get("Content-Type", "(unspecified)"));
         current_file.set_name(SplitHeaderValue_(header, "Content-Disposition", "name"));
@@ -59,8 +59,8 @@ void FileManager::handlePart(const MessageHeader& header, std::istream& stream)
         CheckTargetFilename_(current_file, directory_for_uploaded_files_);
 
     // Add new file and its temporal file
-        current_file.get_requested_file().reset(new File(*current_file.get_requested_path()));
-        current_file.get_tmp_file().reset(new File(*tmp_file.get_requested_path()));
+        current_file.get_requested_file().reset(new Poco::File(*current_file.get_requested_path()));
+        current_file.get_tmp_file().reset(new Poco::File(*tmp_file.get_requested_path()));
         files_.push_back(current_file);
 }
 
@@ -87,7 +87,7 @@ std::string FileManager::GenerateName_(std::string name)
     return new_name;
 }
 
-bool FileManager::CheckFile_(Extras::File& current_file)
+bool FileManager::CheckFile_(Files::File& current_file)
 {
     auto& requested_path = current_file.get_requested_path();
     auto& requested_file = current_file.get_requested_file();
@@ -107,7 +107,7 @@ bool FileManager::CheckFile_(Extras::File& current_file)
                     requested_path->makeDirectory();
                     requested_path->setFileName("index.html");
 
-                    requested_file.reset(new File(*requested_path));
+                    requested_file.reset(new Poco::File(*requested_path));
 
                     if(!requested_file->exists())
                         return false;
@@ -142,12 +142,12 @@ bool FileManager::CheckFiles_()
     return true;
 }
 
-bool FileManager::IsSupported_(Extras::File& file)
+bool FileManager::IsSupported_(Files::File& file)
 {
     if(file.get_requested_path() == nullptr)
         return false;
 
-    auto basic_operations = [&file](Extras::FileProperties& properties)
+    auto basic_operations = [&file](Files::FileProperties& properties)
     {
         file.set_file_properties(properties);
         file.set_content_type(properties.get_content_type());
@@ -176,7 +176,7 @@ bool FileManager::IsSupported_(Extras::File& file)
     }
 }
 
-void FileManager::ProcessContentLength_(Extras::File& file)
+void FileManager::ProcessContentLength_(Files::File& file)
 {
     if(file.get_requested_file() == nullptr)
     {
@@ -197,7 +197,7 @@ void FileManager::DownloadFile_(std::ostream& out_response)
 
     switch(files_.front().get_file_type())
     {
-        case Extras::FileType::kBinary:
+        case Files::FileType::kBinary:
         {
             std::ifstream requested_file(files_.front().get_requested_file()->path(), std::ios::binary | std::ios::ate);
 
@@ -213,7 +213,7 @@ void FileManager::DownloadFile_(std::ostream& out_response)
 
             break;
         }
-        case Extras::FileType::kTextPlain:
+        case Files::FileType::kTextPlain:
         {
             std::string text_line;
             std::ifstream requested_file(files_.front().get_requested_file()->path());
@@ -240,7 +240,7 @@ void FileManager::UploadFile_()
             std::string target = file_it.get_tmp_file()->path();
             std::string destiny = file_it.get_requested_file()->path();
 
-            auto tmp_file = File(Path(target));
+            auto tmp_file = Poco::File(Path(target));
             tmp_file.moveTo(destiny);
 
             object->set("name", file_it.get_name());
@@ -279,7 +279,7 @@ std::string FileManager::SplitHeaderValue_(const MessageHeader& header, std::str
         return "";
 }
 
-void FileManager::CheckTargetFilename_(Extras::File& file, std::string directory)
+void FileManager::CheckTargetFilename_(Files::File& file, std::string directory)
 {
     bool check = false;
 
@@ -289,7 +289,7 @@ void FileManager::CheckTargetFilename_(Extras::File& file, std::string directory
         (
             new Path(directory + "/" + GenerateName_(file.get_filename()))
         );
-        file.get_requested_file().reset(new File(*file.get_requested_path()));
+        file.get_requested_file().reset(new Poco::File(*file.get_requested_path()));
 
         check = CheckFile_(file);
     }
@@ -306,36 +306,36 @@ void FileManager::ProcessFileType_()
             bool file_is_binary = file_it.get_file_properties()->get_binary();
 
             if(file_is_binary)
-                file_it.set_file_type(Extras::FileType::kBinary);
+                file_it.set_file_type(Files::FileType::kBinary);
             else
-                file_it.set_file_type(Extras::FileType::kTextPlain);
+                file_it.set_file_type(Files::FileType::kTextPlain);
         }
         else
-            file_it.set_file_type(Extras::FileType::kBinary);
+            file_it.set_file_type(Files::FileType::kBinary);
     }
 }
 
 void FileManager::AddSupportedFiles_()
 {
-    supported_files_.emplace(std::make_pair("html", Extras::FileProperties{"text/html", false, {"htm", "html5"}}));
-    supported_files_.emplace(std::make_pair("js", Extras::FileProperties{"application/javascript", false, {"js5"}}));
-    supported_files_.emplace(std::make_pair("css",Extras::FileProperties{"text/css", false, {"css3"}}));
-    supported_files_.emplace(std::make_pair("jpeg",Extras::FileProperties{"image/jpeg", false, {"jpeg", "jpg"}}));
-    supported_files_.emplace(std::make_pair("png",Extras::FileProperties{"image/png", true, {""}}));
-    supported_files_.emplace(std::make_pair("svg",Extras::FileProperties{"image/svg+xml", true, {""}}));
-    supported_files_.emplace(std::make_pair("ttf",Extras::FileProperties{"font/ttf", true, {""}}));
-    supported_files_.emplace(std::make_pair("woff",Extras::FileProperties{"font/woff", true, {""}}));
-    supported_files_.emplace(std::make_pair("woff2",Extras::FileProperties{"font/woff2", true, {""}}));
-    supported_files_.emplace(std::make_pair("xhtml",Extras::FileProperties{"application/xhtml+xml", true, {""}}));
-    supported_files_.emplace(std::make_pair("webm",Extras::FileProperties{"video/webm", true, {""}}));
-    supported_files_.emplace(std::make_pair("xml",Extras::FileProperties{"application/xml", true, {""}}));
-    supported_files_.emplace(std::make_pair("zip",Extras::FileProperties{"application/zip", true, {""}}));
-    supported_files_.emplace(std::make_pair("wav",Extras::FileProperties{"audio/x-wav", true, {""}}));
-    supported_files_.emplace(std::make_pair("pdf",Extras::FileProperties{"application/pdf", true, {""}}));
-    supported_files_.emplace(std::make_pair("mpeg",Extras::FileProperties{"video/mpeg", true, {""}}));
-    supported_files_.emplace(std::make_pair("json",Extras::FileProperties{"application/json", true, {""}}));
-    supported_files_.emplace(std::make_pair("ico",Extras::FileProperties{"image/x-icon", true, {""}}));
-    supported_files_.emplace(std::make_pair("gif",Extras::FileProperties{"image/gif", true, {""}}));
-    supported_files_.emplace(std::make_pair("avi",Extras::FileProperties{"video/x-msvideo", true, {""}}));
-    supported_files_.emplace(std::make_pair("txt",Extras::FileProperties{"text/plain", true, {""}}));
+    supported_files_.emplace(std::make_pair("html", Files::FileProperties{"text/html", false, {"htm", "html5"}}));
+    supported_files_.emplace(std::make_pair("js", Files::FileProperties{"application/javascript", false, {"js5"}}));
+    supported_files_.emplace(std::make_pair("css",Files::FileProperties{"text/css", false, {"css3"}}));
+    supported_files_.emplace(std::make_pair("jpeg",Files::FileProperties{"image/jpeg", false, {"jpeg", "jpg"}}));
+    supported_files_.emplace(std::make_pair("png",Files::FileProperties{"image/png", true, {""}}));
+    supported_files_.emplace(std::make_pair("svg",Files::FileProperties{"image/svg+xml", true, {""}}));
+    supported_files_.emplace(std::make_pair("ttf",Files::FileProperties{"font/ttf", true, {""}}));
+    supported_files_.emplace(std::make_pair("woff",Files::FileProperties{"font/woff", true, {""}}));
+    supported_files_.emplace(std::make_pair("woff2",Files::FileProperties{"font/woff2", true, {""}}));
+    supported_files_.emplace(std::make_pair("xhtml",Files::FileProperties{"application/xhtml+xml", true, {""}}));
+    supported_files_.emplace(std::make_pair("webm",Files::FileProperties{"video/webm", true, {""}}));
+    supported_files_.emplace(std::make_pair("xml",Files::FileProperties{"application/xml", true, {""}}));
+    supported_files_.emplace(std::make_pair("zip",Files::FileProperties{"application/zip", true, {""}}));
+    supported_files_.emplace(std::make_pair("wav",Files::FileProperties{"audio/x-wav", true, {""}}));
+    supported_files_.emplace(std::make_pair("pdf",Files::FileProperties{"application/pdf", true, {""}}));
+    supported_files_.emplace(std::make_pair("mpeg",Files::FileProperties{"video/mpeg", true, {""}}));
+    supported_files_.emplace(std::make_pair("json",Files::FileProperties{"application/json", true, {""}}));
+    supported_files_.emplace(std::make_pair("ico",Files::FileProperties{"image/x-icon", true, {""}}));
+    supported_files_.emplace(std::make_pair("gif",Files::FileProperties{"image/gif", true, {""}}));
+    supported_files_.emplace(std::make_pair("avi",Files::FileProperties{"video/x-msvideo", true, {""}}));
+    supported_files_.emplace(std::make_pair("txt",Files::FileProperties{"text/plain", true, {""}}));
 }

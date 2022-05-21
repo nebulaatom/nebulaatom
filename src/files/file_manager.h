@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_TOOLS_FILEMANAGER_H
-#define CPW_TOOLS_FILEMANAGER_H
+#ifndef CPW_FILES_FILEMANAGER_H
+#define CPW_FILES_FILEMANAGER_H
 
 
 #include <string>
@@ -41,13 +41,13 @@
 #include <Poco/JSON/Array.h>
 #include <Poco/JSON/Object.h>
 
-#include "extras/file_properties.h"
-#include "extras/file.h"
+#include "files/file_properties.h"
+#include "files/file.h"
 
 
 namespace CPW
 {
-    namespace Tools
+    namespace Files
     {
         enum class OperationType;
         enum class FileType;
@@ -59,7 +59,7 @@ using namespace Poco;
 using namespace Poco::Net;
 
 
-enum class CPW::Tools::OperationType
+enum class CPW::Files::OperationType
 {
     kDownload
     ,kUpload
@@ -67,13 +67,13 @@ enum class CPW::Tools::OperationType
 };
 
 
-class CPW::Tools::FileManager: public Net::PartHandler
+class CPW::Files::FileManager: public Net::PartHandler
 {
     public:
         FileManager();
         ~FileManager();
 
-        std::map<std::string, Extras::FileProperties>& get_supported_files()
+        std::map<std::string, Files::FileProperties>& get_supported_files()
         {
             auto& var = supported_files_;
             return var;
@@ -83,7 +83,7 @@ class CPW::Tools::FileManager: public Net::PartHandler
         std::string get_directory_for_uploaded_files() const{return directory_for_uploaded_files_;}
         std::string get_directory_for_temp_files() const{return directory_for_temp_files_;}
         JSON::Array::Ptr get_result() const {return result_;}
-        std::vector<Extras::File>& get_files()
+        std::vector<Files::File>& get_files()
         {
             auto& var = files_;
             return var;
@@ -93,10 +93,10 @@ class CPW::Tools::FileManager: public Net::PartHandler
 
         void handlePart(const MessageHeader& header, std::istream& stream) override;
         std::string GenerateName_(std::string name);
-        bool CheckFile_(Extras::File& current_file);
+        bool CheckFile_(Files::File& current_file);
         bool CheckFiles_();
-        bool IsSupported_(Extras::File& file);
-        void ProcessContentLength_(Extras::File& file);
+        bool IsSupported_(Files::File& file);
+        void ProcessContentLength_(Files::File& file);
         void ProcessFileType_();
         void DownloadFile_(std::ostream& out_response);
         void UploadFile_();
@@ -104,18 +104,18 @@ class CPW::Tools::FileManager: public Net::PartHandler
 
     protected:
         std::string SplitHeaderValue_(const MessageHeader& header, std::string header_name, std::string parameter);
-        void CheckTargetFilename_(Extras::File& file, std::string directory);
+        void CheckTargetFilename_(Files::File& file, std::string directory);
 
     private:
         void AddSupportedFiles_();
 
-        std::map<std::string, Extras::FileProperties> supported_files_;
+        std::map<std::string, Files::FileProperties> supported_files_;
         OperationType operation_type_;
         std::string directory_base_;
         std::string directory_for_uploaded_files_;
         std::string directory_for_temp_files_;
         JSON::Array::Ptr result_;
-        std::vector<Extras::File> files_;
+        std::vector<Files::File> files_;
 };
 
-#endif // CPW_TOOLS_FILEMANAGER_H
+#endif // CPW_FILES_FILEMANAGER_H
