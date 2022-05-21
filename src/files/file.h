@@ -2,8 +2,8 @@
 // SPDX-FileCopyrightText: 2022 <copyright holder> <email>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef EXTRAS_FILE_H
-#define EXTRAS_FILE_H
+#ifndef CPW_FILES_FILE_H
+#define CPW_FILES_FILE_H
 
 
 #include <string>
@@ -12,12 +12,12 @@
 #include "Poco/Path.h"
 #include "Poco/File.h"
 
-#include "extras/file_properties.h"
+#include "files/file_properties.h"
 
 
 namespace CPW
 {
-    namespace Extras
+    namespace Files
     {
         enum class FileType;
         class File;
@@ -27,14 +27,14 @@ namespace CPW
 using namespace Poco;
 
 
-enum class CPW::Extras::FileType
+enum class CPW::Files::FileType
 {
     kBinary
     ,kTextPlain
 };
 
 
-class CPW::Extras::File
+class CPW::Files::File
 {
     public:
         File();
@@ -46,7 +46,7 @@ class CPW::Extras::File
         std::string get_name() const {return name_;}
         std::string get_filename() const {return filename_;}
 
-		Extras::FileProperties* get_file_properties(){return file_properties_;};
+		Files::FileProperties* get_file_properties(){return file_properties_;};
 		std::shared_ptr<Path>& get_requested_path()
         {
             auto& var = requested_path_;
@@ -70,7 +70,7 @@ class CPW::Extras::File
         void set_content_type(std::string content_type) {content_type_ = content_type;}
         void set_name(std::string name) {name_ = name;}
         void set_filename(std::string filename) {filename_ = filename;}
-        void set_file_properties(Extras::FileProperties& file_properties){file_properties_ = &file_properties;}
+        void set_file_properties(Files::FileProperties& file_properties){file_properties_ = &file_properties;}
 
     private:
         std::size_t content_length_;
@@ -78,10 +78,10 @@ class CPW::Extras::File
         std::string name_;
         std::string filename_;
         FileType file_type_;
-        Extras::FileProperties* file_properties_;
+        Files::FileProperties* file_properties_;
         std::shared_ptr<Path> requested_path_;
         std::shared_ptr<Poco::File> requested_file_;
         std::shared_ptr<Poco::File> tmp_file_;
 };
 
-#endif // EXTRAS_FILE_H
+#endif // CPW_FILES_FILE_H
