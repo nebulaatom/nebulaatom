@@ -39,11 +39,14 @@ class CPW::Handlers::NullHandler : public RootHandler
         virtual ~NullHandler();
 
     protected:
-        virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response) override;
-        virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) override;
-        virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response) override;
-        virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response) override;
+        virtual void HandleGETMethod_() override;
+        virtual void HandlePOSTMethod_() override;
+        virtual void HandlePUTMethod_() override;
+        virtual void HandleDELMethod_() override;
         virtual void AddRoutes_() override;
+
+    private:
+        void NullResponse_();
 };
 
 #endif // CPW_HANDLERS_NULLHANDLER_H

@@ -25,27 +25,37 @@ NullHandler::~NullHandler()
 
 }
 
-void NullHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+void NullHandler::HandleGETMethod_()
 {
-    HTMLResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Sorry, content not found from" + request.getMethod() + " request.");
+    NullResponse_();
 }
 
-void NullHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+void NullHandler::HandlePOSTMethod_()
 {
-    HTMLResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Sorry, content not found from" + request.getMethod() + " request.");
+    NullResponse_();
 }
 
-void NullHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+void NullHandler::HandlePUTMethod_()
 {
-    HTMLResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Sorry, content not found from" + request.getMethod() + " request.");
+    NullResponse_();
 }
 
-void NullHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+void NullHandler::HandleDELMethod_()
 {
-    HTMLResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Sorry, content not found from" + request.getMethod() + " request.");
+    NullResponse_();
 }
 
 void NullHandler::AddRoutes_()
 {
 
+}
+
+void NullHandler::NullResponse_()
+{
+    HTMLResponse_
+    (
+        *get_dynamic_elements()->get_response()
+        ,HTTPResponse::HTTP_NOT_FOUND
+        ,"Sorry, content not found from" + get_dynamic_elements()->get_request()->getMethod() + " request."
+    );
 }
