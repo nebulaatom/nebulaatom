@@ -25,6 +25,10 @@
 #include <memory>
 
 #include "Poco/Util/ServerApplication.h"
+#include <Poco/Net/HTTPRequestHandler.h>
+#include <Poco/Net/HTTPServerRequest.h>
+#include <Poco/Net/HTTPResponse.h>
+#include <Poco/Net/HTTPServerResponse.h>
 
 #include "query/query_actions.h"
 #include "tools/route.h"
@@ -63,8 +67,12 @@ class CPW::Extras::DynamicElements
         }
         Application& get_app() const {return app_;};
         RouteSharedPtr get_requested_route() const {return requested_route_;}
+        HTTPServerRequest* get_request() const {return request_;}
+        HTTPServerResponse* get_response() const {return response_;}
 
         void set_requested_route(RouteSharedPtr requested_route) {requested_route_ = requested_route;}
+        void set_request(HTTPServerRequest& request) {request_ = &request;}
+        void set_response(HTTPServerResponse& response) {response_ = &response;}
 
     protected:
         RouteSharedPtr requested_route_;
@@ -73,6 +81,8 @@ class CPW::Extras::DynamicElements
         std::list<Tools::Route> routes_list_;
         std::shared_ptr<Query::QueryActions> query_actions_;
         Application& app_;
+        HTTPServerRequest* request_;
+        HTTPServerResponse* response_;
 };
 
 #endif // CPW_EXTRAS_DYNAMICELEMENTS_H
