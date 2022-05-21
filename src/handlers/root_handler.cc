@@ -104,12 +104,12 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
         GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
-    catch(std::exception& error)
+    catch(std::runtime_error& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
         GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
-    catch(std::runtime_error& error)
+    catch(std::exception& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
         GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));

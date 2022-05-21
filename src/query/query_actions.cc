@@ -149,13 +149,13 @@ bool QueryActions::ExecuteQuery_(HTTPServerResponse& response)
         app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.displayText()));
         return false;
     }
-    catch(std::exception& error)
+    catch(std::runtime_error& error)
     {
         GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, std::string(error.what()));
         app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
         return false;
     }
-    catch(std::runtime_error& error)
+    catch(std::exception& error)
     {
         GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, std::string(error.what()));
         app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
@@ -185,12 +185,12 @@ bool QueryActions::ExecuteQuery_()
         app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.displayText()));
         return false;
     }
-    catch(std::exception& error)
+    catch(std::runtime_error& error)
     {
         app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
         return false;
     }
-    catch(std::runtime_error& error)
+    catch(std::exception& error)
     {
         app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
         return false;
