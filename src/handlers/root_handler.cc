@@ -40,6 +40,11 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 {
     try
     {
+        dynamic_elements_->set_request(request);
+        dynamic_elements_->set_response(response);
+        if(dynamic_elements_->get_request() == nullptr || dynamic_elements_->get_response() == nullptr)
+            GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Something was wrong with the request or response.");
+
         AddRoutes_();
 
         std::vector<std::string> segments;
@@ -50,7 +55,7 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
         {
             case CPW::Tools::RouteType::kEndpoint:
             {
-                if(!ManageRequestBody_(request))
+                if(!ManageRequestBody_())
                 {
                     GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Something was wrong with the Request body.");
                     return;
@@ -65,7 +70,7 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
                     }
                 }
 
-                if(!InitSecurityProccess_(request, response))
+                if(!InitSecurityProccess_())
                     return;
 
                 break;
@@ -77,12 +82,12 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
         }
 
         // Found the corresponding HTTP method
-            auto method = requests_manager_.get_actions_strings().find(request.getMethod());
+            auto method = requests_manager_.get_actions_strings().find(dynamic_elements_->get_request()->getMethod());
             if(method == requests_manager_.get_actions_strings().end())
                 GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
 
         // Call the corresponding HTTP method
-            requests_manager_.get_actions_strings()[request.getMethod()](request, response);
+            requests_manager_.get_actions_strings()[dynamic_elements_->get_request()->getMethod()]();
     }
     catch(MySQL::MySQLException& error)
     {
@@ -116,20 +121,20 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
     }
 }
 
-bool RootHandler::InitSecurityProccess_(HTTPServerRequest& request, HTTPServerResponse& response)
+bool RootHandler::InitSecurityProccess_()
 {
     current_security_.get_dynamic_elements().set_requested_route(dynamic_elements_->get_requested_route());
     if(current_security_.AuthenticateUser_())
     {
-        if(!current_security_.VerifyPermissions_(request.getMethod()))
+        if(!current_security_.VerifyPermissions_(dynamic_elements_->get_request()->getMethod()))
         {
-            GenericResponse_(response, HTTPResponse::HTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
+            GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
             return false;
         }
     }
     else
     {
-        GenericResponse_(response, HTTPResponse::HTTP_UNAUTHORIZED, "Unauthorized user or wrong user or password.");
+        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "Unauthorized user or wrong user or password.");
         return false;
     }
 
@@ -150,14 +155,14 @@ bool RootHandler::IdentifyRoute_()
     return false;
 }
 
-bool RootHandler::ManageRequestBody_(HTTPServerRequest& request)
+bool RootHandler::ManageRequestBody_()
 {
     auto query_actions = dynamic_elements_->get_query_actions();
-    std::string request_body = query_actions->ReadBody_(request.stream());
+    std::string request_body = query_actions->ReadBody_(dynamic_elements_->get_request()->stream());
 
     if(request_body.empty())
     {
-        URI tmp_uri(request.getURI());
+        URI tmp_uri(dynamic_elements_->get_request()->getURI());
         if(!(tmp_uri.getQueryParameters().size() > 0))
             return false;
 
