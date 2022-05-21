@@ -52,10 +52,10 @@
 #include <Poco/Dynamic/Struct.h>
 
 #include "tools/route.h"
-#include "tools/common_responses.h"
+#include "http/common_responses.h"
 #include "extras/security_verification.h"
 #include "extras/dynamic_elements.h"
-#include "extras/http_methods.h"
+#include "http/http_methods.h"
 #include "tools/requests_manager.h"
 #include "tools/manage_json.h"
 
@@ -79,8 +79,8 @@ using Poco::Data::Statement;
 
 class CPW::Handlers::RootHandler :
     public HTTPRequestHandler
-    ,public Tools::CommonResponses
-    ,public Extras::HTTPMethods
+    ,public HTTP::CommonResponses
+    ,public HTTP::HTTPMethods
 {
     public:
         RootHandler(std::string api_version);

@@ -42,7 +42,7 @@
 
 #include "tools/handler_connection.h"
 #include "tools/route.h"
-#include "tools/common_responses.h"
+#include "http/common_responses.h"
 #include "handlers/root_handler.h"
 #include "handlers/null_handler.h"
 #include "handlers/backend_handler.h"
@@ -73,7 +73,7 @@ enum class CPW::Core::HandlerType
 
 class CPW::Core::HandlerFactory :
     public HTTPRequestHandlerFactory
-    ,public CPW::Tools::CommonResponses
+    ,public CPW::HTTP::CommonResponses
 {
     public:
         HandlerFactory();

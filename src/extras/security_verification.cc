@@ -51,7 +51,7 @@ bool SecurityVerification::AuthenticateUser_()
         }
 
     // Execute the query
-        query_actions->ComposeQuery_(Core::TypeAction::kSelect, "users");
+        query_actions->ComposeQuery_(Query::TypeAction::kSelect, "users");
         if(!query_actions->ExecuteQuery_())
             return false;
 
@@ -138,7 +138,7 @@ bool SecurityVerification::SeePermissionsPerUser_(std::string user, std::string 
         iquals.emplace(std::make_pair("p.name", Extras::ValuesProperties{target, true}));
 
     // Data sentences
-        query_actions->ComposeQuery_(Core::TypeAction::kSelect, "permissions_log pl");
+        query_actions->ComposeQuery_(Query::TypeAction::kSelect, "permissions_log pl");
         if(query_actions->ExecuteQuery_())
             return true;
         else

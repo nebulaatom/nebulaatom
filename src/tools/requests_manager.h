@@ -30,7 +30,7 @@
 #include <Poco/Net/HTTPResponse.h>
 #include <Poco/Net/HTTPServerResponse.h>
 
-#include "extras/http_methods.h"
+#include "http/http_methods.h"
 
 
 namespace CPW
@@ -58,8 +58,8 @@ class CPW::Tools::RequestsManager
             auto& var = actions_strings_;
             return var;
         }
-        Extras::HTTPMethods* get_http_methods(){return http_methods_;}
-        void set_http_methods(Extras::HTTPMethods& http_methods)
+        HTTP::HTTPMethods* get_http_methods(){return http_methods_;}
+        void set_http_methods(HTTP::HTTPMethods& http_methods)
         {
             http_methods_ = &http_methods;
         }
@@ -69,7 +69,7 @@ class CPW::Tools::RequestsManager
 
     private:
         std::map<std::string, MainFunctor> actions_strings_;
-        Extras::HTTPMethods* http_methods_;
+        HTTP::HTTPMethods* http_methods_;
 };
 
 #endif // CPW_TOOLS_REQUESTSMANAGER_H

@@ -40,14 +40,14 @@ void FrontendHandler::AddRoutes_()
 void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
     // Manage the file
-        auto tmp_file = Extras::File("file", Path(request.getURI()).getFileName(), "", 0);
+        auto tmp_file = Files::File("file", Path(request.getURI()).getFileName(), "", 0);
         tmp_file.get_requested_path().reset(new Path(file_manager_.get_directory_base() + request.getURI(), Path::PATH_NATIVE));
         tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
 
         file_manager_.get_files().push_back(tmp_file);
 
     // Basic operations
-        file_manager_.set_operation_type(Tools::OperationType::kDownload);
+        file_manager_.set_operation_type(Files::OperationType::kDownload);
         if(!file_manager_.CheckFiles_())
         {
             HTMLResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
@@ -77,7 +77,7 @@ void FrontendHandler::HandleGETMethod_(HTTPServerRequest& request, HTTPServerRes
 void FrontendHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
     // Manage the file
-        file_manager_.set_operation_type(Tools::OperationType::kUpload);
+        file_manager_.set_operation_type(Files::OperationType::kUpload);
         HTMLForm form(request, request.stream(), file_manager_);
 
     // Basic operations
@@ -109,14 +109,14 @@ void FrontendHandler::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerRe
 void FrontendHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
     // Manage the file
-        auto tmp_file = Extras::File("file", Path(request.getURI()).getFileName(), "", 0);
+        auto tmp_file = Files::File("file", Path(request.getURI()).getFileName(), "", 0);
         tmp_file.get_requested_path().reset(new Path(file_manager_.get_directory_base() + request.getURI(), Path::PATH_NATIVE));
         tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
 
         file_manager_.get_files().push_back(tmp_file);
 
     // Basic operations
-        file_manager_.set_operation_type(Tools::OperationType::kDelete);
+        file_manager_.set_operation_type(Files::OperationType::kDelete);
         if(!file_manager_.CheckFiles_())
         {
             HTMLResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
@@ -129,7 +129,7 @@ void FrontendHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerRes
 
     // Upload
         file_manager_.get_result()->clear();
-        file_manager_.set_operation_type(Tools::OperationType::kUpload);
+        file_manager_.set_operation_type(Files::OperationType::kUpload);
         HTMLForm form(request, request.stream(), file_manager_);
 
         if(!file_manager_.IsSupported_(file_manager_.get_files().front()))
@@ -157,14 +157,14 @@ void FrontendHandler::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerRes
 void FrontendHandler::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
 {
     // Manage file
-        auto tmp_file = Extras::File("file", Path(request.getURI()).getFileName(), "", 0);
+        auto tmp_file = Files::File("file", Path(request.getURI()).getFileName(), "", 0);
         tmp_file.get_requested_path().reset(new Path(file_manager_.get_directory_base() + request.getURI(), Path::PATH_NATIVE));
         tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
 
         file_manager_.get_files().push_back(tmp_file);
 
     // Basic operations
-        file_manager_.set_operation_type(Tools::OperationType::kDelete);
+        file_manager_.set_operation_type(Files::OperationType::kDelete);
         if(!file_manager_.CheckFiles_())
         {
             HTMLResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");

@@ -24,7 +24,7 @@
 #include <vector>
 
 #include "handlers/root_handler.h"
-#include "tools/file_manager.h"
+#include "files/file_manager.h"
 
 
 namespace CPW
@@ -50,7 +50,7 @@ class CPW::Handlers::FrontendHandler : public RootHandler
         virtual void AddRoutes_() override;
 
     private:
-        Tools::FileManager file_manager_;
+        Files::FileManager file_manager_;
 };
 
 #endif // CPW_HANDLERS_FRONTENDHANDLER_H

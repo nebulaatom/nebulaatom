@@ -21,7 +21,7 @@
 using namespace CPW::Extras;
 
 DynamicElements::DynamicElements() :
-    query_actions_(new Core::QueryActions)
+    query_actions_(new Query::QueryActions)
     ,app_(Application::instance())
 {
     requested_route_ = std::make_shared<Tools::Route>("", std::vector<std::string>{""});

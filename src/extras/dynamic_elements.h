@@ -26,7 +26,7 @@
 
 #include "Poco/Util/ServerApplication.h"
 
-#include "core/query_actions.h"
+#include "query/query_actions.h"
 #include "tools/route.h"
 
 
@@ -56,7 +56,7 @@ class CPW::Extras::DynamicElements
             auto& var = routes_list_;
             return var;
         }
-        std::shared_ptr<Core::QueryActions>& get_query_actions()
+        std::shared_ptr<Query::QueryActions>& get_query_actions()
         {
             auto& var = query_actions_;
             return var;
@@ -71,7 +71,7 @@ class CPW::Extras::DynamicElements
 
     private:
         std::list<Tools::Route> routes_list_;
-        std::shared_ptr<Core::QueryActions> query_actions_;
+        std::shared_ptr<Query::QueryActions> query_actions_;
         Application& app_;
 };
 
