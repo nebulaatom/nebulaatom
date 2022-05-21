@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_EXTRAS_HTTPMETHODS_H
-#define CPW_EXTRAS_HTTPMETHODS_H
+#ifndef CPW_HTTP_HTTPMETHODS_H
+#define CPW_HTTP_HTTPMETHODS_H
 
 
 #include <Poco/Net/HTTPServerRequest.h>
@@ -25,12 +25,12 @@
 #include <Poco/Net/HTTPServerResponse.h>
 
 #include "extras/dynamic_elements.h"
-#include "tools/common_responses.h"
+#include "http/common_responses.h"
 
 
 namespace CPW
 {
-    namespace Extras
+    namespace HTTP
     {
         class HTTPMethods;
     }
@@ -41,7 +41,7 @@ using namespace Poco::Net;
 using namespace Poco::Util;
 
 
-class CPW::Extras::HTTPMethods
+class CPW::HTTP::HTTPMethods
 {
     public:
         using DynamicElementSharedPtr = std::shared_ptr<Extras::DynamicElements>;
@@ -58,11 +58,11 @@ class CPW::Extras::HTTPMethods
         virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
 
     protected:
-        bool QueryProcess_(Core::TypeAction action, HTTPServerResponse& response);
+        bool QueryProcess_(Query::TypeAction action, HTTPServerResponse& response);
 
     private:
         DynamicElementSharedPtr dynamic_elements_;
-        Tools::CommonResponses responses_;
+        CommonResponses responses_;
 };
 
-#endif // CPW_EXTRAS_HTTPMETHODS_H
+#endif // CPW_HTTP_HTTPMETHODS_H
