@@ -30,47 +30,47 @@ HTTPMethods::~HTTPMethods()
 
 }
 
-void HTTPMethods::HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+void HTTPMethods::HandleGETMethod_()
 {
-    if(!QueryProcess_(Query::TypeAction::kSelect, response))
+    if(!QueryProcess_(Query::TypeAction::kSelect))
         return;
 
-    response.setStatus(HTTPResponse::HTTP_OK);
-    response.setContentType("application/json");
-    response.setChunkedTransferEncoding(true);
+    dynamic_elements_->get_response()->setStatus(HTTPResponse::HTTP_OK);
+    dynamic_elements_->get_response()->setContentType("application/json");
+    dynamic_elements_->get_response()->setChunkedTransferEncoding(true);
 
-    std::ostream& out = response.send();
+    std::ostream& out = dynamic_elements_->get_response()->send();
     dynamic_elements_->get_query_actions()->get_result_json()->stringify(out);
     out.flush();
 }
 
-void HTTPMethods::HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+void HTTPMethods::HandlePOSTMethod_()
 {
-    if(!QueryProcess_(Query::TypeAction::kInsert, response))
+    if(!QueryProcess_(Query::TypeAction::kInsert))
         return;
 
-    responses_.GenericResponse_(response, HTTPResponse::HTTP_OK, "Ok.");
+    responses_.GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_OK, "Ok.");
 }
 
-void HTTPMethods::HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+void HTTPMethods::HandlePUTMethod_()
 {
-    if(!QueryProcess_(Query::TypeAction::kUpdate, response))
+    if(!QueryProcess_(Query::TypeAction::kUpdate))
         return;
 
-    responses_.GenericResponse_(response, HTTPResponse::HTTP_OK, "Ok.");
+    responses_.GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_OK, "Ok.");
 }
 
-void HTTPMethods::HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response)
+void HTTPMethods::HandleDELMethod_()
 {
-    if(!QueryProcess_(Query::TypeAction::kDelete, response))
+    if(!QueryProcess_(Query::TypeAction::kDelete))
         return;
 
-    responses_.GenericResponse_(response, HTTPResponse::HTTP_OK, "Ok.");
+    responses_.GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_OK, "Ok.");
 }
 
-bool HTTPMethods::QueryProcess_(Query::TypeAction action, HTTPServerResponse& response)
+bool HTTPMethods::QueryProcess_(Query::TypeAction action)
 {
     dynamic_elements_->get_query_actions()->IdentifyFilters_();
     dynamic_elements_->get_query_actions()->ComposeQuery_(action, dynamic_elements_->get_requested_route()->get_target());
-    return dynamic_elements_->get_query_actions()->ExecuteQuery_(response);
+    return dynamic_elements_->get_query_actions()->ExecuteQuery_(*dynamic_elements_->get_response());
 }

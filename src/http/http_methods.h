@@ -52,13 +52,13 @@ class CPW::HTTP::HTTPMethods
         DynamicElementSharedPtr get_dynamic_elements() const {return dynamic_elements_;}
         void set_dynamic_elements(DynamicElementSharedPtr dynamic_elements) {dynamic_elements_ = dynamic_elements;}
 
-        virtual void HandleGETMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
-        virtual void HandlePOSTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
-        virtual void HandlePUTMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
-        virtual void HandleDELMethod_(HTTPServerRequest& request, HTTPServerResponse& response);
+        virtual void HandleGETMethod_();
+        virtual void HandlePOSTMethod_();
+        virtual void HandlePUTMethod_();
+        virtual void HandleDELMethod_();
 
     protected:
-        bool QueryProcess_(Query::TypeAction action, HTTPServerResponse& response);
+        bool QueryProcess_(Query::TypeAction action);
 
     private:
         DynamicElementSharedPtr dynamic_elements_;
