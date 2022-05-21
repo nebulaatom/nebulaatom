@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_QUERYACTIONS_H
-#define CPW_QUERYACTIONS_H
+#ifndef CPW_QUERY_QUERYACTIONS_H
+#define CPW_QUERY_QUERYACTIONS_H
 
 
 #include <istream>
@@ -44,16 +44,16 @@
 #include <Poco/Data/RecordSet.h>
 
 #include "tools/manage_json.h"
-#include "tools/filters.h"
-#include "tools/identify_filter.h"
-#include "tools/common_responses.h"
-#include "extras/incorporate_filters.h"
+#include "filters/filters.h"
+#include "filters/identify_filter.h"
+#include "http/common_responses.h"
+#include "filters/incorporate_filters.h"
 #include "tools/row_value_formatter.h"
 
 
 namespace CPW
 {
-    namespace Core
+    namespace Query
     {
         enum class TypeAction;
         class QueryActions;
@@ -67,7 +67,7 @@ using namespace Poco::Data;
 using namespace Poco::Data::Keywords;
 
 
-enum class CPW::Core::TypeAction
+enum class CPW::Query::TypeAction
 {
     kInsert
     ,kSelect
@@ -76,16 +76,16 @@ enum class CPW::Core::TypeAction
 };
 
 
-class CPW::Core::QueryActions :
+class CPW::Query::QueryActions :
     public Tools::ManageJSON
-    ,public Tools::CommonResponses
+    ,public HTTP::CommonResponses
 {
     public:
         QueryActions();
         ~QueryActions();
 
         std::string get_final_query() const {return final_query_;}
-        std::shared_ptr<Tools::Filters>& get_current_filters_()
+        std::shared_ptr<Filters::Filters>& get_current_filters_()
         {
             auto& var = current_filters_;
             return var;
@@ -119,15 +119,15 @@ class CPW::Core::QueryActions :
 
     private:
         std::string final_query_;
-        std::shared_ptr<Tools::Filters> current_filters_;
-        std::unique_ptr<Extras::IncorporateFilters> incorporate_;
+        std::shared_ptr<Filters::Filters> current_filters_;
+        std::unique_ptr<Filters::IncorporateFilters> incorporate_;
         std::shared_ptr<Data::Session> session_;
         std::shared_ptr<Data::Statement> query_;
         JSON::Object::Ptr result_json_;
         Application& app_;
         std::shared_ptr<Tools::RowValueFormatter> row_value_formatter_;
-        Tools::IdentifyFilter identify_filter_;
+        Filters::IdentifyFilter identify_filter_;
 };
 
 
-#endif // CPW_QUERYACTIONS_H
+#endif // CPW_QUERY_QUERYACTIONS_H

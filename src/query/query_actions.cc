@@ -16,14 +16,14 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "query_actions.h"
+#include "query/query_actions.h"
 
-using namespace CPW::Core;
+using namespace CPW::Query;
 
 QueryActions::QueryActions() :
     final_query_("")
-    ,current_filters_(new Tools::Filters)
-    ,incorporate_(new Extras::IncorporateFilters(current_filters_))
+    ,current_filters_(new Filters::Filters)
+    ,incorporate_(new Filters::IncorporateFilters(current_filters_))
     ,result_json_(new JSON::Object)
     ,app_(Application::instance())
     ,identify_filter_(current_filters_)
@@ -52,7 +52,7 @@ void QueryActions::IdentifyFilters_()
 {
     try
     {
-        Tools::FilterType type;
+        Filters::FilterType type;
         auto pair = get_json_body()->getArray("pair-information");
 
         if(pair->size() < 1)
