@@ -16,9 +16,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "extras/file_properties.h"
+#include "files/file_properties.h"
 
-using namespace CPW::Extras;
+using namespace CPW::Files;
 
 FileProperties::FileProperties(std::string content_type, bool binary, std::vector<std::string> other_extensions) :
     content_type_(content_type)

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_EXTRAS_FILEPROPERTIES_H
-#define CPW_EXTRAS_FILEPROPERTIES_H
+#ifndef CPW_FILES_FILEPROPERTIES_H
+#define CPW_FILES_FILEPROPERTIES_H
 
 
 #include <string>
@@ -26,14 +26,14 @@
 
 namespace CPW
 {
-	namespace Extras
+	namespace Files
 	{
 		class FileProperties;
 	}
 }
 
 
-class CPW::Extras::FileProperties
+class CPW::Files::FileProperties
 {
 	public:
 		FileProperties(std::string content_type, bool binary, std::vector<std::string> other_extensions);
@@ -61,4 +61,4 @@ class CPW::Extras::FileProperties
 		std::vector<std::string> other_extensions_;
 };
 
-#endif // CPW_EXTRAS_FILEPROPERTIES_H
+#endif // CPW_FILES_FILEPROPERTIES_H
