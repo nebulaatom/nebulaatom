@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_TOOLS_IDENTIFYFILTER_H
-#define CPW_TOOLS_IDENTIFYFILTER_H
+#ifndef CPW_FILTERS_IDENTIFYFILTER_H
+#define CPW_FILTERS_IDENTIFYFILTER_H
 
 
 #include <stdexcept>
@@ -30,14 +30,14 @@
 #include <Poco/Dynamic/Var.h>
 #include <Poco/Dynamic/Struct.h>
 
-#include "tools/filters.h"
+#include "filters/filters.h"
 #include "tools/manage_json.h"
 #include "tools/row_value_formatter.h"
 
 
 namespace CPW
 {
-    namespace Tools
+    namespace Filters
     {
         class IdentifyFilter;
     }
@@ -46,13 +46,13 @@ namespace CPW
 using namespace Poco;
 
 
-class CPW::Tools::IdentifyFilter
+class CPW::Filters::IdentifyFilter
 {
     public:
-        IdentifyFilter(std::shared_ptr<Tools::Filters> current_filters);
+        IdentifyFilter(std::shared_ptr<Filters> current_filters);
         ~IdentifyFilter();
 
-		std::map<Tools::FilterType, std::function<void(Dynamic::Var&)>>& get_filter_type_functors()
+		std::map<FilterType, std::function<void(Dynamic::Var&)>>& get_filter_type_functors()
         {
             auto& var = filter_type_functors_;
             return var;
@@ -77,11 +77,11 @@ class CPW::Tools::IdentifyFilter
         ValuesProperties GetValue_(Dynamic::Var& var);
 
     private:
-		void MapFilterTypeFunctors_();
+        void MapFilterTypeFunctors_();
 
         Tools::ManageJSON manage_json_;
-		std::shared_ptr<Tools::Filters> current_filters_;
-		std::map<Tools::FilterType, std::function<void(Dynamic::Var&)>> filter_type_functors_;
+        std::shared_ptr<Filters> current_filters_;
+        std::map<FilterType, std::function<void(Dynamic::Var&)>> filter_type_functors_;
 };
 
-#endif // CPW_TOOLS_IDENTIFYFILTER_H
+#endif // CPW_FILTERS_IDENTIFYFILTER_H
