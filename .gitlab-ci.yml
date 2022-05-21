@@ -1,0 +1,61 @@
+image: alpine:3.15
+
+stages:
+  - build
+  - deploy
+
+variables:
+  VAR_LATEST_PROD: $CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:latest
+  VAR_TAG_PROD: $CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:$CI_COMMIT_TAG
+  VAR_LATEST_DEV: $CI_REGISTRY_IMAGE/dev:latest
+  VAR_TAG_DEV: $CI_REGISTRY_IMAGE/dev:$CI_COMMIT_TAG
+
+build-dependencies:
+  stage: build
+  script:
+    - apk --no-cache add \
+    make \
+    binutils \
+    g++ \
+    cmake \
+    poco-dev \
+    mariadb-dev
+
+build-application:
+  stage: build
+  script:
+    - mkdir ./build-app
+    - cd ./build-app
+    - cmake ../ -DCMAKE_INSTALL_PREFIX=/usr/local
+    - cmake --build ./
+    - cmake --build ./ --target install
+
+deploy-dev-container:
+  image: docker:latest
+  stage: deploy
+  services:
+    - docker:dind
+  script:
+    - docker build -t $VAR_TAG_DEV -t $VAR_LATEST_DEV .
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker push $VAR_TAG_DEV
+    - docker push $VAR_LATEST_DEV
+  only:
+    - tags
+  except:
+    - ^(?!dev).+
+
+deploy-prod-container:
+  image: docker:latest
+  stage: deploy
+  services:
+    - docker:dind
+  script:
+    - docker build -t $VAR_TAG_PROD -t $VAR_LATEST_PROD .
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker push $VAR_TAG_PROD
+    - docker push $VAR_LATEST_PROD
+  only:
+    - tags
+  except:
+    - ^(?!master).+
