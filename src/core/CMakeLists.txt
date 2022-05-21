@@ -7,11 +7,6 @@ add_library(handlerfactory OBJECT "handler_factory.cc")
 target_include_directories(handlerfactory PUBLIC ${HEADER} ${PROJECT_BINARY_DIR})
 set_target_properties(handlerfactory PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
-### queryactions
-add_library(queryactions OBJECT "query_actions.cc")
-target_include_directories(queryactions PUBLIC ${HEADER} ${PROJECT_BINARY_DIR})
-set_target_properties(queryactions PROPERTIES POSITION_INDEPENDENT_CODE 1)
-
 ## Shared and statics libraries
 
 ### woodpeckerserver

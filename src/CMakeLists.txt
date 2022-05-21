@@ -14,7 +14,11 @@ endif()
 
 add_subdirectory(core)
 add_subdirectory(extras)
+add_subdirectory(files)
+add_subdirectory(filters)
 add_subdirectory(handlers)
+add_subdirectory(http)
+add_subdirectory(query)
 add_subdirectory(tools)
 
 ## Main executable
