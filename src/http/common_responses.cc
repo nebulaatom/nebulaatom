@@ -16,9 +16,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "common_responses.h"
+#include "http/common_responses.h"
 
-using namespace CPW::Tools;
+using namespace CPW::HTTP;
 
 CommonResponses::CommonResponses()
 {

@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_COMMONRESPONSES_H
-#define CPW_COMMONRESPONSES_H
+#ifndef CPW_HTTP_COMMONRESPONSES_H
+#define CPW_HTTP_COMMONRESPONSES_H
 
 
 #include <string>
@@ -32,7 +32,7 @@
 
 namespace CPW
 {
-    namespace Tools
+    namespace HTTP
     {
         enum class ResponseType;
         class CommonResponses;
@@ -43,7 +43,7 @@ using namespace Poco;
 using namespace Poco::Net;
 
 
-enum class CPW::Tools::ResponseType
+enum class CPW::HTTP::ResponseType
 {
     kError
     ,kWarning
@@ -51,7 +51,7 @@ enum class CPW::Tools::ResponseType
     ,kSuccess
 };
 
-class CPW::Tools::CommonResponses
+class CPW::HTTP::CommonResponses
 {
     public:
         CommonResponses();
@@ -73,4 +73,4 @@ class CPW::Tools::CommonResponses
         std::map<HTTPResponse::HTTPStatus, std::pair<ResponseType, std::string>> responses_;
 };
 
-#endif // CPW_COMMONRESPONSES_H
+#endif // CPW_HTTP_COMMONRESPONSES_H
