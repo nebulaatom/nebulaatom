@@ -56,6 +56,7 @@ enum class CPW::Filters::FilterType
     ,kValues
     ,kSet
     ,kJoins
+    ,kLike
 };
 
 
@@ -130,6 +131,11 @@ class CPW::Filters::Filters
             auto& var = joins_;
             return var;
         }
+        MapForValues& get_like()
+        {
+            auto& var = like_;
+            return var;
+        }
         std::map<std::string, FilterType>& get_filters_type_map()
         {
             auto& var = filters_type_map_;
@@ -158,6 +164,7 @@ class CPW::Filters::Filters
         std::vector<ValuesPropertiesVector> values_;
         MapForValues set_;
         std::map<std::array<std::string, 2>, MapForValues> joins_;
+        MapForValues like_;
         std::map<std::string, FilterType> filters_type_map_;
 };
 

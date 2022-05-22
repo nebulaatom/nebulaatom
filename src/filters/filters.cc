@@ -48,6 +48,7 @@ void Filters::MapFilterType_()
     filters_type_map_.emplace(std::make_pair("values", FilterType::kValues));
     filters_type_map_.emplace(std::make_pair("set", FilterType::kSet));
     filters_type_map_.emplace(std::make_pair("joins", FilterType::kJoins));
+    filters_type_map_.emplace(std::make_pair("like", FilterType::kLike));
 }
 
 bool Filters::ExistsType_(std::string type)
