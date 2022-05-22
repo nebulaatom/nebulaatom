@@ -268,6 +268,20 @@ void IdentifyFilter::Joins_(Dynamic::Var& filter)
     );
 }
 
+void IdentifyFilter::Like_(Dynamic::Var& filter)
+{
+    auto filter_json = manage_json_.ExtractObject_(filter);
+    if(filter_json->get("col").isEmpty())
+        throw std::runtime_error("col in kLike is empty");
+
+    auto var = filter_json->get("content");
+
+    current_filters_->get_like().emplace(std::make_pair
+    (
+        filter_json->get("col").toString()
+        ,GetValue_(var)
+    ));
+}
 
 ValuesProperties IdentifyFilter::GetValue_(Dynamic::Var& var)
 {
@@ -313,4 +327,5 @@ void IdentifyFilter::MapFilterTypeFunctors_()
     filter_type_functors_.emplace(std::make_pair(FilterType::kValues, [&](Dynamic::Var& filter){Values_(filter);}));
     filter_type_functors_.emplace(std::make_pair(FilterType::kSet, [&](Dynamic::Var& filter){Set_(filter);}));
     filter_type_functors_.emplace(std::make_pair(FilterType::kJoins, [&](Dynamic::Var& filter){Joins_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kLike, [&](Dynamic::Var& filter){Like_(filter);}));
 }
