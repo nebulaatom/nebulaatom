@@ -295,3 +295,20 @@ void IncorporateFilters::IncorporateJoins_(VectorString& tmp_query)
         }
     }
 }
+
+void IncorporateFilters::IncorporateLike_(VectorString& tmp_query)
+{
+    if(current_filters_->get_like().size() > 0)
+    {
+        IncorporateWhere_(tmp_query);
+
+        for(auto it : current_filters_->get_like())
+        {
+            IncorporateAND_(tmp_query);
+
+            tmp_query.push_back(it.first);
+            tmp_query.push_back("LIKE");
+            tmp_query.push_back(it.second.GetFinalValue());
+        }
+    }
+}

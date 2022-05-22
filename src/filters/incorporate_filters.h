@@ -60,6 +60,7 @@ class CPW::Filters::IncorporateFilters
         void IncorporateValues_(VectorString& tmp_query);
         void IncorporateSet_(VectorString& tmp_query);
         void IncorporateJoins_(VectorString& tmp_query);
+        void IncorporateLike_(VectorString& tmp_query);
 
     private:
         FiltersSharedPtr current_filters_;
