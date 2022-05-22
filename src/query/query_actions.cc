@@ -290,6 +290,7 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
         incorporate_->IncorporateBetween_(tmp_query);
         incorporate_->IncorporateIn_(tmp_query);
         incorporate_->IncorporateNotIn_(tmp_query);
+        incorporate_->IncorporateLike_(tmp_query);
 
     // Sort conditions
         incorporate_->IncorporateSort_(tmp_query);
@@ -321,6 +322,7 @@ std::string QueryActions::ComposeUpdateSentence_(std::string table)
         incorporate_->IncorporateBetween_(tmp_query);
         incorporate_->IncorporateIn_(tmp_query);
         incorporate_->IncorporateNotIn_(tmp_query);
+        incorporate_->IncorporateLike_(tmp_query);
 
     // Sort conditions
         incorporate_->IncorporateSort_(tmp_query);
@@ -350,6 +352,7 @@ std::string QueryActions::ComposeDeleteSentence_(std::string table)
         incorporate_->IncorporateBetween_(tmp_query);
         incorporate_->IncorporateIn_(tmp_query);
         incorporate_->IncorporateNotIn_(tmp_query);
+        incorporate_->IncorporateLike_(tmp_query);
 
     // Sort conditions
         incorporate_->IncorporateSort_(tmp_query);
