@@ -40,46 +40,15 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 {
     try
     {
-        dynamic_elements_->set_request(request);
-        dynamic_elements_->set_response(response);
-        if(dynamic_elements_->get_request() == nullptr || dynamic_elements_->get_response() == nullptr)
-            GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Something was wrong with the request or response.");
+        // Process request and response
+            dynamic_elements_->set_request(request);
+            dynamic_elements_->set_response(response);
+            if(dynamic_elements_->get_request() == nullptr || dynamic_elements_->get_response() == nullptr)
+                GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Something was wrong with the request or response.");
 
-        AddRoutes_();
-
-        std::vector<std::string> segments;
-        URI(request.getURI()).getPathSegments(segments);
-        dynamic_elements_->set_requested_route(std::make_shared<Tools::Route>("", segments));
-
-        switch(dynamic_elements_->get_requested_route()->get_current_route_type())
-        {
-            case CPW::Tools::RouteType::kEndpoint:
-            {
-                if(!ManageRequestBody_())
-                {
-                    GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "Something was wrong with the Request body.");
-                    return;
-                }
-
-                if(route_verification_)
-                {
-                    if(!IdentifyRoute_())
-                    {
-                        GenericResponse_(response, HTTPResponse::HTTP_NOT_FOUND, "The requested endpoint is not available.");
-                        return;
-                    }
-                }
-
-                if(!InitSecurityProccess_())
-                    return;
-
-                break;
-            }
-            case CPW::Tools::RouteType::kEntrypoint:
-            {
-                break;
-            }
-        }
+        // Process route
+            if(!ProcessRoute_())
+                return;
 
         // Found the corresponding HTTP method
             auto method = requests_manager_.get_actions_strings().find(dynamic_elements_->get_request()->getMethod());
@@ -92,33 +61,74 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
     catch(MySQL::MySQLException& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
-        GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Error with the database. " + error.displayText());
+        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Error with the database or query. " + error.displayText());
     }
     catch(RuntimeException& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
-        GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Error with the database. " + error.displayText());
+        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
     }
     catch(JSON::JSONException& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
-        GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
+        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
     }
     catch(std::out_of_range& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
-        GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
+        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
     catch(std::runtime_error& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
-        GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
+        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
     catch(std::exception& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
-        GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
+        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
+}
+
+bool RootHandler::ProcessRoute_()
+{
+        AddRoutes_();
+
+        std::vector<std::string> segments;
+        URI(dynamic_elements_->get_request()->getURI()).getPathSegments(segments);
+        dynamic_elements_->set_requested_route(std::make_shared<Tools::Route>("", segments));
+
+        switch(dynamic_elements_->get_requested_route()->get_current_route_type())
+        {
+            case CPW::Tools::RouteType::kEndpoint:
+            {
+                if(!ManageRequestBody_())
+                {
+                    GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Something was wrong with the Request body.");
+                    return false;
+                }
+
+                if(route_verification_)
+                {
+                    if(!IdentifyRoute_())
+                    {
+                        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_NOT_FOUND, "The requested endpoint is not available.");
+                        return false;
+                    }
+                }
+
+                if(!InitSecurityProccess_())
+                    return false;
+
+                break;
+            }
+            case CPW::Tools::RouteType::kEntrypoint:
+            {
+                break;
+            }
+        }
+
+    return true;
 }
 
 bool RootHandler::InitSecurityProccess_()
