@@ -5,10 +5,8 @@ stages:
   - deploy
 
 variables:
-  VAR_LATEST_PROD: $CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:latest
-  VAR_TAG_PROD: $CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:$CI_COMMIT_TAG
-  VAR_LATEST_DEV: $CI_REGISTRY_IMAGE/dev:latest
-  VAR_TAG_DEV: $CI_REGISTRY_IMAGE/dev:$CI_COMMIT_TAG
+  VAR_LATEST: $CI_REGISTRY_IMAGE:latest
+  VAR_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
 
 build-application:
   stage: build
@@ -27,32 +25,15 @@ build-application:
     - cmake --build ./
     - cmake --build ./ --target install
 
-deploy-dev-container:
+deploy-container:
   image: docker:latest
   stage: deploy
   services:
     - docker:dind
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v(?:\d+.){2}(?:\d+)-(alfa|beta|rc}rtm)$/
   script:
-    - docker build -t $VAR_TAG_DEV -t $VAR_LATEST_DEV .
+    - docker build -t $VAR_TAG -t $VAR_LATEST .
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker push $VAR_TAG_DEV
-    - docker push $VAR_LATEST_DEV
-  only:
-    - tags
-  except:
-    - ^(?!dev).+
-
-deploy-prod-container:
-  image: docker:latest
-  stage: deploy
-  services:
-    - docker:dind
-  script:
-    - docker build -t $VAR_TAG_PROD -t $VAR_LATEST_PROD .
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker push $VAR_TAG_PROD
-    - docker push $VAR_LATEST_PROD
-  only:
-    - tags
-  except:
-    - ^(?!master).+
+    - docker push $VAR_TAG
+    - docker push $VAR_LATEST
