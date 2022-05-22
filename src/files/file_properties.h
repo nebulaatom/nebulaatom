@@ -16,19 +16,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "extras/file_properties.h"
+#ifndef CPW_FILES_FILEPROPERTIES_H
+#define CPW_FILES_FILEPROPERTIES_H
 
-using namespace CPW::Extras;
 
-FileProperties::FileProperties(std::string content_type, bool binary, std::vector<std::string> other_extensions) :
-	content_type_(content_type)
-	,binary_(binary)
-	,other_extensions_(other_extensions)
+#include <string>
+#include <vector>
+
+
+namespace CPW
 {
-
+	namespace Files
+	{
+		class FileProperties;
+	}
 }
 
-FileProperties::~FileProperties()
-{
 
-}
+class CPW::Files::FileProperties
+{
+	public:
+		FileProperties(std::string content_type, bool binary, std::vector<std::string> other_extensions);
+		~FileProperties();
+
+		std::string get_content_type()
+		{
+			auto& var = content_type_;
+			return var;
+		}
+		bool get_binary()
+		{
+			auto& var = binary_;
+			return var;
+		}
+		std::vector<std::string> get_other_extensions()
+		{
+			auto& var = other_extensions_;
+			return var;
+		}
+
+	private:
+		std::string content_type_;
+		bool binary_;
+		std::vector<std::string> other_extensions_;
+};
+
+#endif // CPW_FILES_FILEPROPERTIES_H

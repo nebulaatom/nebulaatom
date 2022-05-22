@@ -16,60 +16,53 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_TOOLS_REQUESTSMANAGER_H
-#define CPW_TOOLS_REQUESTSMANAGER_H
+#ifndef CPW_HTTP_HTTPMETHODS_H
+#define CPW_HTTP_HTTPMETHODS_H
 
 
-#include <string>
-#include <map>
-#include <functional>
-#include <memory>
-
-#include <Poco/Net/HTTPRequestHandler.h>
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPResponse.h>
 #include <Poco/Net/HTTPServerResponse.h>
 
-#include "http/http_methods.h"
+#include "extras/dynamic_elements.h"
+#include "http/common_responses.h"
 
 
 namespace CPW
 {
-    namespace Tools
+    namespace HTTP
     {
-        class RequestsManager;
+        class HTTPMethods;
     }
 }
 
 using namespace Poco;
 using namespace Poco::Net;
+using namespace Poco::Util;
 
 
-class CPW::Tools::RequestsManager
+class CPW::HTTP::HTTPMethods
 {
     public:
-        using MainFunctor = std::function<void()>;
+        using DynamicElementSharedPtr = std::shared_ptr<Extras::DynamicElements>;
 
-        RequestsManager();
-        ~RequestsManager();
+        HTTPMethods();
+        virtual ~HTTPMethods();
 
-        std::map<std::string, MainFunctor>& get_actions_strings()
-        {
-            auto& var = actions_strings_;
-            return var;
-        }
-        HTTP::HTTPMethods* get_http_methods(){return http_methods_;}
-        void set_http_methods(HTTP::HTTPMethods& http_methods)
-        {
-            http_methods_ = &http_methods;
-        }
+        DynamicElementSharedPtr get_dynamic_elements() const {return dynamic_elements_;}
+        void set_dynamic_elements(DynamicElementSharedPtr dynamic_elements) {dynamic_elements_ = dynamic_elements;}
+
+        virtual void HandleGETMethod_();
+        virtual void HandlePOSTMethod_();
+        virtual void HandlePUTMethod_();
+        virtual void HandleDELMethod_();
 
     protected:
-        void PrepareMethods_();
+        bool QueryProcess_(Query::TypeAction action);
 
     private:
-        std::map<std::string, MainFunctor> actions_strings_;
-        HTTP::HTTPMethods* http_methods_;
+        DynamicElementSharedPtr dynamic_elements_;
+        CommonResponses responses_;
 };
 
-#endif // CPW_TOOLS_REQUESTSMANAGER_H
+#endif // CPW_HTTP_HTTPMETHODS_H

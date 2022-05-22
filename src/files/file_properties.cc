@@ -16,46 +16,19 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "handlers/null_handler.h"
+#include "files/file_properties.h"
 
-using namespace CPW::Handlers;
+using namespace CPW::Files;
 
-NullHandler::~NullHandler()
+FileProperties::FileProperties(std::string content_type, bool binary, std::vector<std::string> other_extensions) :
+    content_type_(content_type)
+    ,binary_(binary)
+    ,other_extensions_(other_extensions)
 {
 
 }
 
-void NullHandler::HandleGETMethod_()
-{
-    NullResponse_();
-}
-
-void NullHandler::HandlePOSTMethod_()
-{
-    NullResponse_();
-}
-
-void NullHandler::HandlePUTMethod_()
-{
-    NullResponse_();
-}
-
-void NullHandler::HandleDELMethod_()
-{
-    NullResponse_();
-}
-
-void NullHandler::AddRoutes_()
+FileProperties::~FileProperties()
 {
 
-}
-
-void NullHandler::NullResponse_()
-{
-    HTMLResponse_
-    (
-        *get_dynamic_elements()->get_response()
-        ,HTTPResponse::HTTP_NOT_FOUND
-        ,"Sorry, content not found from" + get_dynamic_elements()->get_request()->getMethod() + " request."
-    );
 }

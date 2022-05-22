@@ -1,20 +1,20 @@
 /*
- * CPW Woodpecker Server
- * Copyright (C) 2021 CPW Online support@cpwonline.org
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+* CPW Woodpecker Server
+* Copyright (C) 2021 CPW Online support@cpwonline.org
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #ifndef CPW_CORE_WOODPECKERSERVER_H
 #define CPW_CORE_WOODPECKERSERVER_H
@@ -35,10 +35,10 @@
 
 namespace CPW
 {
-	namespace Core
-	{
-		class WoodpeckerServer;
-	}
+    namespace Core
+    {
+        class WoodpeckerServer;
+    }
 }
 
 using namespace Poco;
@@ -48,21 +48,21 @@ using namespace Poco::Util;
 
 class CPW::Core::WoodpeckerServer : public ServerApplication
 {
-	public:
-		WoodpeckerServer(int port);
-		virtual ~WoodpeckerServer();
+    public:
+        WoodpeckerServer(int port);
+        virtual ~WoodpeckerServer();
 
-	protected:
-		virtual int main(const std::vector<std::string>& args);
-		int Init_();
+    protected:
+        virtual int main(const std::vector<std::string>& args);
+        int Init_();
 
-	private:
-		UInt16 port_;
-		HTTPServerParams::Ptr server_params_;
-		ServerSocket server_socket_;
-		std::unique_ptr<HTTPServer> server_;
-		HandlerFactory* handler_factory_;
-		Application& app_;
+    private:
+        UInt16 port_;
+        HTTPServerParams::Ptr server_params_;
+        ServerSocket server_socket_;
+        std::unique_ptr<HTTPServer> server_;
+        HandlerFactory* handler_factory_;
+        Application& app_;
         const std::vector<std::string>* arguments_;
 };
 

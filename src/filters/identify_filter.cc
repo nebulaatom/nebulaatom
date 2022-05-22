@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tools/identify_filter.h"
+#include "filters/identify_filter.h"
 
-using namespace CPW::Tools;
+using namespace CPW::Filters;
 
-IdentifyFilter::IdentifyFilter(std::shared_ptr<Tools::Filters> current_filters) :
+IdentifyFilter::IdentifyFilter(std::shared_ptr<Filters> current_filters) :
     current_filters_(current_filters)
 {
     MapFilterTypeFunctors_();
@@ -268,10 +268,24 @@ void IdentifyFilter::Joins_(Dynamic::Var& filter)
     );
 }
 
+void IdentifyFilter::Like_(Dynamic::Var& filter)
+{
+    auto filter_json = manage_json_.ExtractObject_(filter);
+    if(filter_json->get("col").isEmpty())
+        throw std::runtime_error("col in kLike is empty");
+
+    auto var = filter_json->get("content");
+
+    current_filters_->get_like().emplace(std::make_pair
+    (
+        filter_json->get("col").toString()
+        ,GetValue_(var)
+    ));
+}
 
 ValuesProperties IdentifyFilter::GetValue_(Dynamic::Var& var)
 {
-    RowValueFormatter row(var);
+    Tools::RowValueFormatter row(var);
     row.Format_();
 
     Extras::ValuesProperties value_properties;
@@ -299,18 +313,19 @@ ValuesProperties IdentifyFilter::GetValue_(Dynamic::Var& var)
 
 void IdentifyFilter::MapFilterTypeFunctors_()
 {
-    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kFields, [&](Dynamic::Var& filter){Fields_(filter);}));
-    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kPage, [&](Dynamic::Var& filter){Page_(filter);}));
-    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kLimit, [&](Dynamic::Var& filter){Limit_(filter);}));
-    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kSort, [&](Dynamic::Var& filter){Sort_(filter);}));
-    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kIqual, [&](Dynamic::Var& filter){Iqual_(filter);}));
-    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kNotIqual, [&](Dynamic::Var& filter){NotIqual_(filter);}));
-    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kGreatherThan, [&](Dynamic::Var& filter){GreatherThan_(filter);}));
-    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kSmallerThan, [&](Dynamic::Var& filter){SmallerThan_(filter);}));
-    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kBetween, [&](Dynamic::Var& filter){Between_(filter);}));
-    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kIn, [&](Dynamic::Var& filter){In_(filter);}));
-    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kNotIn, [&](Dynamic::Var& filter){NotIn_(filter);}));
-    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kValues, [&](Dynamic::Var& filter){Values_(filter);}));
-    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kSet, [&](Dynamic::Var& filter){Set_(filter);}));
-    filter_type_functors_.emplace(std::make_pair(Tools::FilterType::kJoins, [&](Dynamic::Var& filter){Joins_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kFields, [&](Dynamic::Var& filter){Fields_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kPage, [&](Dynamic::Var& filter){Page_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kLimit, [&](Dynamic::Var& filter){Limit_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kSort, [&](Dynamic::Var& filter){Sort_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kIqual, [&](Dynamic::Var& filter){Iqual_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kNotIqual, [&](Dynamic::Var& filter){NotIqual_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kGreatherThan, [&](Dynamic::Var& filter){GreatherThan_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kSmallerThan, [&](Dynamic::Var& filter){SmallerThan_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kBetween, [&](Dynamic::Var& filter){Between_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kIn, [&](Dynamic::Var& filter){In_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kNotIn, [&](Dynamic::Var& filter){NotIn_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kValues, [&](Dynamic::Var& filter){Values_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kSet, [&](Dynamic::Var& filter){Set_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kJoins, [&](Dynamic::Var& filter){Joins_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kLike, [&](Dynamic::Var& filter){Like_(filter);}));
 }

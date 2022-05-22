@@ -4,45 +4,25 @@
 
 ### route
 add_library(route OBJECT "route.cc")
-target_include_directories(route PUBLIC ${HEADER})
+target_include_directories(route PUBLIC ${HEADER} ${PROJECT_BINARY_DIR})
 set_target_properties(route PROPERTIES POSITION_INDEPENDENT_CODE 1)
-
-### commonresponses
-add_library(commonresponses OBJECT "common_responses.cc")
-target_include_directories(commonresponses PUBLIC ${HEADER})
-set_target_properties(commonresponses PROPERTIES POSITION_INDEPENDENT_CODE 1)
-
-### filters
-add_library(filters OBJECT "filters.cc")
-target_include_directories(filters PUBLIC ${HEADER})
-set_target_properties(filters PROPERTIES POSITION_INDEPENDENT_CODE 1)
-
-### managejson
-add_library(managejson OBJECT "manage_json.cc")
-target_include_directories(managejson PUBLIC ${HEADER})
-set_target_properties(managejson PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
 ### requestsmanager
 add_library(requestsmanager OBJECT "requests_manager.cc")
-target_include_directories(requestsmanager PUBLIC ${HEADER})
+target_include_directories(requestsmanager PUBLIC ${HEADER} ${PROJECT_BINARY_DIR})
 set_target_properties(requestsmanager PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
 ### handlerconnection
 add_library(handlerconnection OBJECT "handler_connection.cc")
-target_include_directories(handlerconnection PUBLIC ${HEADER})
+target_include_directories(handlerconnection PUBLIC ${HEADER} ${PROJECT_BINARY_DIR})
 set_target_properties(handlerconnection PROPERTIES POSITION_INDEPENDENT_CODE 1)
-
-### filemanager
-add_library(filemanager OBJECT "file_manager.cc")
-target_include_directories(filemanager PUBLIC ${HEADER})
-set_target_properties(filemanager PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
 ### rowvalueformatter
 add_library(rowvalueformatter OBJECT "row_value_formatter.cc")
-target_include_directories(rowvalueformatter PUBLIC ${HEADER})
+target_include_directories(rowvalueformatter PUBLIC ${HEADER} ${PROJECT_BINARY_DIR})
 set_target_properties(rowvalueformatter PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
-### identifyfilter
-add_library(identifyfilter OBJECT "identify_filter.cc")
-target_include_directories(identifyfilter PUBLIC ${HEADER})
-set_target_properties(identifyfilter PROPERTIES POSITION_INDEPENDENT_CODE 1)
+### managejson
+add_library(managejson OBJECT "manage_json.cc")
+target_include_directories(managejson PUBLIC ${HEADER} ${PROJECT_BINARY_DIR})
+set_target_properties(managejson PROPERTIES POSITION_INDEPENDENT_CODE 1)

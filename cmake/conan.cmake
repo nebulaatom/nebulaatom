@@ -13,7 +13,7 @@ if(${PROJECT_NAME}_CONAN)
 	include(${PROJECT_BINARY_DIR}/conan/conan.cmake)
 
 	conan_cmake_configure(
-		REQUIRES poco/1.9.4
+		REQUIRES poco/1.11.1
 		GENERATORS cmake_find_package
 	)
 

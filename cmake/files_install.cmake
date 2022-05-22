@@ -10,11 +10,7 @@ install(
 install(
 	FILES 
 		${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h 
-		${HEADER}/cpw_woodpecker_server.h
-		${HEADER}/handler_factory.h
-		${HEADER}/Factory/root_handler.h
-		${HEADER}/Factory/data_handler.h
-		${HEADER}/Factory/null_handler.h
+		${HEADER}/core/woodpecker_server.h
 	DESTINATION 
 		${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
 )

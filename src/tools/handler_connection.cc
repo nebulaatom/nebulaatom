@@ -7,8 +7,8 @@
 using namespace CPW::Tools;
 
 HandlerConnection::HandlerConnection(Tools::Route route, HandlerFunctor handler) :
-	current_route_(route)
-	,return_handler_(handler)
+    current_route_(route)
+    ,return_handler_(handler)
 {
 
 }
