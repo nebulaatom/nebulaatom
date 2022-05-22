@@ -16,25 +16,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef CPW_FILES_FILEPROPERTIES_H
+#define CPW_FILES_FILEPROPERTIES_H
 
-#include "Poco/Util/Application.h"
-#include "Poco/Format.h"
 
-#include "core/woodpecker_server.h"
+#include <string>
+#include <vector>
 
-using namespace Poco;
-using namespace Poco::Util;
 
-int main(int argc, char** argv)
+namespace CPW
 {
-	try
+	namespace Files
 	{
-		CPW::Core::WoodpeckerServer app_main(8080);
-		return app_main.run(argc, argv);
-	}
-	catch (std::exception const& error)
-	{
-		Application::instance().logger().error("- Error on main.cc on main(): " + std::string(error.what()));
-		return -1;
+		class FileProperties;
 	}
 }
+
+
+class CPW::Files::FileProperties
+{
+	public:
+		FileProperties(std::string content_type, bool binary, std::vector<std::string> other_extensions);
+		~FileProperties();
+
+		std::string get_content_type()
+		{
+			auto& var = content_type_;
+			return var;
+		}
+		bool get_binary()
+		{
+			auto& var = binary_;
+			return var;
+		}
+		std::vector<std::string> get_other_extensions()
+		{
+			auto& var = other_extensions_;
+			return var;
+		}
+
+	private:
+		std::string content_type_;
+		bool binary_;
+		std::vector<std::string> other_extensions_;
+};
+
+#endif // CPW_FILES_FILEPROPERTIES_H

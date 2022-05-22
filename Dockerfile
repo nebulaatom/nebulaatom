@@ -1,29 +1,30 @@
-FROM debian:buster
+FROM alpine:3.15 AS build
+RUN apk --no-cache add \
+    make \
+    binutils \
+    g++ \
+    cmake \
+    poco-dev \
+    mariadb-dev
 
-RUN echo "- Updating Debian"
-RUN apt-get update && apt-get upgrade -y
+WORKDIR /usr/src/cpw-woodpecker
 
-RUN echo "- Installing dependencies"
-RUN apt-get install -y \
-	gcc \
-	g++ \
-	ccache \
-	cppcheck \
-	doxygen \
-	git \
-	make \
-	tar \
-	unzip \
-	cmake \
-	libgtkmm-3.0 \
-	libgtkmm-3.0-dev \
-	libmariadb-dev
+COPY . /usr/src/cpw-woodpecker
 
-RUN echo "- Building the project"
-RUN git clone https://github.com/cpwonline/modern-cxx-project.git
-RUN cd modern-cxx-project && \
-	mkdir build && cd build && \
-	cmake .. && cmake --build . && \
-	cmake --build . --target install
+RUN mkdir ./build-app \
+    && cd ./build-app \
+    && cmake ../ -DCMAKE_INSTALL_PREFIX=/usr/local \
+    && cmake --build ./ \
+    && cmake --build ./ --target install
 
-CMD /usr/local/bin/project-name
+FROM alpine:3.15
+
+RUN apk --no-cache add poco
+
+WORKDIR /usr/local/bin
+
+COPY --from=build /usr/local/bin/cpw-woodpecker-server ./cpw-woodpecker-server
+
+EXPOSE 8080
+
+CMD ["./cpw-woodpecker-server"]
