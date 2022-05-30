@@ -47,10 +47,13 @@ void IncorporateFilters::IncorporateAND_(VectorString& tmp_query)
         tmp_query.push_back("AND");
 }
 
-void IncorporateFilters::IncorporateFields_(VectorString& tmp_query)
+void IncorporateFilters::IncorporateFields_(VectorString& tmp_query, bool all)
 {
     if(current_filters_->get_fields().size() == 0)
-        tmp_query.push_back("*");
+    {
+        if(all)
+            tmp_query.push_back("*");
+    }
     else
     {
         for(auto it : current_filters_->get_fields())
