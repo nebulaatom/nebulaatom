@@ -337,7 +337,7 @@ std::string QueryActions::ComposeDeleteSentence_(std::string table)
 {
     // Sentence type and Table
         std::vector<std::string> tmp_query = {"DELETE"};
-        incorporate_->IncorporateFields_(tmp_query);
+        incorporate_->IncorporateFields_(tmp_query, false);
 
         tmp_query.push_back("FROM " + table);
 
