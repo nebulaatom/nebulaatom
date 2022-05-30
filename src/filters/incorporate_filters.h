@@ -47,7 +47,7 @@ class CPW::Filters::IncorporateFilters
 
         void IncorporateWhere_(VectorString& tmp_query);
         void IncorporateAND_(VectorString& tmp_query);
-        void IncorporateFields_(VectorString& tmp_query);
+        void IncorporateFields_(VectorString& tmp_query, bool all = true);
         void IncorporatePageLimit_(VectorString& tmp_query, bool pagination);
         void IncorporateSort_(VectorString& tmp_query);
         void IncorporateIqual_(VectorString& tmp_query);
