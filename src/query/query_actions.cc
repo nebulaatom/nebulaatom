@@ -278,6 +278,7 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 
     // Table
         tmp_query.push_back("FROM " + table);
+        incorporate_->IncorporateAS_(tmp_query);
 
     // Joins
         incorporate_->IncorporateJoins_(tmp_query);
