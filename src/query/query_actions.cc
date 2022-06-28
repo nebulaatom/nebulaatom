@@ -293,7 +293,8 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
         incorporate_->IncorporateNotIn_(tmp_query);
         incorporate_->IncorporateLike_(tmp_query);
 
-    // Sort conditions
+    // Group and Sort conditions
+        incorporate_->IncorporateGroup_(tmp_query);
         incorporate_->IncorporateSort_(tmp_query);
 
     // Page and Limit condition
