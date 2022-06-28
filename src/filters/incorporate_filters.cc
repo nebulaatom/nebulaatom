@@ -315,3 +315,12 @@ void IncorporateFilters::IncorporateLike_(VectorString& tmp_query)
         }
     }
 }
+
+void IncorporateFilters::IncorporateAS_(VectorString& tmp_query)
+{
+    if(current_filters_->get_as() == "")
+        return;
+
+    tmp_query.push_back("AS");
+    tmp_query.push_back(current_filters_->get_as());
+}
