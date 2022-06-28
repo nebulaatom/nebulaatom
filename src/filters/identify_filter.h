@@ -73,6 +73,7 @@ class CPW::Filters::IdentifyFilter
         void Set_(Dynamic::Var& filter);
         void Joins_(Dynamic::Var& filter);
         void Like_(Dynamic::Var& filter);
+        void AS_(Dynamic::Var& filter);
 
     protected:
         ValuesProperties GetValue_(Dynamic::Var& var);

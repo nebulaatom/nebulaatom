@@ -283,6 +283,15 @@ void IdentifyFilter::Like_(Dynamic::Var& filter)
     ));
 }
 
+void IdentifyFilter::AS_(Dynamic::Var& filter)
+{
+    auto filter_json = manage_json_.ExtractObject_(filter);
+    if(filter_json->get("content").isEmpty())
+        throw std::runtime_error("content in kAS is empty");
+
+    current_filters_->set_as(filter_json->get("content").toString());
+}
+
 ValuesProperties IdentifyFilter::GetValue_(Dynamic::Var& var)
 {
     Tools::RowValueFormatter row(var);
@@ -328,4 +337,5 @@ void IdentifyFilter::MapFilterTypeFunctors_()
     filter_type_functors_.emplace(std::make_pair(FilterType::kSet, [&](Dynamic::Var& filter){Set_(filter);}));
     filter_type_functors_.emplace(std::make_pair(FilterType::kJoins, [&](Dynamic::Var& filter){Joins_(filter);}));
     filter_type_functors_.emplace(std::make_pair(FilterType::kLike, [&](Dynamic::Var& filter){Like_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kAS, [&](Dynamic::Var& filter){AS_(filter);}));
 }
