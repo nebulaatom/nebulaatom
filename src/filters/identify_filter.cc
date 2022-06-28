@@ -292,6 +292,22 @@ void IdentifyFilter::AS_(Dynamic::Var& filter)
     current_filters_->set_as(filter_json->get("content").toString());
 }
 
+void IdentifyFilter::Group_(Dynamic::Var& filter)
+{
+    auto filter_json = manage_json_.ExtractObject_(filter);
+    if(filter_json->get("contents").isEmpty())
+        throw std::runtime_error("contents in kGroup is empty");
+
+    auto contents_array = filter_json->getArray("contents");
+    if(contents_array->size() < 1)
+        throw std::runtime_error("contents_array in kGroup is empty");
+
+    for(std::size_t a = 0; a < contents_array->size(); a++)
+    {
+        current_filters_->get_group_conditions().push_back({contents_array->get(a), false});
+    }
+}
+
 ValuesProperties IdentifyFilter::GetValue_(Dynamic::Var& var)
 {
     Tools::RowValueFormatter row(var);
@@ -338,4 +354,5 @@ void IdentifyFilter::MapFilterTypeFunctors_()
     filter_type_functors_.emplace(std::make_pair(FilterType::kJoins, [&](Dynamic::Var& filter){Joins_(filter);}));
     filter_type_functors_.emplace(std::make_pair(FilterType::kLike, [&](Dynamic::Var& filter){Like_(filter);}));
     filter_type_functors_.emplace(std::make_pair(FilterType::kAS, [&](Dynamic::Var& filter){AS_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kGroup, [&](Dynamic::Var& filter){Group_(filter);}));
 }
