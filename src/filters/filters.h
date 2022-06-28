@@ -58,6 +58,7 @@ enum class CPW::Filters::FilterType
     ,kJoins
     ,kLike
     ,kAS
+    ,kGroup
 };
 
 
@@ -147,6 +148,11 @@ class CPW::Filters::Filters
             auto& var = as_;
             return var;
         }
+        ValuesPropertiesVector& get_group_conditions()
+        {
+            auto& var = group_conditions_;
+            return var;
+        }
 
         void set_page(std::string page) { page_ = page; }
         void set_limit(std::string limit) { limit_ = limit; }
@@ -174,6 +180,7 @@ class CPW::Filters::Filters
         MapForValues like_;
         std::map<std::string, FilterType> filters_type_map_;
         std::string as_;
+        ValuesPropertiesVector group_conditions_;
 };
 
 
