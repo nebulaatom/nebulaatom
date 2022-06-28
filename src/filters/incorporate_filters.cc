@@ -324,3 +324,18 @@ void IncorporateFilters::IncorporateAS_(VectorString& tmp_query)
     tmp_query.push_back("AS");
     tmp_query.push_back(current_filters_->get_as());
 }
+
+void IncorporateFilters::IncorporateGroup_(VectorString& tmp_query)
+{
+    if(current_filters_->get_group_conditions().size() < 1)
+        return;
+
+    tmp_query.push_back("GROUP BY");
+    for(auto it : current_filters_->get_group_conditions())
+    {
+        if(it != *current_filters_->get_group_conditions().begin())
+            tmp_query.push_back(",");
+
+        tmp_query.push_back(it.GetFinalValue());
+    }
+}
