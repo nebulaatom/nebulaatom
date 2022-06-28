@@ -42,8 +42,12 @@ void FileManager::handlePart(const MessageHeader& header, std::istream& stream)
     // Get header parameters
         current_file.set_content_type(header.get("Content-Type", "(unspecified)"));
         current_file.set_name(SplitHeaderValue_(header, "Content-Disposition", "name"));
-        current_file.set_filename(SplitHeaderValue_(header, "Content-Disposition", "filename"));
-        tmp_file.set_filename(SplitHeaderValue_(header, "Content-Disposition", "filename"));
+
+        auto filename = SplitHeaderValue_(header, "Content-Disposition", "filename");
+        ReplaceText_(filename, " ", "-");
+
+        current_file.set_filename(filename);
+        tmp_file.set_filename(filename);
 
     // Check temporary file
         CheckTargetFilename_(tmp_file, directory_for_temp_files_);
