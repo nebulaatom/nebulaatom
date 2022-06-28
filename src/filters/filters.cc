@@ -23,6 +23,7 @@ using namespace CPW::Filters;
 Filters::Filters() :
     page_("0")
     ,limit_("20")
+    ,as_("")
 {
     MapFilterType_();
 }
@@ -49,6 +50,7 @@ void Filters::MapFilterType_()
     filters_type_map_.emplace(std::make_pair("set", FilterType::kSet));
     filters_type_map_.emplace(std::make_pair("joins", FilterType::kJoins));
     filters_type_map_.emplace(std::make_pair("like", FilterType::kLike));
+    filters_type_map_.emplace(std::make_pair("as", FilterType::kAS));
 }
 
 bool Filters::ExistsType_(std::string type)

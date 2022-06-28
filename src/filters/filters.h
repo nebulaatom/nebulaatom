@@ -57,6 +57,7 @@ enum class CPW::Filters::FilterType
     ,kSet
     ,kJoins
     ,kLike
+    ,kAS
 };
 
 
@@ -141,9 +142,15 @@ class CPW::Filters::Filters
             auto& var = filters_type_map_;
             return var;
         }
+        std::string& get_as()
+        {
+            auto& var = as_;
+            return var;
+        }
 
         void set_page(std::string page) { page_ = page; }
         void set_limit(std::string limit) { limit_ = limit; }
+        void set_as(std::string as) { as_ = as; }
 
         bool ExistsType_(std::string type);
 
@@ -166,6 +173,7 @@ class CPW::Filters::Filters
         std::map<std::array<std::string, 2>, MapForValues> joins_;
         MapForValues like_;
         std::map<std::string, FilterType> filters_type_map_;
+        std::string as_;
 };
 
 
