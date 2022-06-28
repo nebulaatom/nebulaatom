@@ -21,6 +21,7 @@
 
 
 #include <string>
+#include <string_view>
 #include <map>
 #include <vector>
 #include <fstream>
@@ -105,6 +106,7 @@ class CPW::Files::FileManager: public Net::PartHandler
     protected:
         std::string SplitHeaderValue_(const MessageHeader& header, std::string header_name, std::string parameter);
         void CheckTargetFilename_(Files::File& file, std::string directory);
+        std::size_t ReplaceText_(std::string& inout, std::string_view what, std::string_view with);
 
     private:
         void AddSupportedFiles_();
