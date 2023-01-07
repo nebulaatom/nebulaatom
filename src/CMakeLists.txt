@@ -6,14 +6,11 @@ endif()
 
 # Find packages
 
+include(${PROJECT_SOURCE_DIR}/cmake/FindMySQL.cmake)
+
 find_package(Poco REQUIRED COMPONENTS Foundation Net Util Data DataMySQL)
 if(NOT Poco_FOUND)
     message(FATAL_ERROR "Poco not found")
-endif()
-
-find_package(MySQL)
-if(NOT MySQL_FOUND)
-    message(FATAL_ERROR "MySQL not found")
 endif()
 
 list(APPEND HEADER ${Poco_INCLUDE_DIRS})

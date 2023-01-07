@@ -5,7 +5,6 @@ cmake_minimum_required(VERSION 3.16)
 project("cpw-woodpecker-server" LANGUAGES CXX C)
 include(cmake/general_options.cmake)
 include(cmake/build_settings.cmake)
-include(cmake/FindMySQL.cmake)
 
 ## Version
 set(${PROJECT_NAME}_VERSION_MAYOR 0)
