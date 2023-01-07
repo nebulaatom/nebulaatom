@@ -18,7 +18,7 @@
 
 #include <iostream>
 #include "gtest/gtest.h"
-#include "woodpecker_server.h"
+#include "core/woodpecker_server.h"
 
 using namespace CPW;
 
@@ -28,14 +28,14 @@ class TestGen : public ::testing::Test
 		void SetUp() override;
 		void TearDown() override;
 
-		WoodpeckerServer *TestObj_;
+		Core::WoodpeckerServer *TestObj_;
 };
 
 //-----------------------------------------------------------------------------
 
 void TestGen::SetUp()
 {
-	TestObj_ = new WoodpeckerServer(8080);
+	TestObj_ = new Core::WoodpeckerServer(8080);
 }
 
 void TestGen::TearDown()
@@ -47,7 +47,10 @@ void TestGen::TearDown()
 
 TEST_F(TestGen, BasicTest)
 {
-	//ASSERT_EQ("Hello!", TestObj_->get_var1());
+	ASSERT_NE(nullptr, &TestObj_->get_port());
+	ASSERT_NE(nullptr, TestObj_->get_server_params());
+	ASSERT_NE(nullptr, &TestObj_->get_server_socket());
+	ASSERT_NE(nullptr, TestObj_->get_handler_factory());
 }
 
 
