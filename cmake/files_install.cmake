@@ -10,7 +10,7 @@ install(
 install(
 	FILES 
 		${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h 
-		${HEADER}/core/woodpecker_server.h
+		${PROJECT_SOURCE_DIR}/src/core/woodpecker_server.h
 	DESTINATION 
 		${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
 )
