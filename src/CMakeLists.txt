@@ -5,12 +5,15 @@ if(${PROJECT_NAME}_TESTING)
 endif()
 
 # Find packages
-include(${PROJECT_SOURCE_DIR}/cmake/FindMySQL.cmake)
 
 find_package(Poco REQUIRED COMPONENTS Foundation Net Util Data DataMySQL)
 if(NOT Poco_FOUND)
     message(FATAL_ERROR "Poco not found")
 endif()
+
+list(APPEND HEADER ${Poco_INCLUDE_DIRS})
+
+include_directories(${MySQL_INCLUDE_DIRS})
 
 add_subdirectory(core)
 add_subdirectory(extras)
@@ -23,5 +26,5 @@ add_subdirectory(tools)
 
 ## Main executable
 add_executable(${PROJECT_NAME} "main.cc")
-target_include_directories(${PROJECT_NAME} PUBLIC ${HEADER} ${PROJECT_BINARY_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${HEADER})
 target_link_libraries(${PROJECT_NAME} PUBLIC woodpeckerserver)
