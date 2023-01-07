@@ -39,7 +39,7 @@ QueryActions::~QueryActions()
 void QueryActions::StartDatabase_()
 {
     Data::MySQL::Connector::registerConnector();
-    session_ = std::make_shared<Data::Session>("MySQL", "host=127.0.0.1;port=3306;db=cpw_woodpecker;user=root;password=mariadb_password;");
+    session_ = std::make_shared<Data::Session>("MySQL", "host=127.0.0.1;port=3306;db=cpw_rabbit;user=root;password=0UHC72zNvywZ;");
     query_ = std::make_shared<Data::Statement>(*session_);
 }
 

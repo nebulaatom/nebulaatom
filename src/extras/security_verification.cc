@@ -122,23 +122,28 @@ bool SecurityVerification::SeePermissionsPerUser_(std::string user, std::string 
         joins.clear();
 
     // Filters
-        fields.push_back({"pl.granted", false});
+        fields.push_back({"up.granted", false});
         joins.emplace(std::make_pair
         (
-            std::array<std::string, 2>{"LEFT", "permissions p"}
-            ,std::map<std::string, Extras::ValuesProperties> {{"p.id", Extras::ValuesProperties{"pl.id_permission", false}}}
+            std::array<std::string, 2>{"LEFT", "tables_permissions tp"}
+            ,std::map<std::string, Extras::ValuesProperties> {{"tp.id", Extras::ValuesProperties{"up.id_table_permission", false}}}
         ));
         joins.emplace(std::make_pair
         (
             std::array<std::string, 2>{"LEFT", "users u"}
-            ,std::map<std::string, Extras::ValuesProperties> {{"u.id", Extras::ValuesProperties{"pl.id_user", false}}}
+            ,std::map<std::string, Extras::ValuesProperties> {{"u.id", Extras::ValuesProperties{"up.id_user", false}}}
+        ));
+        joins.emplace(std::make_pair
+        (
+            std::array<std::string, 2>{"LEFT", "action_types at"}
+            ,std::map<std::string, Extras::ValuesProperties> {{"at.id", Extras::ValuesProperties{"up.id_action_type", false}}}
         ));
         iquals.emplace(std::make_pair("u.username", Extras::ValuesProperties{user, true}));
-        iquals.emplace(std::make_pair("pl.type", Extras::ValuesProperties{action_type, true}));
-        iquals.emplace(std::make_pair("p.name", Extras::ValuesProperties{target, true}));
+        iquals.emplace(std::make_pair("at.name", Extras::ValuesProperties{action_type, true}));
+        iquals.emplace(std::make_pair("tp.table_name", Extras::ValuesProperties{target, true}));
 
     // Data sentences
-        query_actions->ComposeQuery_(Query::TypeAction::kSelect, "permissions_log pl");
+        query_actions->ComposeQuery_(Query::TypeAction::kSelect, "user_permissions up");
         if(query_actions->ExecuteQuery_())
             return true;
         else
