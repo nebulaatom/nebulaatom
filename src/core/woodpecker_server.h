@@ -52,6 +52,32 @@ class CPW::Core::WoodpeckerServer : public ServerApplication
         WoodpeckerServer(int port);
         virtual ~WoodpeckerServer();
 
+        UInt16& get_port()
+        {
+            auto& var = port_;
+            return var;
+        }
+        HTTPServerParams::Ptr get_server_params()
+        {
+            auto& var = server_params_;
+            return var;
+        }
+        ServerSocket& get_server_socket()
+        {
+            auto& var = server_socket_;
+            return var;
+        }
+        HTTPServer* get_server()
+        {
+            auto var = server_.get();
+            return var;
+        }
+        HandlerFactory* get_handler_factory()
+        {
+            auto& var = handler_factory_;
+            return var;
+        }
+
     protected:
         virtual int main(const std::vector<std::string>& args);
         int Init_();
