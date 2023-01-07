@@ -11,6 +11,11 @@ if(NOT Poco_FOUND)
     message(FATAL_ERROR "Poco not found")
 endif()
 
+find_package(MySQL)
+if(NOT MySQL_FOUND)
+    message(FATAL_ERROR "MySQL not found")
+endif()
+
 list(APPEND HEADER ${Poco_INCLUDE_DIRS})
 
 include_directories(${MySQL_INCLUDE_DIRS})
