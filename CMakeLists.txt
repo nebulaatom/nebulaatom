@@ -1,11 +1,10 @@
 # Basic
 
 ## Project
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.16)
 project("cpw-woodpecker-server" LANGUAGES CXX C)
 include(cmake/general_options.cmake)
 include(cmake/build_settings.cmake)
-include(cmake/conan.cmake)
 
 ## Version
 set(${PROJECT_NAME}_VERSION_MAYOR 0)
@@ -15,6 +14,7 @@ set(${PROJECT_NAME}_VERSION_SUFFIX "-alfa")
 
 ## Put variables
 set(HEADER ${PROJECT_SOURCE_DIR}/src)
+list(APPEND HEADER ${PROJECT_BINARY_DIR})
 set(PROJECT_FULL_NAME "CPW Woodpecker Server")
 set(
     PACKAGE_VERSION
@@ -35,6 +35,5 @@ add_subdirectory(share)
 
 # Add other CMake files
 
-include(cmake/doxygen.cmake)
 include(cmake/files_install.cmake)
 include(cmake/print_informations.cmake)
