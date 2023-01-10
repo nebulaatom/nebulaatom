@@ -18,10 +18,11 @@ build-application:
       cmake
       poco-dev
       mariadb-dev
+      gtest
   script:
     - mkdir ./build-app
     - cd ./build-app
-    - cmake ../ -DCMAKE_INSTALL_PREFIX=/usr/local
+    - cmake ../ -DCMAKE_INSTALL_PREFIX=/usr/local -Dcpw-woodpecker-server_TESTING=ON
     - cmake --build ./
     - cmake --build ./ --target install
 
