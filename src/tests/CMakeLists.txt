@@ -7,4 +7,4 @@ find_package(GTest REQUIRED)
 
 # Add and linking libraries for Executable
 target_include_directories(test_gen PUBLIC ${HEADER} ${GTest_INCLUDE_DIRS})
-target_link_libraries(test_gen PUBLIC ${GTest_LIBRARIES} woodpeckerserver)
+target_link_libraries(test_gen PUBLIC GTest::gtest woodpeckerserver)
