@@ -18,6 +18,7 @@ build-application:
       cmake
       poco-dev
       mariadb-dev
+      gtest
       gtest-dev
   script:
     - mkdir ./build-app
@@ -25,6 +26,7 @@ build-application:
     - cmake ../ -DCMAKE_INSTALL_PREFIX=/usr/local -Dcpw-woodpecker-server_TESTING=ON
     - cmake --build ./
     - cmake --build ./ --target install
+    - ./src/tests/test_gen
 
 deploy-container:
   image: docker:latest
