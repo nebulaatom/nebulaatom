@@ -18,7 +18,7 @@ build-application:
       cmake
       poco-dev
       mariadb-dev
-      gtest
+      gtest-dev
   script:
     - mkdir ./build-app
     - cd ./build-app
