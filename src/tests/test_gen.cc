@@ -69,7 +69,7 @@ TEST_F(TestGen, SesionHandlerTest)
     CPW::Tools::SessionsHandler sessions;
     for(int a = 0; a < 3; a++)
     {
-        auto session = sessions.CreateSession_("", "/", false, 3600);
+        auto session = sessions.CreateSession_("", "/", 3600);
         ASSERT_NE("", session.get_id());
         std::cout << "- Session ID (Session handler): " << session.get_id() << std::endl;
     }
