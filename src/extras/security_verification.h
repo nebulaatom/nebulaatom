@@ -43,10 +43,27 @@ class CPW::Extras::SecurityVerification
         SecurityVerification();
         ~SecurityVerification();
 
+        std::string get_user() const
+        {
+            return user_;
+        }
+        std::string get_password() const
+        {
+            return password_;
+        }
         DynamicElements& get_dynamic_elements()
         {
             auto& var = dynamic_elements_;
             return var;
+        }
+
+        void set_user(std::string user)
+        {
+            user_ = user;
+        }
+        void set_password(std::string password)
+        {
+            password_ = password;
         }
 
         bool AuthenticateUser_();
@@ -54,6 +71,8 @@ class CPW::Extras::SecurityVerification
         bool SeePermissionsPerUser_(std::string user, std::string action_type, std::string target);
 
     private:
+        std::string user_;
+        std::string password_;
         DynamicElements dynamic_elements_;
 };
 

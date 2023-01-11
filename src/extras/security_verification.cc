@@ -35,20 +35,11 @@ bool SecurityVerification::AuthenticateUser_()
     // Variables
         auto query_actions = dynamic_elements_.get_query_actions();
         auto result_json = query_actions->get_result_json();
-        auto json_auth = query_actions->get_json_body()->getArray("pair-information")->getObject(0)->getObject("auth");
         auto& iquals = query_actions->get_current_filters_()->get_iquals_conditions();
 
-    // Verify the key-values
-        if(json_auth->get("user").isEmpty() || json_auth->get("password").isEmpty())
-        {
-            iquals.emplace(std::make_pair("username", "null"));
-            iquals.emplace(std::make_pair("password", "null"));
-        }
-        else
-        {
-            iquals.emplace(std::make_pair("username", json_auth->get("user").toString()));
-            iquals.emplace(std::make_pair("password", json_auth->get("password").toString()));
-        }
+    // Add user and password
+        iquals.emplace(std::make_pair("username", user_));
+        iquals.emplace(std::make_pair("password", password_));
 
     // Execute the query
         query_actions->ComposeQuery_(Query::TypeAction::kSelect, "users");
@@ -69,19 +60,10 @@ bool SecurityVerification::VerifyPermissions_(std::string method)
         auto query_actions = dynamic_elements_.get_query_actions();
         auto result_json = query_actions->get_result_json();
         std::string target = dynamic_elements_.get_requested_route()->get_target();
-        auto& iquals = query_actions->get_current_filters_()->get_iquals_conditions();
         int granted = -1;
 
-    // Find user
-        std::string user;
-        auto found = iquals.find("username");
-        if(found != iquals.end())
-            user = found->second.get_value();
-        else
-            user = "null";
-
     // Verify permissions for the users
-        for(auto it : std::vector{user, std::string("null")})
+        for(auto it : std::vector{user_, std::string("null")})
         {
             if(!SeePermissionsPerUser_(it, method, target))
                 return false;
