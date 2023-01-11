@@ -17,42 +17,63 @@
  */
 
 #include <iostream>
+
 #include "gtest/gtest.h"
+
 #include "core/woodpecker_server.h"
+#include "extras/session.h"
+#include "tools/sessions_handler.h"
 
 using namespace CPW;
 
 class TestGen : public ::testing::Test
 {
-	protected:
-		void SetUp() override;
-		void TearDown() override;
+    protected:
+        void SetUp() override;
+        void TearDown() override;
 
-		Core::WoodpeckerServer *TestObj_;
+        Core::WoodpeckerServer *TestObj_;
 };
 
 //-----------------------------------------------------------------------------
 
 void TestGen::SetUp()
 {
-	TestObj_ = new Core::WoodpeckerServer(8080);
+    TestObj_ = new Core::WoodpeckerServer(8080);
 }
 
 void TestGen::TearDown()
 {
-	delete TestObj_;
+    delete TestObj_;
 }
 
 //-----------------------------------------------------------------------------
 
 TEST_F(TestGen, BasicTest)
 {
-	ASSERT_NE(nullptr, &TestObj_->get_port());
-	ASSERT_NE(nullptr, TestObj_->get_server_params());
-	ASSERT_NE(nullptr, &TestObj_->get_server_socket());
-	ASSERT_NE(nullptr, TestObj_->get_handler_factory());
+    ASSERT_NE(nullptr, &TestObj_->get_port());
+    ASSERT_NE(nullptr, TestObj_->get_server_params());
+    ASSERT_NE(nullptr, &TestObj_->get_server_socket());
+    ASSERT_NE(nullptr, TestObj_->get_handler_factory());
 }
 
+TEST_F(TestGen, SesionTest)
+{
+    CPW::Extras::Session session;
+    ASSERT_NE("", session.get_id());
+    std::cout << "- Session ID: " << session.get_id() << std::endl;
+}
+
+TEST_F(TestGen, SesionHandlerTest)
+{
+    CPW::Tools::SessionsHandler sessions;
+    for(int a = 0; a < 3; a++)
+    {
+        auto session = sessions.CreateSession_("", "/", false, 3600);
+        ASSERT_NE("", session.get_id());
+        std::cout << "- Session ID (Session handler): " << session.get_id() << std::endl;
+    }
+}
 
 //-----------------------------------------------------------------------------
 
