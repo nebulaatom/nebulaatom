@@ -29,11 +29,11 @@ void BackendHandler::AddRoutes_()
 {
     auto& routes_list = get_dynamic_elements()->get_routes_list();
 
-    routes_list.push_back({"products", {"api", get_api_verion(), "products"}});
+    routes_list.push_back({"products", {"api", get_api_version(), "products"}});
 
-    routes_list.push_back({"business", {"api", get_api_verion(), "business"}});
-    routes_list.push_back({"levels", {"api", get_api_verion(), "business", "levels"}});
-    routes_list.push_back({"levels_log", {"api", get_api_verion(), "business", "levels", "log"}});
-    routes_list.push_back({"banks_accounts", {"api", get_api_verion(), "business", "banks_accounts"}});
-    routes_list.push_back({"transactions", {"api", get_api_verion(), "business", "banks_accounts", "transactions"}});
+    routes_list.push_back({"business", {"api", get_api_version(), "business"}});
+    routes_list.push_back({"levels", {"api", get_api_version(), "business", "levels"}});
+    routes_list.push_back({"levels_log", {"api", get_api_version(), "business", "levels", "log"}});
+    routes_list.push_back({"banks_accounts", {"api", get_api_version(), "business", "banks_accounts"}});
+    routes_list.push_back({"transactions", {"api", get_api_version(), "business", "banks_accounts", "transactions"}});
 }
