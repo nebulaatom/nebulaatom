@@ -59,10 +59,6 @@ class CPW::Extras::Session
         {
             return user_;
         }
-        bool get_expire() const
-        {
-            return expire_;
-        }
         int get_max_age() const
         {
             return max_age_;
@@ -80,10 +76,6 @@ class CPW::Extras::Session
         {
             user_ = user;
         }
-        void set_expire(bool expire)
-        {
-            expire_ = expire;
-        }
         void set_max_age(int max_age)
         {
             max_age_ = max_age;
@@ -99,7 +91,6 @@ class CPW::Extras::Session
         std::string id_;
         std::string path_;
         std::string user_;
-        bool expire_;
         int max_age_;
         Poco::DateTime last_access_;
 

@@ -24,7 +24,6 @@ Session::Session() :
         id_("")
         ,path_("/")
         ,user_("")
-        ,expire_(false)
         ,max_age_(3600)
         ,last_access_()
 {

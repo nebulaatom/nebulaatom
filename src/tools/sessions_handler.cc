@@ -30,12 +30,11 @@ SessionsHandler::~SessionsHandler()
 
 }
 
-CPW::Extras::Session& SessionsHandler::CreateSession_(std::string user, std::string path, bool expire, int max_age)
+CPW::Extras::Session& SessionsHandler::CreateSession_(std::string user, std::string path, int max_age)
 {
     Extras::Session new_session;
     new_session.set_user(user);
     new_session.set_path(path);
-    new_session.set_expire(expire);
     new_session.set_max_age(max_age);
 
     std::string id;

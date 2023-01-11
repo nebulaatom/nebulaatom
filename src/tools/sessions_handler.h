@@ -46,7 +46,7 @@ class CPW::Tools::SessionsHandler
             return var;
         }
 
-        CPW::Extras::Session& CreateSession_(std::string user, std::string path, bool expire, int max_age);
+        CPW::Extras::Session& CreateSession_(std::string user, std::string path, int max_age);
         void DeleteSession_(std::string id);
 
     protected:
