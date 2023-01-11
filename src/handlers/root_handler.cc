@@ -109,17 +109,28 @@ bool RootHandler::ProcessRoute_()
                     return false;
                 }
 
-                if(route_verification_)
-                {
-                    if(!IdentifyRoute_())
-                    {
-                        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_NOT_FOUND, "The requested endpoint is not available.");
-                        return false;
-                    }
-                }
+                std::vector<std::string> login_route({"api", api_version_, "system", "login"});
+                std::vector<std::string> logout_route({"api", api_version_, "system", "logout"});
 
-                if(!InitSecurityProccess_())
-                    return false;
+                if
+                (
+                    dynamic_elements_->get_requested_route()->get_segments() != login_route
+                    && dynamic_elements_->get_requested_route()->get_segments() != logout_route
+                )
+                {
+                    if(route_verification_)
+                    {
+                        if(!IdentifyRoute_())
+                        {
+                            GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_NOT_FOUND, "The requested endpoint is not available.");
+                            return false;
+                        }
+                    }
+
+                    if(!InitSecurityProccess_())
+                        return false;
+
+                }
 
                 break;
             }
