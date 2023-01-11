@@ -43,6 +43,8 @@ void LoginHandler::HandlePOSTMethod_()
     {
         EndSession_();
     }
+    else
+        GenericResponse_(*get_dynamic_elements()->get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Login route not identified.");
 }
 
 void LoginHandler::HandlePUTMethod_()
@@ -95,13 +97,13 @@ void LoginHandler::StartSession_()
         }
 
     // Create the session
-        auto session = get_sessions_handler()->CreateSession_(user, "/", false, 3600);
+        auto session = get_sessions_handler()->CreateSession_(user, "/", 2592000);
 
     // Response
-        Poco::Net::HTTPCookie cookie("session-id", session.get_id());
+        Poco::Net::HTTPCookie cookie("cpw-woodpecker-sid", session.get_id());
         cookie.setPath(session.get_path());
         cookie.setMaxAge(session.get_max_age());
-        cookie.setSameSite(Poco::Net::HTTPCookie::SAME_SITE_STRICT);
+        cookie.setSameSite(Poco::Net::HTTPCookie::SAME_SITE_NONE);
         cookie.setHttpOnly(true);
 
         get_dynamic_elements()->get_response()->addCookie(cookie);
@@ -119,7 +121,7 @@ void LoginHandler::EndSession_()
         }
 
     // Response
-        Poco::Net::HTTPCookie cookie("session-id", "");
+        Poco::Net::HTTPCookie cookie("cpw-woodpecker-sid", "");
         cookie.setPath("/");
         cookie.setMaxAge(0);
         get_dynamic_elements()->get_response()->addCookie(cookie);
@@ -133,7 +135,7 @@ std::string LoginHandler::SessionExists_()
         std::string session_id;
         Poco::Net::NameValueCollection cookies;
         get_dynamic_elements()->get_request()->getCookies(cookies);
-        auto cookie_session = cookies.find("session-id");
+        auto cookie_session = cookies.find("cpw-woodpecker-sid");
 
     // Session exists
         if(cookie_session == cookies.end())
