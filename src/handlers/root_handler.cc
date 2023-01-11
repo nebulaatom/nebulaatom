@@ -93,44 +93,48 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 
 bool RootHandler::ProcessRoute_()
 {
+    // Prepare routes
         AddRoutes_();
 
         std::vector<std::string> segments;
         URI(dynamic_elements_->get_request()->getURI()).getPathSegments(segments);
         dynamic_elements_->set_requested_route(std::make_shared<Tools::Route>("", segments));
 
+    // Manage the route type
         switch(dynamic_elements_->get_requested_route()->get_current_route_type())
         {
             case CPW::Tools::RouteType::kEndpoint:
             {
-                if(!ManageRequestBody_())
-                {
-                    GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Something was wrong with the Request body.");
-                    return false;
-                }
-
-                std::vector<std::string> login_route({"api", api_version_, "system", "login"});
-                std::vector<std::string> logout_route({"api", api_version_, "system", "logout"});
-
-                if
-                (
-                    dynamic_elements_->get_requested_route()->get_segments() != login_route
-                    && dynamic_elements_->get_requested_route()->get_segments() != logout_route
-                )
-                {
-                    if(route_verification_)
+                // Process the request body
+                    if(!ManageRequestBody_())
                     {
-                        if(!IdentifyRoute_())
-                        {
-                            GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_NOT_FOUND, "The requested endpoint is not available.");
-                            return false;
-                        }
+                        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Something was wrong with the Request body.");
+                        return false;
                     }
 
-                    if(!InitSecurityProccess_())
-                        return false;
+                // Route identification and identification
+                    std::vector<std::string> login_route({"api", api_version_, "system", "login"});
+                    std::vector<std::string> logout_route({"api", api_version_, "system", "logout"});
 
-                }
+                    if
+                    (
+                        dynamic_elements_->get_requested_route()->get_segments() != login_route
+                        && dynamic_elements_->get_requested_route()->get_segments() != logout_route
+                    )
+                    {
+                        if(route_verification_)
+                        {
+                            if(!IdentifyRoute_())
+                            {
+                                GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_NOT_FOUND, "The requested endpoint is not available.");
+                                return false;
+                            }
+                        }
+
+                        if(!InitSecurityProccess_())
+                            return false;
+
+                    }
 
                 break;
             }
@@ -149,7 +153,7 @@ bool RootHandler::InitSecurityProccess_()
         std::string session_id;
         Poco::Net::NameValueCollection cookies;
         get_dynamic_elements()->get_request()->getCookies(cookies);
-        auto cookie_session = cookies.find("session-id");
+        auto cookie_session = cookies.find("cpw-woodpecker-sid");
 
     // Verify Cookie session
         if(cookie_session == cookies.end())
