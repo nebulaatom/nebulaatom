@@ -145,20 +145,39 @@ bool RootHandler::ProcessRoute_()
 
 bool RootHandler::InitSecurityProccess_()
 {
-    current_security_.get_dynamic_elements().set_requested_route(dynamic_elements_->get_requested_route());
-    if(current_security_.AuthenticateUser_())
-    {
+    // Extract session ID
+        std::string session_id;
+        Poco::Net::NameValueCollection cookies;
+        get_dynamic_elements()->get_request()->getCookies(cookies);
+        auto cookie_session = cookies.find("session-id");
+
+    // Verify Cookie session
+        if(cookie_session == cookies.end())
+        {
+            GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "Session not created.");
+            return false;
+        }
+
+    // Verify Session
+        session_id = cookie_session->second;
+        if(get_sessions_handler()->get_sessions().find(session_id) == get_sessions_handler()->get_sessions().end())
+        {
+            GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "Session not found.");
+            return false;
+        }
+
+    // Get the session user
+        std::string user = "null";
+        user = get_sessions_handler()->get_sessions().at(session_id).get_user();
+
+    // Verify permissions
+        get_current_security().set_user(user);
+        current_security_.get_dynamic_elements().set_requested_route(dynamic_elements_->get_requested_route());
         if(!current_security_.VerifyPermissions_(dynamic_elements_->get_request()->getMethod()))
         {
             GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
             return false;
         }
-    }
-    else
-    {
-        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "Unauthorized user or wrong user or password.");
-        return false;
-    }
 
     return true;
 }
