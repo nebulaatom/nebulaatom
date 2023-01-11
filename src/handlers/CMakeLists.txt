@@ -21,3 +21,8 @@ set_target_properties(backendhandler PROPERTIES POSITION_INDEPENDENT_CODE 1)
 add_library(frontendhandler OBJECT "frontend_handler.cc")
 target_include_directories(frontendhandler PUBLIC ${HEADER})
 set_target_properties(frontendhandler PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
+### loginhandler
+add_library(loginhandler OBJECT "login_handler.cc")
+target_include_directories(loginhandler PUBLIC ${HEADER})
+set_target_properties(loginhandler PROPERTIES POSITION_INDEPENDENT_CODE 1)

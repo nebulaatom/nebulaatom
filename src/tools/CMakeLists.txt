@@ -26,3 +26,8 @@ set_target_properties(rowvalueformatter PROPERTIES POSITION_INDEPENDENT_CODE 1)
 add_library(managejson OBJECT "manage_json.cc")
 target_include_directories(managejson PUBLIC ${HEADER})
 set_target_properties(managejson PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
+### sessionshandler
+add_library(sessionshandler OBJECT "sessions_handler.cc")
+target_include_directories(sessionshandler PUBLIC ${HEADER})
+set_target_properties(sessionshandler PROPERTIES POSITION_INDEPENDENT_CODE 1)

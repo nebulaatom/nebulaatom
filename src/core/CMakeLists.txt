@@ -36,6 +36,9 @@ target_link_libraries(
     file
     rowvalueformatter
     identifyfilter
+    session
+    sessionshandler
+    loginhandler
     Poco::Foundation
     Poco::Net
     Poco::Util
