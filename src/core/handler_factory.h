@@ -41,12 +41,14 @@
 #include <Poco/Data/Statement.h>
 
 #include "tools/handler_connection.h"
+#include "tools/sessions_handler.h"
 #include "tools/route.h"
 #include "http/common_responses.h"
 #include "handlers/root_handler.h"
 #include "handlers/null_handler.h"
 #include "handlers/backend_handler.h"
 #include "handlers/frontend_handler.h"
+#include "handlers/login_handler.h"
 
 using namespace Poco;
 using namespace Poco::Util;
@@ -67,6 +69,7 @@ enum class CPW::Core::HandlerType
 {
     kBackend
     ,kFrontend
+    ,kLogin
     ,kNull
 };
 
@@ -87,6 +90,7 @@ class CPW::Core::HandlerFactory :
         std::string api_version_;
         std::map<HandlerType, std::unique_ptr<Tools::HandlerConnection>> connections_;
         Application& app_;
+        std::shared_ptr<CPW::Tools::SessionsHandler> sessions_handler_;
 };
 
 #endif // CPW_CORE_HANDLERFACTORY_H
