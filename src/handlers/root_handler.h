@@ -51,6 +51,7 @@
 #include <Poco/Dynamic/Var.h>
 #include <Poco/Dynamic/Struct.h>
 
+#include "tools/sessions_handler.h"
 #include "tools/route.h"
 #include "http/common_responses.h"
 #include "extras/security_verification.h"
@@ -83,12 +84,21 @@ class CPW::Handlers::RootHandler :
     ,public HTTP::HTTPMethods
 {
     public:
-        RootHandler(std::string api_version);
+        RootHandler(std::shared_ptr<Tools::SessionsHandler> sessions_handler, std::string api_version);
         virtual ~RootHandler();
         virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
-        std::string get_api_verion() const {return api_verion_;}
+        std::string get_api_version() const {return api_version_;}
         Application& get_app() const {return app_;};
+        Extras::SecurityVerification& get_current_security()
+        {
+            auto& var = current_security_;
+            return var;
+        }
+        std::shared_ptr<Tools::SessionsHandler> get_sessions_handler()
+        {
+            return sessions_handler_;
+        }
 
     protected:
         virtual void AddRoutes_() = 0;
@@ -100,11 +110,12 @@ class CPW::Handlers::RootHandler :
         Application& app_;
 
     private:
-        std::string api_verion_;
+        std::string api_version_;
         bool route_verification_;
         Extras::SecurityVerification current_security_;
         Tools::RequestsManager requests_manager_;
         std::shared_ptr<Extras::DynamicElements> dynamic_elements_;
+        std::shared_ptr<Tools::SessionsHandler> sessions_handler_;
 };
 
 #endif // CPW_HANDLERS_ROOTHANDLER_H
