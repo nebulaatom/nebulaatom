@@ -20,11 +20,12 @@
 
 using namespace CPW::Handlers;
 
-RootHandler::RootHandler(std::string api_version) :
+RootHandler::RootHandler(std::shared_ptr<Tools::SessionsHandler> sessions_handler, std::string api_version) :
     app_(Application::instance())
-    ,api_verion_(api_version)
+    ,api_version_(api_version)
     ,route_verification_(true)
     ,dynamic_elements_(new Extras::DynamicElements())
+    ,sessions_handler_(sessions_handler)
 {
     requests_manager_.set_http_methods(*this);
     requests_manager_.get_http_methods()->set_dynamic_elements(dynamic_elements_);
