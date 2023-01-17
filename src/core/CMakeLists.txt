@@ -41,6 +41,7 @@ target_link_libraries(
     loginhandler
     Poco::Foundation
     Poco::Net
+    Poco::NetSSL
     Poco::Util
     Poco::Data
     Poco::DataMySQL

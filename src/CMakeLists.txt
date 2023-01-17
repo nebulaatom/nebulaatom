@@ -8,7 +8,7 @@ endif()
 
 include(${PROJECT_SOURCE_DIR}/cmake/FindMySQL.cmake)
 
-find_package(Poco REQUIRED COMPONENTS Foundation Net Util Data DataMySQL)
+find_package(Poco REQUIRED COMPONENTS Foundation Net NetSSL Util Data DataMySQL)
 if(NOT Poco_FOUND)
     message(FATAL_ERROR "Poco not found")
 endif()
