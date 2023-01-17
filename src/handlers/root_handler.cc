@@ -41,6 +41,11 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 {
     try
     {
+        // Use SSL
+            SecureStreamSocket socket = static_cast<Net::HTTPServerRequestImpl&>(request).socket();
+            if (socket.havePeerCertificate())
+                X509Certificate cert = socket.peerCertificate();
+
         // Process request and response
             dynamic_elements_->set_request(request);
             dynamic_elements_->set_response(response);

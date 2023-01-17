@@ -50,6 +50,10 @@
 #include <Poco/JSON/Parser.h>
 #include <Poco/Dynamic/Var.h>
 #include <Poco/Dynamic/Struct.h>
+#include "Poco/Net/HTTPServerRequestImpl.h"
+#include "Poco/Net/SecureStreamSocket.h"
+#include "Poco/Net/SecureServerSocket.h"
+#include "Poco/Net/X509Certificate.h"
 
 #include "tools/sessions_handler.h"
 #include "tools/route.h"
