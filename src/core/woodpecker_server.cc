@@ -20,18 +20,29 @@
 
 using namespace CPW::Core;
 
-WoodpeckerServer::WoodpeckerServer(int port) :
+WoodpeckerServer::WoodpeckerServer(Poco::UInt16 port) :
     port_(port)
     ,server_params_(new HTTPServerParams())
-    ,server_socket_(port_)
     ,handler_factory_(new HandlerFactory())
     ,app_(Application::instance())
 {
+    Poco::Net::initializeSSL();
 }
 
 WoodpeckerServer::~WoodpeckerServer()
 {
+    Poco::Net::uninitializeSSL();
+}
 
+void WoodpeckerServer::initialize(Application& self)
+{
+    loadConfiguration();
+    ServerApplication::initialize(self);
+}
+
+void WoodpeckerServer::uninitialize()
+{
+    ServerApplication::uninitialize();
 }
 
 int WoodpeckerServer::main(const std::vector<std::string>& args)
@@ -40,7 +51,8 @@ int WoodpeckerServer::main(const std::vector<std::string>& args)
     server_params_->setMaxQueued(100);
     server_params_->setMaxThreads(16);
 
-    server_ = std::make_unique<HTTPServer>(handler_factory_, server_socket_, server_params_);
+    server_socket_ = std::make_shared<SecureServerSocket>(port_);
+    server_ = std::make_unique<HTTPServer>(handler_factory_, *server_socket_.get(), server_params_);
 
     return Init_();
 }

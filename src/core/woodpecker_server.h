@@ -29,6 +29,13 @@
 #include <Poco/Net/ServerSocket.h>
 #include <Poco/Net/HTTPServer.h>
 #include "Poco/Format.h"
+#include "Poco/Exception.h"
+#include "Poco/Net/SecureStreamSocket.h"
+#include "Poco/Net/SecureServerSocket.h"
+#include "Poco/Net/X509Certificate.h"
+#include "Poco/Net/SSLManager.h"
+#include "Poco/Net/KeyConsoleHandler.h"
+#include "Poco/Net/AcceptCertificateHandler.h"
 
 #include "core/handler_factory.h"
 
@@ -49,10 +56,10 @@ using namespace Poco::Util;
 class CPW::Core::WoodpeckerServer : public ServerApplication
 {
     public:
-        WoodpeckerServer(int port);
+        WoodpeckerServer(Poco::UInt16 port);
         virtual ~WoodpeckerServer();
 
-        UInt16& get_port()
+        Poco::UInt16& get_port()
         {
             auto& var = port_;
             return var;
@@ -62,9 +69,9 @@ class CPW::Core::WoodpeckerServer : public ServerApplication
             auto& var = server_params_;
             return var;
         }
-        ServerSocket& get_server_socket()
+        ServerSocket* get_server_socket()
         {
-            auto& var = server_socket_;
+            auto var = server_socket_.get();
             return var;
         }
         HTTPServer* get_server()
@@ -80,12 +87,14 @@ class CPW::Core::WoodpeckerServer : public ServerApplication
 
     protected:
         virtual int main(const std::vector<std::string>& args);
+        virtual void initialize(Application& self);
+        virtual void uninitialize();
         int Init_();
 
     private:
-        UInt16 port_;
+        Poco::UInt16 port_;
         HTTPServerParams::Ptr server_params_;
-        ServerSocket server_socket_;
+        std::shared_ptr<SecureServerSocket> server_socket_;
         std::unique_ptr<HTTPServer> server_;
         HandlerFactory* handler_factory_;
         Application& app_;
