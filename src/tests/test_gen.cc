@@ -53,7 +53,7 @@ TEST_F(TestGen, BasicTest)
 {
     ASSERT_NE(nullptr, &TestObj_->get_port());
     ASSERT_NE(nullptr, TestObj_->get_server_params());
-    ASSERT_NE(nullptr, &TestObj_->get_server_socket());
+    ASSERT_NE(nullptr, TestObj_->get_server_socket());
     ASSERT_NE(nullptr, TestObj_->get_handler_factory());
 }
 
