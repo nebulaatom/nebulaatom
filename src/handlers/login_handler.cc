@@ -103,8 +103,9 @@ void LoginHandler::StartSession_()
         Poco::Net::HTTPCookie cookie("cpw-woodpecker-sid", session.get_id());
         cookie.setPath(session.get_path());
         cookie.setMaxAge(session.get_max_age());
-        cookie.setSameSite(Poco::Net::HTTPCookie::SAME_SITE_NONE);
+        cookie.setSameSite(Poco::Net::HTTPCookie::SAME_SITE_STRICT);
         cookie.setHttpOnly(true);
+        cookie.setSecure(true);
 
         get_dynamic_elements()->get_response()->addCookie(cookie);
 
