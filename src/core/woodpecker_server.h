@@ -24,6 +24,7 @@
 #include <vector>
 #include <iostream>
 #include <memory>
+#include <exception>
 
 #include <Poco/Util/ServerApplication.h>
 #include <Poco/Net/ServerSocket.h>

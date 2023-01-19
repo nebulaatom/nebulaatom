@@ -47,14 +47,44 @@ void WoodpeckerServer::uninitialize()
 
 int WoodpeckerServer::main(const std::vector<std::string>& args)
 {
-    arguments_ = &args;
-    server_params_->setMaxQueued(100);
-    server_params_->setMaxThreads(16);
+    try
+    {
+        arguments_ = &args;
+        server_params_->setMaxQueued(100);
+        server_params_->setMaxThreads(16);
 
-    server_socket_ = std::make_shared<SecureServerSocket>(port_);
-    server_ = std::make_unique<HTTPServer>(handler_factory_, *server_socket_.get(), server_params_);
+        server_socket_ = std::make_shared<SecureServerSocket>(port_);
+        server_ = std::make_unique<HTTPServer>(handler_factory_, *server_socket_.get(), server_params_);
 
-    return Init_();
+        return Init_();
+    }
+    catch(MySQL::MySQLException& error)
+    {
+        app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
+        return -1;
+    }
+    catch(JSON::JSONException& error)
+    {
+        app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
+        return -1;
+    }
+    catch(Poco::NullPointerException& error)
+    {
+        app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
+        return -1;
+    }
+    catch(std::runtime_error& error)
+    {
+        app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + std::string(error.what()));
+        return -1;
+    }
+    catch(std::exception& error)
+    {
+        app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + std::string(error.what()));
+        return -1;
+    }
+
+    return -1;
 }
 
 int WoodpeckerServer::Init_()
