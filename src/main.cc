@@ -33,19 +33,24 @@ int main(int argc, char** argv)
 		CPW::Core::WoodpeckerServer app_main(8080);
 		return app_main.run(argc, argv);
 	}
-	catch (Poco::NullPointerException const& error)
-	{
-		Application::instance().logger().error("- Error on main.cc on main(): " + std::string(error.what()));
-		return -1;
-	}
-	catch (Poco::Exception const& error)
-	{
-		Application::instance().logger().error("- Error on main.cc on main(): " + std::string(error.what()));
-		return -1;
-	}
-	catch (std::exception const& error)
-	{
-		Application::instance().logger().error("- Error on main.cc on main(): " + std::string(error.what()));
-		return -1;
-	}
+    catch(MySQL::MySQLException& error)
+    {
+        Application::instance().logger().error("- Error on main.cc on main(): " + std::string(error.what()));
+        return -1;
+    }
+    catch (Poco::NullPointerException const& error)
+    {
+        Application::instance().logger().error("- Error on main.cc on main(): " + std::string(error.what()));
+        return -1;
+    }
+    catch (Poco::Exception const& error)
+    {
+        Application::instance().logger().error("- Error on main.cc on main(): " + std::string(error.what()));
+        return -1;
+    }
+    catch (std::exception const& error)
+    {
+        Application::instance().logger().error("- Error on main.cc on main(): " + std::string(error.what()));
+        return -1;
+    }
 }
