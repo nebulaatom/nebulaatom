@@ -79,7 +79,7 @@ void LoginHandler::StartSession_()
     // Get the user and password
         auto query_actions = get_dynamic_elements()->get_query_actions();
         auto json_auth = query_actions->get_json_body()->getArray("pair-information")->getObject(0)->getObject("auth");
-        std::string user = "null", password = "null";
+        std::string user = "", password = "";
 
         if(!json_auth->get("user").isEmpty())
             user = json_auth->get("user").toString();
@@ -97,7 +97,7 @@ void LoginHandler::StartSession_()
         }
 
     // Create the session
-        auto session = get_sessions_handler()->CreateSession_(user, "/", 2592000);
+        auto session = get_static_elements()->get_sessions_handler()->CreateSession_(user, "/", 2592000);
 
     // Response
         Poco::Net::HTTPCookie cookie("cpw-woodpecker-sid", session.get_id());
@@ -118,13 +118,13 @@ void LoginHandler::EndSession_()
         auto session_id = SessionExists_();
         if (session_id != "")
         {
-            get_sessions_handler()->DeleteSession_(session_id);
+            get_static_elements()->get_sessions_handler()->DeleteSession_(session_id);
         }
 
     // Response
         Poco::Net::HTTPCookie cookie("cpw-woodpecker-sid", "");
         cookie.setPath("/");
-        cookie.setMaxAge(0);
+        cookie.setMaxAge(-1);
         get_dynamic_elements()->get_response()->addCookie(cookie);
 
         GenericResponse_(*get_dynamic_elements()->get_response(), HTTPResponse::HTTP_OK, "Client logout.");
@@ -137,13 +137,14 @@ std::string LoginHandler::SessionExists_()
         Poco::Net::NameValueCollection cookies;
         get_dynamic_elements()->get_request()->getCookies(cookies);
         auto cookie_session = cookies.find("cpw-woodpecker-sid");
+        auto sessions_handler = get_static_elements()->get_sessions_handler();
 
     // Session exists
         if(cookie_session == cookies.end())
             return "";
 
-        if(get_sessions_handler()->get_sessions().find(cookie_session->second) == get_sessions_handler()->get_sessions().end())
+        if(sessions_handler->get_sessions().find(cookie_session->second) == sessions_handler->get_sessions().end())
             return "";
 
-        return get_sessions_handler()->get_sessions().find(cookie_session->second)->first;
+        return sessions_handler->get_sessions().find(cookie_session->second)->first;
 }

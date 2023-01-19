@@ -20,8 +20,8 @@
 
 using namespace CPW::Handlers;
 
-FrontendHandler::FrontendHandler(std::shared_ptr<Tools::SessionsHandler> sessions_handler, std::string api_version) :
-    RootHandler(sessions_handler, api_version)
+FrontendHandler::FrontendHandler(std::shared_ptr<Extras::StaticElements> static_elements, std::string api_version) :
+    RootHandler(static_elements, api_version)
 {
 
 }

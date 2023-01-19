@@ -39,7 +39,7 @@ namespace CPW
 class CPW::Handlers::FrontendHandler : public RootHandler
 {
     public:
-        FrontendHandler(std::shared_ptr<Tools::SessionsHandler> sessions_handler, std::string api_version);
+        FrontendHandler(std::shared_ptr<Extras::StaticElements> static_elements, std::string api_version);
         ~FrontendHandler();
 
     protected:
