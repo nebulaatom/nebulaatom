@@ -22,8 +22,8 @@ using namespace CPW::Core;
 
 HandlerFactory::HandlerFactory() :
     api_version_("v0")
+    ,static_elements_(new Extras::StaticElements())
     ,app_(Application::instance())
-    ,sessions_handler_(new CPW::Tools::SessionsHandler())
 {
     CreateConnections_();
 }
@@ -78,6 +78,11 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
         app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
         GenericResponse_(request.response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
     }
+    catch(Poco::NullPointerException& error)
+    {
+        app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
+        GenericResponse_(request.response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
+    }
     catch(std::runtime_error& error)
     {
         app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + std::string(error.what()));
@@ -100,7 +105,7 @@ void HandlerFactory::CreateConnections_()
         ,new Tools::HandlerConnection
         {
             CPW::Tools::Route("null", std::vector<std::string>{""})
-            ,[&](){return new CPW::Handlers::NullHandler(sessions_handler_, api_version_);}
+            ,[&](){return new CPW::Handlers::NullHandler(static_elements_, api_version_);}
         }
     ));
     connections_.insert(std::make_pair
@@ -109,7 +114,7 @@ void HandlerFactory::CreateConnections_()
         ,new Tools::HandlerConnection
         {
             CPW::Tools::Route("", std::vector<std::string>{"api", api_version_})
-            ,[&](){return new CPW::Handlers::BackendHandler(sessions_handler_, api_version_);}
+            ,[&](){return new CPW::Handlers::BackendHandler(static_elements_, api_version_);}
         }
     ));
     connections_.insert(std::make_pair
@@ -118,7 +123,7 @@ void HandlerFactory::CreateConnections_()
         ,new Tools::HandlerConnection
         {
             CPW::Tools::Route("", std::vector<std::string>{"api", api_version_})
-            ,[&](){return new CPW::Handlers::LoginHandler(sessions_handler_, api_version_);}
+            ,[&](){return new CPW::Handlers::LoginHandler(static_elements_, api_version_);}
         }
     ));
     connections_.insert(std::make_pair
@@ -127,7 +132,7 @@ void HandlerFactory::CreateConnections_()
         ,new Tools::HandlerConnection
         {
             CPW::Tools::Route("", std::vector<std::string>{""})
-            ,[&](){return new CPW::Handlers::FrontendHandler(sessions_handler_, api_version_);}
+            ,[&](){return new CPW::Handlers::FrontendHandler(static_elements_, api_version_);}
         }
     ));
 }

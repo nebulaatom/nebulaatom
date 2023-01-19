@@ -24,7 +24,9 @@
 #include <exception>
 #include <vector>
 #include <memory>
+#include <stdexcept>
 
+#include "Poco/Exception.h"
 #include "Poco/Util/Application.h"
 #include "Poco/Format.h"
 #include <Poco/Net/HTTPRequestHandlerFactory.h>
@@ -42,6 +44,7 @@
 
 #include "tools/handler_connection.h"
 #include "tools/sessions_handler.h"
+#include "query/database_manager.h"
 #include "tools/route.h"
 #include "http/common_responses.h"
 #include "handlers/root_handler.h"
@@ -89,8 +92,8 @@ class CPW::Core::HandlerFactory :
     private:
         std::string api_version_;
         std::map<HandlerType, std::unique_ptr<Tools::HandlerConnection>> connections_;
+        std::shared_ptr<Extras::StaticElements> static_elements_;
         Application& app_;
-        std::shared_ptr<CPW::Tools::SessionsHandler> sessions_handler_;
 };
 
 #endif // CPW_CORE_HANDLERFACTORY_H
