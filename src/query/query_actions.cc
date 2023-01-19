@@ -36,18 +36,6 @@ QueryActions::~QueryActions()
 
 }
 
-void QueryActions::StartDatabase_()
-{
-    Data::MySQL::Connector::registerConnector();
-    session_ = std::make_shared<Data::Session>("MySQL", "host=127.0.0.1;port=3306;db=cpw_rabbit;user=root;password=0UHC72zNvywZ;");
-    query_ = std::make_shared<Data::Statement>(*session_);
-}
-
-void QueryActions::StopDatabase_()
-{
-    session_->close();
-}
-
 void QueryActions::IdentifyFilters_()
 {
     try
@@ -131,9 +119,12 @@ bool QueryActions::ExecuteQuery_(HTTPServerResponse& response)
 {
     try
     {
-        StartDatabase_();
+        if(session_.get() != nullptr)
+            query_ = std::make_shared<Data::Statement>(*session_);
+        else
+            throw MySQL::MySQLException("Error to connect to database server");
+
         *query_ << final_query_, now;
-        StopDatabase_();
 
         CreateJSONResult_();
     }
@@ -169,9 +160,12 @@ bool QueryActions::ExecuteQuery_()
 {
     try
     {
-        StartDatabase_();
+        if(session_.get() != nullptr)
+            query_ = std::make_shared<Data::Statement>(*session_);
+        else
+            throw MySQL::MySQLException("Error to connect to database server");
+
         *query_ << final_query_, now;
-        StopDatabase_();
 
         CreateJSONResult_();
     }
@@ -205,6 +199,14 @@ void QueryActions::CreateJSONResult_()
         Data::RecordSet results(*query_);
         JSON::Array::Ptr results_array = new JSON::Array();
         JSON::Array::Ptr columns_array = new JSON::Array();
+
+    // Default values
+        if(query_ == nullptr)
+        {
+            result_json_->set("columns", columns_array);
+            result_json_->set("results", results_array);
+            return;
+        }
 
     // Save columns names
         for (std::size_t col = 0; col < results.columnCount(); ++col)

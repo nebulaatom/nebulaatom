@@ -102,14 +102,17 @@ class CPW::Query::QueryActions :
         }
         JSON::Object::Ptr get_result_json() const {return result_json_;}
 
+        void set_session(std::shared_ptr<Data::Session> session)
+        {
+            session_ = session;
+        }
+
         void IdentifyFilters_();
         void ComposeQuery_(TypeAction action_type, std::string table);
         bool ExecuteQuery_(HTTPServerResponse& response);
         bool ExecuteQuery_();
 
     protected:
-        void StartDatabase_();
-        void StopDatabase_();
         void CreateJSONResult_();
         std::string ComposeInsertSentence_(std::string table);
         std::string ComposeSelectSentence_(std::string table);
