@@ -21,3 +21,8 @@ set_target_properties(valuesproperties PROPERTIES POSITION_INDEPENDENT_CODE 1)
 add_library(session OBJECT "session.cc")
 target_include_directories(session PUBLIC ${HEADER})
 set_target_properties(session PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
+### staticelements
+add_library(staticelements OBJECT "static_elements.cc")
+target_include_directories(staticelements PUBLIC ${HEADER})
+set_target_properties(staticelements PROPERTIES POSITION_INDEPENDENT_CODE 1)
