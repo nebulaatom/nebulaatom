@@ -20,16 +20,21 @@
 
 using namespace CPW::Handlers;
 
-RootHandler::RootHandler(std::shared_ptr<Tools::SessionsHandler> sessions_handler, std::string api_version) :
+RootHandler::RootHandler(std::shared_ptr<Extras::StaticElements> static_elements, std::string api_version) :
     app_(Application::instance())
     ,api_version_(api_version)
     ,route_verification_(true)
+    ,static_elements_(static_elements)
     ,dynamic_elements_(new Extras::DynamicElements())
-    ,sessions_handler_(sessions_handler)
 {
     requests_manager_.set_http_methods(*this);
     requests_manager_.get_http_methods()->set_dynamic_elements(dynamic_elements_);
     HTTPMethods::set_dynamic_elements(dynamic_elements_);
+
+    // Set the session for QueryActions
+        auto session = static_elements_->get_database_manager()->get_data_session();
+        dynamic_elements_->get_query_actions()->set_session(session);
+        current_security_.get_dynamic_elements().get_query_actions()->set_session(session);
 }
 
 RootHandler::~RootHandler()
@@ -156,28 +161,25 @@ bool RootHandler::InitSecurityProccess_()
 {
     // Extract session ID
         std::string session_id;
+        std::string user = "null";
         Poco::Net::NameValueCollection cookies;
         get_dynamic_elements()->get_request()->getCookies(cookies);
         auto cookie_session = cookies.find("cpw-woodpecker-sid");
+        auto sessions_handler = get_static_elements()->get_sessions_handler();
 
-    // Verify Cookie session
-        if(cookie_session == cookies.end())
+    // Verify Cookie session and session
+        if(cookie_session != cookies.end())
         {
-            GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "Session not created.");
-            return false;
-        }
+            session_id = cookie_session->second;
+            if(sessions_handler->get_sessions().find(session_id) == sessions_handler->get_sessions().end())
+            {
+                GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "Session not found.");
+                return false;
+            }
 
-    // Verify Session
-        session_id = cookie_session->second;
-        if(get_sessions_handler()->get_sessions().find(session_id) == get_sessions_handler()->get_sessions().end())
-        {
-            GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "Session not found.");
-            return false;
+            // Get the session user
+                user = sessions_handler->get_sessions().at(session_id).get_user();
         }
-
-    // Get the session user
-        std::string user = "null";
-        user = get_sessions_handler()->get_sessions().at(session_id).get_user();
 
     // Verify permissions
         get_current_security().set_user(user);

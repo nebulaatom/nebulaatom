@@ -55,7 +55,7 @@
 #include "Poco/Net/SecureServerSocket.h"
 #include "Poco/Net/X509Certificate.h"
 
-#include "tools/sessions_handler.h"
+#include "extras/static_elements.h"
 #include "tools/route.h"
 #include "http/common_responses.h"
 #include "extras/security_verification.h"
@@ -88,7 +88,7 @@ class CPW::Handlers::RootHandler :
     ,public HTTP::HTTPMethods
 {
     public:
-        RootHandler(std::shared_ptr<Tools::SessionsHandler> sessions_handler, std::string api_version);
+        RootHandler(std::shared_ptr<Extras::StaticElements> static_elements, std::string api_version);
         virtual ~RootHandler();
         virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
@@ -99,9 +99,9 @@ class CPW::Handlers::RootHandler :
             auto& var = current_security_;
             return var;
         }
-        std::shared_ptr<Tools::SessionsHandler> get_sessions_handler()
+        std::shared_ptr<Extras::StaticElements> get_static_elements() const
         {
-            return sessions_handler_;
+            return static_elements_;
         }
 
     protected:
@@ -118,8 +118,8 @@ class CPW::Handlers::RootHandler :
         bool route_verification_;
         Extras::SecurityVerification current_security_;
         Tools::RequestsManager requests_manager_;
+        std::shared_ptr<Extras::StaticElements> static_elements_;
         std::shared_ptr<Extras::DynamicElements> dynamic_elements_;
-        std::shared_ptr<Tools::SessionsHandler> sessions_handler_;
 };
 
 #endif // CPW_HANDLERS_ROOTHANDLER_H
