@@ -27,6 +27,6 @@ add_subdirectory(query)
 add_subdirectory(tools)
 
 ## Main executable
-add_executable(${PROJECT_NAME} "main.cc")
+add_executable(${PROJECT_NAME} "main.cpp")
 target_include_directories(${PROJECT_NAME} PUBLIC ${HEADER})
 target_link_libraries(${PROJECT_NAME} PUBLIC woodpeckerserver)

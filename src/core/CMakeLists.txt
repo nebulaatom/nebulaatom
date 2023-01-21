@@ -3,14 +3,14 @@
 ## Objects libraries
 
 ### handlerfactory
-add_library(handlerfactory OBJECT "handler_factory.cc")
+add_library(handlerfactory OBJECT "handler_factory.cpp")
 target_include_directories(handlerfactory PUBLIC ${HEADER})
 set_target_properties(handlerfactory PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
 ## Shared and statics libraries
 
 ### woodpeckerserver
-add_library(woodpeckerserver STATIC "woodpecker_server.cc")
+add_library(woodpeckerserver STATIC "woodpecker_server.cpp")
 target_include_directories(woodpeckerserver PUBLIC ${HEADER})
 target_link_libraries(
     woodpeckerserver

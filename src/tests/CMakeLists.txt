@@ -1,5 +1,5 @@
 # Tests
-add_executable(test_gen test_gen.cc)
+add_executable(test_gen test_gen.cpp)
 add_test(TestGen test_gen)
 
 # Find GTest
