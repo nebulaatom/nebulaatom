@@ -36,5 +36,5 @@ StaticElements::StaticElements() :
 
 StaticElements::~StaticElements()
 {
-
+    database_manager_->StopMySQL_();
 }
