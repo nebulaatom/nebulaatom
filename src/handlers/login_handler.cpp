@@ -78,13 +78,17 @@ void LoginHandler::StartSession_()
 
     // Get the user and password
         auto query_actions = get_dynamic_elements()->get_query_actions();
-        auto json_auth = query_actions->get_json_body()->getArray("pair-information")->getObject(0)->getObject("auth");
+        auto json_body = query_actions->get_json_body();
         std::string user = "", password = "";
 
-        if(!json_auth->get("user").isEmpty())
-            user = json_auth->get("user").toString();
-        if(!json_auth->get("password").isEmpty())
-            password =  json_auth->get("password").toString();
+        if(json_body->size() > 0)
+        {
+            auto json_auth = json_body->getObject(0);
+            if(!json_auth->get("user").isEmpty())
+                user = json_auth->get("user").toString();
+            if(!json_auth->get("password").isEmpty())
+                password =  json_auth->get("password").toString();
+        }
 
     // Security verification
         get_current_security().set_user(user);
