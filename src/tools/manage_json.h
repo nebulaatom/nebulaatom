@@ -50,18 +50,15 @@ class CPW::Tools::ManageJSON
         ManageJSON();
         ~ManageJSON();
 
-        JSON::Object::Ptr& get_json_body(){return json_body_;}
+        JSON::Array::Ptr& get_json_body(){return json_body_;}
 
         std::string ReadBody_(std::istream& stream);
         bool Parse_(std::string string_to_parse);
         JSON::Object::Ptr ExtractObject_(Dynamic::Var& object);
         JSON::Array::Ptr ExtractArray_(Dynamic::Var object);
 
-    protected:
-        bool VerifyJSON_();
-
     private:
-        JSON::Object::Ptr json_body_;
+        JSON::Array::Ptr json_body_;
 };
 
 #endif // CPW_TOOLS_MANAGEJSON_H

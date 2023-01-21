@@ -21,7 +21,7 @@
 using namespace CPW::Tools;
 
 ManageJSON::ManageJSON() :
-    json_body_(new JSON::Object())
+    json_body_(new JSON::Array())
 {
 
 }
@@ -51,12 +51,12 @@ bool ManageJSON::Parse_(std::string string_to_parse)
 
     Dynamic::Var var_tmp = parser.parse(string_to_parse);
 
-    if(var_tmp.isArray())
+    if(!var_tmp.isArray())
         return false;
 
-    json_body_ = var_tmp.extract<JSON::Object::Ptr>();
+    json_body_ = var_tmp.extract<JSON::Array::Ptr>();
 
-    return VerifyJSON_();
+    return true;
 }
 
 JSON::Object::Ptr ManageJSON::ExtractObject_(Dynamic::Var& object)
@@ -76,20 +76,4 @@ JSON::Array::Ptr ManageJSON::ExtractArray_(Dynamic::Var object)
 
     final = object.extract<JSON::Array::Ptr>();
     return final;
-}
-
-bool ManageJSON::VerifyJSON_()
-{
-    if(json_body_->get("pair-information").isEmpty())
-        return false;
-
-    auto pair_info = json_body_->getArray("pair-information");
-
-    if(pair_info->getObject(0)->get("auth").isEmpty())
-        return false;
-
-    if(pair_info->getObject(1)->get("data").isEmpty())
-        return false;
-
-    return true;
 }
