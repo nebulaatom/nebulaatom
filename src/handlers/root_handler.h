@@ -107,7 +107,8 @@ class CPW::Handlers::RootHandler :
     protected:
         virtual void AddRoutes_() = 0;
         bool ProcessRoute_();
-        bool InitSecurityProccess_();
+        bool VerifySession_();
+        bool VerifyPermissions_();
         bool IdentifyRoute_();
         bool ManageRequestBody_();
 
@@ -115,8 +116,10 @@ class CPW::Handlers::RootHandler :
 
     private:
         std::string api_version_;
+        std::string user_;
         bool route_verification_;
         Extras::SecurityVerification current_security_;
+        Extras::SecurityType security_type_;
         Tools::RequestsManager requests_manager_;
         std::shared_ptr<Extras::StaticElements> static_elements_;
         std::shared_ptr<Extras::DynamicElements> dynamic_elements_;

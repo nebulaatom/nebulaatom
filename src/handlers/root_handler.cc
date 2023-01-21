@@ -23,7 +23,9 @@ using namespace CPW::Handlers;
 RootHandler::RootHandler(std::shared_ptr<Extras::StaticElements> static_elements, std::string api_version) :
     app_(Application::instance())
     ,api_version_(api_version)
+    ,user_("null")
     ,route_verification_(true)
+    ,security_type_(Extras::SecurityType::kDisableAll)
     ,static_elements_(static_elements)
     ,dynamic_elements_(new Extras::DynamicElements())
 {
@@ -32,9 +34,10 @@ RootHandler::RootHandler(std::shared_ptr<Extras::StaticElements> static_elements
     HTTPMethods::set_dynamic_elements(dynamic_elements_);
 
     // Set the session for QueryActions
-        auto session = static_elements_->get_database_manager()->get_data_session();
-        dynamic_elements_->get_query_actions()->set_session(session);
-        current_security_.get_dynamic_elements().get_query_actions()->set_session(session);
+        auto session1 = static_elements_->get_database_manager()->StartSessionMySQL_();
+        auto session2 = static_elements_->get_database_manager()->StartSessionMySQL_();
+        dynamic_elements_->get_query_actions()->set_session(session1);
+        current_security_.get_dynamic_elements().get_query_actions()->set_session(session2);
 }
 
 RootHandler::~RootHandler()
@@ -115,6 +118,8 @@ bool RootHandler::ProcessRoute_()
         {
             case CPW::Tools::RouteType::kEndpoint:
             {
+                security_type_ = Extras::SecurityType::kDisableAll;
+
                 // Process the request body
                     if(!ManageRequestBody_())
                     {
@@ -141,8 +146,15 @@ bool RootHandler::ProcessRoute_()
                             }
                         }
 
-                        if(!InitSecurityProccess_())
+                        if(!VerifySession_())
+                        {
+                            GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "Session not found.");
                             return false;
+                        }
+
+                        if(!VerifyPermissions_())
+                            return false;
+
 
                     }
 
@@ -150,6 +162,13 @@ bool RootHandler::ProcessRoute_()
             }
             case CPW::Tools::RouteType::kEntrypoint:
             {
+                security_type_ = Extras::SecurityType::kEnableAll;
+
+                VerifySession_();
+
+                if(!VerifyPermissions_())
+                    return false;
+
                 break;
             }
         }
@@ -157,11 +176,10 @@ bool RootHandler::ProcessRoute_()
     return true;
 }
 
-bool RootHandler::InitSecurityProccess_()
+bool RootHandler::VerifySession_()
 {
     // Extract session ID
         std::string session_id;
-        std::string user = "null";
         Poco::Net::NameValueCollection cookies;
         get_dynamic_elements()->get_request()->getCookies(cookies);
         auto cookie_session = cookies.find("cpw-woodpecker-sid");
@@ -173,22 +191,25 @@ bool RootHandler::InitSecurityProccess_()
             session_id = cookie_session->second;
             if(sessions_handler->get_sessions().find(session_id) == sessions_handler->get_sessions().end())
             {
-                GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "Session not found.");
                 return false;
             }
 
             // Get the session user
-                user = sessions_handler->get_sessions().at(session_id).get_user();
+                user_ = sessions_handler->get_sessions().at(session_id).get_user();
         }
 
-    // Verify permissions
-        get_current_security().set_user(user);
-        current_security_.get_dynamic_elements().set_requested_route(dynamic_elements_->get_requested_route());
-        if(!current_security_.VerifyPermissions_(dynamic_elements_->get_request()->getMethod()))
-        {
-            GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
-            return false;
-        }
+    return true;
+}
+
+bool RootHandler::VerifyPermissions_()
+{
+    get_current_security().set_user(user_);
+    current_security_.get_dynamic_elements().set_requested_route(dynamic_elements_->get_requested_route());
+    if(!current_security_.VerifyPermissions_(security_type_, dynamic_elements_->get_request()->getMethod()))
+    {
+        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
+        return false;
+    }
 
     return true;
 }
