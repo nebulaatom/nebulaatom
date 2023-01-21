@@ -41,21 +41,15 @@ void QueryActions::IdentifyFilters_()
     try
     {
         Filters::FilterType type;
-        auto pair = get_json_body()->getArray("pair-information");
-
-        if(pair->size() < 1)
-            throw std::runtime_error("pair-information size is < 1.");
-        if(pair->get(1).isEmpty())
-            throw std::runtime_error("pair object 1 is empty.");
-
-        auto data_array = get_json_body()->getArray("pair-information")->getObject(1)->getArray("data");
+        auto data_array = get_json_body();
 
         for (std::size_t a = 0; a < data_array->size(); a++)
         {
-            // Get the temporal objects
+            // Get the filter object
                 if(data_array->get(a).isEmpty())
                     throw std::runtime_error("Data array haves a empty object.");
 
+            // Get the type of filter object
                 auto filter = data_array->getObject(a);
                 if(filter->get("type").isEmpty())
                     throw std::runtime_error("An array object don't haves a type.");

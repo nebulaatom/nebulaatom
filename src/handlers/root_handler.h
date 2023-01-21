@@ -90,7 +90,6 @@ class CPW::Handlers::RootHandler :
     public:
         RootHandler(std::shared_ptr<Extras::StaticElements> static_elements, std::string api_version);
         virtual ~RootHandler();
-        virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
         std::string get_api_version() const {return api_version_;}
         Application& get_app() const {return app_;};
@@ -103,6 +102,8 @@ class CPW::Handlers::RootHandler :
         {
             return static_elements_;
         }
+
+        virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
     protected:
         virtual void AddRoutes_() = 0;
