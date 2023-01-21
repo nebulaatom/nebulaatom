@@ -124,7 +124,8 @@ bool QueryActions::ExecuteQuery_(HTTPServerResponse& response)
         else
             throw MySQL::MySQLException("Error to connect to database server");
 
-        *query_ << final_query_, now;
+        *query_ << final_query_;
+        query_->execute();
 
         CreateJSONResult_();
     }
@@ -165,7 +166,8 @@ bool QueryActions::ExecuteQuery_()
         else
             throw MySQL::MySQLException("Error to connect to database server");
 
-        *query_ << final_query_, now;
+        *query_ << final_query_;
+        query_->execute();
 
         CreateJSONResult_();
     }
@@ -201,7 +203,7 @@ void QueryActions::CreateJSONResult_()
         JSON::Array::Ptr columns_array = new JSON::Array();
 
     // Default values
-        if(query_ == nullptr)
+        if(query_.get() == nullptr)
         {
             result_json_->set("columns", columns_array);
             result_json_->set("results", results_array);
