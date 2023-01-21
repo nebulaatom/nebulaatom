@@ -42,7 +42,7 @@ bool SecurityVerification::AuthenticateUser_()
         iquals.emplace(std::make_pair("password", password_));
 
     // Execute the query
-        query_actions->ComposeQuery_(Query::TypeAction::kSelect, "users");
+        query_actions->ComposeQuery_(Query::TypeAction::kSelect, "_woodpecker_users");
         if(!query_actions->ExecuteQuery_())
             return false;
 
@@ -54,37 +54,53 @@ bool SecurityVerification::AuthenticateUser_()
             return false;
 }
 
-bool SecurityVerification::VerifyPermissions_(std::string method)
+bool SecurityVerification::VerifyPermissions_(Extras::SecurityType security_type, std::string method)
 {
     // Variables
         auto query_actions = dynamic_elements_.get_query_actions();
         auto result_json = query_actions->get_result_json();
         std::string target = dynamic_elements_.get_requested_route()->get_target();
-        int granted = -1;
 
     // Verify permissions for the users
         for(auto it : std::vector{user_, std::string("null")})
         {
-            if(!SeePermissionsPerUser_(it, method, target))
-                return false;
+            switch(security_type)
+            {
+                case SecurityType::kDisableAll:
+                default:
+                {
+                    if(!SeePermissionsPerUser_(it, method, target))
+                        return false;
 
-            if(result_json->get("results").isEmpty())
-                continue;
+                    if(result_json->get("results").isEmpty())
+                        continue;
 
-            auto results_array = result_json->getArray("results");
+                    auto results_array = result_json->getArray("results");
+                    if(results_array->size() < 1)
+                        return false;
 
-            if(results_array->size() < 1)
-                continue;
-            if(results_array->getArray(0)->size() < 1)
-                continue;
-            if(results_array->getArray(0)->get(0).isEmpty())
-                continue;
-            if(!results_array->getArray(0)->get(0).isInteger())
-                continue;
+                    return VerifyPermissionGranted_(results_array);
 
-            granted = std::stoi(results_array->getArray(0)->get(0).toString());
+                    break;
+                }
+                case SecurityType::kEnableAll:
+                {
+                    if(!SeePermissionsPerUser_(it, method, "uploaded-files"))
+                        return false;
 
-            return granted == 1 ? true : false;
+                    if(result_json->get("results").isEmpty())
+                        return true;
+
+                    auto results_array = result_json->getArray("results");
+                    if(results_array->size() < 1)
+                        return true;
+
+                    return VerifyPermissionGranted_(results_array);
+
+                    break;
+                }
+            }
+
         }
 
         return false;
@@ -107,17 +123,17 @@ bool SecurityVerification::SeePermissionsPerUser_(std::string user, std::string 
         fields.push_back({"up.granted", false});
         joins.emplace(std::make_pair
         (
-            std::array<std::string, 2>{"LEFT", "tables_permissions tp"}
+            std::array<std::string, 2>{"LEFT", "_woodpecker_tables_permissions tp"}
             ,std::map<std::string, Extras::ValuesProperties> {{"tp.id", Extras::ValuesProperties{"up.id_table_permission", false}}}
         ));
         joins.emplace(std::make_pair
         (
-            std::array<std::string, 2>{"LEFT", "users u"}
+            std::array<std::string, 2>{"LEFT", "_woodpecker_users u"}
             ,std::map<std::string, Extras::ValuesProperties> {{"u.id", Extras::ValuesProperties{"up.id_user", false}}}
         ));
         joins.emplace(std::make_pair
         (
-            std::array<std::string, 2>{"LEFT", "action_types at"}
+            std::array<std::string, 2>{"LEFT", "_woodpecker_action_types at"}
             ,std::map<std::string, Extras::ValuesProperties> {{"at.id", Extras::ValuesProperties{"up.id_action_type", false}}}
         ));
         iquals.emplace(std::make_pair("u.username", Extras::ValuesProperties{user, true}));
@@ -125,9 +141,24 @@ bool SecurityVerification::SeePermissionsPerUser_(std::string user, std::string 
         iquals.emplace(std::make_pair("tp.table_name", Extras::ValuesProperties{target, true}));
 
     // Data sentences
-        query_actions->ComposeQuery_(Query::TypeAction::kSelect, "user_permissions up");
+        query_actions->ComposeQuery_(Query::TypeAction::kSelect, "_woodpecker_user_permissions up");
         if(query_actions->ExecuteQuery_())
             return true;
         else
             return false;
+}
+
+bool SecurityVerification::VerifyPermissionGranted_(JSON::Array::Ptr results_array)
+{
+    int granted = -1;
+    if(results_array->getArray(0)->size() < 1)
+        return false;
+    if(results_array->getArray(0)->get(0).isEmpty())
+        return false;
+    if(!results_array->getArray(0)->get(0).isInteger())
+        return false;
+
+    granted = std::stoi(results_array->getArray(0)->get(0).toString());
+
+    return granted == 1 ? true : false;
 }

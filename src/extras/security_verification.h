@@ -30,12 +30,19 @@ namespace CPW
 {
     namespace Extras
     {
+        enum class SecurityType;
         class SecurityVerification;
     }
 }
 
 using namespace Poco;
 
+
+enum class CPW::Extras::SecurityType
+{
+    kDisableAll
+    ,kEnableAll
+};
 
 class CPW::Extras::SecurityVerification
 {
@@ -67,8 +74,11 @@ class CPW::Extras::SecurityVerification
         }
 
         bool AuthenticateUser_();
-        bool VerifyPermissions_(std::string method);
+        bool VerifyPermissions_(Extras::SecurityType security_type, std::string method);
         bool SeePermissionsPerUser_(std::string user, std::string action_type, std::string target);
+
+    protected:
+        bool VerifyPermissionGranted_(JSON::Array::Ptr results_array);
 
     private:
         std::string user_;
