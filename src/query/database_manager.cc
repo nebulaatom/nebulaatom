@@ -27,12 +27,20 @@ DatabaseManager::DatabaseManager()
 
 DatabaseManager::~DatabaseManager()
 {
-    if(data_session_ != nullptr)
-        data_session_->close();
+
 }
 
 void DatabaseManager::StartMySQL_()
 {
     Data::MySQL::Connector::registerConnector();
-    data_session_ = std::make_shared<Data::Session>("MySQL", "host=127.0.0.1;port=3306;db=cpw_rabbit;user=root;password=0UHC72zNvywZ;");
+}
+
+void DatabaseManager::StopMySQL_()
+{
+    Data::MySQL::Connector::unregisterConnector();
+}
+
+std::shared_ptr<Data::Session> DatabaseManager::StartSessionMySQL_()
+{
+    return std::make_shared<Data::Session>("MySQL", "host=127.0.0.1;port=3306;db=cpw_rabbit;user=root;password=0UHC72zNvywZ;");
 }

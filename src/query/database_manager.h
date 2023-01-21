@@ -50,15 +50,11 @@ class CPW::Query::DatabaseManager
         DatabaseManager();
         ~DatabaseManager();
 
-        std::shared_ptr<Data::Session> get_data_session() const
-        {
-            return data_session_;
-        }
-
         void StartMySQL_();
+        void StopMySQL_();
+        std::shared_ptr<Data::Session> StartSessionMySQL_();
 
     private:
-        std::shared_ptr<Data::Session> data_session_;
 
 };
 
