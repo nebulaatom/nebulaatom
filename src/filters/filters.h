@@ -128,7 +128,7 @@ class CPW::Filters::Filters
             auto& var = set_;
             return var;
         }
-        std::map<std::array<std::string, 2>, MapForValues>& get_joins()
+        std::vector<std::pair<std::array<std::string, 2>, MapForValues>>& get_joins()
         {
             auto& var = joins_;
             return var;
@@ -176,7 +176,7 @@ class CPW::Filters::Filters
         std::map<std::string, ValuesPropertiesVector> not_in_;
         std::vector<ValuesPropertiesVector> values_;
         MapForValues set_;
-        std::map<std::array<std::string, 2>, MapForValues> joins_;
+        std::vector<std::pair<std::array<std::string, 2>, MapForValues>> joins_;
         MapForValues like_;
         std::map<std::string, FilterType> filters_type_map_;
         std::string as_;
