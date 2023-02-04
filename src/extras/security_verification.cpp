@@ -121,17 +121,17 @@ bool SecurityVerification::SeePermissionsPerUser_(std::string user, std::string 
 
     // Filters
         fields.push_back({"up.granted", false});
-        joins.emplace(std::make_pair
+        joins.push_back(std::make_pair
         (
             std::array<std::string, 2>{"LEFT", "_woodpecker_tables_permissions tp"}
             ,std::map<std::string, Extras::ValuesProperties> {{"tp.id", Extras::ValuesProperties{"up.id_table_permission", false}}}
         ));
-        joins.emplace(std::make_pair
+        joins.push_back(std::make_pair
         (
             std::array<std::string, 2>{"LEFT", "_woodpecker_users u"}
             ,std::map<std::string, Extras::ValuesProperties> {{"u.id", Extras::ValuesProperties{"up.id_user", false}}}
         ));
-        joins.emplace(std::make_pair
+        joins.push_back(std::make_pair
         (
             std::array<std::string, 2>{"LEFT", "_woodpecker_action_types at"}
             ,std::map<std::string, Extras::ValuesProperties> {{"at.id", Extras::ValuesProperties{"up.id_action_type", false}}}

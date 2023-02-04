@@ -258,7 +258,7 @@ void IdentifyFilter::Joins_(Dynamic::Var& filter)
         ));
     }
 
-    current_filters_->get_joins().emplace
+    current_filters_->get_joins().push_back
     (
         std::make_pair
         (
