@@ -73,6 +73,11 @@ int WoodpeckerServer::main(const std::vector<std::string>& args)
         app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
         return -1;
     }
+    catch(Poco::SystemException& error)
+    {
+        app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
+        return -1;
+    }
     catch(std::runtime_error& error)
     {
         app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + std::string(error.what()));
