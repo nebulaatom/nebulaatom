@@ -40,8 +40,9 @@ void FrontendHandler::AddRoutes_()
 void FrontendHandler::HandleGETMethod_()
 {
     // Manage the file
-        auto tmp_file = Files::File("file", Path(get_dynamic_elements()->get_request()->getURI()).getFileName(), "", 0);
-        tmp_file.get_requested_path().reset(new Path(file_manager_.get_directory_base() + get_dynamic_elements()->get_request()->getURI(), Path::PATH_NATIVE));
+        auto tmp_uri = URI(get_dynamic_elements()->get_request()->getURI());
+        auto tmp_file = Files::File("file", Path(tmp_uri.getPath()).getFileName(), "", 0);
+        tmp_file.get_requested_path().reset(new Path(file_manager_.get_directory_base() + tmp_uri.getPath(), Path::PATH_NATIVE));
         tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
 
         file_manager_.get_files().push_back(tmp_file);
