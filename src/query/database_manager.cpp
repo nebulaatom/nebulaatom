@@ -42,5 +42,5 @@ void DatabaseManager::StopMySQL_()
 
 std::shared_ptr<Data::Session> DatabaseManager::StartSessionMySQL_()
 {
-    return std::make_shared<Data::Session>("MySQL", "host=127.0.0.1;port=3306;db=cpw_rabbit;user=root;password=0UHC72zNvywZ;");
+    return std::make_shared<Data::Session>("MySQL", "host=127.0.0.1;port=3306;db=pedidosturpial;user=root;password=0UHC72zNvywZ;");
 }

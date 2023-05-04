@@ -22,8 +22,8 @@ using namespace CPW::Files;
 
 FileManager::FileManager() :
     operation_type_(OperationType::kDownload)
-    ,directory_base_("/srv/www")
-    ,directory_for_uploaded_files_("/srv/www/uploaded-files")
+    ,directory_base_("/srv/www/pedidosturpial")
+    ,directory_for_uploaded_files_("/srv/www/pedidosturpial/uploaded-files")
     ,directory_for_temp_files_("/tmp")
 {
     AddSupportedFiles_();
@@ -342,6 +342,7 @@ void FileManager::AddSupportedFiles_()
     supported_files_.emplace(std::make_pair("css",Files::FileProperties{"text/css", false, {"css3"}}));
     supported_files_.emplace(std::make_pair("jpeg",Files::FileProperties{"image/jpeg", false, {"jpeg", "jpg"}}));
     supported_files_.emplace(std::make_pair("png",Files::FileProperties{"image/png", true, {""}}));
+    supported_files_.emplace(std::make_pair("webp",Files::FileProperties{"image/webp", true, {""}}));
     supported_files_.emplace(std::make_pair("svg",Files::FileProperties{"image/svg+xml", true, {""}}));
     supported_files_.emplace(std::make_pair("ttf",Files::FileProperties{"font/ttf", true, {""}}));
     supported_files_.emplace(std::make_pair("woff",Files::FileProperties{"font/woff", true, {""}}));
