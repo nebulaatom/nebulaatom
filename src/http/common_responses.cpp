@@ -30,6 +30,23 @@ CommonResponses::~CommonResponses()
 
 }
 
+void CommonResponses::CompoundResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message, JSON::Object::Ptr result_json, int affected_rows)
+{
+    response.setStatus(status);
+    response.setContentType("application/json");
+    response.setChunkedTransferEncoding(true);
+
+    FillStatusMessage_(result_json, status, message);
+
+    JSON::Object meta;
+    meta.set("affected_rows", affected_rows);
+    result_json->set("meta", meta);
+
+    std::ostream& out = response.send();
+    result_json->stringify(out);
+    out.flush();
+}
+
 void CommonResponses::GenericResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message)
 {
     response.setStatus(status);
@@ -38,17 +55,7 @@ void CommonResponses::GenericResponse_(HTTPServerResponse& response, HTTPRespons
 
     JSON::Object::Ptr object_json = new JSON::Object;
 
-    auto found = responses_.find(status);
-    if(found != responses_.end())
-    {
-        object_json->set("status", responses_[status].second);
-        object_json->set("message", message);
-    }
-    else
-    {
-        object_json->set("status", responses_[HTTPResponse::HTTP_INTERNAL_SERVER_ERROR].second);
-        object_json->set("message", "Error on HTTPStatus");
-    }
+    FillStatusMessage_(object_json, status, message);
 
     std::ostream& out = response.send();
     object_json->stringify(out);
@@ -136,4 +143,20 @@ void CommonResponses::FillResponses_()
         HTTPResponse::HTTP_SERVICE_UNAVAILABLE
         ,std::make_pair(ResponseType::kError, "Something unexpected happened on server side")
     ));
+}
+
+void CommonResponses::FillStatusMessage_(JSON::Object::Ptr json_object, HTTPResponse::HTTPStatus status, std::string message)
+{
+    auto found = responses_.find(status);
+    if(found != responses_.end())
+    {
+        json_object->set("status", responses_[status].second);
+        json_object->set("message", message);
+    }
+    else
+    {
+        json_object->set("status", responses_[HTTPResponse::HTTP_INTERNAL_SERVER_ERROR].second);
+        json_object->set("message", "Error on HTTPStatus");
+    }
+
 }

@@ -63,11 +63,13 @@ class CPW::HTTP::CommonResponses
             return var;
         }
 
+        void CompoundResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message, JSON::Object::Ptr result_json, int affected_rows);
         void GenericResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message);
         void HTMLResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message);
 
     protected:
         void FillResponses_();
+        void FillStatusMessage_(JSON::Object::Ptr json_object, HTTPResponse::HTTPStatus status, std::string message);
 
     private:
         std::map<HTTPResponse::HTTPStatus, std::pair<ResponseType, std::string>> responses_;
