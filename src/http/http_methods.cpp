@@ -35,13 +35,14 @@ void HTTPMethods::HandleGETMethod_()
     if(!QueryProcess_(Query::TypeAction::kSelect))
         return;
 
-    dynamic_elements_->get_response()->setStatus(HTTPResponse::HTTP_OK);
-    dynamic_elements_->get_response()->setContentType("application/json");
-    dynamic_elements_->get_response()->setChunkedTransferEncoding(true);
-
-    std::ostream& out = dynamic_elements_->get_response()->send();
-    dynamic_elements_->get_query_actions()->get_result_json()->stringify(out);
-    out.flush();
+    responses_.CompoundResponse_
+    (
+        *dynamic_elements_->get_response()
+        ,HTTPResponse::HTTP_OK
+        ,"Ok."
+        ,dynamic_elements_->get_query_actions()->get_result_json()
+        ,dynamic_elements_->get_query_actions()->get_affected_rows_()
+    );
 }
 
 void HTTPMethods::HandlePOSTMethod_()
