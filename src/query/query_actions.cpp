@@ -22,6 +22,7 @@ using namespace CPW::Query;
 
 QueryActions::QueryActions() :
     final_query_("")
+    ,affected_rows_(0)
     ,current_filters_(new Filters::Filters)
     ,incorporate_(new Filters::IncorporateFilters(current_filters_))
     ,result_json_(new JSON::Object)
@@ -119,7 +120,7 @@ bool QueryActions::ExecuteQuery_(HTTPServerResponse& response)
             throw MySQL::MySQLException("Error to connect to database server");
 
         *query_ << final_query_;
-        query_->execute();
+        affected_rows_ = query_->execute();
 
         CreateJSONResult_();
     }
@@ -161,7 +162,7 @@ bool QueryActions::ExecuteQuery_()
             throw MySQL::MySQLException("Error to connect to database server");
 
         *query_ << final_query_;
-        query_->execute();
+        affected_rows_ = query_->execute();
 
         CreateJSONResult_();
     }

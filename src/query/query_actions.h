@@ -85,6 +85,7 @@ class CPW::Query::QueryActions :
         ~QueryActions();
 
         std::string get_final_query() const {return final_query_;}
+        int get_affected_rows_() const {return affected_rows_;}
         std::shared_ptr<Filters::Filters>& get_current_filters_()
         {
             auto& var = current_filters_;
@@ -122,6 +123,7 @@ class CPW::Query::QueryActions :
 
     private:
         std::string final_query_;
+        int affected_rows_;
         std::shared_ptr<Filters::Filters> current_filters_;
         std::unique_ptr<Filters::IncorporateFilters> incorporate_;
         std::shared_ptr<Data::Session> session_;
