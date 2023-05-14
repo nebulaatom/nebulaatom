@@ -117,8 +117,22 @@ void SecurityVerification::AddTargets_()
     targets_.push_back(target);
 }
 
-
+bool SecurityVerification::VerifyPermissionIsOK_(JSON::Object::Ptr result_json)
+{
+    if(result_json->get("results").isEmpty())
         return false;
+
+    auto results_array = result_json->getArray("results");
+    if(results_array->size() < 1)
+        return false;
+    if(results_array->getArray(0)->size() < 1)
+        return false;
+    if(results_array->getArray(0)->get(0).isEmpty())
+        return false;
+    if(!results_array->getArray(0)->get(0).isInteger())
+        return false;
+
+    return true;
 }
 
 bool SecurityVerification::SeePermissionsPerUser_(std::string user, std::string action_type, std::string target)
