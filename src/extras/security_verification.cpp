@@ -135,7 +135,15 @@ bool SecurityVerification::VerifyPermissionIsOK_(JSON::Object::Ptr result_json)
     return true;
 }
 
-bool SecurityVerification::SeePermissionsPerUser_(std::string user, std::string action_type, std::string target)
+bool SecurityVerification::VerifyPermissionGranted_(JSON::Object::Ptr result_json)
+{
+    auto results_array = result_json->getArray("results");
+    int granted = -1;
+    granted = std::stoi(results_array->getArray(0)->get(0).toString());
+
+    return granted == 1 ? true : false;
+}
+
 {
     // Variables
         auto query_actions = dynamic_elements_.get_query_actions();

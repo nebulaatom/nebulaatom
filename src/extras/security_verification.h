@@ -85,6 +85,7 @@ class CPW::Extras::SecurityVerification
     protected:
         void AddTargets_();
         bool VerifyPermissionIsOK_(JSON::Object::Ptr result_json);
+        bool VerifyPermissionGranted_(JSON::Object::Ptr result_json);
 
     private:
         bool authenticated_;
