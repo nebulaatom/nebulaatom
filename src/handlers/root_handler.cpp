@@ -155,7 +155,6 @@ bool RootHandler::ProcessRoute_()
                         if(!VerifyPermissions_())
                             return false;
 
-
                     }
 
                 break;

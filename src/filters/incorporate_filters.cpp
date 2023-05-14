@@ -281,6 +281,11 @@ void IncorporateFilters::IncorporateJoins_(VectorString& tmp_query)
     {
         for(auto it : current_filters_->get_joins())
         {
+            if(it.first.size() != 2)
+                return;
+            if(it.second.size() < 1)
+                return;
+
             tmp_query.push_back(it.first[0]);
             tmp_query.push_back("JOIN");
             tmp_query.push_back(it.first[1]);

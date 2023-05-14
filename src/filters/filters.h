@@ -76,8 +76,16 @@ class CPW::Filters::Filters
             auto& var = fields_;
             return var;
         }
-        std::string get_page() const { return page_; }
-        std::string get_limit() const { return limit_; }
+        std::string& get_page()
+        {
+            auto& var = page_;
+            return var;
+        }
+        std::string& get_limit()
+        {
+            auto& var = limit_;
+            return var;
+        }
         ValuesPropertiesVector& get_sorts_conditions()
         {
             auto& var = sorts_conditions_;
