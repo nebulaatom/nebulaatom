@@ -21,6 +21,7 @@
 
 
 #include <string>
+#include <list>
 
 #include "tools/manage_json.h"
 #include "extras/dynamic_elements.h"
@@ -58,6 +59,11 @@ class CPW::Extras::SecurityVerification
         {
             return password_;
         }
+        std::list<std::string>& get_targets()
+        {
+            auto& var = targets_;
+            return var;
+        }
         DynamicElements& get_dynamic_elements()
         {
             auto& var = dynamic_elements_;
@@ -75,14 +81,15 @@ class CPW::Extras::SecurityVerification
 
         bool AuthenticateUser_();
         bool VerifyPermissions_(Extras::SecurityType security_type, std::string method);
-        bool SeePermissionsPerUser_(std::string user, std::string action_type, std::string target);
 
     protected:
-        bool VerifyPermissionGranted_(JSON::Array::Ptr results_array);
 
     private:
+        bool authenticated_;
+        bool enabled_;
         std::string user_;
         std::string password_;
+        std::list<std::string> targets_;
         DynamicElements dynamic_elements_;
 };
 

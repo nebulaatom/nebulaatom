@@ -20,7 +20,11 @@
 
 using namespace CPW::Extras;
 
-SecurityVerification::SecurityVerification()
+SecurityVerification::SecurityVerification():
+    authenticated_(false)
+    ,enabled_(false)
+    ,user_("")
+    ,password_("")
 {
 
 }
@@ -44,14 +48,15 @@ bool SecurityVerification::AuthenticateUser_()
     // Execute the query
         query_actions->ComposeQuery_(Query::TypeAction::kSelect, "_woodpecker_users");
         if(!query_actions->ExecuteQuery_())
-            return false;
+            return authenticated_ = false;
 
         auto results = result_json->getArray("results");
 
         if(results->size() > 0)
-            return true;
+            return authenticated_ = true;
         else
-            return false;
+            return authenticated_ = false;
+
 }
 
 bool SecurityVerification::VerifyPermissions_(Extras::SecurityType security_type, std::string method)
