@@ -83,6 +83,7 @@ class CPW::Extras::SecurityVerification
         bool VerifyPermissions_(Extras::SecurityType security_type, std::string method);
 
     protected:
+        void AddTargets_();
 
     private:
         bool authenticated_;

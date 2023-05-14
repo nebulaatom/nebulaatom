@@ -99,14 +99,24 @@ bool SecurityVerification::VerifyPermissions_(Extras::SecurityType security_type
                     auto results_array = result_json->getArray("results");
                     if(results_array->size() < 1)
                         return true;
+void SecurityVerification::AddTargets_()
+{
+    dynamic_elements_.get_query_actions()->IdentifyFilters_();
+    auto& joins = dynamic_elements_.get_query_actions()->get_current_filters_()->get_joins();
 
-                    return VerifyPermissionGranted_(results_array);
+    for(auto it = joins.begin(); it != joins.end(); it++)
+    {
+        if(it->first.size() != 2)
+            continue;
 
-                    break;
-                }
-            }
+        targets_.push_back(it->first[1]);
+    }
+    dynamic_elements_.get_query_actions()->ResetFilters_();
 
-        }
+    std::string target = dynamic_elements_.get_requested_route()->get_target();
+    targets_.push_back(target);
+}
+
 
         return false;
 }
