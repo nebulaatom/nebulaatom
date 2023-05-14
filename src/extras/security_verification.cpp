@@ -144,6 +144,7 @@ bool SecurityVerification::VerifyPermissionGranted_(JSON::Object::Ptr result_jso
     return granted == 1 ? true : false;
 }
 
+bool SecurityVerification::SeePermissionsPerUserTarget_(std::string user, std::string action_type, std::string target)
 {
     // Variables
         auto query_actions = dynamic_elements_.get_query_actions();
@@ -183,19 +184,4 @@ bool SecurityVerification::VerifyPermissionGranted_(JSON::Object::Ptr result_jso
             return true;
         else
             return false;
-}
-
-bool SecurityVerification::VerifyPermissionGranted_(JSON::Array::Ptr results_array)
-{
-    int granted = -1;
-    if(results_array->getArray(0)->size() < 1)
-        return false;
-    if(results_array->getArray(0)->get(0).isEmpty())
-        return false;
-    if(!results_array->getArray(0)->get(0).isInteger())
-        return false;
-
-    granted = std::stoi(results_array->getArray(0)->get(0).toString());
-
-    return granted == 1 ? true : false;
 }
