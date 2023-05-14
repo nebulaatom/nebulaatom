@@ -78,6 +78,27 @@ void QueryActions::IdentifyFilters_()
     }
 }
 
+void QueryActions::ResetFilters_()
+{
+    current_filters_->get_fields().clear();
+    current_filters_->set_page("0");
+    current_filters_->set_limit("20");
+    current_filters_->get_sorts_conditions().clear();
+    current_filters_->get_iquals_conditions().clear();
+    current_filters_->get_not_iquals_conditions().clear();
+    current_filters_->get_greather_than().clear();
+    current_filters_->get_smaller_than().clear();
+    current_filters_->get_between().clear();
+    current_filters_->get_in().clear();
+    current_filters_->get_not_in().clear();
+    current_filters_->get_values().clear();
+    current_filters_->get_set().clear();
+    current_filters_->get_joins().clear();
+    current_filters_->get_like().clear();
+    current_filters_->set_as("");
+    current_filters_->get_group_conditions().clear();
+}
+
 void QueryActions::ComposeQuery_(TypeAction action_type, std::string table)
 {
     std::string tmp_query;

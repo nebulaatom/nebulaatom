@@ -109,6 +109,7 @@ class CPW::Query::QueryActions :
         }
 
         void IdentifyFilters_();
+        void ResetFilters_();
         void ComposeQuery_(TypeAction action_type, std::string table);
         bool ExecuteQuery_(HTTPServerResponse& response);
         bool ExecuteQuery_();
