@@ -64,41 +64,64 @@ bool SecurityVerification::VerifyPermissions_(Extras::SecurityType security_type
     // Variables
         auto query_actions = dynamic_elements_.get_query_actions();
         auto result_json = query_actions->get_result_json();
-        std::string target = dynamic_elements_.get_requested_route()->get_target();
 
-    // Verify permissions for the users
-        for(auto it : std::vector{user_, std::string("null")})
+    // Verify permissions for the targets
+        AddTargets_();
+        for(auto target : targets_)
         {
-            switch(security_type)
+            // Verify permissions for the users
+            for(auto user : std::vector{user_, std::string("null")})
             {
-                case SecurityType::kDisableAll:
-                default:
+                bool enabled_for_this_user = false;
+                switch(security_type)
                 {
-                    if(!SeePermissionsPerUser_(it, method, target))
-                        return false;
+                    case SecurityType::kDisableAll:
+                    default:
+                    {
+                        if(!SeePermissionsPerUserTarget_(user, method, target))
+                            return enabled_ = false;
 
-                    if(result_json->get("results").isEmpty())
-                        continue;
+                        if(!VerifyPermissionIsOK_(result_json))
+                            return enabled_ = false;
 
-                    auto results_array = result_json->getArray("results");
-                    if(results_array->size() < 1)
-                        return false;
+                        if((enabled_for_this_user = VerifyPermissionGranted_(result_json)))
+                            break;
+                        else
+                            return enabled_ = false;
 
-                    return VerifyPermissionGranted_(results_array);
+                        break;
+                    }
+                    case SecurityType::kEnableAll:
+                    {
+                        if(!SeePermissionsPerUserTarget_(user, method, target))
+                        {
+                            enabled_ = true;
+                            continue;
+                        }
 
+                        if(!VerifyPermissionIsOK_(result_json))
+                        {
+                            enabled_ = true;
+                            continue;
+                        }
+
+                        enabled_ = VerifyPermissionGranted_(result_json);
+
+                        break;
+                    }
+                }
+
+                if(enabled_for_this_user)
+                {
+                    enabled_ = true;
                     break;
                 }
-                case SecurityType::kEnableAll:
-                {
-                    if(!SeePermissionsPerUser_(it, method, "uploaded-files"))
-                        return false;
+            }
+        }
 
-                    if(result_json->get("results").isEmpty())
-                        return true;
+        return enabled_;
+}
 
-                    auto results_array = result_json->getArray("results");
-                    if(results_array->size() < 1)
-                        return true;
 void SecurityVerification::AddTargets_()
 {
     dynamic_elements_.get_query_actions()->IdentifyFilters_();
