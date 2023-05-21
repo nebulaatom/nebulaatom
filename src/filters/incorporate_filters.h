@@ -24,7 +24,7 @@
 #include <vector>
 #include <memory>
 
-#include "filters/filters.h"
+#include "filters/filters_manager.h"
 
 
 namespace CPW
@@ -39,7 +39,7 @@ namespace CPW
 class CPW::Filters::IncorporateFilters
 {
     public:
-        using FiltersSharedPtr = std::shared_ptr<Filters>;
+        using FiltersSharedPtr = std::shared_ptr<FiltersManager>;
         using VectorString = std::vector<std::string>;
 
         IncorporateFilters(FiltersSharedPtr filters);

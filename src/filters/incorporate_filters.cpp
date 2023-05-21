@@ -49,19 +49,23 @@ void IncorporateFilters::IncorporateAND_(VectorString& tmp_query)
 
 void IncorporateFilters::IncorporateFields_(VectorString& tmp_query, bool all)
 {
-    if(current_filters_->get_fields().size() == 0)
+    if(current_filters_->get_fields_filter()->get_fields().size() == 0)
     {
         if(all)
             tmp_query.push_back("*");
     }
     else
     {
-        for(auto it : current_filters_->get_fields())
+        auto fields = current_filters_->get_fields_filter()->get_fields();
+        for(auto field = fields.begin(); field != fields.end(); field++)
         {
-            if(it != *current_filters_->get_fields().begin())
+            if(field != fields.begin())
                 tmp_query.push_back(",");
 
-            tmp_query.push_back(it.GetFinalValue());
+            tmp_query.push_back(field->value_.GetFinalValue());
+
+            if(field->as_ != "")
+                tmp_query.push_back(field->as_);
         }
     }
 }
