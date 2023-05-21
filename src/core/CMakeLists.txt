@@ -25,7 +25,7 @@ target_link_libraries(
     frontendhandler
     route
     commonresponses
-    filters
+    filtersmanager
     managejson
     requestsmanager
     incorporatefilters
@@ -41,6 +41,8 @@ target_link_libraries(
     loginhandler
     databasemanager
     staticelements
+    filter
+    fieldsfilter
     Poco::Foundation
     Poco::Net
     Poco::NetSSL
