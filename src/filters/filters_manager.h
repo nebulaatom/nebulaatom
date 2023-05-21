@@ -16,23 +16,23 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_FILTERS_FILTERS_H
-#define CPW_FILTERS_FILTERS_H
+#ifndef CPW_FILTERS_FILTERS_MANAGER_H
+#define CPW_FILTERS_FILTERS_MANAGER_H
 
 
 #include <string>
 #include <map>
 #include <vector>
 #include <functional>
+#include <memory>
 
-#include "extras/values_properties.h"
+#include "filters/fields_filter.h"
 
 namespace CPW
 {
     namespace Filters
     {
-        enum class FilterType;
-        class Filters;
+        class FiltersManager;
     }
 }
 
@@ -40,38 +40,16 @@ namespace CPW
 using namespace CPW::Extras;
 
 
-enum class CPW::Filters::FilterType
-{
-    kFields
-    ,kPage
-    ,kLimit
-    ,kSort
-    ,kIqual
-    ,kNotIqual
-    ,kGreatherThan
-    ,kSmallerThan
-    ,kBetween
-    ,kIn
-    ,kNotIn
-    ,kValues
-    ,kSet
-    ,kJoins
-    ,kLike
-    ,kAS
-    ,kGroup
-};
-
-
-class CPW::Filters::Filters
+class CPW::Filters::FiltersManager
 {
     public:
         using ValuesPropertiesVector = std::vector<ValuesProperties>;
         using MapForValues = std::map<std::string, ValuesProperties>;
 
-        Filters();
-        ~Filters();
+        FiltersManager();
+        ~FiltersManager();
 
-        ValuesPropertiesVector& get_fields()
+        std::shared_ptr<Filters::FieldsFilter>& get_fields_filter()
         {
             auto& var = fields_;
             return var;
@@ -171,7 +149,7 @@ class CPW::Filters::Filters
     private:
         void MapFilterType_();
 
-        ValuesPropertiesVector fields_;
+        std::shared_ptr<Filters::FieldsFilter> fields_;
         std::string page_;
         std::string limit_;
         ValuesPropertiesVector sorts_conditions_;
@@ -192,4 +170,4 @@ class CPW::Filters::Filters
 };
 
 
-#endif // CPW_FILTERS_FILTERS_H
+#endif // CPW_FILTERS_FILTERS_MANAGER_H

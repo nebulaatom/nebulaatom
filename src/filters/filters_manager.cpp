@@ -16,24 +16,25 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "filters/filters.h"
+#include "filters/filters_manager.h"
 
 using namespace CPW::Filters;
 
-Filters::Filters() :
+FiltersManager::FiltersManager() :
     page_("0")
     ,limit_("20")
     ,as_("")
 {
+    fields_ = std::make_shared<FieldsFilter>();
     MapFilterType_();
 }
 
-Filters::~Filters()
+FiltersManager::~FiltersManager()
 {
 
 }
 
-void Filters::MapFilterType_()
+void FiltersManager::MapFilterType_()
 {
     filters_type_map_.emplace(std::make_pair("fields", FilterType::kFields));
     filters_type_map_.emplace(std::make_pair("page", FilterType::kPage));
@@ -54,7 +55,7 @@ void Filters::MapFilterType_()
     filters_type_map_.emplace(std::make_pair("group", FilterType::kGroup));
 }
 
-bool Filters::ExistsType_(std::string type)
+bool FiltersManager::ExistsType_(std::string type)
 {
     auto found = filters_type_map_.find(type);
     if(found != filters_type_map_.end())
