@@ -30,7 +30,7 @@
 #include <Poco/Dynamic/Var.h>
 #include <Poco/Dynamic/Struct.h>
 
-#include "filters/filters.h"
+#include "filters/filters_manager.h"
 #include "tools/manage_json.h"
 #include "tools/row_value_formatter.h"
 
@@ -49,7 +49,7 @@ using namespace Poco;
 class CPW::Filters::IdentifyFilter
 {
     public:
-        IdentifyFilter(std::shared_ptr<Filters> current_filters);
+        IdentifyFilter(std::shared_ptr<FiltersManager> current_filters);
         ~IdentifyFilter();
 
 		std::map<FilterType, std::function<void(Dynamic::Var&)>>& get_filter_type_functors()
@@ -83,7 +83,7 @@ class CPW::Filters::IdentifyFilter
         void MapFilterTypeFunctors_();
 
         Tools::ManageJSON manage_json_;
-        std::shared_ptr<Filters> current_filters_;
+        std::shared_ptr<FiltersManager> current_filters_;
         std::map<FilterType, std::function<void(Dynamic::Var&)>> filter_type_functors_;
 };
 
