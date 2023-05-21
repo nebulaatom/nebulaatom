@@ -44,7 +44,7 @@
 #include <Poco/Data/RecordSet.h>
 
 #include "tools/manage_json.h"
-#include "filters/filters.h"
+#include "filters/filters_manager.h"
 #include "filters/identify_filter.h"
 #include "http/common_responses.h"
 #include "filters/incorporate_filters.h"
@@ -86,7 +86,7 @@ class CPW::Query::QueryActions :
 
         std::string get_final_query() const {return final_query_;}
         int get_affected_rows_() const {return affected_rows_;}
-        std::shared_ptr<Filters::Filters>& get_current_filters_()
+        std::shared_ptr<Filters::FiltersManager>& get_current_filters_()
         {
             auto& var = current_filters_;
             return var;
@@ -125,7 +125,7 @@ class CPW::Query::QueryActions :
     private:
         std::string final_query_;
         int affected_rows_;
-        std::shared_ptr<Filters::Filters> current_filters_;
+        std::shared_ptr<Filters::FiltersManager> current_filters_;
         std::unique_ptr<Filters::IncorporateFilters> incorporate_;
         std::shared_ptr<Data::Session> session_;
         std::shared_ptr<Data::Statement> query_;

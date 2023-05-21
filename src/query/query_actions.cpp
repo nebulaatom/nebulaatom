@@ -23,7 +23,7 @@ using namespace CPW::Query;
 QueryActions::QueryActions() :
     final_query_("")
     ,affected_rows_(0)
-    ,current_filters_(new Filters::Filters)
+    ,current_filters_(new Filters::FiltersManager)
     ,incorporate_(new Filters::IncorporateFilters(current_filters_))
     ,result_json_(new JSON::Object)
     ,app_(Application::instance())
@@ -80,7 +80,7 @@ void QueryActions::IdentifyFilters_()
 
 void QueryActions::ResetFilters_()
 {
-    current_filters_->get_fields().clear();
+    current_filters_->get_fields_filter()->get_fields().clear();
     current_filters_->set_page("0");
     current_filters_->set_limit("20");
     current_filters_->get_sorts_conditions().clear();
