@@ -33,32 +33,7 @@ IdentifyFilter::~IdentifyFilter()
 
 void IdentifyFilter::Fields_(Dynamic::Var& filter)
 {
-    auto filter_json = manage_json_.ExtractObject_(filter);
-    if(filter_json->get("contents").isEmpty())
-        throw std::runtime_error("contents in kFields is empty");
-
-    std::map<std::string, Extras::ValuesProperties> tmp_joins;
-
-    auto contents_array = filter_json->getArray("contents");
-    if(contents_array->size() < 1)
-        throw std::runtime_error("contents array in kFields is empty");
-
-    for(std::size_t a = 0; a < contents_array->size(); a++)
-    {
-        auto content_element = contents_array->getObject(a);
-        if(content_element->get("field").isEmpty())
-            throw std::runtime_error("field or as is empty on array element in kFields");
-
-        std::string as = "";
-        if(!content_element->get("as").isEmpty())
-            as = content_element->get("as").toString();
-
-        current_filters_->get_fields_filter()->Add_
-        (
-            content_element->get("field").toString()
-            ,as
-        );
-    }
+    current_filters_->get_fields_filter()->Identify_(filter);
 }
 
 void IdentifyFilter::Page_(Dynamic::Var& filter)

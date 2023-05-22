@@ -66,6 +66,9 @@ class CPW::Filters::FieldsFilter : Filters::Filter
             return var;
         }
 
+        virtual void Identify_(Dynamic::Var& filter) override;
+
+    protected:
         void Add_(std::string value, std::string as);
 
     private:

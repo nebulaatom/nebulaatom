@@ -26,9 +26,19 @@
 #include <list>
 #include <forward_list>
 #include <functional>
+#include <stdexcept>
+
+#include <Poco/JSON/JSON.h>
+#include <Poco/JSON/JSONException.h>
+#include <Poco/JSON/Array.h>
+#include <Poco/JSON/Object.h>
+#include <Poco/JSON/Parser.h>
+#include <Poco/Dynamic/Var.h>
+#include <Poco/Dynamic/Struct.h>
 
 
 #include "extras/values_properties.h"
+#include "tools/manage_json.h"
 
 
 namespace CPW
@@ -39,6 +49,8 @@ namespace CPW
         class Filter;
     }
 }
+
+using namespace Poco;
 
 using namespace CPW::Extras;
 
@@ -80,11 +92,19 @@ class CPW::Filters::Filter
             auto& var = current_filter_type_;
             return var;
         }
+        Tools::ManageJSON& get_manage_json()
+        {
+            auto& var = manage_json_;
+            return var;
+        }
+
+        virtual void Identify_(Dynamic::Var& filter) = 0;
 
     protected:
 
     private:
         Filters::FilterType current_filter_type_;
+        Tools::ManageJSON manage_json_;
 };
 
 
