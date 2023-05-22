@@ -83,6 +83,7 @@ class CPW::Filters::Filter
     public:
         using ValuesPropertiesVector = std::vector<ValuesProperties>;
         using MapForValues = std::map<std::string, ValuesProperties>;
+        using VectorString = std::vector<std::string>;
 
         Filter();
         virtual ~Filter();
@@ -99,6 +100,7 @@ class CPW::Filters::Filter
         }
 
         virtual void Identify_(Dynamic::Var& filter) = 0;
+        virtual void Incorporate_(VectorString& tmp_query) = 0;
 
     protected:
 

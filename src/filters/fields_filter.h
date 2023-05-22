@@ -65,14 +65,19 @@ class CPW::Filters::FieldsFilter : Filters::Filter
             auto& var = fields_;
             return var;
         }
+        bool get_all(){ return all_; }
+
+        void set_all(bool all){ all_ = all; }
 
         virtual void Identify_(Dynamic::Var& filter) override;
+        virtual void Incorporate_(VectorString& tmp_query) override;
 
     protected:
         void Add_(std::string value, std::string as);
 
     private:
         std::list<Field> fields_;
+        bool all_;
 };
 
 

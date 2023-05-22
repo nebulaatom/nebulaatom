@@ -20,7 +20,8 @@
 
 using namespace CPW::Filters;
 
-FieldsFilter::FieldsFilter()
+FieldsFilter::FieldsFilter() :
+    all_(true)
 {
     auto current_filter_type = get_current_filter_type();
     current_filter_type = FilterType::kFields;
@@ -58,6 +59,31 @@ void FieldsFilter::Identify_(Dynamic::Var& filter)
             content_element->get("field").toString()
             ,as
         );
+    }
+}
+
+void FieldsFilter::Incorporate_(VectorString& tmp_query)
+{
+    if(fields_.size() == 0)
+    {
+        if(all_)
+            tmp_query.push_back("*");
+    }
+    else
+    {
+        for(auto field = fields_.begin(); field != fields_.end(); field++)
+        {
+            if(field != fields_.begin())
+                tmp_query.push_back(",");
+
+            tmp_query.push_back(field->value_.GetFinalValue());
+
+            if(field->as_ != "")
+            {
+                tmp_query.push_back("AS");
+                tmp_query.push_back(field->as_);
+            }
+        }
     }
 }
 
