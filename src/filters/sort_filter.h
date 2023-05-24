@@ -38,7 +38,7 @@ class CPW::Filters::SortCondition
     public:
         SortCondition(Extras::ValuesProperties value, std::string order = "") :
             value_(value)
-            ,order_(as)
+            ,order_(order)
         {
 
         }

@@ -20,8 +20,7 @@
 
 using namespace CPW::Filters;
 
-SortFilter::SortFilter() :
-    all_(true)
+SortFilter::SortFilter()
 {
     auto current_filter_type = get_current_filter_type();
     current_filter_type = FilterType::kSort;
@@ -34,6 +33,35 @@ SortFilter::~SortFilter()
 
 void SortFilter::Identify_(Dynamic::Var& filter)
 {
+    auto filter_json = get_manage_json().ExtractObject_(filter);
+
+    // Verify contents array
+    if(filter_json->get("contents").isEmpty() || !filter_json->get("contents").isArray())
+    throw std::runtime_error("contents in kSort is wrong");
+
+    // Iterate over contents array
+    auto contents_array = filter_json->getArray("contents");
+    for(std::size_t a = 0; a < contents_array->size(); a++)
+    {
+        // Verify array element
+        if(!contents_array->isObject(a))
+            throw std::runtime_error("contents_array[" + std::to_string(a) + "] is not an object in kSort");
+
+        // Verify array element "value"
+        auto content_element = contents_array->getObject(a);
+        if(content_element->get("value").isEmpty())
+            continue;
+
+        std::string value = content_element->get("value").toString();
+
+        // Verify array element "order"
+        std::string order = "";
+        if(!content_element->get("order").isEmpty())
+            order = content_element->get("order").toString();
+
+        // Add element
+        Add_(value, order);
+    }
 }
 
 void SortFilter::Incorporate_(VectorString& tmp_query)
@@ -44,6 +72,6 @@ void SortFilter::Add_(std::string value, std::string order)
 {
     Filters::SortCondition sort_condition;
     sort_condition.value_ = Extras::ValuesProperties{value, false};
-    field.order_ = order;
-    fields_.push_back(std::move(field));
+    sort_condition.order_ = order;
+    sort_conditions_.push_back(std::move(sort_condition));
 }
