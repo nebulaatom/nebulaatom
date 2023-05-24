@@ -2,27 +2,35 @@
 
 ## Objects libraries
 
-### filtersmanager
-add_library(filtersmanager OBJECT "filters_manager.cpp")
-target_include_directories(filtersmanager PUBLIC ${HEADER})
-set_target_properties(filtersmanager PROPERTIES POSITION_INDEPENDENT_CODE 1)
-
 ### identifyfilter
-add_library(identifyfilter OBJECT "identify_filter.cpp")
+add_library(identifyfilter STATIC "identify_filter.cpp")
 target_include_directories(identifyfilter PUBLIC ${HEADER})
 set_target_properties(identifyfilter PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
 ### incorporatefilters
-add_library(incorporatefilters OBJECT "incorporate_filters.cpp")
+add_library(incorporatefilters STATIC "incorporate_filters.cpp")
 target_include_directories(incorporatefilters PUBLIC ${HEADER})
 set_target_properties(incorporatefilters PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
 ### filter
-add_library(filter OBJECT "filter.cpp")
+add_library(filter STATIC "filter.cpp")
 target_include_directories(filter PUBLIC ${HEADER})
 set_target_properties(filter PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
 ### fieldsfilter
-add_library(fieldsfilter OBJECT "fields_filter.cpp")
+add_library(fieldsfilter STATIC "fields_filter.cpp")
 target_include_directories(fieldsfilter PUBLIC ${HEADER})
 set_target_properties(fieldsfilter PROPERTIES POSITION_INDEPENDENT_CODE 1)
+target_link_libraries(fieldsfilter filter)
+
+### sortfilter
+add_library(sortfilter STATIC "sort_filter.cpp")
+target_include_directories(sortfilter PUBLIC ${HEADER})
+set_target_properties(sortfilter PROPERTIES POSITION_INDEPENDENT_CODE 1)
+target_link_libraries(sortfilter filter)
+
+### filtersmanager
+add_library(filtersmanager OBJECT "filters_manager.cpp")
+target_include_directories(filtersmanager PUBLIC ${HEADER})
+set_target_properties(filtersmanager PROPERTIES POSITION_INDEPENDENT_CODE 1)
+target_link_libraries(filtersmanager fieldsfilter sortfilter)
