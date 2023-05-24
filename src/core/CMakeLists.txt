@@ -41,8 +41,6 @@ target_link_libraries(
     loginhandler
     databasemanager
     staticelements
-    filter
-    fieldsfilter
     Poco::Foundation
     Poco::Net
     Poco::NetSSL

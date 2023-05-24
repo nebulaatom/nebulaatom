@@ -35,30 +35,33 @@ FieldsFilter::~FieldsFilter()
 void FieldsFilter::Identify_(Dynamic::Var& filter)
 {
     auto filter_json = get_manage_json().ExtractObject_(filter);
+
+    // Verify contents array
     if(filter_json->get("contents").isEmpty() || !filter_json->get("contents").isArray())
         throw std::runtime_error("contents in kFields is wrong");
 
-    std::map<std::string, Extras::ValuesProperties> tmp_joins;
-
+    // Iterate over contents array
     auto contents_array = filter_json->getArray("contents");
     for(std::size_t a = 0; a < contents_array->size(); a++)
     {
+        // Verify array element
         if(!contents_array->isObject(a))
             throw std::runtime_error("contents_array[" + std::to_string(a) + "] is not an object in kfields");
 
+        // Verify array element "field"
         auto content_element = contents_array->getObject(a);
         if(content_element->get("field").isEmpty())
-                continue;
+            continue;
 
+        std::string value = content_element->get("field").toString();
+
+        // Verify array element "order"
         std::string as = "";
         if(!content_element->get("as").isEmpty())
             as = content_element->get("as").toString();
 
-        Add_
-        (
-            content_element->get("field").toString()
-            ,as
-        );
+        // Add element
+        Add_(value, as);
     }
 }
 
