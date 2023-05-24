@@ -29,8 +29,14 @@ target_include_directories(sortfilter PUBLIC ${HEADER})
 set_target_properties(sortfilter PROPERTIES POSITION_INDEPENDENT_CODE 1)
 target_link_libraries(sortfilter filter)
 
+### generalfilter
+add_library(generalfilter STATIC "general_filter.cpp")
+target_include_directories(generalfilter PUBLIC ${HEADER})
+set_target_properties(generalfilter PROPERTIES POSITION_INDEPENDENT_CODE 1)
+target_link_libraries(generalfilter filter)
+
 ### filtersmanager
 add_library(filtersmanager OBJECT "filters_manager.cpp")
 target_include_directories(filtersmanager PUBLIC ${HEADER})
 set_target_properties(filtersmanager PROPERTIES POSITION_INDEPENDENT_CODE 1)
-target_link_libraries(filtersmanager fieldsfilter sortfilter)
+target_link_libraries(filtersmanager fieldsfilter sortfilter generalfilter)
