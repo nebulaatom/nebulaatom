@@ -36,27 +36,14 @@ void IdentifyFilter::Fields_(Dynamic::Var& filter)
     current_filters_->get_fields_filter()->Identify_(filter);
 }
 
-void IdentifyFilter::Page_(Dynamic::Var& filter)
-{
-    auto filter_json = manage_json_.ExtractObject_(filter);
-    if(filter_json->get("content").isEmpty())
-        throw std::runtime_error("content in kPage is empty");
-
-    current_filters_->set_page(filter_json->get("content").toString());
-}
-
-void IdentifyFilter::Limit_(Dynamic::Var& filter)
-{
-    auto filter_json = manage_json_.ExtractObject_(filter);
-    if(filter_json->get("content").isEmpty())
-        throw std::runtime_error("content in kLimit is empty");
-
-    current_filters_->set_limit(filter_json->get("content").toString());
-}
-
 void IdentifyFilter::Sort_(Dynamic::Var& filter)
 {
     current_filters_->get_sort_filter()->Identify_(filter);
+}
+
+void IdentifyFilter::General_(Dynamic::Var& filter)
+{
+    current_filters_->get_general_filter()->Identify_(filter);
 }
 
 void IdentifyFilter::Iqual_(Dynamic::Var& filter)
@@ -268,15 +255,6 @@ void IdentifyFilter::Like_(Dynamic::Var& filter)
     ));
 }
 
-void IdentifyFilter::AS_(Dynamic::Var& filter)
-{
-    auto filter_json = manage_json_.ExtractObject_(filter);
-    if(filter_json->get("content").isEmpty())
-        throw std::runtime_error("content in kAS is empty");
-
-    current_filters_->set_as(filter_json->get("content").toString());
-}
-
 void IdentifyFilter::Group_(Dynamic::Var& filter)
 {
     auto filter_json = manage_json_.ExtractObject_(filter);
@@ -324,9 +302,8 @@ ValuesProperties IdentifyFilter::GetValue_(Dynamic::Var& var)
 void IdentifyFilter::MapFilterTypeFunctors_()
 {
     filter_type_functors_.emplace(std::make_pair(FilterType::kFields, [&](Dynamic::Var& filter){Fields_(filter);}));
-    filter_type_functors_.emplace(std::make_pair(FilterType::kPage, [&](Dynamic::Var& filter){Page_(filter);}));
-    filter_type_functors_.emplace(std::make_pair(FilterType::kLimit, [&](Dynamic::Var& filter){Limit_(filter);}));
     filter_type_functors_.emplace(std::make_pair(FilterType::kSort, [&](Dynamic::Var& filter){Sort_(filter);}));
+    filter_type_functors_.emplace(std::make_pair(FilterType::kGeneral, [&](Dynamic::Var& filter){General_(filter);}));
     filter_type_functors_.emplace(std::make_pair(FilterType::kIqual, [&](Dynamic::Var& filter){Iqual_(filter);}));
     filter_type_functors_.emplace(std::make_pair(FilterType::kNotIqual, [&](Dynamic::Var& filter){NotIqual_(filter);}));
     filter_type_functors_.emplace(std::make_pair(FilterType::kGreatherThan, [&](Dynamic::Var& filter){GreatherThan_(filter);}));
@@ -338,6 +315,5 @@ void IdentifyFilter::MapFilterTypeFunctors_()
     filter_type_functors_.emplace(std::make_pair(FilterType::kSet, [&](Dynamic::Var& filter){Set_(filter);}));
     filter_type_functors_.emplace(std::make_pair(FilterType::kJoins, [&](Dynamic::Var& filter){Joins_(filter);}));
     filter_type_functors_.emplace(std::make_pair(FilterType::kLike, [&](Dynamic::Var& filter){Like_(filter);}));
-    filter_type_functors_.emplace(std::make_pair(FilterType::kAS, [&](Dynamic::Var& filter){AS_(filter);}));
     filter_type_functors_.emplace(std::make_pair(FilterType::kGroup, [&](Dynamic::Var& filter){Group_(filter);}));
 }

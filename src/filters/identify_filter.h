@@ -59,9 +59,8 @@ class CPW::Filters::IdentifyFilter
         }
 
         void Fields_(Dynamic::Var& filter);
-        void Page_(Dynamic::Var& filter);
-        void Limit_(Dynamic::Var& filter);
         void Sort_(Dynamic::Var& filter);
+        void General_(Dynamic::Var& filter);
         void Iqual_(Dynamic::Var& filter);
         void NotIqual_(Dynamic::Var& filter);
         void GreatherThan_(Dynamic::Var& filter);
@@ -73,7 +72,6 @@ class CPW::Filters::IdentifyFilter
         void Set_(Dynamic::Var& filter);
         void Joins_(Dynamic::Var& filter);
         void Like_(Dynamic::Var& filter);
-        void AS_(Dynamic::Var& filter);
         void Group_(Dynamic::Var& filter);
 
     protected:

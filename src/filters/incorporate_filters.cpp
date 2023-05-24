@@ -55,23 +55,8 @@ void IncorporateFilters::IncorporateFields_(VectorString& tmp_query, bool all)
 
 void IncorporateFilters::IncorporatePageLimit_(VectorString& tmp_query, bool pagination)
 {
-    if(std::stoi(current_filters_->get_limit()) > 0)
-    {
-        tmp_query.push_back("LIMIT");
-        if(pagination)
-        {
-            int offset = std::stoi(current_filters_->get_limit()) * std::stoi(current_filters_->get_page());
-            tmp_query.push_back(std::to_string(offset));
-            tmp_query.push_back(", " + current_filters_->get_limit());
-        }
-        else
-            tmp_query.push_back(current_filters_->get_limit());
-    }
-    else
-        if(pagination)
-            tmp_query.push_back("LIMIT 0, 20");
-        else
-            tmp_query.push_back("LIMIT 20");
+    current_filters_->get_general_filter()->set_pagination(pagination);
+    current_filters_->get_general_filter()->Incorporate_(tmp_query);
 }
 
 void IncorporateFilters::IncorporateSort_(VectorString& tmp_query)
@@ -300,11 +285,7 @@ void IncorporateFilters::IncorporateLike_(VectorString& tmp_query)
 
 void IncorporateFilters::IncorporateAS_(VectorString& tmp_query)
 {
-    if(current_filters_->get_as() == "")
-        return;
-
-    tmp_query.push_back("AS");
-    tmp_query.push_back(current_filters_->get_as());
+    current_filters_->get_general_filter()->IncorporateAS_(tmp_query);
 }
 
 void IncorporateFilters::IncorporateGroup_(VectorString& tmp_query)
