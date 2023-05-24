@@ -27,6 +27,7 @@
 #include <memory>
 
 #include "filters/fields_filter.h"
+#include "filters/sort_filter.h"
 
 namespace CPW
 {
@@ -64,9 +65,9 @@ class CPW::Filters::FiltersManager
             auto& var = limit_;
             return var;
         }
-        ValuesPropertiesVector& get_sorts_conditions()
+        std::shared_ptr<Filters::SortFilter>& get_sort_filter()
         {
-            auto& var = sorts_conditions_;
+            auto& var = sort_filter_;
             return var;
         }
         MapForValues& get_iquals_conditions()
@@ -152,7 +153,7 @@ class CPW::Filters::FiltersManager
         std::shared_ptr<Filters::FieldsFilter> fields_;
         std::string page_;
         std::string limit_;
-        ValuesPropertiesVector sorts_conditions_;
+        std::shared_ptr<Filters::SortFilter> sort_filter_;
         MapForValues iquals_conditions_;
         MapForValues not_iquals_conditions_;
         MapForValues greather_than_;

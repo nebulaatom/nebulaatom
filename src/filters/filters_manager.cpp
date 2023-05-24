@@ -26,6 +26,7 @@ FiltersManager::FiltersManager() :
     ,as_("")
 {
     fields_ = std::make_shared<FieldsFilter>();
+    sort_filter_ = std::make_shared<SortFilter>();
     MapFilterType_();
 }
 
