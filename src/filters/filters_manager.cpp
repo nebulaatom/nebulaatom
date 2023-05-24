@@ -20,13 +20,11 @@
 
 using namespace CPW::Filters;
 
-FiltersManager::FiltersManager() :
-    page_("0")
-    ,limit_("20")
-    ,as_("")
+FiltersManager::FiltersManager()
 {
     fields_ = std::make_shared<FieldsFilter>();
     sort_filter_ = std::make_shared<SortFilter>();
+    general_filter_ = std::make_shared<GeneralFilter>();
     MapFilterType_();
 }
 
@@ -38,9 +36,8 @@ FiltersManager::~FiltersManager()
 void FiltersManager::MapFilterType_()
 {
     filters_type_map_.emplace(std::make_pair("fields", FilterType::kFields));
-    filters_type_map_.emplace(std::make_pair("page", FilterType::kPage));
-    filters_type_map_.emplace(std::make_pair("limit", FilterType::kLimit));
     filters_type_map_.emplace(std::make_pair("sort", FilterType::kSort));
+    filters_type_map_.emplace(std::make_pair("general", FilterType::kGeneral));
     filters_type_map_.emplace(std::make_pair("iqual", FilterType::kIqual));
     filters_type_map_.emplace(std::make_pair("notiqual", FilterType::kNotIqual));
     filters_type_map_.emplace(std::make_pair("greatherthan", FilterType::kGreatherThan));
@@ -52,7 +49,6 @@ void FiltersManager::MapFilterType_()
     filters_type_map_.emplace(std::make_pair("set", FilterType::kSet));
     filters_type_map_.emplace(std::make_pair("joins", FilterType::kJoins));
     filters_type_map_.emplace(std::make_pair("like", FilterType::kLike));
-    filters_type_map_.emplace(std::make_pair("as", FilterType::kAS));
     filters_type_map_.emplace(std::make_pair("group", FilterType::kGroup));
 }
 

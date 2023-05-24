@@ -81,9 +81,10 @@ void QueryActions::IdentifyFilters_()
 void QueryActions::ResetFilters_()
 {
     current_filters_->get_fields_filter()->get_fields().clear();
-    current_filters_->set_page("0");
-    current_filters_->set_limit("20");
     current_filters_->get_sort_filter()->get_sort_conditions().clear();
+    current_filters_->get_general_filter()->set_page("0");
+    current_filters_->get_general_filter()->set_limit("20");
+    current_filters_->get_general_filter()->set_as("");
     current_filters_->get_iquals_conditions().clear();
     current_filters_->get_not_iquals_conditions().clear();
     current_filters_->get_greather_than().clear();
@@ -95,7 +96,6 @@ void QueryActions::ResetFilters_()
     current_filters_->get_set().clear();
     current_filters_->get_joins().clear();
     current_filters_->get_like().clear();
-    current_filters_->set_as("");
     current_filters_->get_group_conditions().clear();
 }
 

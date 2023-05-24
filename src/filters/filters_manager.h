@@ -28,6 +28,7 @@
 
 #include "filters/fields_filter.h"
 #include "filters/sort_filter.h"
+#include "filters/general_filter.h"
 
 namespace CPW
 {
@@ -55,19 +56,14 @@ class CPW::Filters::FiltersManager
             auto& var = fields_;
             return var;
         }
-        std::string& get_page()
-        {
-            auto& var = page_;
-            return var;
-        }
-        std::string& get_limit()
-        {
-            auto& var = limit_;
-            return var;
-        }
         std::shared_ptr<Filters::SortFilter>& get_sort_filter()
         {
             auto& var = sort_filter_;
+            return var;
+        }
+        std::shared_ptr<Filters::GeneralFilter>& get_general_filter()
+        {
+            auto& var = general_filter_;
             return var;
         }
         MapForValues& get_iquals_conditions()
@@ -130,20 +126,11 @@ class CPW::Filters::FiltersManager
             auto& var = filters_type_map_;
             return var;
         }
-        std::string& get_as()
-        {
-            auto& var = as_;
-            return var;
-        }
         ValuesPropertiesVector& get_group_conditions()
         {
             auto& var = group_conditions_;
             return var;
         }
-
-        void set_page(std::string page) { page_ = page; }
-        void set_limit(std::string limit) { limit_ = limit; }
-        void set_as(std::string as) { as_ = as; }
 
         bool ExistsType_(std::string type);
 
@@ -151,9 +138,8 @@ class CPW::Filters::FiltersManager
         void MapFilterType_();
 
         std::shared_ptr<Filters::FieldsFilter> fields_;
-        std::string page_;
-        std::string limit_;
         std::shared_ptr<Filters::SortFilter> sort_filter_;
+        std::shared_ptr<Filters::GeneralFilter> general_filter_;
         MapForValues iquals_conditions_;
         MapForValues not_iquals_conditions_;
         MapForValues greather_than_;
@@ -166,7 +152,6 @@ class CPW::Filters::FiltersManager
         std::vector<std::pair<std::array<std::string, 2>, MapForValues>> joins_;
         MapForValues like_;
         std::map<std::string, FilterType> filters_type_map_;
-        std::string as_;
         ValuesPropertiesVector group_conditions_;
 };
 
