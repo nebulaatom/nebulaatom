@@ -83,7 +83,7 @@ void QueryActions::ResetFilters_()
     current_filters_->get_fields_filter()->get_fields().clear();
     current_filters_->set_page("0");
     current_filters_->set_limit("20");
-    current_filters_->get_sorts_conditions().clear();
+    current_filters_->get_sort_filter()->get_sort_conditions().clear();
     current_filters_->get_iquals_conditions().clear();
     current_filters_->get_not_iquals_conditions().clear();
     current_filters_->get_greather_than().clear();

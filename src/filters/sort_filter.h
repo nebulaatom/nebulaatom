@@ -40,11 +40,12 @@ class CPW::Filters::SortCondition
             value_(value)
             ,order_(order)
         {
-
+            if(order_ != "ASC" || order_ != "DESC")
+                order_ = "ASC";
         }
         SortCondition() :
             value_("", true)
-            ,order_("")
+            ,order_("ASC")
         {
 
         }

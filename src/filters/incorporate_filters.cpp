@@ -76,17 +76,7 @@ void IncorporateFilters::IncorporatePageLimit_(VectorString& tmp_query, bool pag
 
 void IncorporateFilters::IncorporateSort_(VectorString& tmp_query)
 {
-    if(current_filters_->get_sorts_conditions().size() > 0)
-    {
-        tmp_query.push_back("ORDER BY");
-        for(auto it : current_filters_->get_sorts_conditions())
-        {
-            if(it != *current_filters_->get_sorts_conditions().begin())
-                tmp_query.push_back(",");
-
-            tmp_query.push_back(it.GetFinalValue());
-        }
-    }
+    current_filters_->get_sort_filter()->Incorporate_(tmp_query);
 }
 
 void IncorporateFilters::IncorporateIqual_(VectorString& tmp_query)
