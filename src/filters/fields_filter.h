@@ -27,31 +27,26 @@ namespace CPW
 {
     namespace Filters
     {
-        class Field;
+        class FieldsFilterElements;
         class FieldsFilter;
     }
 }
 
 
-
-class CPW::Filters::Field
+class CPW::Filters::FieldsFilterElements
 {
     public:
-        Field(Extras::ValuesProperties value, std::string as) :
-            value_(value)
-            ,as_(as)
+        struct Field
         {
+            Field(Extras::ValuesProperties value, std::string as) : value(value), as(as){}
+            Field() : value("", true), as(""){}
 
-        }
-        Field() :
-            value_("", true)
-            ,as_("")
-        {
+            Extras::ValuesProperties value;
+            std::string as;
+        };
 
-        }
-
-        Extras::ValuesProperties value_;
-        std::string as_;
+        std::list<Field> fields_;
+        bool all_;
 };
 
 class CPW::Filters::FieldsFilter : Filters::Filter
@@ -60,14 +55,11 @@ class CPW::Filters::FieldsFilter : Filters::Filter
         FieldsFilter();
         virtual ~FieldsFilter();
 
-        std::list<Field>& get_fields()
+        Filters::FieldsFilterElements& get_filter_elements()
         {
-            auto& var = fields_;
+            auto& var = filter_elements_;
             return var;
         }
-        bool get_all(){ return all_; }
-
-        void set_all(bool all){ all_ = all; }
 
         virtual void Identify_(Dynamic::Var& filter) override;
         virtual void Incorporate_(VectorString& tmp_query) override;
@@ -76,8 +68,7 @@ class CPW::Filters::FieldsFilter : Filters::Filter
         void Add_(std::string value, std::string as);
 
     private:
-        std::list<Field> fields_;
-        bool all_;
+        Filters::FieldsFilterElements filter_elements_;
 };
 
 

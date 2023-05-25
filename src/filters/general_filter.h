@@ -27,10 +27,20 @@ namespace CPW
 {
     namespace Filters
     {
+        class GeneralFilterElements;
         class GeneralFilter;
     }
 }
 
+
+class CPW::Filters::GeneralFilterElements
+{
+    public:
+        std::string page_;
+        std::string limit_;
+        std::string as_;
+        bool pagination_;
+};
 
 class CPW::Filters::GeneralFilter : Filters::Filter
 {
@@ -38,25 +48,18 @@ class CPW::Filters::GeneralFilter : Filters::Filter
         GeneralFilter();
         virtual ~GeneralFilter();
 
-        std::string get_page(){ return page_; }
-        std::string get_limit() { return limit_; }
-        std::string get_as() { return as_; }
-        bool get_pagination() { return pagination_; }
-
-        void set_page(std::string page){ page_ = page; }
-        void set_limit(std::string limit) { limit_ = limit; }
-        void set_as(std::string as) { as_ = as; }
-        void set_pagination(bool pagination) { pagination_ = pagination; }
+        Filters::GeneralFilterElements& get_filter_elements()
+        {
+            auto& var = filter_elements_;
+            return var;
+        }
 
         virtual void Identify_(Dynamic::Var& filter) override;
         virtual void Incorporate_(VectorString& tmp_query) override;
         void IncorporateAS_(VectorString& tmp_query);
 
     private:
-        std::string page_;
-        std::string limit_;
-        std::string as_;
-        bool pagination_;
+        Filters::GeneralFilterElements filter_elements_;
 };
 
 

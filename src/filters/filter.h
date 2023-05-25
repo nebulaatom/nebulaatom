@@ -46,6 +46,10 @@ namespace CPW
     namespace Filters
     {
         enum class FilterType;
+
+        template <class T>
+        class FilterElements;
+
         class Filter;
     }
 }
@@ -59,9 +63,8 @@ enum class CPW::Filters::FilterType
 {
     kUnknown
     ,kFields
-    ,kPage
-    ,kLimit
     ,kSort
+    ,kGeneral
     ,kIqual
     ,kNotIqual
     ,kGreatherThan
@@ -73,7 +76,6 @@ enum class CPW::Filters::FilterType
     ,kSet
     ,kJoins
     ,kLike
-    ,kAS
     ,kGroup
 };
 
@@ -101,8 +103,6 @@ class CPW::Filters::Filter
 
         virtual void Identify_(Dynamic::Var& filter) = 0;
         virtual void Incorporate_(VectorString& tmp_query) = 0;
-
-    protected:
 
     private:
         Filters::FilterType current_filter_type_;

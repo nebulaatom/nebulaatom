@@ -66,26 +66,26 @@ void SortFilter::Identify_(Dynamic::Var& filter)
 
 void SortFilter::Incorporate_(VectorString& tmp_query)
 {
-    if(sort_conditions_.size() > 0)
+    if(filter_elements_.sort_conditions_.size() > 0)
     {
         tmp_query.push_back("ORDER BY");
-        for(auto it = sort_conditions_.begin(); it != sort_conditions_.end(); it++)
+        for(auto it = filter_elements_.sort_conditions_.begin(); it != filter_elements_.sort_conditions_.end(); it++)
         {
-            if(it != sort_conditions_.begin())
+            if(it != filter_elements_.sort_conditions_.begin())
                 tmp_query.push_back(",");
 
-            tmp_query.push_back(it->value_.GetFinalValue());
-            tmp_query.push_back(it->order_);
+            tmp_query.push_back(it->value.GetFinalValue());
+            tmp_query.push_back(it->order);
         }
     }
 }
 
 void SortFilter::Add_(std::string value, std::string order)
 {
-    Filters::SortCondition sort_condition
+    Filters::SortFilterElements::SortCondition sort_condition
     {
         Extras::ValuesProperties{value, false}
         ,order
     };
-    sort_conditions_.push_back(std::move(sort_condition));
+    filter_elements_.sort_conditions_.push_back(std::move(sort_condition));
 }

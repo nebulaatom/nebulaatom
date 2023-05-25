@@ -20,14 +20,15 @@
 
 using namespace CPW::Filters;
 
-GeneralFilter::GeneralFilter() :
-    page_("0")
-    ,limit_("20")
-    ,as_("")
-    ,pagination_(true)
+GeneralFilter::GeneralFilter()
 {
     auto current_filter_type = get_current_filter_type();
     current_filter_type = FilterType::kGeneral;
+
+    filter_elements_.page_ = "0";
+    filter_elements_.limit_ = "20";
+    filter_elements_.as_ = "";
+    filter_elements_.pagination_ = true;
 }
 
 GeneralFilter::~GeneralFilter()
@@ -41,34 +42,34 @@ void GeneralFilter::Identify_(Dynamic::Var& filter)
 
     // Add page
     if(!filter_json->get("page").isEmpty())
-        page_ = filter_json->get("page").toString();
+        filter_elements_.page_ = filter_json->get("page").toString();
 
     // Add limit
     if(!filter_json->get("limit").isEmpty())
-        limit_ = filter_json->get("limit").toString();
+        filter_elements_.limit_ = filter_json->get("limit").toString();
 
     // Add as
     if(!filter_json->get("as").isEmpty())
-        as_ = filter_json->get("as").toString();
+        filter_elements_.as_ = filter_json->get("as").toString();
 
 }
 
 void GeneralFilter::Incorporate_(VectorString& tmp_query)
 {
-    if(std::stoi(limit_) > 0)
+    if(std::stoi(filter_elements_.limit_) > 0)
     {
         tmp_query.push_back("LIMIT");
-        if(pagination_)
+        if(filter_elements_.pagination_)
         {
-            int offset = std::stoi(limit_) * std::stoi(page_);
+            int offset = std::stoi(filter_elements_.limit_) * std::stoi(filter_elements_.page_);
             tmp_query.push_back(std::to_string(offset));
-            tmp_query.push_back(", " + limit_);
+            tmp_query.push_back(", " + filter_elements_.limit_);
         }
         else
-            tmp_query.push_back(limit_);
+            tmp_query.push_back(filter_elements_.limit_);
     }
     else
-        if(pagination_)
+        if(filter_elements_.pagination_)
             tmp_query.push_back("LIMIT 0, 20");
         else
             tmp_query.push_back("LIMIT 20");
@@ -76,9 +77,9 @@ void GeneralFilter::Incorporate_(VectorString& tmp_query)
 
 void GeneralFilter::IncorporateAS_(VectorString& tmp_query)
 {
-    if(as_ == "")
+    if(filter_elements_.as_ == "")
         return;
 
     tmp_query.push_back("AS");
-    tmp_query.push_back(as_);
+    tmp_query.push_back(filter_elements_.as_);
 }

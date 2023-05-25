@@ -27,31 +27,29 @@ namespace CPW
 {
     namespace Filters
     {
-        class SortCondition;
+        class SortFilterElements;
         class SortFilter;
     }
 }
 
 
-class CPW::Filters::SortCondition
+class CPW::Filters::SortFilterElements
 {
     public:
-        SortCondition(Extras::ValuesProperties value, std::string order = "") :
-            value_(value)
-            ,order_(order)
+        struct SortCondition
         {
-            if(order_ != "ASC" || order_ != "DESC")
-                order_ = "ASC";
-        }
-        SortCondition() :
-            value_("", true)
-            ,order_("ASC")
-        {
+            SortCondition(Extras::ValuesProperties value, std::string order = "") : value(value), order(order)
+            {
+                if(order != "ASC" || order != "DESC")
+                    order = "ASC";
+            }
+            SortCondition() : value("", true), order("ASC"){}
 
-        }
+            Extras::ValuesProperties value;
+            std::string order;
+        };
 
-        Extras::ValuesProperties value_;
-        std::string order_;
+        std::list<SortCondition> sort_conditions_;
 };
 
 class CPW::Filters::SortFilter : Filters::Filter
@@ -60,11 +58,12 @@ class CPW::Filters::SortFilter : Filters::Filter
         SortFilter();
         virtual ~SortFilter();
 
-        std::list<SortCondition>& get_sort_conditions()
+        Filters::SortFilterElements& get_filter_elements()
         {
-            auto& var = sort_conditions_;
+            auto& var = filter_elements_;
             return var;
         }
+
         virtual void Identify_(Dynamic::Var& filter) override;
         virtual void Incorporate_(VectorString& tmp_query) override;
 
@@ -72,7 +71,7 @@ class CPW::Filters::SortFilter : Filters::Filter
         void Add_(std::string value, std::string order);
 
     private:
-        std::list<SortCondition> sort_conditions_;
+        Filters::SortFilterElements filter_elements_;
 };
 
 

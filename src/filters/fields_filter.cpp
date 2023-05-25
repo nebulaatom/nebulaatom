@@ -20,11 +20,12 @@
 
 using namespace CPW::Filters;
 
-FieldsFilter::FieldsFilter() :
-    all_(true)
+FieldsFilter::FieldsFilter()
 {
     auto current_filter_type = get_current_filter_type();
     current_filter_type = FilterType::kFields;
+
+    filter_elements_.all_= true;
 }
 
 FieldsFilter::~FieldsFilter()
@@ -67,24 +68,24 @@ void FieldsFilter::Identify_(Dynamic::Var& filter)
 
 void FieldsFilter::Incorporate_(VectorString& tmp_query)
 {
-    if(fields_.size() == 0)
+    if(filter_elements_.fields_.size() == 0)
     {
-        if(all_)
+        if(filter_elements_.all_)
             tmp_query.push_back("*");
     }
     else
     {
-        for(auto field = fields_.begin(); field != fields_.end(); field++)
+        for(auto field = filter_elements_.fields_.begin(); field != filter_elements_.fields_.end(); field++)
         {
-            if(field != fields_.begin())
+            if(field != filter_elements_.fields_.begin())
                 tmp_query.push_back(",");
 
-            tmp_query.push_back(field->value_.GetFinalValue());
+            tmp_query.push_back(field->value.GetFinalValue());
 
-            if(field->as_ != "")
+            if(field->as != "")
             {
                 tmp_query.push_back("AS");
-                tmp_query.push_back(field->as_);
+                tmp_query.push_back(field->as);
             }
         }
     }
@@ -92,8 +93,8 @@ void FieldsFilter::Incorporate_(VectorString& tmp_query)
 
 void FieldsFilter::Add_(std::string value, std::string as)
 {
-    Filters::Field field;
-    field.value_ = Extras::ValuesProperties{value, false};
-    field.as_ = as;
-    fields_.push_back(std::move(field));
+    Filters::FieldsFilterElements::Field field;
+    field.value = Extras::ValuesProperties{value, false};
+    field.as = as;
+    filter_elements_.fields_.push_back(std::move(field));
 }
