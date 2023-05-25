@@ -172,7 +172,7 @@ bool SecurityVerification::SeePermissionsPerUserTarget_(std::string user, std::s
     // Variables
         auto query_actions = dynamic_elements_.get_query_actions();
         auto& iquals = query_actions->get_current_filters_()->get_iquals_conditions();
-        auto& fields = query_actions->get_current_filters_()->get_fields_filter()->get_fields();
+        auto& fields = query_actions->get_current_filters_()->get_fields_filter()->get_filter_elements().fields_;
         auto& joins = query_actions->get_current_filters_()->get_joins();
 
     // Clear previous values
@@ -181,7 +181,7 @@ bool SecurityVerification::SeePermissionsPerUserTarget_(std::string user, std::s
         joins.clear();
 
     // Filters
-        fields.push_back(Filters::Field{Extras::ValuesProperties{"up.granted", false}, ""});
+        fields.push_back(Filters::FieldsFilterElements::Field{Extras::ValuesProperties{"up.granted", false}, ""});
         joins.push_back(std::make_pair
         (
             std::array<std::string, 2>{"LEFT", "_woodpecker_tables_permissions tp"}

@@ -49,13 +49,13 @@ void IncorporateFilters::IncorporateAND_(VectorString& tmp_query)
 
 void IncorporateFilters::IncorporateFields_(VectorString& tmp_query, bool all)
 {
-    current_filters_->get_fields_filter()->set_all(all);
+    current_filters_->get_fields_filter()->get_filter_elements().all_ = all;
     current_filters_->get_fields_filter()->Incorporate_(tmp_query);
 }
 
 void IncorporateFilters::IncorporatePageLimit_(VectorString& tmp_query, bool pagination)
 {
-    current_filters_->get_general_filter()->set_pagination(pagination);
+    current_filters_->get_general_filter()->get_filter_elements().pagination_ = pagination;
     current_filters_->get_general_filter()->Incorporate_(tmp_query);
 }
 
