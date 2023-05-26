@@ -35,8 +35,14 @@ target_include_directories(generalfilter PUBLIC ${HEADER})
 set_target_properties(generalfilter PROPERTIES POSITION_INDEPENDENT_CODE 1)
 target_link_libraries(generalfilter filter)
 
+### iqualsfilter
+add_library(iqualsfilter STATIC "iquals_filter.cpp")
+target_include_directories(iqualsfilter PUBLIC ${HEADER})
+set_target_properties(iqualsfilter PROPERTIES POSITION_INDEPENDENT_CODE 1)
+target_link_libraries(iqualsfilter filter)
+
 ### filtersmanager
 add_library(filtersmanager OBJECT "filters_manager.cpp")
 target_include_directories(filtersmanager PUBLIC ${HEADER})
 set_target_properties(filtersmanager PROPERTIES POSITION_INDEPENDENT_CODE 1)
-target_link_libraries(filtersmanager fieldsfilter sortfilter generalfilter)
+target_link_libraries(filtersmanager fieldsfilter sortfilter generalfilter iqualsfilter)
