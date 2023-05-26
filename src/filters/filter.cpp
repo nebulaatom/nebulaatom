@@ -19,6 +19,7 @@
 #include "filters/filter.h"
 
 using namespace CPW::Filters;
+using namespace CPW::Extras;
 
 Filter::Filter() :
     current_filter_type_(FilterType::kUnknown)
@@ -29,4 +30,54 @@ Filter::Filter() :
 Filter::~Filter()
 {
 
+}
+
+bool Filter::FindWHERE_(VectorString& tmp_query)
+{
+    auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+
+    if(found == tmp_query.end())
+        return false;
+
+    return true;
+}
+
+bool Filter::FindAND_(VectorString& tmp_query)
+{
+    auto found = std::find(tmp_query.begin(), tmp_query.end(), "WHERE");
+
+    if(*found == tmp_query.back())
+        return false;
+
+    return true;
+}
+
+CPW::Extras::ValuesProperties Filter::GetValueProperties_(Dynamic::Var& var)
+{
+    Tools::RowValueFormatter row(var);
+    row.Format_();
+
+    switch(row.get_row_value_type())
+    {
+        case Tools::RowValueType::kEmpty:
+            return Extras::ValuesProperties{"NULL", false};
+            break;
+        case Tools::RowValueType::kString:
+            return Extras::ValuesProperties{var.toString(), true};
+            break;
+        case Tools::RowValueType::kInteger:
+            return Extras::ValuesProperties{var.toString(), false};
+            break;
+        case Tools::RowValueType::kFloat:
+            return Extras::ValuesProperties{var.toString(), false};
+            break;
+        case Tools::RowValueType::kBoolean:
+            return Extras::ValuesProperties{var.toString(), false};
+            break;
+        default:
+            return Extras::ValuesProperties{"", true};
+            break;
+    }
+
+    return Extras::ValuesProperties{};
 }

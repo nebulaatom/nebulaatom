@@ -36,7 +36,7 @@
 #include <Poco/Dynamic/Var.h>
 #include <Poco/Dynamic/Struct.h>
 
-
+#include "tools/row_value_formatter.h"
 #include "extras/values_properties.h"
 #include "tools/manage_json.h"
 
@@ -66,7 +66,6 @@ enum class CPW::Filters::FilterType
     ,kSort
     ,kGeneral
     ,kIqual
-    ,kNotIqual
     ,kGreatherThan
     ,kSmallerThan
     ,kBetween
@@ -103,6 +102,11 @@ class CPW::Filters::Filter
 
         virtual void Identify_(Dynamic::Var& filter) = 0;
         virtual void Incorporate_(VectorString& tmp_query) = 0;
+
+    protected:
+        bool FindWHERE_(VectorString& tmp_query);
+        bool FindAND_(VectorString& tmp_query);
+        Extras::ValuesProperties GetValueProperties_(Dynamic::Var& var);
 
     private:
         Filters::FilterType current_filter_type_;
