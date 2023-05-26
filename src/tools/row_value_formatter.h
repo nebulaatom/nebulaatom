@@ -49,6 +49,7 @@ enum class CPW::Tools::RowValueType
     ,kString
     ,kInteger
     ,kFloat
+    ,kBoolean
 };
 
 class CPW::Tools::RowValueFormatter
@@ -61,15 +62,18 @@ class CPW::Tools::RowValueFormatter
         std::string get_value_string() const{return value_string_;}
         int get_value_int() const{return value_int_;}
         float get_value_float() const{return value_float_;}
+        bool get_value_bool() const{return value_bool_;}
 
         void Format_();
 
     private:
         RowValueType row_value_type_;
         Poco::Dynamic::Var* value_;
+
         std::string value_string_;
         int value_int_;
         float value_float_;
+        bool value_bool_;
 
 };
 

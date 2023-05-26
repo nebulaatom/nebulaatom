@@ -26,6 +26,7 @@ RowValueFormatter::RowValueFormatter(Poco::Dynamic::Var& value) :
     ,value_string_("")
     ,value_int_(0)
     ,value_float_(0.f)
+    ,value_bool_(false)
 {
 	value_ = &value;
 }
@@ -37,6 +38,8 @@ RowValueFormatter::~RowValueFormatter()
 
 void RowValueFormatter::Format_()
 {
+    std::string val = value_->toString();
+
     if(value_ == nullptr)
     {
         row_value_type_ = RowValueType::kEmpty;
@@ -48,8 +51,16 @@ void RowValueFormatter::Format_()
     else if(value_->isNumeric())
         if(value_->isInteger())
         {
-            value_int_ = std::stoi(value_->toString());
-            row_value_type_ = RowValueType::kInteger;
+            if(value_->isBoolean())
+            {
+                value_bool_ = value_->convert<bool>();
+                row_value_type_ = RowValueType::kBoolean;
+            }
+            else
+            {
+                value_int_ = std::stoi(value_->toString());
+                row_value_type_ = RowValueType::kInteger;
+            }
         }
         else
         {
