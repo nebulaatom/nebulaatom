@@ -25,6 +25,8 @@ FiltersManager::FiltersManager()
     fields_ = std::make_shared<FieldsFilter>();
     sort_filter_ = std::make_shared<SortFilter>();
     general_filter_ = std::make_shared<GeneralFilter>();
+    iquals_filter_ = std::make_shared<IqualsFilter>();
+
     MapFilterType_();
 }
 
@@ -39,7 +41,6 @@ void FiltersManager::MapFilterType_()
     filters_type_map_.emplace(std::make_pair("sort", FilterType::kSort));
     filters_type_map_.emplace(std::make_pair("general", FilterType::kGeneral));
     filters_type_map_.emplace(std::make_pair("iqual", FilterType::kIqual));
-    filters_type_map_.emplace(std::make_pair("notiqual", FilterType::kNotIqual));
     filters_type_map_.emplace(std::make_pair("greatherthan", FilterType::kGreatherThan));
     filters_type_map_.emplace(std::make_pair("smallerthan", FilterType::kSmallerThan));
     filters_type_map_.emplace(std::make_pair("between", FilterType::kBetween));

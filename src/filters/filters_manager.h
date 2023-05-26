@@ -29,6 +29,7 @@
 #include "filters/fields_filter.h"
 #include "filters/sort_filter.h"
 #include "filters/general_filter.h"
+#include "filters/iquals_filter.h"
 
 namespace CPW
 {
@@ -66,14 +67,9 @@ class CPW::Filters::FiltersManager
             auto& var = general_filter_;
             return var;
         }
-        MapForValues& get_iquals_conditions()
+        std::shared_ptr<Filters::IqualsFilter>& get_iquals_filter()
         {
-            auto& var = iquals_conditions_;
-            return var;
-        }
-        MapForValues& get_not_iquals_conditions()
-        {
-            auto& var = not_iquals_conditions_;
+            auto& var = iquals_filter_;
             return var;
         }
         MapForValues& get_greather_than()
@@ -140,8 +136,7 @@ class CPW::Filters::FiltersManager
         std::shared_ptr<Filters::FieldsFilter> fields_;
         std::shared_ptr<Filters::SortFilter> sort_filter_;
         std::shared_ptr<Filters::GeneralFilter> general_filter_;
-        MapForValues iquals_conditions_;
-        MapForValues not_iquals_conditions_;
+        std::shared_ptr<Filters::IqualsFilter> iquals_filter_;
         MapForValues greather_than_;
         MapForValues smaller_than_;
         std::map<std::string, std::pair<ValuesProperties, ValuesProperties>> between_;
