@@ -32,6 +32,7 @@ FiltersManager::FiltersManager()
     join_filter_ = std::make_shared<JoinFilter>();
     group_filter_ = std::make_shared<GroupFilter>();
     values_filter_ = std::make_shared<ValuesFilter>();
+    set_filter_ = std::make_shared<SetFilter>();
 
     MapFilterType_();
 }
