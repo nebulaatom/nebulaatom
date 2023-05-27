@@ -27,6 +27,7 @@ FiltersManager::FiltersManager()
     general_filter_ = std::make_shared<GeneralFilter>();
     iquals_filter_ = std::make_shared<IqualsFilter>();
     range_filter_ = std::make_shared<RangeFilter>();
+    list_filter_ = std::make_shared<ListFilter>();
 
     MapFilterType_();
 }
@@ -43,8 +44,7 @@ void FiltersManager::MapFilterType_()
     filters_type_map_.emplace(std::make_pair("general", FilterType::kGeneral));
     filters_type_map_.emplace(std::make_pair("iqual", FilterType::kIqual));
     filters_type_map_.emplace(std::make_pair("range", FilterType::kRange));
-    filters_type_map_.emplace(std::make_pair("in", FilterType::kIn));
-    filters_type_map_.emplace(std::make_pair("notin", FilterType::kNotIn));
+    filters_type_map_.emplace(std::make_pair("list", FilterType::kList));
     filters_type_map_.emplace(std::make_pair("values", FilterType::kValues));
     filters_type_map_.emplace(std::make_pair("set", FilterType::kSet));
     filters_type_map_.emplace(std::make_pair("joins", FilterType::kJoins));

@@ -68,8 +68,7 @@ enum class CPW::Filters::FilterType
     ,kGeneral
     ,kIqual
     ,kRange
-    ,kIn
-    ,kNotIn
+    ,kList
     ,kValues
     ,kSet
     ,kJoins

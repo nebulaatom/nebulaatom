@@ -31,6 +31,7 @@
 #include "filters/general_filter.h"
 #include "filters/iquals_filter.h"
 #include "filters/range_filter.h"
+#include "filters/list_filter.h"
 
 namespace CPW
 {
@@ -78,14 +79,9 @@ class CPW::Filters::FiltersManager
             auto& var = range_filter_;
             return var;
         }
-        std::map<std::string, ValuesPropertiesVector>& get_in()
+        std::shared_ptr<Filters::ListFilter>& get_list_filter()
         {
-            auto& var = in_;
-            return var;
-        }
-        std::map<std::string, ValuesPropertiesVector>& get_not_in()
-        {
-            auto& var = not_in_;
+            auto& var = list_filter_;
             return var;
         }
         std::vector<ValuesPropertiesVector>& get_values()
@@ -129,8 +125,7 @@ class CPW::Filters::FiltersManager
         std::shared_ptr<Filters::GeneralFilter> general_filter_;
         std::shared_ptr<Filters::IqualsFilter> iquals_filter_;
         std::shared_ptr<Filters::RangeFilter> range_filter_;
-        std::map<std::string, ValuesPropertiesVector> in_;
-        std::map<std::string, ValuesPropertiesVector> not_in_;
+        std::shared_ptr<Filters::ListFilter> list_filter_;
         std::vector<ValuesPropertiesVector> values_;
         MapForValues set_;
         std::vector<std::pair<std::array<std::string, 2>, MapForValues>> joins_;
