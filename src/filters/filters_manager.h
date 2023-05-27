@@ -33,6 +33,7 @@
 #include "filters/range_filter.h"
 #include "filters/list_filter.h"
 #include "filters/like_filter.h"
+#include "filters/join_filter.h"
 
 namespace CPW
 {
@@ -90,6 +91,11 @@ class CPW::Filters::FiltersManager
             auto& var = like_filter_;
             return var;
         }
+        std::shared_ptr<Filters::JoinFilter>& get_join_filter()
+        {
+            auto& var = join_filter_;
+            return var;
+        }
         std::vector<ValuesPropertiesVector>& get_values()
         {
             auto& var = values_;
@@ -98,11 +104,6 @@ class CPW::Filters::FiltersManager
         MapForValues& get_set()
         {
             auto& var = set_;
-            return var;
-        }
-        std::vector<std::pair<std::array<std::string, 2>, MapForValues>>& get_joins()
-        {
-            auto& var = joins_;
             return var;
         }
         std::map<std::string, FilterType>& get_filters_type_map()
@@ -128,9 +129,9 @@ class CPW::Filters::FiltersManager
         std::shared_ptr<Filters::RangeFilter> range_filter_;
         std::shared_ptr<Filters::ListFilter> list_filter_;
         std::shared_ptr<Filters::LikeFilter> like_filter_;
+        std::shared_ptr<Filters::JoinFilter> join_filter_;
         std::vector<ValuesPropertiesVector> values_;
         MapForValues set_;
-        std::vector<std::pair<std::array<std::string, 2>, MapForValues>> joins_;
         std::map<std::string, FilterType> filters_type_map_;
         ValuesPropertiesVector group_conditions_;
 };
