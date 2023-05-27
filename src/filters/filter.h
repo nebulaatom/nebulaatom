@@ -27,6 +27,7 @@
 #include <forward_list>
 #include <functional>
 #include <stdexcept>
+#include <algorithm>
 
 #include <Poco/JSON/JSON.h>
 #include <Poco/JSON/JSONException.h>
@@ -66,9 +67,7 @@ enum class CPW::Filters::FilterType
     ,kSort
     ,kGeneral
     ,kIqual
-    ,kGreatherThan
-    ,kSmallerThan
-    ,kBetween
+    ,kRange
     ,kIn
     ,kNotIn
     ,kValues

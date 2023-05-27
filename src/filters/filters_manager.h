@@ -30,6 +30,7 @@
 #include "filters/sort_filter.h"
 #include "filters/general_filter.h"
 #include "filters/iquals_filter.h"
+#include "filters/range_filter.h"
 
 namespace CPW
 {
@@ -72,19 +73,9 @@ class CPW::Filters::FiltersManager
             auto& var = iquals_filter_;
             return var;
         }
-        MapForValues& get_greather_than()
+        std::shared_ptr<Filters::RangeFilter>& get_range_filter()
         {
-            auto& var = greather_than_;
-            return var;
-        }
-        MapForValues& get_smaller_than()
-        {
-            auto& var = smaller_than_;
-            return var;
-        }
-        std::map<std::string, std::pair<ValuesProperties, ValuesProperties>>& get_between()
-        {
-            auto& var = between_;
+            auto& var = range_filter_;
             return var;
         }
         std::map<std::string, ValuesPropertiesVector>& get_in()
@@ -137,9 +128,7 @@ class CPW::Filters::FiltersManager
         std::shared_ptr<Filters::SortFilter> sort_filter_;
         std::shared_ptr<Filters::GeneralFilter> general_filter_;
         std::shared_ptr<Filters::IqualsFilter> iquals_filter_;
-        MapForValues greather_than_;
-        MapForValues smaller_than_;
-        std::map<std::string, std::pair<ValuesProperties, ValuesProperties>> between_;
+        std::shared_ptr<Filters::RangeFilter> range_filter_;
         std::map<std::string, ValuesPropertiesVector> in_;
         std::map<std::string, ValuesPropertiesVector> not_in_;
         std::vector<ValuesPropertiesVector> values_;
