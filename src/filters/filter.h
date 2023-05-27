@@ -69,10 +69,10 @@ enum class CPW::Filters::FilterType
     ,kIqual
     ,kRange
     ,kList
+    ,kLike
     ,kValues
     ,kSet
     ,kJoins
-    ,kLike
     ,kGroup
 };
 

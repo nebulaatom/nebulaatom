@@ -28,6 +28,7 @@ FiltersManager::FiltersManager()
     iquals_filter_ = std::make_shared<IqualsFilter>();
     range_filter_ = std::make_shared<RangeFilter>();
     list_filter_ = std::make_shared<ListFilter>();
+    like_filter_ = std::make_shared<LikeFilter>();
 
     MapFilterType_();
 }
