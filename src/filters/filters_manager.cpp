@@ -30,6 +30,7 @@ FiltersManager::FiltersManager()
     list_filter_ = std::make_shared<ListFilter>();
     like_filter_ = std::make_shared<LikeFilter>();
     join_filter_ = std::make_shared<JoinFilter>();
+    group_filter_ = std::make_shared<GroupFilter>();
 
     MapFilterType_();
 }
@@ -47,11 +48,11 @@ void FiltersManager::MapFilterType_()
     filters_type_map_.emplace(std::make_pair("iqual", FilterType::kIqual));
     filters_type_map_.emplace(std::make_pair("range", FilterType::kRange));
     filters_type_map_.emplace(std::make_pair("list", FilterType::kList));
+    filters_type_map_.emplace(std::make_pair("like", FilterType::kLike));
     filters_type_map_.emplace(std::make_pair("join", FilterType::kJoin));
+    filters_type_map_.emplace(std::make_pair("group", FilterType::kGroup));
     filters_type_map_.emplace(std::make_pair("values", FilterType::kValues));
     filters_type_map_.emplace(std::make_pair("set", FilterType::kSet));
-    filters_type_map_.emplace(std::make_pair("like", FilterType::kLike));
-    filters_type_map_.emplace(std::make_pair("group", FilterType::kGroup));
 }
 
 bool FiltersManager::ExistsType_(std::string type)
