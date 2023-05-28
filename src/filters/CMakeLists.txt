@@ -65,8 +65,26 @@ target_include_directories(joinfilter PUBLIC ${HEADER})
 set_target_properties(joinfilter PROPERTIES POSITION_INDEPENDENT_CODE 1)
 target_link_libraries(joinfilter filter)
 
+### groupfilter
+add_library(groupfilter STATIC "group_filter.cpp")
+target_include_directories(groupfilter PUBLIC ${HEADER})
+set_target_properties(groupfilter PROPERTIES POSITION_INDEPENDENT_CODE 1)
+target_link_libraries(groupfilter filter)
+
+### valuesfilter
+add_library(valuesfilter STATIC "values_filter.cpp")
+target_include_directories(valuesfilter PUBLIC ${HEADER})
+set_target_properties(valuesfilter PROPERTIES POSITION_INDEPENDENT_CODE 1)
+target_link_libraries(valuesfilter filter)
+
+### setfilter
+add_library(setfilter STATIC "set_filter.cpp")
+target_include_directories(setfilter PUBLIC ${HEADER})
+set_target_properties(setfilter PROPERTIES POSITION_INDEPENDENT_CODE 1)
+target_link_libraries(setfilter filter)
+
 ### filtersmanager
 add_library(filtersmanager OBJECT "filters_manager.cpp")
 target_include_directories(filtersmanager PUBLIC ${HEADER})
 set_target_properties(filtersmanager PROPERTIES POSITION_INDEPENDENT_CODE 1)
-target_link_libraries(filtersmanager fieldsfilter sortfilter generalfilter iqualsfilter rangefilter listfilter likefilter joinfilter)
+target_link_libraries(filtersmanager fieldsfilter sortfilter generalfilter iqualsfilter rangefilter listfilter likefilter joinfilter groupfilter valuesfilter setfilter)
