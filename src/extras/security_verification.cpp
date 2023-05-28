@@ -36,27 +36,35 @@ SecurityVerification::~SecurityVerification()
 
 bool SecurityVerification::AuthenticateUser_()
 {
-    // Variables
-        auto query_actions = dynamic_elements_.get_query_actions();
-        auto result_json = query_actions->get_result_json();
-        auto& iquals = query_actions->get_current_filters_()->get_iquals_conditions();
+    try
+    {
+        // Variables
+            auto query_actions = dynamic_elements_.get_query_actions();
+            auto result_json = query_actions->get_result_json();
+            auto& iquals = query_actions->get_current_filters_()->get_iquals_filter()->get_filter_elements();
 
-    // Add user and password
-        iquals.emplace(std::make_pair("username", user_));
-        iquals.emplace(std::make_pair("password", password_));
+        // Add user and password
 
-    // Execute the query
-        query_actions->ComposeQuery_(Query::TypeAction::kSelect, "_woodpecker_users");
-        if(!query_actions->ExecuteQuery_())
-            return authenticated_ = false;
+            iquals.push_back({"username", {user_, true}, "iqual-quotes"});
+            iquals.push_back({"password", {password_, true}, "iqual-quotes"});
 
-        auto results = result_json->getArray("results");
+        // Execute the query
+            query_actions->ComposeQuery_(Query::TypeAction::kSelect, "_woodpecker_users");
+            if(!query_actions->ExecuteQuery_())
+                return authenticated_ = false;
 
-        if(results->size() > 0)
-            return authenticated_ = true;
-        else
-            return authenticated_ = false;
+            auto results = result_json->getArray("results");
 
+            if(results->size() > 0)
+                return authenticated_ = true;
+            else
+                return authenticated_ = false;
+    }
+    catch(const std::exception& error)
+    {
+        std::cerr << "- Error on SecurityVerification::AuthenticateUser_(): " << std::string(error.what());
+        return false;
+    }
 }
 
 bool SecurityVerification::VerifyPermissions_(Extras::SecurityType security_type, std::string method)
@@ -125,14 +133,11 @@ bool SecurityVerification::VerifyPermissions_(Extras::SecurityType security_type
 void SecurityVerification::AddTargets_()
 {
     dynamic_elements_.get_query_actions()->IdentifyFilters_();
-    auto& joins = dynamic_elements_.get_query_actions()->get_current_filters_()->get_joins();
+    auto& join = dynamic_elements_.get_query_actions()->get_current_filters_()->get_join_filter()->get_filter_elements();
 
-    for(auto it = joins.begin(); it != joins.end(); it++)
+    for(auto it = join.begin(); it != join.end(); it++)
     {
-        if(it->first.size() != 2)
-            continue;
-
-        targets_.push_back(it->first[1]);
+        targets_.push_back(it->get_table());
     }
     dynamic_elements_.get_query_actions()->ResetFilters_();
 
@@ -171,35 +176,25 @@ bool SecurityVerification::SeePermissionsPerUserTarget_(std::string user, std::s
 {
     // Variables
         auto query_actions = dynamic_elements_.get_query_actions();
-        auto& iquals = query_actions->get_current_filters_()->get_iquals_conditions();
-        auto& fields = query_actions->get_current_filters_()->get_fields_filter()->get_filter_elements().fields_;
-        auto& joins = query_actions->get_current_filters_()->get_joins();
+        auto& iquals = query_actions->get_current_filters_()->get_iquals_filter()->get_filter_elements();
+        auto& fields = query_actions->get_current_filters_()->get_fields_filter()->get_filter_elements();
+        auto& join = query_actions->get_current_filters_()->get_join_filter()->get_filter_elements();
 
     // Clear previous values
         iquals.clear();
         fields.clear();
-        joins.clear();
+        join.clear();
 
     // Filters
-        fields.push_back(Filters::FieldsFilterElements::Field{Extras::ValuesProperties{"up.granted", false}, ""});
-        joins.push_back(std::make_pair
-        (
-            std::array<std::string, 2>{"LEFT", "_woodpecker_tables_permissions tp"}
-            ,std::map<std::string, Extras::ValuesProperties> {{"tp.id", Extras::ValuesProperties{"up.id_table_permission", false}}}
-        ));
-        joins.push_back(std::make_pair
-        (
-            std::array<std::string, 2>{"LEFT", "_woodpecker_users u"}
-            ,std::map<std::string, Extras::ValuesProperties> {{"u.id", Extras::ValuesProperties{"up.id_user", false}}}
-        ));
-        joins.push_back(std::make_pair
-        (
-            std::array<std::string, 2>{"LEFT", "_woodpecker_action_types at"}
-            ,std::map<std::string, Extras::ValuesProperties> {{"at.id", Extras::ValuesProperties{"up.id_action_type", false}}}
-        ));
-        iquals.emplace(std::make_pair("u.username", Extras::ValuesProperties{user, true}));
-        iquals.emplace(std::make_pair("at.name", Extras::ValuesProperties{action_type, true}));
-        iquals.emplace(std::make_pair("tp.table_name", Extras::ValuesProperties{target, true}));
+        fields.push_back({"up.granted", "", "no-quotes"});
+
+        join.push_back({"_woodpecker_tables_permissions", "tp", {{"tp.id", "up.id_table_permission"}}, "left"});
+        join.push_back({"_woodpecker_users", "u", {{"u.id", "up.id_user"}}, "left"});
+        join.push_back({"_woodpecker_action_types", "at", {{"at.id", "up.id_action_type"}}, "left"});
+
+        iquals.push_back({"u.username", {user, true}, "iqual-quotes"});
+        iquals.push_back({"at.name", {action_type, true}, "iqual-quotes"});
+        iquals.push_back({"tp.table_name", {target, true}, "iqual-quotes"});
 
     // Data sentences
         query_actions->ComposeQuery_(Query::TypeAction::kSelect, "_woodpecker_user_permissions up");

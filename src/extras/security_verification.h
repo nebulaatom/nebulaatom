@@ -22,6 +22,7 @@
 
 #include <string>
 #include <list>
+#include <stdexcept>
 
 #include "tools/manage_json.h"
 #include "extras/dynamic_elements.h"
