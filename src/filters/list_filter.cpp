@@ -81,9 +81,29 @@ void ListFilter::Identify_(Dynamic::Var& filter)
             if(values_array->get(b).isEmpty())
                 continue;
 
-            auto value = values_array->get(b);
-            values.push_back(GetValueProperties_(value));
+            // Verify object
+            if(values_array->isObject(b))
+            {
+                auto value_object = values_array->getObject(b);
+                if(value_object->get("value").isEmpty() || value_object->get("quotes").isEmpty())
+                    continue;
 
+                if(value_object->get("quotes").toString() == "y")
+                {
+                    auto value = value_object->get("value");
+                    values.push_back(GetValueProperties_(value));
+                }
+                else
+                {
+                    auto value = value_object->get("value");
+                    values.push_back({value.toString(), false});
+                }
+            }
+            else
+            {
+                auto value = values_array->get(b);
+                values.push_back(GetValueProperties_(value));
+            }
         }
 
         // Verify array element "type"
