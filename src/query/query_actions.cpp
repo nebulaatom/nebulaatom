@@ -24,10 +24,8 @@ QueryActions::QueryActions() :
     final_query_("")
     ,affected_rows_(0)
     ,current_filters_(new Filters::FiltersManager)
-    ,incorporate_(new Filters::IncorporateFilters(current_filters_))
     ,result_json_(new JSON::Object)
     ,app_(Application::instance())
-    ,identify_filter_(current_filters_)
 {
 
 }
@@ -64,8 +62,23 @@ void QueryActions::IdentifyFilters_()
                 auto filter_var = data_array->get(a);
 
             // Manage the type
-                auto functor = identify_filter_.get_filter_type_functors();
-                functor[type](filter_var);
+                switch(type)
+                {
+                    case Filters::FilterType::kFields: current_filters_->get_fields_filter()->Identify_(filter_var); break;
+                    case Filters::FilterType::kSort: current_filters_->get_sort_filter()->Identify_(filter_var); break;
+                    case Filters::FilterType::kGeneral: current_filters_->get_general_filter()->Identify_(filter_var); break;
+                    case Filters::FilterType::kIqual: current_filters_->get_iquals_filter()->Identify_(filter_var); break;
+                    case Filters::FilterType::kRange: current_filters_->get_range_filter()->Identify_(filter_var); break;
+                    case Filters::FilterType::kList: current_filters_->get_list_filter()->Identify_(filter_var); break;
+                    case Filters::FilterType::kLike: current_filters_->get_like_filter()->Identify_(filter_var); break;
+                    case Filters::FilterType::kJoin: current_filters_->get_join_filter()->Identify_(filter_var); break;
+                    case Filters::FilterType::kGroup: current_filters_->get_group_filter()->Identify_(filter_var); break;
+                    case Filters::FilterType::kValues: current_filters_->get_values_filter()->Identify_(filter_var); break;
+                    case Filters::FilterType::kSet: current_filters_->get_set_filter()->Identify_(filter_var); break;
+                    case Filters::FilterType::kUnknown:
+                    default:
+                        break;
+                }
         }
     }
     catch(std::runtime_error& error)
@@ -80,23 +93,19 @@ void QueryActions::IdentifyFilters_()
 
 void QueryActions::ResetFilters_()
 {
-    current_filters_->get_fields_filter()->get_filter_elements().fields_.clear();
-    current_filters_->get_sort_filter()->get_filter_elements().sort_conditions_.clear();
-    current_filters_->get_general_filter()->get_filter_elements().page_ = "0";
-    current_filters_->get_general_filter()->get_filter_elements().limit_ = "20";
-    current_filters_->get_general_filter()->get_filter_elements().as_ = "";
-    current_filters_->get_iquals_conditions().clear();
-    current_filters_->get_not_iquals_conditions().clear();
-    current_filters_->get_greather_than().clear();
-    current_filters_->get_smaller_than().clear();
-    current_filters_->get_between().clear();
-    current_filters_->get_in().clear();
-    current_filters_->get_not_in().clear();
-    current_filters_->get_values().clear();
-    current_filters_->get_set().clear();
-    current_filters_->get_joins().clear();
-    current_filters_->get_like().clear();
-    current_filters_->get_group_conditions().clear();
+    current_filters_->get_fields_filter()->get_filter_elements().clear();
+    current_filters_->get_sort_filter()->get_filter_elements().clear();
+    current_filters_->get_general_filter()->get_filter_elements().set_page("0");
+    current_filters_->get_general_filter()->get_filter_elements().set_limit("20");
+    current_filters_->get_general_filter()->get_filter_elements().set_as("");
+    current_filters_->get_iquals_filter()->get_filter_elements().clear();
+    current_filters_->get_range_filter()->get_filter_elements().clear();
+    current_filters_->get_list_filter()->get_filter_elements().clear();
+    current_filters_->get_like_filter()->get_filter_elements().clear();
+    current_filters_->get_join_filter()->get_filter_elements().clear();
+    current_filters_->get_group_filter()->get_filter_elements().clear();
+    current_filters_->get_values_filter()->get_filter_elements().clear();
+    current_filters_->get_set_filter()->get_filter_elements().clear();
 }
 
 void QueryActions::ComposeQuery_(TypeAction action_type, std::string table)
@@ -274,12 +283,11 @@ std::string QueryActions::ComposeInsertSentence_(std::string table)
         std::vector<std::string> tmp_query = {"INSERT INTO " + table + " ("};
 
     // Fields
-        incorporate_->IncorporateFields_(tmp_query);
+        current_filters_->get_fields_filter()->Incorporate_(tmp_query);
         tmp_query.push_back(")");
 
     // Values
-        tmp_query.push_back("VALUES");
-        incorporate_->IncorporateValues_(tmp_query);
+        current_filters_->get_values_filter()->Incorporate_(tmp_query);
 
     tmp_query.push_back(";");
 
@@ -294,31 +302,32 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 {
     // Sentence type and fields
         std::vector<std::string> tmp_query = {"SELECT"};
-        incorporate_->IncorporateFields_(tmp_query);
+
+        if(current_filters_->get_fields_filter()->get_filter_elements().size() < 1)
+            tmp_query.push_back("*");
+        else
+            current_filters_->get_fields_filter()->Incorporate_(tmp_query);
 
     // Table
         tmp_query.push_back("FROM " + table);
-        incorporate_->IncorporateAS_(tmp_query);
+        current_filters_->get_general_filter()->IncorporateAS_(tmp_query);
 
     // Joins
-        incorporate_->IncorporateJoins_(tmp_query);
+        current_filters_->get_join_filter()->Incorporate_(tmp_query);
 
     // Conditions
-        incorporate_->IncorporateIqual_(tmp_query);
-        incorporate_->IncorporateNotIqual_(tmp_query);
-        incorporate_->IncorporateGreatherThan_(tmp_query);
-        incorporate_->IncorporateSmallerThan_(tmp_query);
-        incorporate_->IncorporateBetween_(tmp_query);
-        incorporate_->IncorporateIn_(tmp_query);
-        incorporate_->IncorporateNotIn_(tmp_query);
-        incorporate_->IncorporateLike_(tmp_query);
+        current_filters_->get_iquals_filter()->Incorporate_(tmp_query);
+        current_filters_->get_range_filter()->Incorporate_(tmp_query);
+        current_filters_->get_list_filter()->Incorporate_(tmp_query);
+        current_filters_->get_like_filter()->Incorporate_(tmp_query);
 
     // Group and Sort conditions
-        incorporate_->IncorporateGroup_(tmp_query);
-        incorporate_->IncorporateSort_(tmp_query);
+        current_filters_->get_group_filter()->Incorporate_(tmp_query);
+        current_filters_->get_sort_filter()->Incorporate_(tmp_query);
 
     // Page and Limit condition
-        incorporate_->IncorporatePageLimit_(tmp_query, true);
+        current_filters_->get_general_filter()->get_filter_elements().set_pagination(true);
+        current_filters_->get_general_filter()->Incorporate_(tmp_query);
 
     return MakeFinalQuery_(tmp_query);
 }
@@ -328,29 +337,26 @@ std::string QueryActions::ComposeUpdateSentence_(std::string table)
     // Sentence type and table
         std::vector<std::string> tmp_query = {"UPDATE"};
         tmp_query.push_back(table);
+        current_filters_->get_general_filter()->IncorporateAS_(tmp_query);
 
     // Joins
-        incorporate_->IncorporateJoins_(tmp_query);
+        current_filters_->get_join_filter()->Incorporate_(tmp_query);
 
     // Set
-        tmp_query.push_back("SET");
-        incorporate_->IncorporateSet_(tmp_query);
+        current_filters_->get_set_filter()->Incorporate_(tmp_query);
 
     // Conditions
-        incorporate_->IncorporateIqual_(tmp_query);
-        incorporate_->IncorporateNotIqual_(tmp_query);
-        incorporate_->IncorporateGreatherThan_(tmp_query);
-        incorporate_->IncorporateSmallerThan_(tmp_query);
-        incorporate_->IncorporateBetween_(tmp_query);
-        incorporate_->IncorporateIn_(tmp_query);
-        incorporate_->IncorporateNotIn_(tmp_query);
-        incorporate_->IncorporateLike_(tmp_query);
+        current_filters_->get_iquals_filter()->Incorporate_(tmp_query);
+        current_filters_->get_range_filter()->Incorporate_(tmp_query);
+        current_filters_->get_list_filter()->Incorporate_(tmp_query);
+        current_filters_->get_like_filter()->Incorporate_(tmp_query);
 
     // Sort conditions
-        incorporate_->IncorporateSort_(tmp_query);
+        current_filters_->get_sort_filter()->Incorporate_(tmp_query);
 
     // Page and Limit condition
-        incorporate_->IncorporatePageLimit_(tmp_query, false);
+        current_filters_->get_general_filter()->get_filter_elements().set_pagination(false);
+        current_filters_->get_general_filter()->Incorporate_(tmp_query);
 
     return MakeFinalQuery_(tmp_query);
 }
@@ -359,28 +365,25 @@ std::string QueryActions::ComposeDeleteSentence_(std::string table)
 {
     // Sentence type and Table
         std::vector<std::string> tmp_query = {"DELETE"};
-        incorporate_->IncorporateFields_(tmp_query, false);
+        current_filters_->get_fields_filter()->Incorporate_(tmp_query);
 
         tmp_query.push_back("FROM " + table);
 
     // Joins
-        incorporate_->IncorporateJoins_(tmp_query);
+        current_filters_->get_join_filter()->Incorporate_(tmp_query);
 
     // Conditions
-        incorporate_->IncorporateIqual_(tmp_query);
-        incorporate_->IncorporateNotIqual_(tmp_query);
-        incorporate_->IncorporateGreatherThan_(tmp_query);
-        incorporate_->IncorporateSmallerThan_(tmp_query);
-        incorporate_->IncorporateBetween_(tmp_query);
-        incorporate_->IncorporateIn_(tmp_query);
-        incorporate_->IncorporateNotIn_(tmp_query);
-        incorporate_->IncorporateLike_(tmp_query);
+        current_filters_->get_iquals_filter()->Incorporate_(tmp_query);
+        current_filters_->get_range_filter()->Incorporate_(tmp_query);
+        current_filters_->get_list_filter()->Incorporate_(tmp_query);
+        current_filters_->get_like_filter()->Incorporate_(tmp_query);
 
     // Sort conditions
-        incorporate_->IncorporateSort_(tmp_query);
+        current_filters_->get_sort_filter()->Incorporate_(tmp_query);
 
     // Page and Limit condition
-        incorporate_->IncorporatePageLimit_(tmp_query, false);
+        current_filters_->get_general_filter()->get_filter_elements().set_pagination(false);
+        current_filters_->get_general_filter()->Incorporate_(tmp_query);
 
     return MakeFinalQuery_(tmp_query);
 }

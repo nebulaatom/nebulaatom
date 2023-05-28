@@ -45,9 +45,7 @@
 
 #include "tools/manage_json.h"
 #include "filters/filters_manager.h"
-#include "filters/identify_filter.h"
 #include "http/common_responses.h"
-#include "filters/incorporate_filters.h"
 #include "tools/row_value_formatter.h"
 
 
@@ -126,13 +124,11 @@ class CPW::Query::QueryActions :
         std::string final_query_;
         int affected_rows_;
         std::shared_ptr<Filters::FiltersManager> current_filters_;
-        std::unique_ptr<Filters::IncorporateFilters> incorporate_;
         std::shared_ptr<Data::Session> session_;
         std::shared_ptr<Data::Statement> query_;
         JSON::Object::Ptr result_json_;
         Application& app_;
         std::shared_ptr<Tools::RowValueFormatter> row_value_formatter_;
-        Filters::IdentifyFilter identify_filter_;
 };
 
 
