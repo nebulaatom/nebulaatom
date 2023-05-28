@@ -44,7 +44,6 @@ class CPW::Filters::ValuesFilterElement
 
         ValuesFilterElement(std::string value, std::string type);
 
-
         std::string get_value() const { return value_; }
         Type get_type() const { return type_; }
         std::map<std::string, Type>& get_types()
