@@ -2,16 +2,6 @@
 
 ## Objects libraries
 
-### identifyfilter
-add_library(identifyfilter STATIC "identify_filter.cpp")
-target_include_directories(identifyfilter PUBLIC ${HEADER})
-set_target_properties(identifyfilter PROPERTIES POSITION_INDEPENDENT_CODE 1)
-
-### incorporatefilters
-add_library(incorporatefilters STATIC "incorporate_filters.cpp")
-target_include_directories(incorporatefilters PUBLIC ${HEADER})
-set_target_properties(incorporatefilters PROPERTIES POSITION_INDEPENDENT_CODE 1)
-
 ### filter
 add_library(filter STATIC "filter.cpp")
 target_include_directories(filter PUBLIC ${HEADER})

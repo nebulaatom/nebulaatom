@@ -28,14 +28,12 @@ target_link_libraries(
     filtersmanager
     managejson
     requestsmanager
-    incorporatefilters
     handlerconnection
     valuesproperties
     fileproperties
     filemanager
     file
     rowvalueformatter
-    identifyfilter
     session
     sessionshandler
     loginhandler
