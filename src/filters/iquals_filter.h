@@ -27,26 +27,50 @@ namespace CPW
 {
     namespace Filters
     {
-        class IqualsFilterElements;
+        class IqualsFilterElement;
         class IqualsFilter;
     }
 }
 
 
-class CPW::Filters::IqualsFilterElements
+class CPW::Filters::IqualsFilterElement
 {
     public:
-        struct IqualCondition
+        enum class Type
         {
-            IqualCondition(std::string col, Extras::ValuesProperties value, bool not_iqual = false) : col(col), value(value), not_iqual(not_iqual){}
-            IqualCondition() : col(""), value("", true), not_iqual(false){}
-
-            std::string col;
-            Extras::ValuesProperties value;
-            bool not_iqual;
+            kIqual
+            ,kIqualQuotes
+            ,kNoIqual
+            ,kNoIqualQuotes
         };
 
-        std::list<IqualCondition> iqual_conditions_;
+        IqualsFilterElement(std::string col, Extras::ValuesProperties value, std::string type);
+
+        std::string get_col() const { return col_; }
+        Extras::ValuesProperties& get_value()
+        {
+            auto& var = value_;
+            return var;
+        }
+        Type get_type() const { return type_; }
+        std::map<std::string, Type>& get_types()
+        {
+            auto& var = types_;
+            return var;
+        }
+
+        void set_col(std::string col) { col_ = col; }
+        void set_type(Type type) { type_ = type; }
+
+    protected:
+        void AddTypes_();
+
+    private:
+        std::string col_;
+        Extras::ValuesProperties value_;
+        Type type_;
+        std::map<std::string, Type> types_;
+
 };
 
 class CPW::Filters::IqualsFilter : Filters::Filter
@@ -55,7 +79,7 @@ class CPW::Filters::IqualsFilter : Filters::Filter
         IqualsFilter();
         virtual ~IqualsFilter();
 
-        Filters::IqualsFilterElements& get_filter_elements()
+        std::list<Filters::IqualsFilterElement>& get_filter_elements()
         {
             auto& var = filter_elements_;
             return var;
@@ -65,7 +89,7 @@ class CPW::Filters::IqualsFilter : Filters::Filter
         virtual void Incorporate_(VectorString& tmp_query) override;
 
     private:
-        Filters::IqualsFilterElements filter_elements_;
+        std::list<Filters::IqualsFilterElement> filter_elements_;
 };
 
 
