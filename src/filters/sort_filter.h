@@ -27,29 +27,41 @@ namespace CPW
 {
     namespace Filters
     {
-        class SortFilterElements;
+        class SortFilterElement;
         class SortFilter;
     }
 }
 
 
-class CPW::Filters::SortFilterElements
+class CPW::Filters::SortFilterElement
 {
     public:
-        struct SortCondition
+        enum class Type
         {
-            SortCondition(Extras::ValuesProperties value, std::string order = "") : value(value), order(order)
-            {
-                if(order != "ASC" || order != "DESC")
-                    order = "ASC";
-            }
-            SortCondition() : value("", true), order("ASC"){}
-
-            Extras::ValuesProperties value;
-            std::string order;
+            kAsc
+            ,kDesc
         };
 
-        std::list<SortCondition> sort_conditions_;
+        SortFilterElement(std::string col, std::string type);
+
+        std::string get_col() const { return col_; }
+        Type get_type() const { return type_; }
+        std::map<std::string, Type>& get_types()
+        {
+            auto& var = types_;
+            return var;
+        }
+
+        void set_col(std::string col) { col_ = col; }
+        void set_type(Type type) { type_ = type; }
+
+    protected:
+        void AddTypes_();
+
+    private:
+        std::string col_;
+        Type type_;
+        std::map<std::string, Type> types_;
 };
 
 class CPW::Filters::SortFilter : Filters::Filter
@@ -58,7 +70,7 @@ class CPW::Filters::SortFilter : Filters::Filter
         SortFilter();
         virtual ~SortFilter();
 
-        Filters::SortFilterElements& get_filter_elements()
+        std::list<Filters::SortFilterElement>& get_filter_elements()
         {
             auto& var = filter_elements_;
             return var;
@@ -67,11 +79,8 @@ class CPW::Filters::SortFilter : Filters::Filter
         virtual void Identify_(Dynamic::Var& filter) override;
         virtual void Incorporate_(VectorString& tmp_query) override;
 
-    protected:
-        void Add_(std::string value, std::string order);
-
     private:
-        Filters::SortFilterElements filter_elements_;
+        std::list<Filters::SortFilterElement> filter_elements_;
 };
 
 

@@ -20,6 +20,23 @@
 
 using namespace CPW::Filters;
 
+SortFilterElement::SortFilterElement(std::string col, std::string type) :
+    col_(col)
+    ,type_(Type::kAsc)
+{
+    AddTypes_();
+
+    auto found = types_.find(type);
+    if(found != types_.end())
+        type_ = types_[type];
+}
+
+void SortFilterElement::AddTypes_()
+{
+    types_.insert(std::make_pair("asc", Type::kAsc));
+    types_.insert(std::make_pair("desc", Type::kDesc));
+}
+
 SortFilter::SortFilter()
 {
     auto current_filter_type = get_current_filter_type();
@@ -47,45 +64,41 @@ void SortFilter::Identify_(Dynamic::Var& filter)
         if(!contents_array->isObject(a))
             throw std::runtime_error("contents_array[" + std::to_string(a) + "] is not an object in kSort");
 
-        // Verify array element "value"
+        // Verify array element "col"
         auto content_element = contents_array->getObject(a);
-        if(content_element->get("value").isEmpty())
+        if(content_element->get("col").isEmpty())
             continue;
 
-        std::string value = content_element->get("value").toString();
+        std::string col = content_element->get("col").toString();
 
-        // Verify array element "order"
-        std::string order = "";
-        if(!content_element->get("order").isEmpty())
-            order = content_element->get("order").toString();
+        // Verify array element "type"
+        std::string type = "";
+        if(!content_element->get("type").isEmpty())
+            type = content_element->get("type").toString();
 
         // Add element
-        Add_(value, order);
+        filter_elements_.push_back({col, type});
     }
 }
 
 void SortFilter::Incorporate_(VectorString& tmp_query)
 {
-    if(filter_elements_.sort_conditions_.size() > 0)
-    {
-        tmp_query.push_back("ORDER BY");
-        for(auto it = filter_elements_.sort_conditions_.begin(); it != filter_elements_.sort_conditions_.end(); it++)
-        {
-            if(it != filter_elements_.sort_conditions_.begin())
-                tmp_query.push_back(",");
+    if(filter_elements_.size() < 1)
+        return;
 
-            tmp_query.push_back(it->value.GetFinalValue());
-            tmp_query.push_back(it->order);
+    tmp_query.push_back("ORDER BY");
+
+    for(auto it = filter_elements_.begin(); it != filter_elements_.end(); it++)
+    {
+        if(it != filter_elements_.begin())
+            tmp_query.push_back(",");
+
+        tmp_query.push_back(it->get_col());
+
+        switch(it->get_type())
+        {
+            case SortFilterElement::Type::kAsc: tmp_query.push_back("ASC"); break;
+            case SortFilterElement::Type::kDesc: tmp_query.push_back("DESC"); break;
         }
     }
-}
-
-void SortFilter::Add_(std::string value, std::string order)
-{
-    Filters::SortFilterElements::SortCondition sort_condition
-    {
-        Extras::ValuesProperties{value, false}
-        ,order
-    };
-    filter_elements_.sort_conditions_.push_back(std::move(sort_condition));
 }
