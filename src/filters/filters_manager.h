@@ -137,7 +137,6 @@ class CPW::Filters::FiltersManager
         std::shared_ptr<Filters::ValuesFilter> values_filter_;
         std::shared_ptr<Filters::SetFilter> set_filter_;
         std::map<std::string, FilterType> filters_type_map_;
-        ValuesPropertiesVector group_conditions_;
 };
 
 
