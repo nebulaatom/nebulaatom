@@ -24,11 +24,6 @@ GeneralFilter::GeneralFilter()
 {
     auto current_filter_type = get_current_filter_type();
     current_filter_type = FilterType::kGeneral;
-
-    filter_elements_.page_ = "0";
-    filter_elements_.limit_ = "20";
-    filter_elements_.as_ = "";
-    filter_elements_.pagination_ = true;
 }
 
 GeneralFilter::~GeneralFilter()
@@ -40,36 +35,36 @@ void GeneralFilter::Identify_(Dynamic::Var& filter)
 {
     auto filter_json = get_manage_json().ExtractObject_(filter);
 
-    // Add page
+    // Set page
     if(!filter_json->get("page").isEmpty())
-        filter_elements_.page_ = filter_json->get("page").toString();
+        filter_elements_.set_page(filter_json->get("page").toString());
 
-    // Add limit
+    // Set limit
     if(!filter_json->get("limit").isEmpty())
-        filter_elements_.limit_ = filter_json->get("limit").toString();
+        filter_elements_.set_limit(filter_json->get("limit").toString());
 
-    // Add as
+    // Set as
     if(!filter_json->get("as").isEmpty())
-        filter_elements_.as_ = filter_json->get("as").toString();
+        filter_elements_.set_as(filter_json->get("as").toString());
 
 }
 
 void GeneralFilter::Incorporate_(VectorString& tmp_query)
 {
-    if(std::stoi(filter_elements_.limit_) > 0)
+    if(std::stoi(filter_elements_.get_limit()) > 0)
     {
         tmp_query.push_back("LIMIT");
-        if(filter_elements_.pagination_)
+        if(filter_elements_.get_pagination())
         {
-            int offset = std::stoi(filter_elements_.limit_) * std::stoi(filter_elements_.page_);
+            int offset = std::stoi(filter_elements_.get_limit()) * std::stoi(filter_elements_.get_page());
             tmp_query.push_back(std::to_string(offset));
-            tmp_query.push_back(", " + filter_elements_.limit_);
+            tmp_query.push_back(", " + filter_elements_.get_limit());
         }
         else
-            tmp_query.push_back(filter_elements_.limit_);
+            tmp_query.push_back(filter_elements_.get_limit());
     }
     else
-        if(filter_elements_.pagination_)
+        if(filter_elements_.get_pagination())
             tmp_query.push_back("LIMIT 0, 20");
         else
             tmp_query.push_back("LIMIT 20");
@@ -77,9 +72,9 @@ void GeneralFilter::Incorporate_(VectorString& tmp_query)
 
 void GeneralFilter::IncorporateAS_(VectorString& tmp_query)
 {
-    if(filter_elements_.as_ == "")
+    if(filter_elements_.get_as() == "")
         return;
 
     tmp_query.push_back("AS");
-    tmp_query.push_back(filter_elements_.as_);
+    tmp_query.push_back(filter_elements_.get_as());
 }

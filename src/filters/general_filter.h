@@ -36,6 +36,19 @@ namespace CPW
 class CPW::Filters::GeneralFilterElements
 {
     public:
+        GeneralFilterElements() : page_("0"), limit_("20"), as_(""), pagination_(true) {}
+
+        std::string get_page() const { return page_; }
+        std::string get_limit() const { return limit_; }
+        std::string get_as() const { return as_; }
+        bool get_pagination() const { return pagination_; }
+
+        void set_page(std::string page) { page_ = page; }
+        void set_limit(std::string limit) { limit_ = limit; }
+        void set_as(std::string as) { as_ = as; }
+        void set_pagination(bool pagination) { pagination_ = pagination; }
+
+    private:
         std::string page_;
         std::string limit_;
         std::string as_;
