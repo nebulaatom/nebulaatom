@@ -35,9 +35,13 @@ RangeFilterElement::RangeFilterElement(std::string col, Extras::ValuesProperties
 void RangeFilterElement::AddTypes_()
 {
     types_.insert(std::make_pair("greather", Type::kGreather));
+    types_.insert(std::make_pair("greather-quotes", Type::kGreatherQuotes));
     types_.insert(std::make_pair("greather-iqual", Type::kGreatherIqual));
+    types_.insert(std::make_pair("greather-iqual-quotes", Type::kGreatherIqualQuotes));
     types_.insert(std::make_pair("smaller", Type::kSmaller));
+    types_.insert(std::make_pair("smaller-quotes", Type::kSmallerQuotes));
     types_.insert(std::make_pair("smaller-iqual", Type::kSmallerIqual));
+    types_.insert(std::make_pair("smaller-iqual-quotes", Type::kSmallerIqualQuotes));
 }
 
 RangeFilter::RangeFilter()
@@ -112,12 +116,38 @@ void RangeFilter::Incorporate_(VectorString& tmp_query)
 
             switch(it->get_type())
             {
-                case RangeFilterElement::Type::kGreather: tmp_query.push_back(">"); break;
-                case RangeFilterElement::Type::kGreatherIqual: tmp_query.push_back(">="); break;
-                case RangeFilterElement::Type::kSmaller: tmp_query.push_back("<"); break;
-                case RangeFilterElement::Type::kSmallerIqual: tmp_query.push_back("<="); break;
+                case RangeFilterElement::Type::kGreather:
+                case RangeFilterElement::Type::kGreatherQuotes:
+                    tmp_query.push_back(">");
+                    break;
+                case RangeFilterElement::Type::kGreatherIqual:
+                case RangeFilterElement::Type::kGreatherIqualQuotes:
+                    tmp_query.push_back(">=");
+                    break;
+                case RangeFilterElement::Type::kSmaller:
+                case RangeFilterElement::Type::kSmallerQuotes:
+                    tmp_query.push_back("<");
+                    break;
+                case RangeFilterElement::Type::kSmallerIqual:
+                case RangeFilterElement::Type::kSmallerIqualQuotes:
+                    tmp_query.push_back("<=");
+                    break;
             }
-
+            switch(it->get_type())
+            {
+                case RangeFilterElement::Type::kGreather:
+                case RangeFilterElement::Type::kGreatherIqual:
+                case RangeFilterElement::Type::kSmaller:
+                case RangeFilterElement::Type::kSmallerIqual:
+                    it->get_value().set_quotes(false);
+                    break;
+                case RangeFilterElement::Type::kGreatherQuotes:
+                case RangeFilterElement::Type::kGreatherIqualQuotes:
+                case RangeFilterElement::Type::kSmallerQuotes:
+                case RangeFilterElement::Type::kSmallerIqualQuotes:
+                    it->get_value().set_quotes(true);
+                    break;
+            }
             tmp_query.push_back(it->get_value().GetFinalValue());
         }
     }
