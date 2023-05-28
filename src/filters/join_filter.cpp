@@ -91,12 +91,20 @@ void JoinFilter::Identify_(Dynamic::Var& filter)
 
             auto on_element = values_array->getObject(b);
 
-            // Verify object element
-            if(on_element->get("col").isEmpty() || on_element->get("value").isEmpty())
+            // Verify "col" element
+            if(on_element->get("col").isEmpty())
                 continue;
 
             auto col = on_element->get("col").toString();
-            auto value = on_element->get("value").toString();
+
+            // Verify "value" and "value-quoted" element
+            std::string value = "";
+            if(!on_element->get("value").isEmpty())
+               value = on_element->get("value").toString();
+            else if(!on_element->get("value-quoted").isEmpty())
+               value = "'" + on_element->get("value-quoted").toString() + "'";
+            else
+                continue;
 
             on.push_back({col, value});
         }
