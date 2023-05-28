@@ -27,26 +27,44 @@ namespace CPW
 {
     namespace Filters
     {
-        class FieldsFilterElements;
+        class FieldsFilterElement;
         class FieldsFilter;
     }
 }
 
 
-class CPW::Filters::FieldsFilterElements
+class CPW::Filters::FieldsFilterElement
 {
     public:
-        struct Field
+        enum class Type
         {
-            Field(Extras::ValuesProperties value, std::string as) : value(value), as(as){}
-            Field() : value("", true), as(""){}
-
-            Extras::ValuesProperties value;
-            std::string as;
+            kQuotes
+            ,kNoQuotes
         };
 
-        std::list<Field> fields_;
-        bool all_;
+        FieldsFilterElement(std::string value, std::string as, std::string type);
+
+        std::string get_value() const { return value_; }
+        std::string get_as() const { return as_; }
+        Type get_type() const { return type_; }
+        std::map<std::string, Type>& get_types()
+        {
+            auto& var = types_;
+            return var;
+        }
+
+        void set_value(std::string value) { value_ = value; }
+        void set_as(std::string as) { as_ = as; }
+        void set_type(Type type) { type_ = type; }
+
+    protected:
+        void AddTypes_();
+
+    private:
+        std::string value_;
+        std::string as_;
+        Type type_;
+        std::map<std::string, Type> types_;
 };
 
 class CPW::Filters::FieldsFilter : Filters::Filter
@@ -55,7 +73,7 @@ class CPW::Filters::FieldsFilter : Filters::Filter
         FieldsFilter();
         virtual ~FieldsFilter();
 
-        Filters::FieldsFilterElements& get_filter_elements()
+        std::list<Filters::FieldsFilterElement>& get_filter_elements()
         {
             auto& var = filter_elements_;
             return var;
@@ -64,11 +82,8 @@ class CPW::Filters::FieldsFilter : Filters::Filter
         virtual void Identify_(Dynamic::Var& filter) override;
         virtual void Incorporate_(VectorString& tmp_query) override;
 
-    protected:
-        void Add_(std::string value, std::string as);
-
     private:
-        Filters::FieldsFilterElements filter_elements_;
+        std::list<Filters::FieldsFilterElement> filter_elements_;
 };
 
 
