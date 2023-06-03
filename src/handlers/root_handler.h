@@ -55,14 +55,16 @@
 #include "Poco/Net/SecureServerSocket.h"
 #include "Poco/Net/X509Certificate.h"
 
-#include "extras/static_elements.h"
+#include "tools/sessions_handler.h"
+#include "query/database_manager.h"
 #include "tools/route.h"
 #include "http/common_responses.h"
-#include "extras/security_verification.h"
+#include "security/security_verification.h"
 #include "extras/dynamic_elements.h"
 #include "http/http_methods.h"
 #include "tools/requests_manager.h"
 #include "tools/manage_json.h"
+#include "security/user.h"
 
 
 namespace CPW
@@ -88,7 +90,7 @@ class CPW::Handlers::RootHandler :
     ,public HTTP::HTTPMethods
 {
     public:
-        RootHandler(std::shared_ptr<Extras::StaticElements> static_elements, std::string api_version);
+        RootHandler(std::string api_version);
         virtual ~RootHandler();
 
         std::string get_api_version() const {return api_version_;}
@@ -97,10 +99,6 @@ class CPW::Handlers::RootHandler :
         {
             auto& var = current_security_;
             return var;
-        }
-        std::shared_ptr<Extras::StaticElements> get_static_elements() const
-        {
-            return static_elements_;
         }
 
         virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
@@ -120,10 +118,9 @@ class CPW::Handlers::RootHandler :
         std::string user_;
         bool route_verification_;
         Extras::SecurityVerification current_security_;
-        Extras::SecurityType security_type_;
         Tools::RequestsManager requests_manager_;
-        std::shared_ptr<Extras::StaticElements> static_elements_;
         std::shared_ptr<Extras::DynamicElements> dynamic_elements_;
+        std::list<std::string> targets_;
 };
 
 #endif // CPW_HANDLERS_ROOTHANDLER_H

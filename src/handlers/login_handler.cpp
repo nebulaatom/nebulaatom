@@ -91,17 +91,16 @@ void LoginHandler::StartSession_()
         }
 
     // Security verification
-        get_current_security().set_user(user);
-        get_current_security().set_password(password);
-        get_current_security().get_dynamic_elements().set_requested_route(get_dynamic_elements()->get_requested_route());
-        if(!get_current_security().AuthenticateUser_())
+        get_current_security().get_users_manager().get_current_user().set_username(user);
+        get_current_security().get_users_manager().get_current_user().set_password(password);
+        if(!get_current_security().get_users_manager().AuthenticateUser_())
         {
             GenericResponse_(*get_dynamic_elements()->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "Unauthorized user or wrong user or password.");
             return;
         }
 
     // Create the session
-        auto session = get_static_elements()->get_sessions_handler()->CreateSession_(user, "/", 2592000);
+        auto session = Tools::SessionsHandler::CreateSession_(user, "/", 2592000);
 
     // Response
         Poco::Net::HTTPCookie cookie("cpw-woodpecker-sid", session.get_id());
@@ -122,7 +121,7 @@ void LoginHandler::EndSession_()
         auto session_id = SessionExists_();
         if (session_id != "")
         {
-            get_static_elements()->get_sessions_handler()->DeleteSession_(session_id);
+            Tools::SessionsHandler::DeleteSession_(session_id);
         }
 
     // Response
@@ -141,14 +140,14 @@ std::string LoginHandler::SessionExists_()
         Poco::Net::NameValueCollection cookies;
         get_dynamic_elements()->get_request()->getCookies(cookies);
         auto cookie_session = cookies.find("cpw-woodpecker-sid");
-        auto sessions_handler = get_static_elements()->get_sessions_handler();
+        auto sessions = Tools::SessionsHandler::get_sessions();
 
     // Session exists
         if(cookie_session == cookies.end())
             return "";
 
-        if(sessions_handler->get_sessions().find(cookie_session->second) == sessions_handler->get_sessions().end())
+        if(sessions.find(cookie_session->second) == sessions.end())
             return "";
 
-        return sessions_handler->get_sessions().find(cookie_session->second)->first;
+        return sessions.find(cookie_session->second)->first;
 }

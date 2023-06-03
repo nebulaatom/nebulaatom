@@ -20,24 +20,18 @@
 
 using namespace CPW::Handlers;
 
-RootHandler::RootHandler(std::shared_ptr<Extras::StaticElements> static_elements, std::string api_version) :
+RootHandler::RootHandler(std::string api_version) :
     app_(Application::instance())
     ,api_version_(api_version)
     ,user_("null")
     ,route_verification_(true)
-    ,security_type_(Extras::SecurityType::kDisableAll)
-    ,static_elements_(static_elements)
     ,dynamic_elements_(new Extras::DynamicElements())
 {
     requests_manager_.set_http_methods(*this);
     requests_manager_.get_http_methods()->set_dynamic_elements(dynamic_elements_);
     HTTPMethods::set_dynamic_elements(dynamic_elements_);
 
-    // Set the session for QueryActions
-        auto session1 = static_elements_->get_database_manager()->StartSessionMySQL_();
-        auto session2 = static_elements_->get_database_manager()->StartSessionMySQL_();
-        dynamic_elements_->get_query_actions()->set_session(session1);
-        current_security_.get_dynamic_elements().get_query_actions()->set_session(session2);
+    current_security_.set_security_type(Extras::SecurityType::kDisableAll);
 }
 
 RootHandler::~RootHandler()
@@ -118,7 +112,7 @@ bool RootHandler::ProcessRoute_()
         {
             case CPW::Tools::RouteType::kEndpoint:
             {
-                security_type_ = Extras::SecurityType::kDisableAll;
+                current_security_.set_security_type(Extras::SecurityType::kDisableAll);
 
                 // Process the request body
                     if(!ManageRequestBody_())
@@ -161,7 +155,7 @@ bool RootHandler::ProcessRoute_()
             }
             case CPW::Tools::RouteType::kEntrypoint:
             {
-                security_type_ = Extras::SecurityType::kEnableAll;
+                current_security_.set_security_type(Extras::SecurityType::kEnableAll);
 
                 VerifySession_();
 
@@ -182,19 +176,19 @@ bool RootHandler::VerifySession_()
         Poco::Net::NameValueCollection cookies;
         get_dynamic_elements()->get_request()->getCookies(cookies);
         auto cookie_session = cookies.find("cpw-woodpecker-sid");
-        auto sessions_handler = get_static_elements()->get_sessions_handler();
+        auto sessions = Tools::SessionsHandler::get_sessions();
 
     // Verify Cookie session and session
         if(cookie_session != cookies.end())
         {
             session_id = cookie_session->second;
-            if(sessions_handler->get_sessions().find(session_id) == sessions_handler->get_sessions().end())
+            if(sessions.find(session_id) == sessions.end())
             {
                 return false;
             }
 
             // Get the session user
-                user_ = sessions_handler->get_sessions().at(session_id).get_user();
+                user_ = sessions.at(session_id).get_user();
         }
 
     return true;
@@ -202,9 +196,23 @@ bool RootHandler::VerifySession_()
 
 bool RootHandler::VerifyPermissions_()
 {
-    get_current_security().set_user(user_);
-    current_security_.get_dynamic_elements().set_requested_route(dynamic_elements_->get_requested_route());
-    if(!current_security_.VerifyPermissions_(security_type_, dynamic_elements_->get_request()->getMethod()))
+    // Setting up user
+        current_security_.get_users_manager().get_current_user().set_username(user_);
+
+    // Setting up targets
+        Query::QueryActions query_manager;
+        query_manager.get_json_body() = dynamic_elements_->get_query_actions()->get_json_body();
+        query_manager.IdentifyFilters_();
+
+        auto& joins = query_manager.get_current_filters_()->get_join_filter()->get_filter_elements();
+        targets_.push_back(dynamic_elements_->get_requested_route()->get_target());
+        for(auto join : joins)
+            targets_.push_back(join.get_table());
+
+        current_security_.AddTargets_(targets_);
+
+    // Verify permissions
+    if(!current_security_.VerifyRoutesPermissions_())
     {
         GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
         return false;
@@ -249,8 +257,6 @@ bool RootHandler::ManageRequestBody_()
 
     if(!dynamic_elements_->get_query_actions()->Parse_(request_body))
         return false;
-
-    current_security_.get_dynamic_elements().get_query_actions()->get_json_body() = query_actions->get_json_body();
 
     return true;
 }

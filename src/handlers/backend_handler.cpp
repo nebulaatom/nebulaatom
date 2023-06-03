@@ -29,9 +29,18 @@ void BackendHandler::AddRoutes_()
 {
     auto& routes_list = get_dynamic_elements()->get_routes_list();
 
-    routes_list.push_back({"products", {"api", get_api_version(), "products"}});
-    routes_list.push_back({"stores", {"api", get_api_version(), "stores"}});
-    routes_list.push_back({"store_categories", {"api", get_api_version(), "stores", "categories"}});
+   routes_list.push_back({"path1", {"api", get_api_version(), "path1"}});
+   routes_list.push_back({"path1_file1", {"api", get_api_version(), "path1", "file1"}});
+   routes_list.push_back({"path1_file2", {"api", get_api_version(), "path1", "file2"}});
+   routes_list.push_back({"path2", {"api", get_api_version(), "path2"}});
+   routes_list.push_back({"path2_file1", {"api", get_api_version(), "path2", "file1"}});
+   routes_list.push_back({"path2_file2", {"api", get_api_version(), "path2", "file2"}});
+   routes_list.push_back({"path2_path1", {"api", get_api_version(), "path2", "path1"}});
+   routes_list.push_back({"path2_path1_file1", {"api", get_api_version(), "path2", "path1", "file1"}});
+   routes_list.push_back({"path2_path1_file2", {"api", get_api_version(), "path2", "path1", "file2"}});
+   routes_list.push_back({"path2_path1_path1", {"api", get_api_version(), "path2", "path1", "path1"}});
+   routes_list.push_back({"path2_path1_path1_file1", {"api", get_api_version(), "path2", "path1", "path1", "file1"}});
+   routes_list.push_back({"path2_path1_path1_file2", {"api", get_api_version(), "path2", "path1", "path1", "file2"}});
 
     /*routes_list.push_back({"business", {"api", get_api_version(), "business"}});
     routes_list.push_back({"levels", {"api", get_api_version(), "business", "levels"}});

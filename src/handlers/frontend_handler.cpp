@@ -20,8 +20,8 @@
 
 using namespace CPW::Handlers;
 
-FrontendHandler::FrontendHandler(std::shared_ptr<Extras::StaticElements> static_elements, std::string api_version) :
-    RootHandler(static_elements, api_version)
+FrontendHandler::FrontendHandler(std::string api_version) :
+    RootHandler(api_version)
 {
 
 }
@@ -33,8 +33,8 @@ FrontendHandler::~FrontendHandler()
 
 void FrontendHandler::AddRoutes_()
 {
-    get_dynamic_elements()->get_routes_list().push_back({"",{""}});
-    get_dynamic_elements()->get_routes_list().push_back({"uploaded-files",{"uploaded-files"}});
+    get_dynamic_elements()->get_routes_list().push_back({});
+    get_dynamic_elements()->get_routes_list().push_back({"uploaded-files", std::vector<std::string>{"uploaded-files"}});
 }
 
 void FrontendHandler::HandleGETMethod_()
