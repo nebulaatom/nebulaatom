@@ -27,11 +27,13 @@ WoodpeckerServer::WoodpeckerServer(Poco::UInt16 port) :
     ,app_(Application::instance())
 {
     Poco::Net::initializeSSL();
+    Query::DatabaseManager::StartMySQL_();
 }
 
 WoodpeckerServer::~WoodpeckerServer()
 {
     Poco::Net::uninitializeSSL();
+    Query::DatabaseManager::StopMySQL_();
 }
 
 void WoodpeckerServer::initialize(Application& self)

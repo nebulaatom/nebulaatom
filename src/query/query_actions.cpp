@@ -144,8 +144,9 @@ bool QueryActions::ExecuteQuery_(HTTPServerResponse& response)
 {
     try
     {
-        if(session_.get() != nullptr)
-            query_ = std::make_shared<Data::Statement>(*session_);
+        auto session = Query::DatabaseManager::StartSessionMySQL_();
+        if(session.get() != nullptr)
+            query_ = std::make_shared<Data::Statement>(*session);
         else
             throw MySQL::MySQLException("Error to connect to database server");
 
@@ -186,8 +187,9 @@ bool QueryActions::ExecuteQuery_()
 {
     try
     {
-        if(session_.get() != nullptr)
-            query_ = std::make_shared<Data::Statement>(*session_);
+        auto session = Query::DatabaseManager::StartSessionMySQL_();
+        if(session.get() != nullptr)
+            query_ = std::make_shared<Data::Statement>(*session);
         else
             throw MySQL::MySQLException("Error to connect to database server");
 

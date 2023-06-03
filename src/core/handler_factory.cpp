@@ -22,7 +22,6 @@ using namespace CPW::Core;
 
 HandlerFactory::HandlerFactory() :
     api_version_("v0")
-    ,static_elements_(new Extras::StaticElements())
     ,app_(Application::instance())
 {
     CreateConnections_();
@@ -105,7 +104,7 @@ void HandlerFactory::CreateConnections_()
         ,new Tools::HandlerConnection
         {
             CPW::Tools::Route("null", std::vector<std::string>{""})
-            ,[&](){return new CPW::Handlers::NullHandler(static_elements_, api_version_);}
+            ,[&](){return new CPW::Handlers::NullHandler(api_version_);}
         }
     ));
     connections_.insert(std::make_pair
@@ -114,7 +113,7 @@ void HandlerFactory::CreateConnections_()
         ,new Tools::HandlerConnection
         {
             CPW::Tools::Route("", std::vector<std::string>{"api", api_version_})
-            ,[&](){return new CPW::Handlers::BackendHandler(static_elements_, api_version_);}
+            ,[&](){return new CPW::Handlers::BackendHandler(api_version_);}
         }
     ));
     connections_.insert(std::make_pair
@@ -123,7 +122,7 @@ void HandlerFactory::CreateConnections_()
         ,new Tools::HandlerConnection
         {
             CPW::Tools::Route("", std::vector<std::string>{"api", api_version_})
-            ,[&](){return new CPW::Handlers::LoginHandler(static_elements_, api_version_);}
+            ,[&](){return new CPW::Handlers::LoginHandler(api_version_);}
         }
     ));
     connections_.insert(std::make_pair
@@ -132,7 +131,7 @@ void HandlerFactory::CreateConnections_()
         ,new Tools::HandlerConnection
         {
             CPW::Tools::Route("", std::vector<std::string>{""})
-            ,[&](){return new CPW::Handlers::FrontendHandler(static_elements_, api_version_);}
+            ,[&](){return new CPW::Handlers::FrontendHandler(api_version_);}
         }
     ));
 }

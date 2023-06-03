@@ -43,6 +43,7 @@
 #include <Poco/Dynamic/Struct.h>
 #include <Poco/Data/RecordSet.h>
 
+#include "query/database_manager.h"
 #include "tools/manage_json.h"
 #include "filters/filters_manager.h"
 #include "http/common_responses.h"
@@ -89,22 +90,12 @@ class CPW::Query::QueryActions :
             auto& var = current_filters_;
             return var;
         }
-        std::shared_ptr<Data::Session>& get_session()
-        {
-            auto& var = session_;
-            return var;
-        }
         std::shared_ptr<Data::Statement>& get_query()
         {
             auto& var = query_;
             return var;
         }
         JSON::Object::Ptr get_result_json() const {return result_json_;}
-
-        void set_session(std::shared_ptr<Data::Session> session)
-        {
-            session_ = session;
-        }
 
         void IdentifyFilters_();
         void ResetFilters_();
@@ -124,7 +115,6 @@ class CPW::Query::QueryActions :
         std::string final_query_;
         int affected_rows_;
         std::shared_ptr<Filters::FiltersManager> current_filters_;
-        std::shared_ptr<Data::Session> session_;
         std::shared_ptr<Data::Statement> query_;
         JSON::Object::Ptr result_json_;
         Application& app_;

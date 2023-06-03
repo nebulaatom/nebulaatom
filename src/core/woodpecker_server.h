@@ -39,6 +39,7 @@
 #include "Poco/Net/AcceptCertificateHandler.h"
 
 #include "core/handler_factory.h"
+#include "query/database_manager.h"
 
 
 namespace CPW

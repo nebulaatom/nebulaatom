@@ -92,7 +92,6 @@ class CPW::Core::HandlerFactory :
     private:
         std::string api_version_;
         std::map<HandlerType, std::unique_ptr<Tools::HandlerConnection>> connections_;
-        std::shared_ptr<Extras::StaticElements> static_elements_;
         Application& app_;
 };
 
