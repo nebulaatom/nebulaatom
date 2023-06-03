@@ -20,6 +20,8 @@
 
 using namespace CPW::Tools;
 
+std::map<std::string, CPW::Extras::Session> SessionsHandler::sessions_ = {};
+
 SessionsHandler::SessionsHandler()
 {
 

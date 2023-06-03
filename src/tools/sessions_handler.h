@@ -40,20 +40,20 @@ class CPW::Tools::SessionsHandler
         SessionsHandler();
         ~SessionsHandler();
 
-        std::map<std::string, CPW::Extras::Session>& get_sessions()
+        static std::map<std::string, CPW::Extras::Session>& get_sessions()
         {
             auto& var = sessions_;
             return var;
         }
 
-        CPW::Extras::Session& CreateSession_(std::string user, std::string path, int max_age);
-        void DeleteSession_(std::string id);
+        static CPW::Extras::Session& CreateSession_(std::string user, std::string path, int max_age);
+        static void DeleteSession_(std::string id);
 
     protected:
-        bool SessionExists_(std::string id);
+        static bool SessionExists_(std::string id);
 
     private:
-        std::map<std::string, CPW::Extras::Session> sessions_;
+        static std::map<std::string, CPW::Extras::Session> sessions_;
 };
 
 #endif // CPW_HTTP_SESSIONS_HANDLER_H

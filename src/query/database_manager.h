@@ -50,11 +50,9 @@ class CPW::Query::DatabaseManager
         DatabaseManager();
         ~DatabaseManager();
 
-        void StartMySQL_();
-        void StopMySQL_();
-        std::shared_ptr<Data::Session> StartSessionMySQL_();
-
-    private:
+        static void StartMySQL_();
+        static void StopMySQL_();
+        static std::shared_ptr<Data::Session> StartSessionMySQL_();
 
 };
 
