@@ -24,6 +24,7 @@ add_subdirectory(filters)
 add_subdirectory(handlers)
 add_subdirectory(http)
 add_subdirectory(query)
+add_subdirectory(security)
 add_subdirectory(tools)
 
 ## Main executable

@@ -38,7 +38,6 @@ target_link_libraries(
     sessionshandler
     loginhandler
     databasemanager
-    staticelements
     Poco::Foundation
     Poco::Net
     Poco::NetSSL
