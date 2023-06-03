@@ -24,6 +24,8 @@
 #include <vector>
 #include <functional>
 
+#include "Poco/URI.h"
+
 
 namespace CPW
 {
@@ -33,6 +35,9 @@ namespace CPW
         class Route;
     }
 }
+
+using namespace Poco;
+
 
 enum class CPW::Tools::RouteType
 {
@@ -44,6 +49,8 @@ enum class CPW::Tools::RouteType
 class CPW::Tools::Route
 {
     public:
+        Route();
+        Route(std::string target, std::string route);
         Route(std::string target, std::vector<std::string> segments);
         ~Route();
 
@@ -58,6 +65,7 @@ class CPW::Tools::Route
         std::string SegmentsToString_();
 
     protected:
+        void StringToSegment(std::string route);
         void IdentifyRouteType_();
 
     private:
