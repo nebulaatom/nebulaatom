@@ -42,7 +42,8 @@ class CPW::Filters::FieldsFilterElement
             ,kNoQuotes
         };
 
-        FieldsFilterElement(std::string value, std::string as, std::string type);
+            FieldsFilterElement(std::string value);
+            FieldsFilterElement(std::string value, std::string as, std::string type);
 
         std::string get_value() const { return value_; }
         std::string get_as() const { return as_; }

@@ -20,6 +20,14 @@
 
 using namespace CPW::Filters;
 
+FieldsFilterElement::FieldsFilterElement(std::string value) :
+    value_(value)
+    ,as_("")
+    ,type_(Type::kNoQuotes)
+{
+    AddTypes_();
+}
+
 FieldsFilterElement::FieldsFilterElement(std::string value, std::string as, std::string type) :
     value_(value)
     ,as_(as)
