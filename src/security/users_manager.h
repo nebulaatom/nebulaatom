@@ -23,6 +23,8 @@
 
 #include <string>
 
+#include "Poco/Tuple.h"
+
 #include "query/query_actions.h"
 #include "security/user.h"
 

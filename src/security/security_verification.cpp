@@ -38,8 +38,8 @@ void SecurityVerification::AddTargets_(std::list<std::string>& targets)
         // Add filters
             query_manager_.ResetFilters_();
             general.set_as("tp");
-            fields.push_back({"tp.table_name", "" ,"no-quotes"});
-            fields.push_back({"tp.route", "" ,"no-quotes"});
+            fields.push_back({"tp.table_name"});
+            fields.push_back({"tp.route"});
 
             std::list<Extras::ValuesProperties> values;
             for(auto& target : targets)
@@ -48,28 +48,24 @@ void SecurityVerification::AddTargets_(std::list<std::string>& targets)
             list.push_back({"tp.table_name", std::move(values), "in"});
 
         // Execute the query
-            query_manager_.ComposeQuery_(Query::TypeAction::kSelect, "_woodpecker_tables_permissions");
+            if(!query_manager_.ComposeQuery_(Query::TypeAction::kSelect, "_woodpecker_tables_permissions"))
+                return;
+            query_manager_.get_query()->reset(*query_manager_.get_session());
+            *query_manager_.get_query() << query_manager_.get_final_query() , into(targets_);
             if(!query_manager_.ExecuteQuery_())
                 return;
 
-            auto results = result_json->getArray("results");
-
         // Iterate over the results
-            for(std::size_t it = 0; it < results->size(); it++)
+            for(auto target : targets_)
             {
-                // Verify row element
-                auto row = results->isArray(it) ? results->getArray(it) : nullptr;
-                if(row == nullptr)
-                    return;
-
                 // Verify and assign fields
-                std::string target, route_string;
+                std::string table_name, route_string;
 
-                target = row->get(0).isEmpty() ? "" : row->get(0).toString();
-                route_string = row->get(1).isEmpty() ? "" : row->get(1).toString();
+                table_name = target.get<0>();
+                route_string = target.get<1>();
 
                 // Create route
-                Tools::Route route {target, route_string};
+                Tools::Route route {table_name, route_string};
                 routes_to_verify_.push_back(std::move(route));
             }
     }

@@ -22,12 +22,10 @@ using namespace CPW;
 using namespace CPW::Security;
 
 std::list<Permission> PermissionsManager::permissions_ = {};
-std::unique_ptr<Query::QueryActions> PermissionsManager::query_manager_ = nullptr;
 std::map<std::string, ActionType> PermissionsManager::action_type_map_ = {};
 
 PermissionsManager::PermissionsManager()
 {
-    query_manager_ = std::make_unique<Query::QueryActions>();
     LoadPermissions_();
 }
 
@@ -99,14 +97,21 @@ void PermissionsManager::LoadPermissions_()
 {
     try
     {
+        if(permissions_.size() > 0)
+        {
+            return;
+        }
+
         // Variables
-            auto result_json = query_manager_->get_result_json();
-            auto& fields = query_manager_->get_current_filters_()->get_fields_filter()->get_filter_elements();
-            auto& joins = query_manager_->get_current_filters_()->get_join_filter()->get_filter_elements();
-            auto& general = query_manager_->get_current_filters_()->get_general_filter()->get_filter_elements();
+            Query::QueryActions query_manager;
+            std::list<PermissionToLoad> permissions_to_load;
+            auto result_json = query_manager.get_result_json();
+            auto& fields = query_manager.get_current_filters_()->get_fields_filter()->get_filter_elements();
+            auto& joins = query_manager.get_current_filters_()->get_join_filter()->get_filter_elements();
+            auto& general = query_manager.get_current_filters_()->get_general_filter()->get_filter_elements();
 
         // Reset filters
-            query_manager_->ResetFilters_();
+            query_manager.ResetFilters_();
 
         // Add filters
             general.set_as("up");
@@ -122,40 +127,37 @@ void PermissionsManager::LoadPermissions_()
             joins.push_back({"_woodpecker_action_types", "at", {{"at.id", "up.id_action_type"}}, "inner"});
 
         // Execute the query
-            query_manager_->ComposeQuery_(Query::TypeAction::kSelect, "_woodpecker_user_permissions");
-            if(!query_manager_->ExecuteQuery_())
+            if(!query_manager.ComposeQuery_(Query::TypeAction::kSelect, "_woodpecker_user_permissions"))
+                return;
+            query_manager.get_query()->reset(*query_manager.get_session());
+            *query_manager.get_query() << query_manager.get_final_query() , into(permissions_to_load);
+            if(!query_manager.ExecuteQuery_())
                 return;
 
-            auto results = result_json->getArray("results");
-
         // Iterate over the results
-            for(std::size_t it = 0; it < results->size(); it++)
+            for(auto it : permissions_to_load)
             {
-                // Verify row element
-                auto row = results->isArray(it) ? results->getArray(it) : nullptr;
-                if(row == nullptr)
-                    return;
-
                 // Verify and assign fields
-                std::string target, route, user, action_type;
+                std::string table_name, route, user, action_type;
                 bool granted, descendant;
                 int id;
                 ActionType action_mapped = ActionType::kRead;
 
-                target = row->get(0).isEmpty() ? "" : row->get(0).toString();
-                route = row->get(1).isEmpty() ? "" : row->get(1).toString();
-                user = row->get(2).isEmpty() ? "" : row->get(2).toString();
-                id = row->get(3).isEmpty() ? -1 : row->get(3).extract<int>();
-                action_type = row->get(4).isEmpty() ? "" : row->get(4).toString();
-                granted = row->get(5).isEmpty() ? false : row->get(5).extract<int>();
-                descendant = row->get(6).isEmpty() ? false : row->get(6).extract<int>();
+                // Get elements
+                table_name = it.get<0>();
+                route = it.get<1>();
+                user = it.get<2>();
+                id = it.get<3>();
+                action_type = it.get<4>();
+                granted = it.get<5>();
+                descendant = it.get<6>();
 
                 // Create permission
                 auto found = action_type_map_.find(action_type);
                 if(found != action_type_map_.end())
                     action_mapped = found->second;
 
-                Permission p {granted, {target, route}, std::make_shared<User>(id, user, ""), action_mapped, descendant};
+                Permission p {granted, {table_name, route}, std::make_shared<User>(id, user, ""), action_mapped, descendant};
 
                 permissions_.push_back(std::move(p));
             }

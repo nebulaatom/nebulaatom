@@ -45,16 +45,13 @@ using namespace Poco;
 class CPW::Security::PermissionsManager
 {
     public:
+        using PermissionToLoad = Poco::Tuple<std::string, std::string, std::string, int, std::string, bool, bool>;
+
         PermissionsManager();
 
         std::list<Permission>& get_permissions()
         {
             auto& var = permissions_;
-            return var;
-        }
-        std::unique_ptr<Query::QueryActions>& get_query_manager()
-        {
-            auto& var = query_manager_;
             return var;
         }
         std::map<std::string, ActionType>& get_action_type_map()
@@ -72,7 +69,6 @@ class CPW::Security::PermissionsManager
 
     private:
         static std::list<Permission> permissions_;
-        static std::unique_ptr<Query::QueryActions> query_manager_;
         static std::map<std::string, ActionType> action_type_map_;
 };
 

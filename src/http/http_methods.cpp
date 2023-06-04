@@ -71,7 +71,15 @@ void HTTPMethods::HandleDELMethod_()
 
 bool HTTPMethods::QueryProcess_(Query::TypeAction action)
 {
-    dynamic_elements_->get_query_actions()->IdentifyFilters_();
-    dynamic_elements_->get_query_actions()->ComposeQuery_(action, dynamic_elements_->get_requested_route()->get_target());
-    return dynamic_elements_->get_query_actions()->ExecuteQuery_(*dynamic_elements_->get_response());
+    auto query_manager = dynamic_elements_->get_query_actions();
+
+    query_manager->IdentifyFilters_();
+    if(!query_manager->ComposeQuery_(action, dynamic_elements_->get_requested_route()->get_target()))
+        return false;
+    if(query_manager->ExecuteQuery_(*dynamic_elements_->get_response()))
+        return false;
+    if(query_manager->CreateJSONResult_())
+        return false;
+
+    return true;
 }
