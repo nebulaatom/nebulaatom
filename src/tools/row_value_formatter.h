@@ -55,6 +55,7 @@ enum class CPW::Tools::RowValueType
 class CPW::Tools::RowValueFormatter
 {
     public:
+        RowValueFormatter();
         RowValueFormatter(Poco::Dynamic::Var& value);
         ~RowValueFormatter();
 
