@@ -41,6 +41,9 @@ void BackendHandler::AddRoutes_()
    routes_list.push_back({"path2_path1_path1", {"api", get_api_version(), "path2", "path1", "path1"}});
    routes_list.push_back({"path2_path1_path1_file1", {"api", get_api_version(), "path2", "path1", "path1", "file1"}});
    routes_list.push_back({"path2_path1_path1_file2", {"api", get_api_version(), "path2", "path1", "path1", "file2"}});
+   routes_list.push_back({"products", {"api", get_api_version(), "products"}});
+   routes_list.push_back({"product_ratings", {"api", get_api_version(), "products", "ratings"}});
+   routes_list.push_back({"stores", {"api", get_api_version(), "stores"}});
 
     /*routes_list.push_back({"business", {"api", get_api_version(), "business"}});
     routes_list.push_back({"levels", {"api", get_api_version(), "business", "levels"}});

@@ -33,7 +33,10 @@ HTTPMethods::~HTTPMethods()
 void HTTPMethods::HandleGETMethod_()
 {
     if(!QueryProcess_(Query::TypeAction::kSelect))
+    {
+        responses_.GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Error when performing database queries.");
         return;
+    }
 
     responses_.CompoundResponse_
     (
@@ -76,9 +79,9 @@ bool HTTPMethods::QueryProcess_(Query::TypeAction action)
     query_manager->IdentifyFilters_();
     if(!query_manager->ComposeQuery_(action, dynamic_elements_->get_requested_route()->get_target()))
         return false;
-    if(query_manager->ExecuteQuery_(*dynamic_elements_->get_response()))
+    if(!query_manager->ExecuteQuery_(*dynamic_elements_->get_response()))
         return false;
-    if(query_manager->CreateJSONResult_())
+    if(!query_manager->CreateJSONResult_())
         return false;
 
     return true;
