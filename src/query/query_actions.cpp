@@ -26,6 +26,7 @@ QueryActions::QueryActions() :
     ,current_filters_(new Filters::FiltersManager)
     ,result_json_(new JSON::Object)
     ,app_(Application::instance())
+    ,row_value_formatter_(new Tools::RowValueFormatter)
 {
 
 }
@@ -108,63 +109,81 @@ void QueryActions::ResetFilters_()
     current_filters_->get_set_filter()->get_filter_elements().clear();
 }
 
-void QueryActions::ComposeQuery_(TypeAction action_type, std::string table)
+bool QueryActions::ComposeQuery_(TypeAction action_type, std::string table)
 {
-    std::string tmp_query;
-
-    switch(action_type)
+    try
     {
-        case TypeAction::kInsert:
-        {
-            tmp_query = ComposeInsertSentence_(table);
-            break;
-        }
-        case TypeAction::kSelect:
-        {
-            tmp_query = ComposeSelectSentence_(table);
-            break;
-        }
-        case TypeAction::kUpdate:
-        {
-            tmp_query = ComposeUpdateSentence_(table);
-            break;
-        }
-        case TypeAction::kDelete:
-        {
-            tmp_query = ComposeDeleteSentence_(table);
-            break;
-        }
-    }
+        // Compose query string
+            std::string tmp_query;
 
-    final_query_ = tmp_query;
-    app_.logger().information("- Final query: " + tmp_query);
+            switch(action_type)
+            {
+                case TypeAction::kInsert:
+                {
+                    tmp_query = ComposeInsertSentence_(table);
+                    break;
+                }
+                case TypeAction::kSelect:
+                {
+                    tmp_query = ComposeSelectSentence_(table);
+                    break;
+                }
+                case TypeAction::kUpdate:
+                {
+                    tmp_query = ComposeUpdateSentence_(table);
+                    break;
+                }
+                case TypeAction::kDelete:
+                {
+                    tmp_query = ComposeDeleteSentence_(table);
+                    break;
+                }
+            }
+
+        // Create de query statement
+            session_ = Query::DatabaseManager::StartSessionMySQL_();
+            if(session_.get() == nullptr)
+            {
+                throw MySQL::MySQLException("Error to connect to database server");
+                return false;
+            }
+
+            query_ = std::make_shared<Data::Statement>(*session_);
+
+        // Set the query
+            final_query_ = std::move(tmp_query);
+            *query_ << final_query_;
+            app_.logger().information("- Final query: " + final_query_);
+            return true;
+    }
+    catch(MySQL::MySQLException& error)
+    {
+        app_.logger().error("- Error on query_actions.cc on ComposeQuery_(): " + std::string(error.message()));
+        return false;
+    }
+    catch(std::runtime_error& error)
+    {
+        app_.logger().error("- Error on query_actions.cc on ComposeQuery_(): " + std::string(error.what()));
+        return false;
+    }
+    catch(std::exception& error)
+    {
+        app_.logger().error("- Error on query_actions.cc on ComposeQuery_(): " + std::string(error.what()));
+        return false;
+    }
+    return false;
 }
 
 bool QueryActions::ExecuteQuery_(HTTPServerResponse& response)
 {
     try
     {
-        auto session = Query::DatabaseManager::StartSessionMySQL_();
-        if(session.get() != nullptr)
-            query_ = std::make_shared<Data::Statement>(*session);
-        else
-            throw MySQL::MySQLException("Error to connect to database server");
-
-        *query_ << final_query_;
         affected_rows_ = query_->execute();
-
-        CreateJSONResult_();
     }
     catch(MySQL::MySQLException& error)
     {
         GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, std::string(error.message()));
         app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.message()));
-        return false;
-    }
-    catch(JSON::JSONException& error)
-    {
-        GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, std::string(error.message()));
-        app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.displayText()));
         return false;
     }
     catch(std::runtime_error& error)
@@ -187,25 +206,11 @@ bool QueryActions::ExecuteQuery_()
 {
     try
     {
-        auto session = Query::DatabaseManager::StartSessionMySQL_();
-        if(session.get() != nullptr)
-            query_ = std::make_shared<Data::Statement>(*session);
-        else
-            throw MySQL::MySQLException("Error to connect to database server");
-
-        *query_ << final_query_;
         affected_rows_ = query_->execute();
-
-        CreateJSONResult_();
     }
     catch(MySQL::MySQLException& error)
     {
         app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.message()));
-        return false;
-    }
-    catch(JSON::JSONException& error)
-    {
-        app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.displayText()));
         return false;
     }
     catch(std::runtime_error& error)
@@ -222,61 +227,82 @@ bool QueryActions::ExecuteQuery_()
     return true;
 }
 
-void QueryActions::CreateJSONResult_()
+bool QueryActions::CreateJSONResult_()
 {
-    // Variables
-        Data::RecordSet results(*query_);
-        JSON::Array::Ptr results_array = new JSON::Array();
-        JSON::Array::Ptr columns_array = new JSON::Array();
+    try
+    {
+        // Variables
+            result_json_->clear();
+            Data::RecordSet results(*query_);
+            JSON::Array::Ptr results_array = new JSON::Array();
+            JSON::Array::Ptr columns_array = new JSON::Array();
 
-    // Default values
-        if(query_.get() == nullptr)
-        {
-            result_json_->set("columns", columns_array);
-            result_json_->set("results", results_array);
-            return;
-        }
-
-    // Save columns names
-        for (std::size_t col = 0; col < results.columnCount(); ++col)
-            columns_array->set(columns_array->size(), results.columnName(col));
-
-    // Make JSON data
-        for(auto& it : results)
-        {
-            JSON::Array::Ptr row_fields = new JSON::Array();
-
-            for(size_t a = 0; a < it.fieldCount(); a++)
+        // Default values
+            if(query_.get() == nullptr)
             {
-                auto var = it.get(a);
-
-                row_value_formatter_.reset(new Tools::RowValueFormatter(var));
-                row_value_formatter_->Format_();
-                switch(row_value_formatter_->get_row_value_type())
-                {
-                    case Tools::RowValueType::kEmpty:
-                        row_fields->set(row_fields->size(), "");
-                        break;
-                    case Tools::RowValueType::kString:
-                        row_fields->set(row_fields->size(), row_value_formatter_->get_value_string());
-                        break;
-                    case Tools::RowValueType::kInteger:
-                        row_fields->set(row_fields->size(), row_value_formatter_->get_value_int());
-                        break;
-                    case Tools::RowValueType::kFloat:
-                        row_fields->set(row_fields->size(), row_value_formatter_->get_value_float());
-                        break;
-                    default:
-                        row_fields->set(row_fields->size(), "");
-                        break;
-                }
+                result_json_->set("columns", columns_array);
+                result_json_->set("results", results_array);
+                return false;
             }
 
-            results_array->set(results_array->size(), row_fields);
-        }
+        // Save columns names
+            for (std::size_t col = 0; col < results.columnCount(); ++col)
+                columns_array->set(columns_array->size(), results.columnName(col));
 
-        result_json_->set("columns", columns_array);
-        result_json_->set("results", results_array);
+        // Make JSON data
+            for(auto& it : results)
+            {
+                JSON::Array::Ptr row_fields = new JSON::Array();
+
+                for(size_t a = 0; a < it.fieldCount(); a++)
+                {
+                    auto var = it.get(a);
+
+                    row_value_formatter_.reset(new Tools::RowValueFormatter(var));
+                    row_value_formatter_->Format_();
+                    switch(row_value_formatter_->get_row_value_type())
+                    {
+                        case Tools::RowValueType::kEmpty:
+                            row_fields->set(row_fields->size(), "");
+                            break;
+                        case Tools::RowValueType::kString:
+                            row_fields->set(row_fields->size(), row_value_formatter_->get_value_string());
+                            break;
+                        case Tools::RowValueType::kInteger:
+                            row_fields->set(row_fields->size(), row_value_formatter_->get_value_int());
+                            break;
+                        case Tools::RowValueType::kFloat:
+                            row_fields->set(row_fields->size(), row_value_formatter_->get_value_float());
+                            break;
+                        default:
+                            row_fields->set(row_fields->size(), "");
+                            break;
+                    }
+                }
+
+                results_array->set(results_array->size(), row_fields);
+            }
+
+            result_json_->set("columns", columns_array);
+            result_json_->set("results", results_array);
+    }
+    catch(JSON::JSONException& error)
+    {
+        app_.logger().error("- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.message()));
+        return false;
+    }
+    catch(std::runtime_error& error)
+    {
+        app_.logger().error("- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what()));
+        return false;
+    }
+    catch(std::exception& error)
+    {
+        app_.logger().error("- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what()));
+        return false;
+    }
+
+    return true;
 }
 
 std::string QueryActions::ComposeInsertSentence_(std::string table)

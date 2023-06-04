@@ -90,6 +90,11 @@ class CPW::Query::QueryActions :
             auto& var = current_filters_;
             return var;
         }
+        std::shared_ptr<Data::Session>& get_session()
+        {
+            auto& var = session_;
+            return var;
+        }
         std::shared_ptr<Data::Statement>& get_query()
         {
             auto& var = query_;
@@ -99,12 +104,12 @@ class CPW::Query::QueryActions :
 
         void IdentifyFilters_();
         void ResetFilters_();
-        void ComposeQuery_(TypeAction action_type, std::string table);
+        bool ComposeQuery_(TypeAction action_type, std::string table);
         bool ExecuteQuery_(HTTPServerResponse& response);
         bool ExecuteQuery_();
+        bool CreateJSONResult_();
 
     protected:
-        void CreateJSONResult_();
         std::string ComposeInsertSentence_(std::string table);
         std::string ComposeSelectSentence_(std::string table);
         std::string ComposeUpdateSentence_(std::string table);
@@ -115,6 +120,7 @@ class CPW::Query::QueryActions :
         std::string final_query_;
         int affected_rows_;
         std::shared_ptr<Filters::FiltersManager> current_filters_;
+        std::shared_ptr<Data::Session> session_;
         std::shared_ptr<Data::Statement> query_;
         JSON::Object::Ptr result_json_;
         Application& app_;
