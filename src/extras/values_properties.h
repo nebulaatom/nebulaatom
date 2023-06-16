@@ -70,6 +70,11 @@ class CPW::Extras::ValuesProperties
                 return false;
         }
 
+        std::string& get_value()
+        {
+            auto& var = value_;
+            return var;
+        }
         std::string get_value() const {return value_;}
         bool get_quotes() const {return quotes_;}
 
