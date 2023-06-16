@@ -78,7 +78,7 @@ class CPW::Filters::GroupFilter : Filters::Filter
         }
 
         virtual void Identify_(Dynamic::Var& filter) override;
-        virtual void Incorporate_(VectorString& tmp_query) override;
+        virtual void Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters) override;
 
     private:
         std::list<Filters::GroupFilterElement> filter_elements_;

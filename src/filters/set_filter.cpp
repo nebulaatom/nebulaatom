@@ -20,28 +20,16 @@
 
 using namespace CPW::Filters;
 
-SetFilterElement::SetFilterElement(std::string col, std::string value, std::string type) :
+SetFilterElement::SetFilterElement(std::string col, Tools::RowValueFormatter value) :
     col_(col)
     ,value_(value)
-    ,type_(Type::kQuotes)
 {
-    AddTypes_();
 
-    auto found = types_.find(type);
-    if(found != types_.end())
-        type_ = types_[type];
-}
-
-void SetFilterElement::AddTypes_()
-{
-    types_.insert(std::make_pair("quotes", Type::kQuotes));
-    types_.insert(std::make_pair("no-quotes", Type::kNoQuotes));
 }
 
 SetFilter::SetFilter()
 {
-    auto current_filter_type = get_current_filter_type();
-    current_filter_type = FilterType::kSet;
+
 }
 
 SetFilter::~SetFilter()
@@ -72,23 +60,16 @@ void SetFilter::Identify_(Dynamic::Var& filter)
 
         std::string col = content_element->get("col").toString();
 
-        // Verify array element "value"
-        if(content_element->get("value").isEmpty())
-            continue;
-
-        std::string value = content_element->get("value").toString();
-
-        // Verify array element "type"
-        std::string type = "";
-        if(!content_element->get("type").isEmpty())
-            type = content_element->get("type").toString();
+        // Get array element "value"
+        auto var_value = content_element->get("value");
+        auto value = Tools::RowValueFormatter(var_value);
 
         // Add element
-        filter_elements_.push_back({col, value, type});
+        filter_elements_.push_back({col, value});
     }
 }
 
-void SetFilter::Incorporate_(VectorString& tmp_query)
+void SetFilter::Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters)
 {
     if(filter_elements_.size() < 1)
         return;
@@ -101,16 +82,8 @@ void SetFilter::Incorporate_(VectorString& tmp_query)
 
         tmp_query.push_back(it->get_col());
         tmp_query.push_back("=");
+        tmp_query.push_back("?");
 
-        Extras::ValuesProperties value {it->get_value(), true};
-        switch(it->get_type())
-        {
-            case SetFilterElement::Type::kQuotes:
-                tmp_query.push_back(value.GetFinalValue());
-                break;
-            case SetFilterElement::Type::kNoQuotes:
-                tmp_query.push_back(it->get_value());
-                break;
-        }
+        query_parameters.push_back(it->get_value());
     }
 }

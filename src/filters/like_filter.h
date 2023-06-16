@@ -46,10 +46,14 @@ class CPW::Filters::LikeFilterElement
             ,kUndLikeUnd
         };
 
-        LikeFilterElement(std::string col, Extras::ValuesProperties value, std::string type);
+        LikeFilterElement(std::string col, Tools::RowValueFormatter value, std::string type);
 
         std::string get_col() const { return col_; }
-        Extras::ValuesProperties get_value() const { return value_; }
+        Tools::RowValueFormatter& get_value()
+        {
+            auto& var = value_;
+            return var;
+        }
         Type get_type() const { return type_; }
         std::map<std::string, Type>& get_types()
         {
@@ -58,7 +62,6 @@ class CPW::Filters::LikeFilterElement
         }
 
         void set_col(std::string col) { col_ = col; }
-        void set_value(Extras::ValuesProperties value) { value_ = value; }
         void set_type(Type type) { type_ = type; }
 
     protected:
@@ -66,7 +69,7 @@ class CPW::Filters::LikeFilterElement
 
     private:
         std::string col_;
-        Extras::ValuesProperties value_;
+        Tools::RowValueFormatter value_;
         Type type_;
         std::map<std::string, Type> types_;
 };
@@ -84,7 +87,7 @@ class CPW::Filters::LikeFilter : Filters::Filter
         }
 
         virtual void Identify_(Dynamic::Var& filter) override;
-        virtual void Incorporate_(VectorString& tmp_query) override;
+        virtual void Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters) override;
 
     private:
         std::list<Filters::LikeFilterElement> filter_elements_;

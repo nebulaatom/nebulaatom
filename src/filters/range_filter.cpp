@@ -20,7 +20,7 @@
 
 using namespace CPW::Filters;
 
-RangeFilterElement::RangeFilterElement(std::string col, Extras::ValuesProperties value, std::string type) :
+RangeFilterElement::RangeFilterElement(std::string col, Tools::RowValueFormatter value, std::string type) :
     col_(col)
     ,value_(value)
     ,type_(Type::kGreather)
@@ -35,13 +35,9 @@ RangeFilterElement::RangeFilterElement(std::string col, Extras::ValuesProperties
 void RangeFilterElement::AddTypes_()
 {
     types_.insert(std::make_pair("greather", Type::kGreather));
-    types_.insert(std::make_pair("greather-quotes", Type::kGreatherQuotes));
     types_.insert(std::make_pair("greather-iqual", Type::kGreatherIqual));
-    types_.insert(std::make_pair("greather-iqual-quotes", Type::kGreatherIqualQuotes));
     types_.insert(std::make_pair("smaller", Type::kSmaller));
-    types_.insert(std::make_pair("smaller-quotes", Type::kSmallerQuotes));
     types_.insert(std::make_pair("smaller-iqual", Type::kSmallerIqual));
-    types_.insert(std::make_pair("smaller-iqual-quotes", Type::kSmallerIqualQuotes));
 }
 
 RangeFilter::RangeFilter()
@@ -79,11 +75,8 @@ void RangeFilter::Identify_(Dynamic::Var& filter)
         std::string col = content_element->get("col").toString();
 
         // Verify array element "value"
-        if(content_element->get("value").isEmpty())
-            continue;
-
         auto var_value = content_element->get("value");
-        auto value = GetValueProperties_(var_value);
+        auto value = Tools::RowValueFormatter(var_value);
 
         // Verify array element "type"
         std::string type = "";
@@ -95,7 +88,7 @@ void RangeFilter::Identify_(Dynamic::Var& filter)
     }
 }
 
-void RangeFilter::Incorporate_(VectorString& tmp_query)
+void RangeFilter::Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters)
 {
     if(filter_elements_.size() > 0)
     {
@@ -117,38 +110,21 @@ void RangeFilter::Incorporate_(VectorString& tmp_query)
             switch(it->get_type())
             {
                 case RangeFilterElement::Type::kGreather:
-                case RangeFilterElement::Type::kGreatherQuotes:
                     tmp_query.push_back(">");
                     break;
                 case RangeFilterElement::Type::kGreatherIqual:
-                case RangeFilterElement::Type::kGreatherIqualQuotes:
                     tmp_query.push_back(">=");
                     break;
                 case RangeFilterElement::Type::kSmaller:
-                case RangeFilterElement::Type::kSmallerQuotes:
                     tmp_query.push_back("<");
                     break;
                 case RangeFilterElement::Type::kSmallerIqual:
-                case RangeFilterElement::Type::kSmallerIqualQuotes:
                     tmp_query.push_back("<=");
                     break;
             }
-            switch(it->get_type())
-            {
-                case RangeFilterElement::Type::kGreather:
-                case RangeFilterElement::Type::kGreatherIqual:
-                case RangeFilterElement::Type::kSmaller:
-                case RangeFilterElement::Type::kSmallerIqual:
-                    it->get_value().set_quotes(false);
-                    break;
-                case RangeFilterElement::Type::kGreatherQuotes:
-                case RangeFilterElement::Type::kGreatherIqualQuotes:
-                case RangeFilterElement::Type::kSmallerQuotes:
-                case RangeFilterElement::Type::kSmallerIqualQuotes:
-                    it->get_value().set_quotes(true);
-                    break;
-            }
-            tmp_query.push_back(it->get_value().GetFinalValue());
+            tmp_query.push_back("?");
+
+            query_parameters.push_back(it->get_value());
         }
     }
 }

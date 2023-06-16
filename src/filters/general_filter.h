@@ -68,8 +68,8 @@ class CPW::Filters::GeneralFilter : Filters::Filter
         }
 
         virtual void Identify_(Dynamic::Var& filter) override;
-        virtual void Incorporate_(VectorString& tmp_query) override;
-        void IncorporateAS_(VectorString& tmp_query);
+        virtual void Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters) override;
+        void IncorporateAS_(VectorString& tmp_query, RowValueFormatterList& query_parameters);
 
     private:
         Filters::GeneralFilterElements filter_elements_;

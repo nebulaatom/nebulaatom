@@ -80,8 +80,7 @@ enum class CPW::Filters::FilterType
 class CPW::Filters::Filter
 {
     public:
-        using ValuesPropertiesVector = std::vector<ValuesProperties>;
-        using MapForValues = std::map<std::string, ValuesProperties>;
+        using RowValueFormatterList = std::list<Tools::RowValueFormatter>;
         using VectorString = std::vector<std::string>;
 
         Filter();
@@ -99,7 +98,7 @@ class CPW::Filters::Filter
         }
 
         virtual void Identify_(Dynamic::Var& filter) = 0;
-        virtual void Incorporate_(VectorString& tmp_query) = 0;
+        virtual void Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters) = 0;
 
     protected:
         bool FindWHERE_(VectorString& tmp_query);

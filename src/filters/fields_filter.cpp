@@ -20,16 +20,16 @@
 
 using namespace CPW::Filters;
 
-FieldsFilterElement::FieldsFilterElement(std::string value) :
-    value_(value)
+FieldsFilterElement::FieldsFilterElement(std::string field) :
+    field_(field)
     ,as_("")
     ,type_(Type::kNoQuotes)
 {
     AddTypes_();
 }
 
-FieldsFilterElement::FieldsFilterElement(std::string value, std::string as, std::string type) :
-    value_(value)
+FieldsFilterElement::FieldsFilterElement(std::string field, std::string as, std::string type) :
+    field_(field)
     ,as_(as)
     ,type_(Type::kNoQuotes)
 {
@@ -78,7 +78,7 @@ void FieldsFilter::Identify_(Dynamic::Var& filter)
         if(content_element->get("field").isEmpty())
             continue;
 
-        std::string value = content_element->get("field").toString();
+        auto field = content_element->get("field").toString();
 
         // Verify array element "as"
         std::string as = "";
@@ -91,11 +91,11 @@ void FieldsFilter::Identify_(Dynamic::Var& filter)
             type = content_element->get("type").toString();
 
         // Add element
-        filter_elements_.push_back({value, as, type});
+        filter_elements_.push_back({field, as, type});
     }
 }
 
-void FieldsFilter::Incorporate_(VectorString& tmp_query)
+void FieldsFilter::Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters)
 {
     if(filter_elements_.size() < 1)
         return;
@@ -105,20 +105,19 @@ void FieldsFilter::Incorporate_(VectorString& tmp_query)
         if(it != filter_elements_.begin())
             tmp_query.push_back(",");
 
-        Extras::ValuesProperties value {it->get_value(), true};
+        auto field = Extras::ValuesProperties{it->get_field(), false};
+        auto as = Extras::ValuesProperties{it->get_as(), true};
         switch(it->get_type())
         {
-            case FieldsFilterElement::Type::kQuotes:
-                tmp_query.push_back(value.GetFinalValue());
-                break;
-            case FieldsFilterElement::Type::kNoQuotes:
-                tmp_query.push_back(it->get_value());
-                break;
+            case FieldsFilterElement::Type::kQuotes: field.set_quotes(true); break;
+            case FieldsFilterElement::Type::kNoQuotes: field.set_quotes(false); break;
         }
+        tmp_query.push_back(field.GetFinalValue());
+
         if(it->get_as() != "")
         {
             tmp_query.push_back("AS");
-            tmp_query.push_back(it->get_as());
+            tmp_query.push_back(as.GetFinalValue());
         }
     }
 }

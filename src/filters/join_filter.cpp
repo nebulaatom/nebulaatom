@@ -98,13 +98,13 @@ void JoinFilter::Identify_(Dynamic::Var& filter)
             auto col = on_element->get("col").toString();
 
             // Verify "value" and "value-quoted" element
-            std::string value = "";
-            if(!on_element->get("value").isEmpty())
-               value = on_element->get("value").toString();
-            else if(!on_element->get("value-quoted").isEmpty())
-               value = "'" + on_element->get("value-quoted").toString() + "'";
-            else
+            auto value = Extras::ValuesProperties{"", false};
+            if(on_element->get("value").isEmpty())
                 continue;
+            else if(!on_element->get("value-quoted").isEmpty())
+                value.set_quotes(true);
+
+            value.set_value(on_element->get("value").toString());
 
             on.push_back({col, value});
         }
@@ -119,7 +119,7 @@ void JoinFilter::Identify_(Dynamic::Var& filter)
     }
 }
 
-void JoinFilter::Incorporate_(VectorString& tmp_query)
+void JoinFilter::Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters)
 {
     if(filter_elements_.size() < 1)
         return;
@@ -143,7 +143,7 @@ void JoinFilter::Incorporate_(VectorString& tmp_query)
 
             tmp_query.push_back(it2->col);
             tmp_query.push_back("=");
-            tmp_query.push_back(it2->value);
+            tmp_query.push_back(it2->value.GetFinalValue());
         }
     }
 }

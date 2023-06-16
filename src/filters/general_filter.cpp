@@ -49,7 +49,7 @@ void GeneralFilter::Identify_(Dynamic::Var& filter)
 
 }
 
-void GeneralFilter::Incorporate_(VectorString& tmp_query)
+void GeneralFilter::Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters)
 {
     if(std::stoi(filter_elements_.get_limit()) > 0)
     {
@@ -70,7 +70,7 @@ void GeneralFilter::Incorporate_(VectorString& tmp_query)
             tmp_query.push_back("LIMIT 20");
 }
 
-void GeneralFilter::IncorporateAS_(VectorString& tmp_query)
+void GeneralFilter::IncorporateAS_(VectorString& tmp_query, RowValueFormatterList& query_parameters)
 {
     if(filter_elements_.get_as() == "")
         return;

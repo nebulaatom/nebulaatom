@@ -20,7 +20,7 @@
 
 using namespace CPW::Filters;
 
-ListFilterElement::ListFilterElement(std::string col, std::list<Extras::ValuesProperties> values, std::string type) :
+ListFilterElement::ListFilterElement(std::string col, std::list<Tools::RowValueFormatter> values, std::string type) :
     col_(col)
     ,values_(values)
     ,type_(Type::kIn)
@@ -73,14 +73,10 @@ void ListFilter::Identify_(Dynamic::Var& filter)
         std::string col = content_element->get("col").toString();
 
         // Verify array elements "values"
-        std::list<Extras::ValuesProperties> values;
+        std::list<Tools::RowValueFormatter> values;
         auto values_array = content_element->getArray("values");
         for(std::size_t b = 0; b < values_array->size(); b++)
         {
-            // Verify array element
-            if(values_array->get(b).isEmpty())
-                continue;
-
             // Verify object
             if(values_array->isObject(b))
             {
@@ -88,21 +84,18 @@ void ListFilter::Identify_(Dynamic::Var& filter)
                 if(value_object->get("value").isEmpty() || value_object->get("quotes").isEmpty())
                     continue;
 
+                auto value_var = value_object->get("value");
+                auto value = Tools::RowValueFormatter(value_var);
                 if(value_object->get("quotes").toString() == "y")
-                {
-                    auto value = value_object->get("value");
-                    values.push_back(GetValueProperties_(value));
-                }
-                else
-                {
-                    auto value = value_object->get("value");
-                    values.push_back({value.toString(), false});
-                }
+                    value.get_value_string() = "'" + value.get_value_string() + "'";
+
+                values.push_back(std::move(value));
             }
             else
             {
-                auto value = values_array->get(b);
-                values.push_back(GetValueProperties_(value));
+                auto value_var = values_array->get(b);
+                auto value = Tools::RowValueFormatter(value_var);
+                values.push_back(std::move(value));
             }
         }
 
@@ -116,7 +109,7 @@ void ListFilter::Identify_(Dynamic::Var& filter)
     }
 }
 
-void ListFilter::Incorporate_(VectorString& tmp_query)
+void ListFilter::Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters)
 {
     if(filter_elements_.size() > 0)
     {
@@ -146,7 +139,8 @@ void ListFilter::Incorporate_(VectorString& tmp_query)
                 if(it2 != it->get_values().begin())
                     tmp_query.push_back(",");
 
-                tmp_query.push_back(it2->GetFinalValue());
+                tmp_query.push_back("?");
+                query_parameters.push_back(*it2);
             }
             tmp_query.push_back(")");
         }

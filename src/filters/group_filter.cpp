@@ -81,7 +81,7 @@ void GroupFilter::Identify_(Dynamic::Var& filter)
     }
 }
 
-void GroupFilter::Incorporate_(VectorString& tmp_query)
+void GroupFilter::Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters)
 {
     if(filter_elements_.size() < 1)
         return;

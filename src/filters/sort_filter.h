@@ -77,7 +77,7 @@ class CPW::Filters::SortFilter : Filters::Filter
         }
 
         virtual void Identify_(Dynamic::Var& filter) override;
-        virtual void Incorporate_(VectorString& tmp_query) override;
+        virtual void Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters) override;
 
     private:
         std::list<Filters::SortFilterElement> filter_elements_;

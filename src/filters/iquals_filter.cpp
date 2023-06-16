@@ -20,10 +20,10 @@
 
 using namespace CPW::Filters;
 
-IqualsFilterElement::IqualsFilterElement(std::string col, Extras::ValuesProperties value, std::string type) :
+IqualsFilterElement::IqualsFilterElement(std::string col, Tools::RowValueFormatter value, std::string type) :
     col_(col)
     ,value_(value)
-    ,type_(Type::kIqualQuotes)
+    ,type_(Type::kIqual)
 {
     AddTypes_();
 
@@ -35,9 +35,7 @@ IqualsFilterElement::IqualsFilterElement(std::string col, Extras::ValuesProperti
 void IqualsFilterElement::AddTypes_()
 {
     types_.insert(std::make_pair("iqual", Type::kIqual));
-    types_.insert(std::make_pair("iqual-quotes", Type::kIqualQuotes));
     types_.insert(std::make_pair("no-iqual", Type::kNoIqual));
-    types_.insert(std::make_pair("no-iqual-quotes", Type::kNoIqualQuotes));
 }
 
 IqualsFilter::IqualsFilter()
@@ -74,12 +72,9 @@ void IqualsFilter::Identify_(Dynamic::Var& filter)
 
         std::string col = content_element->get("col").toString();
 
-        // Verify array element "value"
-        if(content_element->get("value").isEmpty())
-            continue;
-
+        // Get array element "value"
         auto var_value = content_element->get("value");
-        auto value = GetValueProperties_(var_value);
+        auto value = Tools::RowValueFormatter(var_value);
 
         // Verify array element "type"
         std::string type = "";
@@ -87,11 +82,11 @@ void IqualsFilter::Identify_(Dynamic::Var& filter)
             type = content_element->get("type").toString();
 
         // Add element
-        filter_elements_.push_back({col, value, type});
+        filter_elements_.push_back({col, std::move(value), type});
     }
 }
 
-void IqualsFilter::Incorporate_(VectorString& tmp_query)
+void IqualsFilter::Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters)
 {
     if(filter_elements_.size() < 1)
         return;
@@ -113,24 +108,11 @@ void IqualsFilter::Incorporate_(VectorString& tmp_query)
 
         switch(it->get_type())
         {
-            case IqualsFilterElement::Type::kIqual:
-                tmp_query.push_back("=");
-                it->get_value().set_quotes(false);
-                tmp_query.push_back(it->get_value().GetFinalValue());
-                break;
-            case IqualsFilterElement::Type::kIqualQuotes:
-                tmp_query.push_back("=");
-                tmp_query.push_back(it->get_value().GetFinalValue());
-                break;
-            case IqualsFilterElement::Type::kNoIqual:
-                tmp_query.push_back("!=");
-                it->get_value().set_quotes(false);
-                tmp_query.push_back(it->get_value().GetFinalValue());
-                break;
-            case IqualsFilterElement::Type::kNoIqualQuotes:
-                tmp_query.push_back("!=");
-                tmp_query.push_back(it->get_value().GetFinalValue());
-                break;
+            case IqualsFilterElement::Type::kIqual: tmp_query.push_back("="); break;
+            case IqualsFilterElement::Type::kNoIqual: tmp_query.push_back("!="); break;
         }
+
+        tmp_query.push_back("?");
+        query_parameters.push_back(it->get_value());
     }
 }

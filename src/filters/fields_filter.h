@@ -42,10 +42,14 @@ class CPW::Filters::FieldsFilterElement
             ,kNoQuotes
         };
 
-            FieldsFilterElement(std::string value);
-            FieldsFilterElement(std::string value, std::string as, std::string type);
+            FieldsFilterElement(std::string field);
+            FieldsFilterElement(std::string field, std::string as, std::string type);
 
-        std::string get_value() const { return value_; }
+        std::string& get_field()
+        {
+            auto& var = field_;
+            return var;
+        }
         std::string get_as() const { return as_; }
         Type get_type() const { return type_; }
         std::map<std::string, Type>& get_types()
@@ -54,7 +58,6 @@ class CPW::Filters::FieldsFilterElement
             return var;
         }
 
-        void set_value(std::string value) { value_ = value; }
         void set_as(std::string as) { as_ = as; }
         void set_type(Type type) { type_ = type; }
 
@@ -62,7 +65,7 @@ class CPW::Filters::FieldsFilterElement
         void AddTypes_();
 
     private:
-        std::string value_;
+        std::string field_;
         std::string as_;
         Type type_;
         std::map<std::string, Type> types_;
@@ -81,7 +84,7 @@ class CPW::Filters::FieldsFilter : Filters::Filter
         }
 
         virtual void Identify_(Dynamic::Var& filter) override;
-        virtual void Incorporate_(VectorString& tmp_query) override;
+        virtual void Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters) override;
 
     private:
         std::list<Filters::FieldsFilterElement> filter_elements_;

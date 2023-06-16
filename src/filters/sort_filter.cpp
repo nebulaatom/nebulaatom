@@ -81,7 +81,7 @@ void SortFilter::Identify_(Dynamic::Var& filter)
     }
 }
 
-void SortFilter::Incorporate_(VectorString& tmp_query)
+void SortFilter::Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters)
 {
     if(filter_elements_.size() < 1)
         return;

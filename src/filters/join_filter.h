@@ -45,10 +45,10 @@ class CPW::Filters::JoinFilterElement
 
         struct OnElement
         {
-            OnElement(std::string col, std::string value) : col(col), value(value) {}
+            OnElement(std::string col, Extras::ValuesProperties value) : col(col), value(value) {}
 
             std::string col;
-            std::string value;
+            Extras::ValuesProperties value;
         };
 
         JoinFilterElement(std::string table, std::string as, std::list<OnElement> on, std::string type);
@@ -95,7 +95,7 @@ class CPW::Filters::JoinFilter : Filters::Filter
         }
 
         virtual void Identify_(Dynamic::Var& filter) override;
-        virtual void Incorporate_(VectorString& tmp_query) override;
+        virtual void Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters) override;
 
     private:
         std::list<Filters::JoinFilterElement> filter_elements_;

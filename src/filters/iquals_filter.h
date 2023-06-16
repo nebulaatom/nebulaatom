@@ -39,15 +39,13 @@ class CPW::Filters::IqualsFilterElement
         enum class Type
         {
             kIqual
-            ,kIqualQuotes
             ,kNoIqual
-            ,kNoIqualQuotes
         };
 
-        IqualsFilterElement(std::string col, Extras::ValuesProperties value, std::string type);
+        IqualsFilterElement(std::string col, Tools::RowValueFormatter value, std::string type);
 
         std::string get_col() const { return col_; }
-        Extras::ValuesProperties& get_value()
+        Tools::RowValueFormatter& get_value()
         {
             auto& var = value_;
             return var;
@@ -67,7 +65,7 @@ class CPW::Filters::IqualsFilterElement
 
     private:
         std::string col_;
-        Extras::ValuesProperties value_;
+        Tools::RowValueFormatter value_;
         Type type_;
         std::map<std::string, Type> types_;
 
@@ -86,7 +84,7 @@ class CPW::Filters::IqualsFilter : Filters::Filter
         }
 
         virtual void Identify_(Dynamic::Var& filter) override;
-        virtual void Incorporate_(VectorString& tmp_query) override;
+        virtual void Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters) override;
 
     private:
         std::list<Filters::IqualsFilterElement> filter_elements_;

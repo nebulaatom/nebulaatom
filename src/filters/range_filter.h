@@ -39,19 +39,15 @@ class CPW::Filters::RangeFilterElement
         enum class Type
         {
             kGreather
-            ,kGreatherQuotes
             ,kGreatherIqual
-            ,kGreatherIqualQuotes
             ,kSmaller
-            ,kSmallerQuotes
             ,kSmallerIqual
-            ,kSmallerIqualQuotes
         };
 
-        RangeFilterElement(std::string col, Extras::ValuesProperties value, std::string type);
+        RangeFilterElement(std::string col, Tools::RowValueFormatter value, std::string type);
 
         std::string get_col() const { return col_; }
-        Extras::ValuesProperties& get_value()
+        Tools::RowValueFormatter& get_value()
         {
             auto& var = value_;
             return var;
@@ -71,7 +67,7 @@ class CPW::Filters::RangeFilterElement
 
     private:
         std::string col_;
-        Extras::ValuesProperties value_;
+        Tools::RowValueFormatter value_;
         Type type_;
         std::map<std::string, Type> types_;
 };
@@ -89,7 +85,7 @@ class CPW::Filters::RangeFilter : Filters::Filter
         }
 
         virtual void Identify_(Dynamic::Var& filter) override;
-        virtual void Incorporate_(VectorString& tmp_query) override;
+        virtual void Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters) override;
 
     private:
         std::list<Filters::RangeFilterElement> filter_elements_;

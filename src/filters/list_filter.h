@@ -42,10 +42,10 @@ class CPW::Filters::ListFilterElement
             ,kNotIn
         };
 
-        ListFilterElement(std::string col, std::list<Extras::ValuesProperties> values, std::string type);
+        ListFilterElement(std::string col, std::list<Tools::RowValueFormatter> values, std::string type);
 
         std::string get_col() const { return col_; }
-        std::list<Extras::ValuesProperties>& get_values()
+        std::list<Tools::RowValueFormatter>& get_values()
         {
             auto& var = values_;
             return var;
@@ -65,7 +65,7 @@ class CPW::Filters::ListFilterElement
 
     private:
         std::string col_;
-        std::list<Extras::ValuesProperties> values_;
+        std::list<Tools::RowValueFormatter> values_;
         Type type_;
         std::map<std::string, Type> types_;
 };
@@ -83,7 +83,7 @@ class CPW::Filters::ListFilter : Filters::Filter
         }
 
         virtual void Identify_(Dynamic::Var& filter) override;
-        virtual void Incorporate_(VectorString& tmp_query) override;
+        virtual void Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters) override;
 
     private:
         std::list<Filters::ListFilterElement> filter_elements_;

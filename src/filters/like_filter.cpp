@@ -20,7 +20,7 @@
 
 using namespace CPW::Filters;
 
-LikeFilterElement::LikeFilterElement(std::string col, Extras::ValuesProperties value, std::string type) :
+LikeFilterElement::LikeFilterElement(std::string col, Tools::RowValueFormatter value, std::string type) :
     col_(col)
     ,value_(value)
     ,type_(Type::kPerLikePer)
@@ -76,12 +76,9 @@ void LikeFilter::Identify_(Dynamic::Var& filter)
 
         std::string col = content_element->get("col").toString();
 
-        // Verify array element "value"
-        if(content_element->get("value").isEmpty())
-            continue;
-
+        // Get array element "value"
         auto var_value = content_element->get("value");
-        auto value = GetValueProperties_(var_value);
+        auto value = Tools::RowValueFormatter(var_value);
 
         // Verify array element "type"
         std::string type = "";
@@ -93,7 +90,7 @@ void LikeFilter::Identify_(Dynamic::Var& filter)
     }
 }
 
-void LikeFilter::Incorporate_(VectorString& tmp_query)
+void LikeFilter::Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters)
 {
     if(filter_elements_.size() < 1)
         return;
@@ -113,33 +110,18 @@ void LikeFilter::Incorporate_(VectorString& tmp_query)
 
         tmp_query.push_back(it->get_col());
         tmp_query.push_back("LIKE");
+        tmp_query.push_back("?");
 
+        auto& value_string = it->get_value().get_value_string();
         switch(it->get_type())
         {
-            case LikeFilterElement::Type::kPerLike:
-                it->set_value("%" + it->get_value().get_value());
-                tmp_query.push_back(it->get_value().GetFinalValue());
-                break;
-            case LikeFilterElement::Type::kLikePer:
-                it->set_value(it->get_value().get_value() + "%");
-                tmp_query.push_back(it->get_value().GetFinalValue());
-                break;
-            case LikeFilterElement::Type::kPerLikePer:
-                it->set_value("%" + it->get_value().get_value() + "%");
-                tmp_query.push_back(it->get_value().GetFinalValue());
-                break;
-            case LikeFilterElement::Type::kUndLike:
-                it->set_value("_" + it->get_value().get_value());
-                tmp_query.push_back(it->get_value().GetFinalValue());
-                break;
-            case LikeFilterElement::Type::kLikeUnd:
-                it->set_value(it->get_value().get_value() + "_");
-                tmp_query.push_back(it->get_value().GetFinalValue());
-                break;
-            case LikeFilterElement::Type::kUndLikeUnd:
-                it->set_value("_" + it->get_value().get_value() + "_");
-                tmp_query.push_back(it->get_value().GetFinalValue());
-                break;
+            case LikeFilterElement::Type::kPerLike: value_string = "%" + value_string; break;
+            case LikeFilterElement::Type::kLikePer: value_string = value_string + "%"; break;
+            case LikeFilterElement::Type::kPerLikePer: value_string = "%" + value_string + "%"; break;
+            case LikeFilterElement::Type::kUndLike: value_string = "_" + value_string; break;
+            case LikeFilterElement::Type::kLikeUnd: value_string = value_string + "_"; break;
+            case LikeFilterElement::Type::kUndLikeUnd: value_string = "_" + value_string + "_"; break;
         }
+        query_parameters.push_back(it->get_value());
     }
 }

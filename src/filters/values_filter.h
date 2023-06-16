@@ -36,32 +36,16 @@ namespace CPW
 class CPW::Filters::ValuesFilterElement
 {
     public:
-        enum class Type
-        {
-            kQuotes
-            ,kNoQuotes
-        };
+        ValuesFilterElement(Tools::RowValueFormatter value);
 
-        ValuesFilterElement(std::string value, std::string type);
-
-        std::string get_value() const { return value_; }
-        Type get_type() const { return type_; }
-        std::map<std::string, Type>& get_types()
+        Tools::RowValueFormatter& get_value()
         {
-            auto& var = types_;
+            auto& var = value_;
             return var;
         }
 
-        void set_value(std::string value) { value_ = value; }
-        void set_type(Type type) { type_ = type; }
-
-    protected:
-        void AddTypes_();
-
     private:
-        std::string value_;
-        Type type_;
-        std::map<std::string, Type> types_;
+        Tools::RowValueFormatter value_;
 };
 
 class CPW::Filters::ValuesFilter : Filters::Filter
@@ -77,7 +61,7 @@ class CPW::Filters::ValuesFilter : Filters::Filter
         }
 
         virtual void Identify_(Dynamic::Var& filter) override;
-        virtual void Incorporate_(VectorString& tmp_query) override;
+        virtual void Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters) override;
 
     private:
         std::list<Filters::ValuesFilterElement> filter_elements_;
