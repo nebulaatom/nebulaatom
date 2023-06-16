@@ -39,6 +39,7 @@ RowValueFormatter::RowValueFormatter(Poco::Dynamic::Var& value) :
     ,value_bool_(false)
 {
 	value_ = &value;
+    Format_();
 }
 
 RowValueFormatter::~RowValueFormatter()
@@ -48,8 +49,6 @@ RowValueFormatter::~RowValueFormatter()
 
 void RowValueFormatter::Format_()
 {
-    std::string val = value_->toString();
-
     if(value_ == nullptr)
     {
         row_value_type_ = RowValueType::kEmpty;

@@ -59,11 +59,32 @@ class CPW::Tools::RowValueFormatter
         RowValueFormatter(Poco::Dynamic::Var& value);
         ~RowValueFormatter();
 
-        RowValueType get_row_value_type() const{return row_value_type_;}
-        std::string get_value_string() const{return value_string_;}
-        int get_value_int() const{return value_int_;}
-        float get_value_float() const{return value_float_;}
-        bool get_value_bool() const{return value_bool_;}
+        RowValueType get_row_value_type()
+        {
+            auto& var = row_value_type_;
+            return var;
+        }
+        Poco::Dynamic::Var* get_value() const { return value_; }
+        std::string& get_value_string()
+        {
+            auto& var = value_string_;
+            return var;
+        }
+        int& get_value_int()
+        {
+            auto& var = value_int_;
+            return var;
+        }
+        float& get_value_float()
+        {
+            auto& var = value_float_;
+            return var;
+        }
+        bool& get_value_bool()
+        {
+            auto& var = value_bool_;
+            return var;
+        }
 
         void Format_();
 
