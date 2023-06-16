@@ -118,26 +118,10 @@ bool QueryActions::ComposeQuery_(TypeAction action_type, std::string table)
 
             switch(action_type)
             {
-                case TypeAction::kInsert:
-                {
-                    tmp_query = ComposeInsertSentence_(table);
-                    break;
-                }
-                case TypeAction::kSelect:
-                {
-                    tmp_query = ComposeSelectSentence_(table);
-                    break;
-                }
-                case TypeAction::kUpdate:
-                {
-                    tmp_query = ComposeUpdateSentence_(table);
-                    break;
-                }
-                case TypeAction::kDelete:
-                {
-                    tmp_query = ComposeDeleteSentence_(table);
-                    break;
-                }
+                case TypeAction::kInsert: tmp_query = ComposeInsertSentence_(table); break;
+                case TypeAction::kSelect: tmp_query = ComposeSelectSentence_(table); break;
+                case TypeAction::kUpdate: tmp_query = ComposeUpdateSentence_(table); break;
+                case TypeAction::kDelete: tmp_query = ComposeDeleteSentence_(table); break;
             }
 
         // Create de query statement
@@ -153,7 +137,47 @@ bool QueryActions::ComposeQuery_(TypeAction action_type, std::string table)
         // Set the query
             final_query_ = std::move(tmp_query);
             *query_ << final_query_;
-            app_.logger().information("- Final query: " + final_query_);
+
+        // Set the parameters
+            for(auto& par : query_parameters_)
+            {
+                switch(par.get_row_value_type())
+                {
+                    case Tools::RowValueType::kEmpty:
+                    {
+                        auto value = Poco::Nullable<int>();
+                        *query_ , use(value);
+                        break;
+                    }
+                    case Tools::RowValueType::kString:
+                    {
+                        auto& value = par.get_value_string();
+                        *query_ , use(value);
+                        break;
+                    }
+                    case Tools::RowValueType::kInteger:
+                    {
+                        auto& value = par.get_value_int();
+                        *query_ , use(value);
+                        break;
+                    }
+                    case Tools::RowValueType::kFloat:
+                    {
+                        auto& value = par.get_value_float();
+                        *query_ , use(value);
+                        break;
+                    }
+                    case Tools::RowValueType::kBoolean:
+                    {
+                        auto& value = par.get_value_bool();
+                        *query_ , use(value);
+                        break;
+                    }
+                }
+            }
+
+        // Return
+            app_.logger().information("- Final query: " + query_->toString());
             return true;
     }
     catch(MySQL::MySQLException& error)
@@ -311,11 +335,11 @@ std::string QueryActions::ComposeInsertSentence_(std::string table)
         std::vector<std::string> tmp_query = {"INSERT INTO " + table + " ("};
 
     // Fields
-        current_filters_->get_fields_filter()->Incorporate_(tmp_query);
+        current_filters_->get_fields_filter()->Incorporate_(tmp_query, query_parameters_);
         tmp_query.push_back(")");
 
     // Values
-        current_filters_->get_values_filter()->Incorporate_(tmp_query);
+        current_filters_->get_values_filter()->Incorporate_(tmp_query, query_parameters_);
 
     tmp_query.push_back(";");
 
@@ -334,28 +358,28 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
         if(current_filters_->get_fields_filter()->get_filter_elements().size() < 1)
             tmp_query.push_back("*");
         else
-            current_filters_->get_fields_filter()->Incorporate_(tmp_query);
+            current_filters_->get_fields_filter()->Incorporate_(tmp_query, query_parameters_);
 
     // Table
         tmp_query.push_back("FROM " + table);
-        current_filters_->get_general_filter()->IncorporateAS_(tmp_query);
+        current_filters_->get_general_filter()->IncorporateAS_(tmp_query, query_parameters_);
 
     // Joins
-        current_filters_->get_join_filter()->Incorporate_(tmp_query);
+        current_filters_->get_join_filter()->Incorporate_(tmp_query, query_parameters_);
 
     // Conditions
-        current_filters_->get_iquals_filter()->Incorporate_(tmp_query);
-        current_filters_->get_range_filter()->Incorporate_(tmp_query);
-        current_filters_->get_list_filter()->Incorporate_(tmp_query);
-        current_filters_->get_like_filter()->Incorporate_(tmp_query);
+        current_filters_->get_iquals_filter()->Incorporate_(tmp_query, query_parameters_);
+        current_filters_->get_range_filter()->Incorporate_(tmp_query, query_parameters_);
+        current_filters_->get_list_filter()->Incorporate_(tmp_query, query_parameters_);
+        current_filters_->get_like_filter()->Incorporate_(tmp_query, query_parameters_);
 
     // Group and Sort conditions
-        current_filters_->get_group_filter()->Incorporate_(tmp_query);
-        current_filters_->get_sort_filter()->Incorporate_(tmp_query);
+        current_filters_->get_group_filter()->Incorporate_(tmp_query, query_parameters_);
+        current_filters_->get_sort_filter()->Incorporate_(tmp_query, query_parameters_);
 
     // Page and Limit condition
         current_filters_->get_general_filter()->get_filter_elements().set_pagination(true);
-        current_filters_->get_general_filter()->Incorporate_(tmp_query);
+        current_filters_->get_general_filter()->Incorporate_(tmp_query, query_parameters_);
 
     return MakeFinalQuery_(tmp_query);
 }
@@ -365,26 +389,26 @@ std::string QueryActions::ComposeUpdateSentence_(std::string table)
     // Sentence type and table
         std::vector<std::string> tmp_query = {"UPDATE"};
         tmp_query.push_back(table);
-        current_filters_->get_general_filter()->IncorporateAS_(tmp_query);
+        current_filters_->get_general_filter()->IncorporateAS_(tmp_query, query_parameters_);
 
     // Joins
-        current_filters_->get_join_filter()->Incorporate_(tmp_query);
+        current_filters_->get_join_filter()->Incorporate_(tmp_query, query_parameters_);
 
     // Set
-        current_filters_->get_set_filter()->Incorporate_(tmp_query);
+        current_filters_->get_set_filter()->Incorporate_(tmp_query, query_parameters_);
 
     // Conditions
-        current_filters_->get_iquals_filter()->Incorporate_(tmp_query);
-        current_filters_->get_range_filter()->Incorporate_(tmp_query);
-        current_filters_->get_list_filter()->Incorporate_(tmp_query);
-        current_filters_->get_like_filter()->Incorporate_(tmp_query);
+        current_filters_->get_iquals_filter()->Incorporate_(tmp_query, query_parameters_);
+        current_filters_->get_range_filter()->Incorporate_(tmp_query, query_parameters_);
+        current_filters_->get_list_filter()->Incorporate_(tmp_query, query_parameters_);
+        current_filters_->get_like_filter()->Incorporate_(tmp_query, query_parameters_);
 
     // Sort conditions
-        current_filters_->get_sort_filter()->Incorporate_(tmp_query);
+        current_filters_->get_sort_filter()->Incorporate_(tmp_query, query_parameters_);
 
     // Page and Limit condition
         current_filters_->get_general_filter()->get_filter_elements().set_pagination(false);
-        current_filters_->get_general_filter()->Incorporate_(tmp_query);
+        current_filters_->get_general_filter()->Incorporate_(tmp_query, query_parameters_);
 
     return MakeFinalQuery_(tmp_query);
 }
@@ -393,25 +417,25 @@ std::string QueryActions::ComposeDeleteSentence_(std::string table)
 {
     // Sentence type and Table
         std::vector<std::string> tmp_query = {"DELETE"};
-        current_filters_->get_fields_filter()->Incorporate_(tmp_query);
+        current_filters_->get_fields_filter()->Incorporate_(tmp_query, query_parameters_);
 
         tmp_query.push_back("FROM " + table);
 
     // Joins
-        current_filters_->get_join_filter()->Incorporate_(tmp_query);
+        current_filters_->get_join_filter()->Incorporate_(tmp_query, query_parameters_);
 
     // Conditions
-        current_filters_->get_iquals_filter()->Incorporate_(tmp_query);
-        current_filters_->get_range_filter()->Incorporate_(tmp_query);
-        current_filters_->get_list_filter()->Incorporate_(tmp_query);
-        current_filters_->get_like_filter()->Incorporate_(tmp_query);
+        current_filters_->get_iquals_filter()->Incorporate_(tmp_query, query_parameters_);
+        current_filters_->get_range_filter()->Incorporate_(tmp_query, query_parameters_);
+        current_filters_->get_list_filter()->Incorporate_(tmp_query, query_parameters_);
+        current_filters_->get_like_filter()->Incorporate_(tmp_query, query_parameters_);
 
     // Sort conditions
-        current_filters_->get_sort_filter()->Incorporate_(tmp_query);
+        current_filters_->get_sort_filter()->Incorporate_(tmp_query, query_parameters_);
 
     // Page and Limit condition
         current_filters_->get_general_filter()->get_filter_elements().set_pagination(false);
-        current_filters_->get_general_filter()->Incorporate_(tmp_query);
+        current_filters_->get_general_filter()->Incorporate_(tmp_query, query_parameters_);
 
     return MakeFinalQuery_(tmp_query);
 }

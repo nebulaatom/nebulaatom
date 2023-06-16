@@ -80,6 +80,8 @@ class CPW::Query::QueryActions :
     ,public HTTP::CommonResponses
 {
     public:
+        using RowValueFormatterList = std::list<Tools::RowValueFormatter>;
+
         QueryActions();
         ~QueryActions();
 
@@ -101,6 +103,11 @@ class CPW::Query::QueryActions :
             return var;
         }
         JSON::Object::Ptr get_result_json() const {return result_json_;}
+        RowValueFormatterList& get_query_parameters()
+        {
+            auto& var = query_parameters_;
+            return var;
+        }
 
         void IdentifyFilters_();
         void ResetFilters_();
@@ -125,6 +132,7 @@ class CPW::Query::QueryActions :
         JSON::Object::Ptr result_json_;
         Application& app_;
         std::shared_ptr<Tools::RowValueFormatter> row_value_formatter_;
+        RowValueFormatterList query_parameters_;
 };
 
 
