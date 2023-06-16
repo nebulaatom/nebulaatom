@@ -41,17 +41,19 @@ void SecurityVerification::AddTargets_(std::list<std::string>& targets)
             fields.push_back({"tp.table_name"});
             fields.push_back({"tp.route"});
 
-            std::list<Extras::ValuesProperties> values;
+            std::list<Tools::RowValueFormatter> values;
             for(auto& target : targets)
-                values.push_back({target, true});
+            {
+                auto target_var = Dynamic::Var{target};
+                values.push_back(target_var);
+            }
 
             list.push_back({"tp.table_name", std::move(values), "in"});
 
         // Execute the query
             if(!query_manager_.ComposeQuery_(Query::TypeAction::kSelect, "_woodpecker_tables_permissions"))
                 return;
-            query_manager_.get_query()->reset(*query_manager_.get_session());
-            *query_manager_.get_query() << query_manager_.get_final_query() , into(targets_);
+            *query_manager_.get_query() , into(targets_);
             if(!query_manager_.ExecuteQuery_())
                 return;
 

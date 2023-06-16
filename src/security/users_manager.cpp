@@ -31,6 +31,8 @@ bool UsersManager::AuthenticateUser_()
     {
         // Variables
             int count = 0;
+            Dynamic::Var username(current_user_.get_username());
+            Dynamic::Var password(current_user_.get_password());
             auto result_json = query_manager_.get_result_json();
             auto& fields = query_manager_.get_current_filters_()->get_fields_filter()->get_filter_elements();
             auto& iquals = query_manager_.get_current_filters_()->get_iquals_filter()->get_filter_elements();
@@ -38,14 +40,13 @@ bool UsersManager::AuthenticateUser_()
         // Add filters
             query_manager_.ResetFilters_();
             fields.push_back({"COUNT(1)"});
-            iquals.push_back({"username", {current_user_.get_username(), true}, "iqual-quotes"});
-            iquals.push_back({"password", {current_user_.get_password(), true}, "iqual-quotes"});
+            iquals.push_back({"username", username, "iqual"});
+            iquals.push_back({"password", password, "iqual"});
 
         // Execute the query
             if(!query_manager_.ComposeQuery_(Query::TypeAction::kSelect, "_woodpecker_users"))
                 return false;
-            query_manager_.get_query()->reset(*query_manager_.get_session());
-            *query_manager_.get_query() << query_manager_.get_final_query() , into(count);
+            *query_manager_.get_query() , into(count);
             if(!query_manager_.ExecuteQuery_())
                 return false;
 

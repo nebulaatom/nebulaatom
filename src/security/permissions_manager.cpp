@@ -122,9 +122,9 @@ void PermissionsManager::LoadPermissions_()
             fields.push_back({"at.name", "", "no-quotes"});
             fields.push_back({"up.granted", "", "no-quotes"});
             fields.push_back({"up.descendant", "", "no-quotes"});
-            joins.push_back({"_woodpecker_tables_permissions", "tp", {{"tp.id", "up.id_table_permission"}}, "inner"});
-            joins.push_back({"_woodpecker_users", "u", {{"u.id", "up.id_user"}}, "inner"});
-            joins.push_back({"_woodpecker_action_types", "at", {{"at.id", "up.id_action_type"}}, "inner"});
+            joins.push_back({"_woodpecker_tables_permissions", "tp", {{"tp.id", {"up.id_table_permission", false}}}, "inner"});
+            joins.push_back({"_woodpecker_users", "u", {{"u.id", {"up.id_user", false}}}, "inner"});
+            joins.push_back({"_woodpecker_action_types", "at", {{"at.id", {"up.id_action_type", false}}}, "inner"});
 
         // Execute the query
             if(!query_manager.ComposeQuery_(Query::TypeAction::kSelect, "_woodpecker_user_permissions"))
