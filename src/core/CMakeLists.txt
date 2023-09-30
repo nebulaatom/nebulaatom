@@ -38,6 +38,7 @@ target_link_libraries(
     sessionshandler
     loginhandler
     databasemanager
+    functionsmanager
     Poco::Foundation
     Poco::Net
     Poco::NetSSL
