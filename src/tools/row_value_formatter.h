@@ -56,10 +56,11 @@ class CPW::Tools::RowValueFormatter
 {
     public:
         RowValueFormatter();
+        RowValueFormatter(std::string value_string);
         RowValueFormatter(Poco::Dynamic::Var& value);
         ~RowValueFormatter();
 
-        RowValueType get_row_value_type()
+        RowValueType& get_row_value_type()
         {
             auto& var = row_value_type_;
             return var;

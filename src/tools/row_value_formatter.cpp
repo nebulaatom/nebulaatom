@@ -31,6 +31,16 @@ RowValueFormatter::RowValueFormatter() :
 	value_ = nullptr;
 }
 
+RowValueFormatter::RowValueFormatter(std::string value_string) :
+    row_value_type_(RowValueType::kString)
+    ,value_string_(value_string)
+    ,value_int_(0)
+    ,value_float_(0.f)
+    ,value_bool_(false)
+{
+	value_ = nullptr;
+}
+
 RowValueFormatter::RowValueFormatter(Poco::Dynamic::Var& value) :
     row_value_type_(RowValueType::kString)
     ,value_string_("")
