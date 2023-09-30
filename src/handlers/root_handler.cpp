@@ -223,11 +223,25 @@ bool RootHandler::VerifyPermissions_()
 
 bool RootHandler::IdentifyRoute_()
 {
+    auto requested_route = dynamic_elements_->get_requested_route();
     for(auto& it : dynamic_elements_->get_routes_list())
     {
-        if(dynamic_elements_->get_requested_route()->SegmentsToString_() == it.SegmentsToString_())
+        if(requested_route->SegmentsToString_() == it.SegmentsToString_())
         {
-            dynamic_elements_->get_requested_route()->set_target(it.get_target());
+            requested_route->set_target(it.get_target());
+
+            // Setting up the route functions
+            auto endpoint = requested_route->SegmentsToString_();
+            auto found = get_functions_manager().get_functions().find(endpoint);
+            if(found == get_functions_manager().get_functions().end())
+                return false;
+
+            dynamic_elements_->get_query_actions()->get_current_filters_() = found->second.get_filters();
+
+            std::cout << dynamic_elements_->get_query_actions()->get_current_filters_()->get_fields_filter()->get_filter_elements().size() << std::endl;
+            std::cout << found->second.get_filters()->get_fields_filter()->get_filter_elements().size() << std::endl;
+            std::cout << HTTPMethods::get_dynamic_elements()->get_query_actions()->get_current_filters_()->get_fields_filter()->get_filter_elements().size() << std::endl;
+
             return true;
         }
     }

@@ -65,6 +65,7 @@
 #include "tools/requests_manager.h"
 #include "tools/manage_json.h"
 #include "security/user.h"
+#include "functions/functions_manager.h"
 
 
 namespace CPW
@@ -100,6 +101,11 @@ class CPW::Handlers::RootHandler :
             auto& var = current_security_;
             return var;
         }
+        Functions::FunctionsManager& get_functions_manager()
+        {
+            auto& var = functions_manager_;
+            return var;
+        }
 
         virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
@@ -121,6 +127,7 @@ class CPW::Handlers::RootHandler :
         Tools::RequestsManager requests_manager_;
         std::shared_ptr<Extras::DynamicElements> dynamic_elements_;
         std::list<std::string> targets_;
+        Functions::FunctionsManager functions_manager_;
 };
 
 #endif // CPW_HANDLERS_ROOTHANDLER_H
