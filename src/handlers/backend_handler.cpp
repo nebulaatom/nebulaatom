@@ -29,25 +29,16 @@ void BackendHandler::AddRoutes_()
 {
     auto& routes_list = get_dynamic_elements()->get_routes_list();
 
-   routes_list.push_back({"path1", {"api", get_api_version(), "path1"}});
-   routes_list.push_back({"path1_file1", {"api", get_api_version(), "path1", "file1"}});
-   routes_list.push_back({"path1_file2", {"api", get_api_version(), "path1", "file2"}});
-   routes_list.push_back({"path2", {"api", get_api_version(), "path2"}});
-   routes_list.push_back({"path2_file1", {"api", get_api_version(), "path2", "file1"}});
-   routes_list.push_back({"path2_file2", {"api", get_api_version(), "path2", "file2"}});
-   routes_list.push_back({"path2_path1", {"api", get_api_version(), "path2", "path1"}});
-   routes_list.push_back({"path2_path1_file1", {"api", get_api_version(), "path2", "path1", "file1"}});
-   routes_list.push_back({"path2_path1_file2", {"api", get_api_version(), "path2", "path1", "file2"}});
-   routes_list.push_back({"path2_path1_path1", {"api", get_api_version(), "path2", "path1", "path1"}});
-   routes_list.push_back({"path2_path1_path1_file1", {"api", get_api_version(), "path2", "path1", "path1", "file1"}});
-   routes_list.push_back({"path2_path1_path1_file2", {"api", get_api_version(), "path2", "path1", "path1", "file2"}});
-   routes_list.push_back({"products", {"api", get_api_version(), "products"}});
-   routes_list.push_back({"product_ratings", {"api", get_api_version(), "products", "ratings"}});
-   routes_list.push_back({"stores", {"api", get_api_version(), "stores"}});
+    // Function /api/products
+        // Setting up the filters
+        auto fm = std::make_shared<Filters::FiltersManager>();
+        fm->get_fields_filter()->get_filter_elements().push_back({"name"});
+        Dynamic::Var val(-1);
+        fm->get_iquals_filter()->get_filter_elements().push_back({"id", {val}, "no-iqual"});
 
-    /*routes_list.push_back({"business", {"api", get_api_version(), "business"}});
-    routes_list.push_back({"levels", {"api", get_api_version(), "business", "levels"}});
-    routes_list.push_back({"levels_log", {"api", get_api_version(), "business", "levels", "log"}});
-    routes_list.push_back({"banks_accounts", {"api", get_api_version(), "business", "banks_accounts"}});
-    routes_list.push_back({"transactions", {"api", get_api_version(), "business", "banks_accounts", "transactions"}});*/
+        // Setting up the function
+        Functions::Function f1{"/api/products"};
+        f1.get_filters().swap(fm);
+        get_functions_manager().get_functions().insert({"/api/products", std::move(f1)});
+        routes_list.push_back({"products", "api/products"});
 }

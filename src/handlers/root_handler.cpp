@@ -238,10 +238,6 @@ bool RootHandler::IdentifyRoute_()
 
             dynamic_elements_->get_query_actions()->get_current_filters_() = found->second.get_filters();
 
-            std::cout << dynamic_elements_->get_query_actions()->get_current_filters_()->get_fields_filter()->get_filter_elements().size() << std::endl;
-            std::cout << found->second.get_filters()->get_fields_filter()->get_filter_elements().size() << std::endl;
-            std::cout << HTTPMethods::get_dynamic_elements()->get_query_actions()->get_current_filters_()->get_fields_filter()->get_filter_elements().size() << std::endl;
-
             return true;
         }
     }
