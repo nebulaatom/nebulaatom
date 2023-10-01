@@ -35,6 +35,7 @@ FiltersManager::FiltersManager()
     set_filter_ = std::make_shared<SetFilter>();
 
     MapFilterType_();
+    MapFiltersParameterized_();
 }
 
 FiltersManager::~FiltersManager()
@@ -55,6 +56,17 @@ void FiltersManager::MapFilterType_()
     filters_type_map_.emplace(std::make_pair("group", FilterType::kGroup));
     filters_type_map_.emplace(std::make_pair("values", FilterType::kValues));
     filters_type_map_.emplace(std::make_pair("set", FilterType::kSet));
+}
+
+void FiltersManager::MapFiltersParameterized_()
+{
+    filters_parameterized_.emplace(std::make_pair(FilterType::kGeneral, false));
+    filters_parameterized_.emplace(std::make_pair(FilterType::kIqual, false));
+    filters_parameterized_.emplace(std::make_pair(FilterType::kRange, false));
+    filters_parameterized_.emplace(std::make_pair(FilterType::kList, false));
+    filters_parameterized_.emplace(std::make_pair(FilterType::kLike, false));
+    filters_parameterized_.emplace(std::make_pair(FilterType::kValues, false));
+    filters_parameterized_.emplace(std::make_pair(FilterType::kSet, false));
 }
 
 bool FiltersManager::ExistsType_(std::string type)

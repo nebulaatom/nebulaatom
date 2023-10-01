@@ -119,11 +119,17 @@ class CPW::Filters::FiltersManager
             auto& var = filters_type_map_;
             return var;
         }
+        std::map<FilterType, bool>& get_filters_parameterized()
+        {
+            auto& var = filters_parameterized_;
+            return var;
+        }
 
         bool ExistsType_(std::string type);
 
     private:
         void MapFilterType_();
+        void MapFiltersParameterized_();
 
         std::shared_ptr<Filters::FieldsFilter> fields_;
         std::shared_ptr<Filters::SortFilter> sort_filter_;
@@ -137,6 +143,7 @@ class CPW::Filters::FiltersManager
         std::shared_ptr<Filters::ValuesFilter> values_filter_;
         std::shared_ptr<Filters::SetFilter> set_filter_;
         std::map<std::string, FilterType> filters_type_map_;
+        std::map<FilterType, bool> filters_parameterized_;
 };
 
 
