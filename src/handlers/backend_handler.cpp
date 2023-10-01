@@ -31,14 +31,36 @@ void BackendHandler::AddRoutes_()
 
     // Function /api/products
         // Setting up the filters
-        auto fm = std::make_shared<Filters::FiltersManager>();
-        fm->get_fields_filter()->get_filter_elements().push_back({"name"});
-        Dynamic::Var val(-1);
-        fm->get_iquals_filter()->get_filter_elements().push_back({"id", {val}, "no-iqual"});
+            auto fm = std::make_shared<Filters::FiltersManager>();
+            // fields filter
+            fm->get_fields_filter()->get_filter_elements().push_back({"name"});
+            // iquals filter
+            Dynamic::Var val(-1);
+            fm->get_iquals_filter()->get_filter_elements().push_back({"id", {val}, "no-iqual"});
 
         // Setting up the function
-        Functions::Function f1{"/api/products"};
-        f1.get_filters().swap(fm);
-        get_functions_manager().get_functions().insert({"/api/products", std::move(f1)});
-        routes_list.push_back({"products", "api/products"});
+            Functions::Function f1{"/api/products"};
+            f1.get_filters().swap(fm);
+            get_functions_manager().get_functions().insert({"/api/products", std::move(f1)});
+            routes_list.push_back({"products", "api/products"});
+
+    // Function /api/stores
+        // Setting up the filters
+            auto fm2 = std::make_shared<Filters::FiltersManager>();
+            // fields filter
+            fm2->get_fields_filter()->get_filter_elements().push_back({"name"});
+            // iquals filter
+            Dynamic::Var val2(-1);
+            fm2->get_iquals_filter()->get_filter_elements().push_back({"id", {val2}, "no-iqual"});
+
+        // Setting up Iqual parameterized
+            auto found = fm2->get_filters_parameterized().find(Filters::FilterType::kIqual);
+            if(found != fm2->get_filters_parameterized().end())
+                fm2->get_filters_parameterized()[Filters::FilterType::kIqual] = true;
+
+        // Setting up the function
+            Functions::Function f2{"/api/stores"};
+            f2.get_filters().swap(fm2);
+            get_functions_manager().get_functions().insert({"/api/stores", std::move(f2)});
+            routes_list.push_back({"stores", "api/stores"});
 }
