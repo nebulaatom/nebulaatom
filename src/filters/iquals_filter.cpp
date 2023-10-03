@@ -20,22 +20,12 @@
 
 using namespace CPW::Filters;
 
-IqualsFilterElement::IqualsFilterElement(std::string col, Tools::RowValueFormatter value, std::string type) :
+IqualsFilterElement::IqualsFilterElement(std::string col, Tools::RowValueFormatter value, Type type) :
     col_(col)
     ,value_(value)
-    ,type_(Type::kIqual)
+    ,type_(type)
 {
-    AddTypes_();
 
-    auto found = types_.find(type);
-    if(found != types_.end())
-        type_ = types_[type];
-}
-
-void IqualsFilterElement::AddTypes_()
-{
-    types_.insert(std::make_pair("iqual", Type::kIqual));
-    types_.insert(std::make_pair("no-iqual", Type::kNoIqual));
 }
 
 IqualsFilter::IqualsFilter()
@@ -65,24 +55,18 @@ void IqualsFilter::Identify_(Dynamic::Var& filter)
         if(!contents_array->isObject(a))
             throw std::runtime_error("contents_array[" + std::to_string(a) + "] is not an object in IqualsFilter::Identify_()");
 
-        // Verify array element "col"
+        // Verify array element "id"
         auto content_element = contents_array->getObject(a);
-        if(content_element->get("col").isEmpty())
+        if(content_element->get("id").isEmpty())
             continue;
 
-        std::string col = content_element->get("col").toString();
+        std::string id = content_element->get("id").toString();
 
         // Get array element "value"
-        auto var_value = content_element->get("value");
-        auto value = Tools::RowValueFormatter(var_value);
-
-        // Verify array element "type"
-        std::string type = "";
-        if(!content_element->get("type").isEmpty())
-            type = content_element->get("type").toString();
+        auto value = content_element->get("value");
 
         // Add element
-        filter_elements_.push_back({col, std::move(value), type});
+        ReplaceFilterElement(id, value);
     }
 }
 
@@ -104,15 +88,32 @@ void IqualsFilter::Incorporate_(VectorString& tmp_query, RowValueFormatterList& 
         else
             tmp_query.push_back("AND");
 
-        tmp_query.push_back(it->get_col());
+        tmp_query.push_back(it->second.get_col());
 
-        switch(it->get_type())
+        switch(it->second.get_type())
         {
             case IqualsFilterElement::Type::kIqual: tmp_query.push_back("="); break;
             case IqualsFilterElement::Type::kNoIqual: tmp_query.push_back("!="); break;
         }
 
         tmp_query.push_back("?");
-        query_parameters.push_back(it->get_value());
+        query_parameters.push_back(it->second.get_value());
+    }
+}
+
+void IqualsFilter::ReplaceFilterElement(std::string id, Dynamic::Var& value)
+{
+    auto found = filter_elements_.find(id);
+    if(found == filter_elements_.end())
+        return;
+
+    try
+    {
+        Tools::RowValueFormatter element_value = {value};
+        found->second = IqualsFilterElement{found->second.get_col(), element_value, found->second.get_type()};
+    }
+    catch(std::exception e)
+    {
+        std::cout << "Error: " << e.what() << std::endl;
     }
 }

@@ -42,7 +42,7 @@ class CPW::Filters::IqualsFilterElement
             ,kNoIqual
         };
 
-        IqualsFilterElement(std::string col, Tools::RowValueFormatter value, std::string type);
+        IqualsFilterElement(std::string col, Tools::RowValueFormatter value, Type type);
 
         std::string get_col() const { return col_; }
         Tools::RowValueFormatter& get_value()
@@ -51,23 +51,14 @@ class CPW::Filters::IqualsFilterElement
             return var;
         }
         Type get_type() const { return type_; }
-        std::map<std::string, Type>& get_types()
-        {
-            auto& var = types_;
-            return var;
-        }
 
         void set_col(std::string col) { col_ = col; }
         void set_type(Type type) { type_ = type; }
-
-    protected:
-        void AddTypes_();
 
     private:
         std::string col_;
         Tools::RowValueFormatter value_;
         Type type_;
-        std::map<std::string, Type> types_;
 
 };
 
@@ -77,7 +68,7 @@ class CPW::Filters::IqualsFilter : Filters::Filter
         IqualsFilter();
         virtual ~IqualsFilter();
 
-        std::list<Filters::IqualsFilterElement>& get_filter_elements()
+        std::map<std::string, Filters::IqualsFilterElement>& get_filter_elements()
         {
             auto& var = filter_elements_;
             return var;
@@ -86,8 +77,11 @@ class CPW::Filters::IqualsFilter : Filters::Filter
         virtual void Identify_(Dynamic::Var& filter) override;
         virtual void Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters) override;
 
+    protected:
+        void ReplaceFilterElement(std::string id, Dynamic::Var& value);
+
     private:
-        std::list<Filters::IqualsFilterElement> filter_elements_;
+        std::map<std::string, Filters::IqualsFilterElement> filter_elements_;
 };
 
 
