@@ -122,8 +122,8 @@ class CPW::Query::QueryActions :
         std::string ComposeUpdateSentence_(std::string table);
         std::string ComposeDeleteSentence_(std::string table);
         std::string MakeFinalQuery_(std::vector<std::string>& tmp_query);
-        bool VerifyFilterParameretized_(Filters::FilterType type);
         void ManageFilterType_(Filters::FilterType type, Dynamic::Var& filter_var);
+        void ManageFilterTypeFromFiles_(Filters::FilterType type, Dynamic::Var& filter_var);
 
     private:
         std::string final_query_;

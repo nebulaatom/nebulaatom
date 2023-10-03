@@ -62,10 +62,6 @@ void QueryActions::IdentifyFilters_()
 
                 auto filter_var = data_array->get(a);
 
-            // Verify parameterized
-                if(!VerifyFilterParameretized_(type))
-                    continue;
-
             // Manage the type
                 ManageFilterType_(type, filter_var);
         }
@@ -439,95 +435,28 @@ std::string QueryActions::MakeFinalQuery_(std::vector<std::string>& tmp_query)
     return final_query;
 }
 
-bool QueryActions::VerifyFilterParameretized_(Filters::FilterType type)
+void QueryActions::ManageFilterType_(Filters::FilterType type, Dynamic::Var& filter_var)
 {
     switch(type)
     {
-        case Filters::FilterType::kFields:
-        {
-            auto found = current_filters_->get_filters_parameterized().find(Filters::FilterType::kFields);
-            if(found != current_filters_->get_filters_parameterized().end())
-                return found->second;
-            break;
-        }
-        case Filters::FilterType::kSort:
-        {
-            auto found = current_filters_->get_filters_parameterized().find(Filters::FilterType::kSort);
-            if(found != current_filters_->get_filters_parameterized().end())
-                return found->second;
-            break;
-        }
-        case Filters::FilterType::kGeneral:
-        {
-            auto found = current_filters_->get_filters_parameterized().find(Filters::FilterType::kGeneral);
-            if(found != current_filters_->get_filters_parameterized().end())
-                return found->second;
-            break;
-        }
-        case Filters::FilterType::kIqual:
-        {
-            auto found = current_filters_->get_filters_parameterized().find(Filters::FilterType::kIqual);
-            if(found != current_filters_->get_filters_parameterized().end())
-                return found->second;
-            break;
-        }
-        case Filters::FilterType::kRange:
-        {
-            auto found = current_filters_->get_filters_parameterized().find(Filters::FilterType::kRange);
-            if(found != current_filters_->get_filters_parameterized().end())
-                return found->second;
-            break;
-        }
-        case Filters::FilterType::kList:
-        {
-            auto found = current_filters_->get_filters_parameterized().find(Filters::FilterType::kList);
-            if(found != current_filters_->get_filters_parameterized().end())
-                return found->second;
-            break;
-        }
-        case Filters::FilterType::kLike:
-        {
-            auto found = current_filters_->get_filters_parameterized().find(Filters::FilterType::kLike);
-            if(found != current_filters_->get_filters_parameterized().end())
-                return found->second;
-            break;
-        }
-        case Filters::FilterType::kJoin:
-        {
-            auto found = current_filters_->get_filters_parameterized().find(Filters::FilterType::kJoin);
-            if(found != current_filters_->get_filters_parameterized().end())
-                return found->second;
-            break;
-        }
-        case Filters::FilterType::kGroup:
-        {
-            auto found = current_filters_->get_filters_parameterized().find(Filters::FilterType::kGroup);
-            if(found != current_filters_->get_filters_parameterized().end())
-                return found->second;
-            break;
-        }
-        case Filters::FilterType::kValues:
-        {
-            auto found = current_filters_->get_filters_parameterized().find(Filters::FilterType::kValues);
-            if(found != current_filters_->get_filters_parameterized().end())
-                return found->second;
-            break;
-        }
-        case Filters::FilterType::kSet:
-        {
-            auto found = current_filters_->get_filters_parameterized().find(Filters::FilterType::kSet);
-            if(found != current_filters_->get_filters_parameterized().end())
-                return found->second;
-            break;
-        }
+        case Filters::FilterType::kGeneral: current_filters_->get_general_filter()->Identify_(filter_var); break;
+        case Filters::FilterType::kIqual: current_filters_->get_iquals_filter()->Identify_(filter_var); break;
+        case Filters::FilterType::kRange: current_filters_->get_range_filter()->Identify_(filter_var); break;
+        case Filters::FilterType::kList: current_filters_->get_list_filter()->Identify_(filter_var); break;
+        case Filters::FilterType::kLike: current_filters_->get_like_filter()->Identify_(filter_var); break;
+        case Filters::FilterType::kValues: current_filters_->get_values_filter()->Identify_(filter_var); break;
+        case Filters::FilterType::kSet: current_filters_->get_set_filter()->Identify_(filter_var); break;
         case Filters::FilterType::kUnknown:
+        case Filters::FilterType::kFields:
+        case Filters::FilterType::kSort:
+        case Filters::FilterType::kJoin:
+        case Filters::FilterType::kGroup:
         default:
             break;
     }
-    return false;
 }
 
-void QueryActions::ManageFilterType_(Filters::FilterType type, Dynamic::Var& filter_var)
+void QueryActions::ManageFilterTypeFromFiles_(Filters::FilterType type, Dynamic::Var& filter_var)
 {
     switch(type)
     {
