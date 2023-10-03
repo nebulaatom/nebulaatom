@@ -51,15 +51,17 @@ class CPW::Filters::IqualsFilterElement
             return var;
         }
         Type get_type() const { return type_; }
+        bool get_editable() const { return editable_; }
 
         void set_col(std::string col) { col_ = col; }
         void set_type(Type type) { type_ = type; }
+        void set_editable(bool editable) { editable_ = editable; }
 
     private:
         std::string col_;
         Tools::RowValueFormatter value_;
         Type type_;
-
+        bool editable_;
 };
 
 class CPW::Filters::IqualsFilter : Filters::Filter

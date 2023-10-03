@@ -24,6 +24,7 @@ IqualsFilterElement::IqualsFilterElement(std::string col, Tools::RowValueFormatt
     col_(col)
     ,value_(value)
     ,type_(type)
+    ,editable_(false)
 {
 
 }
@@ -107,13 +108,9 @@ void IqualsFilter::ReplaceFilterElement(std::string id, Dynamic::Var& value)
     if(found == filter_elements_.end())
         return;
 
-    try
-    {
-        Tools::RowValueFormatter element_value = {value};
-        found->second = IqualsFilterElement{found->second.get_col(), element_value, found->second.get_type()};
-    }
-    catch(std::exception e)
-    {
-        std::cout << "Error: " << e.what() << std::endl;
-    }
+    if(!found->second.get_editable())
+        return;
+
+    Tools::RowValueFormatter element_value = {value};
+    found->second = IqualsFilterElement{found->second.get_col(), element_value, found->second.get_type()};
 }
