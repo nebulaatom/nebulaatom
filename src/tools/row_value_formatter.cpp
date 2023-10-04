@@ -31,16 +31,6 @@ RowValueFormatter::RowValueFormatter() :
 	value_ = nullptr;
 }
 
-RowValueFormatter::RowValueFormatter(std::string value_string) :
-    row_value_type_(RowValueType::kString)
-    ,value_string_(value_string)
-    ,value_int_(0)
-    ,value_float_(0.f)
-    ,value_bool_(false)
-{
-	value_ = nullptr;
-}
-
 RowValueFormatter::RowValueFormatter(Poco::Dynamic::Var& value) :
     row_value_type_(RowValueType::kString)
     ,value_string_("")
@@ -51,6 +41,47 @@ RowValueFormatter::RowValueFormatter(Poco::Dynamic::Var& value) :
 	value_ = &value;
     Format_();
 }
+
+RowValueFormatter::RowValueFormatter(std::string value_string) :
+    row_value_type_(RowValueType::kString)
+    ,value_string_(value_string)
+    ,value_int_(0)
+    ,value_float_(0.f)
+    ,value_bool_(false)
+{
+	value_ = nullptr;
+}
+
+RowValueFormatter::RowValueFormatter(int value_int) :
+    row_value_type_(RowValueType::kInteger)
+    ,value_string_("")
+    ,value_int_(value_int)
+    ,value_float_(0.f)
+    ,value_bool_(false)
+{
+	value_ = nullptr;
+}
+
+RowValueFormatter::RowValueFormatter(float value_float) :
+    row_value_type_(RowValueType::kFloat)
+    ,value_string_("")
+    ,value_int_(0)
+    ,value_float_(value_float)
+    ,value_bool_(false)
+{
+	value_ = nullptr;
+}
+
+RowValueFormatter::RowValueFormatter(bool value_bool) :
+    row_value_type_(RowValueType::kBoolean)
+    ,value_string_("")
+    ,value_int_(0)
+    ,value_float_(0.f)
+    ,value_bool_(value_bool)
+{
+	value_ = nullptr;
+}
+
 
 RowValueFormatter::~RowValueFormatter()
 {

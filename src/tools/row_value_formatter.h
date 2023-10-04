@@ -56,8 +56,11 @@ class CPW::Tools::RowValueFormatter
 {
     public:
         RowValueFormatter();
-        RowValueFormatter(std::string value_string);
         RowValueFormatter(Poco::Dynamic::Var& value);
+        RowValueFormatter(std::string value_string);
+        RowValueFormatter(int value_int);
+        RowValueFormatter(float value_float);
+        RowValueFormatter(bool value_bool);
         ~RowValueFormatter();
 
         RowValueType& get_row_value_type()
