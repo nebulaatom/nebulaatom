@@ -40,8 +40,8 @@ bool UsersManager::AuthenticateUser_()
         // Add filters
             query_manager_.ResetFilters_();
             fields.push_back({"COUNT(1)"});
-            iquals.push_back({"username", username, "iqual"});
-            iquals.push_back({"password", password, "iqual"});
+            iquals.insert({"0", {"username", username, Filters::IqualsFilterElement::Type::kIqual}});
+            iquals.insert({"1", {"password", password, Filters::IqualsFilterElement::Type::kIqual}});
 
         // Execute the query
             if(!query_manager_.ComposeQuery_(Query::TypeAction::kSelect, "_woodpecker_users"))

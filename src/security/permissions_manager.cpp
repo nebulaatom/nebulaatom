@@ -114,7 +114,7 @@ void PermissionsManager::LoadPermissions_()
             query_manager.ResetFilters_();
 
         // Add filters
-            general.set_as("up");
+            general.insert({"0", {Tools::RowValueFormatter{std::string("up")}, Filters::GeneralFilterElement::Type::kAs}});
             fields.push_back({"tp.table_name", "", "no-quotes"});
             fields.push_back({"tp.route", "", "no-quotes"});
             fields.push_back({"u.username", "", "no-quotes"});

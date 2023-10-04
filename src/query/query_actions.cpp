@@ -80,9 +80,7 @@ void QueryActions::ResetFilters_()
 {
     current_filters_->get_fields_filter()->get_filter_elements().clear();
     current_filters_->get_sort_filter()->get_filter_elements().clear();
-    current_filters_->get_general_filter()->get_filter_elements().set_page("0");
-    current_filters_->get_general_filter()->get_filter_elements().set_limit("20");
-    current_filters_->get_general_filter()->get_filter_elements().set_as("");
+    current_filters_->get_general_filter()->get_filter_elements().clear();
     current_filters_->get_iquals_filter()->get_filter_elements().clear();
     current_filters_->get_range_filter()->get_filter_elements().clear();
     current_filters_->get_list_filter()->get_filter_elements().clear();
@@ -346,7 +344,7 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
 
     // Table
         tmp_query.push_back("FROM " + table);
-        current_filters_->get_general_filter()->IncorporateAS_(tmp_query, query_parameters_);
+        current_filters_->get_general_filter()->IncorporateSelected_(tmp_query, Filters::GeneralFilterElement::Type::kAs);
 
     // Joins
         current_filters_->get_join_filter()->Incorporate_(tmp_query, query_parameters_);
@@ -362,8 +360,7 @@ std::string QueryActions::ComposeSelectSentence_(std::string table)
         current_filters_->get_sort_filter()->Incorporate_(tmp_query, query_parameters_);
 
     // Page and Limit condition
-        current_filters_->get_general_filter()->get_filter_elements().set_pagination(true);
-        current_filters_->get_general_filter()->Incorporate_(tmp_query, query_parameters_);
+        current_filters_->get_general_filter()->IncorporateSelected_(tmp_query, Filters::GeneralFilterElement::Type::kPageLimit);
 
     return MakeFinalQuery_(tmp_query);
 }
@@ -373,7 +370,7 @@ std::string QueryActions::ComposeUpdateSentence_(std::string table)
     // Sentence type and table
         std::vector<std::string> tmp_query = {"UPDATE"};
         tmp_query.push_back(table);
-        current_filters_->get_general_filter()->IncorporateAS_(tmp_query, query_parameters_);
+        current_filters_->get_general_filter()->IncorporateSelected_(tmp_query, Filters::GeneralFilterElement::Type::kAs);
 
     // Joins
         current_filters_->get_join_filter()->Incorporate_(tmp_query, query_parameters_);
@@ -390,9 +387,8 @@ std::string QueryActions::ComposeUpdateSentence_(std::string table)
     // Sort conditions
         current_filters_->get_sort_filter()->Incorporate_(tmp_query, query_parameters_);
 
-    // Page and Limit condition
-        current_filters_->get_general_filter()->get_filter_elements().set_pagination(false);
-        current_filters_->get_general_filter()->Incorporate_(tmp_query, query_parameters_);
+    // Limit condition
+        current_filters_->get_general_filter()->IncorporateSelected_(tmp_query, Filters::GeneralFilterElement::Type::kLimit);
 
     return MakeFinalQuery_(tmp_query);
 }
@@ -417,9 +413,8 @@ std::string QueryActions::ComposeDeleteSentence_(std::string table)
     // Sort conditions
         current_filters_->get_sort_filter()->Incorporate_(tmp_query, query_parameters_);
 
-    // Page and Limit condition
-        current_filters_->get_general_filter()->get_filter_elements().set_pagination(false);
-        current_filters_->get_general_filter()->Incorporate_(tmp_query, query_parameters_);
+    // Limit condition
+        current_filters_->get_general_filter()->IncorporateSelected_(tmp_query, Filters::GeneralFilterElement::Type::kLimit);
 
     return MakeFinalQuery_(tmp_query);
 }

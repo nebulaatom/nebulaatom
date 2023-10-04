@@ -37,7 +37,7 @@ void SecurityVerification::AddTargets_(std::list<std::string>& targets)
 
         // Add filters
             query_manager_.ResetFilters_();
-            general.set_as("tp");
+            general.insert({"0", {Tools::RowValueFormatter{std::string("tp")}, Filters::GeneralFilterElement::Type::kAs}});
             fields.push_back({"tp.table_name"});
             fields.push_back({"tp.route"});
 

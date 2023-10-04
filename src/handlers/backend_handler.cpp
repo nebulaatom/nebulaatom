@@ -30,13 +30,37 @@ void BackendHandler::AddRoutes_()
     auto& routes_list = get_dynamic_elements()->get_routes_list();
 
     // Function /api/products
+        auto fm = std::make_shared<Filters::FiltersManager>();
+
         // Setting up the filters
-            auto fm = std::make_shared<Filters::FiltersManager>();
+
             // fields filter
-            fm->get_fields_filter()->get_filter_elements().push_back({"name"});
+                fm->get_fields_filter()->get_filter_elements().push_back({"name"});
+                fm->get_fields_filter()->get_filter_elements().push_back({"price"});
+                fm->get_fields_filter()->get_filter_elements().push_back({"available"});
+
+            // general filter
+                Filters::GeneralFilterElement gfe = {Tools::RowValueFormatter(std::string("0, 21")), Filters::GeneralFilterElement::Type::kPageLimit};
+                gfe.set_editable(true);
+                fm->get_general_filter()->get_filter_elements().insert({"0", std::move(gfe)});
+
+                Filters::GeneralFilterElement gfe2 = {Tools::RowValueFormatter(std::string("newDB")), Filters::GeneralFilterElement::Type::kAs};
+                fm->get_general_filter()->get_filter_elements().insert({"1", std::move(gfe2)});
+
             // iquals filter
-            Dynamic::Var val(-1);
-            fm->get_iquals_filter()->get_filter_elements().push_back({"id", {val}, "no-iqual"});
+                Dynamic::Var val(3);
+                Filters::IqualsFilterElement ele = {"id", {val}, Filters::IqualsFilterElement::Type::kNoIqual};
+                ele.set_editable(true);
+                fm->get_iquals_filter()->get_filter_elements().insert({"0", std::move(ele)});
+
+                Dynamic::Var val2(2);
+                Filters::IqualsFilterElement ele2 = {"id_store", {val2}, Filters::IqualsFilterElement::Type::kNoIqual};
+                ele.set_editable(true);
+                fm->get_iquals_filter()->get_filter_elements().insert({"1", std::move(ele2)});
+
+                Dynamic::Var val3(1);
+                Filters::IqualsFilterElement ele3 = {"id_store_category", {val3}, Filters::IqualsFilterElement::Type::kIqual};
+                fm->get_iquals_filter()->get_filter_elements().insert({"2", std::move(ele3)});
 
         // Setting up the function
             Functions::Function f1{"/api/products"};
@@ -44,23 +68,4 @@ void BackendHandler::AddRoutes_()
             get_functions_manager().get_functions().insert({"/api/products", std::move(f1)});
             routes_list.push_back({"products", "api/products"});
 
-    // Function /api/stores
-        // Setting up the filters
-            auto fm2 = std::make_shared<Filters::FiltersManager>();
-            // fields filter
-            fm2->get_fields_filter()->get_filter_elements().push_back({"name"});
-            // iquals filter
-            Dynamic::Var val2(-1);
-            fm2->get_iquals_filter()->get_filter_elements().push_back({"id", {val2}, "no-iqual"});
-
-        // Setting up Iqual parameterized
-            auto found = fm2->get_filters_parameterized().find(Filters::FilterType::kIqual);
-            if(found != fm2->get_filters_parameterized().end())
-                fm2->get_filters_parameterized()[Filters::FilterType::kIqual] = true;
-
-        // Setting up the function
-            Functions::Function f2{"/api/stores"};
-            f2.get_filters().swap(fm2);
-            get_functions_manager().get_functions().insert({"/api/stores", std::move(f2)});
-            routes_list.push_back({"stores", "api/stores"});
 }
