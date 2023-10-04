@@ -27,32 +27,39 @@ namespace CPW
 {
     namespace Filters
     {
-        class GeneralFilterElements;
+        class GeneralFilterElement;
         class GeneralFilter;
     }
 }
 
 
-class CPW::Filters::GeneralFilterElements
+class CPW::Filters::GeneralFilterElement
 {
     public:
-        GeneralFilterElements() : page_("0"), limit_("20"), as_(""), pagination_(true) {}
+        enum class Type
+        {
+            kLimit
+            ,kPageLimit
+            ,kAs
+        };
 
-        std::string get_page() const { return page_; }
-        std::string get_limit() const { return limit_; }
-        std::string get_as() const { return as_; }
-        bool get_pagination() const { return pagination_; }
+        GeneralFilterElement(Tools::RowValueFormatter value, Type type);
 
-        void set_page(std::string page) { page_ = page; }
-        void set_limit(std::string limit) { limit_ = limit; }
-        void set_as(std::string as) { as_ = as; }
-        void set_pagination(bool pagination) { pagination_ = pagination; }
+        Tools::RowValueFormatter& get_value()
+        {
+            auto& var = value_;
+            return var;
+        }
+        Type get_type() const { return type_; }
+        bool get_editable() const { return editable_; }
+
+        void set_type(Type type) { type_ = type; }
+        void set_editable(bool editable) { editable_ = editable; }
 
     private:
-        std::string page_;
-        std::string limit_;
-        std::string as_;
-        bool pagination_;
+        Tools::RowValueFormatter value_;
+        Type type_;
+        bool editable_;
 };
 
 class CPW::Filters::GeneralFilter : Filters::Filter
@@ -61,7 +68,7 @@ class CPW::Filters::GeneralFilter : Filters::Filter
         GeneralFilter();
         virtual ~GeneralFilter();
 
-        Filters::GeneralFilterElements& get_filter_elements()
+        std::map<std::string, Filters::GeneralFilterElement>& get_filter_elements()
         {
             auto& var = filter_elements_;
             return var;
@@ -69,10 +76,13 @@ class CPW::Filters::GeneralFilter : Filters::Filter
 
         virtual void Identify_(Dynamic::Var& filter) override;
         virtual void Incorporate_(VectorString& tmp_query, RowValueFormatterList& query_parameters) override;
-        void IncorporateAS_(VectorString& tmp_query, RowValueFormatterList& query_parameters);
+        void IncorporateSelected_(VectorString& tmp_query, GeneralFilterElement::Type type);
+
+    protected:
+        void ReplaceFilterElement(std::string id, Dynamic::Var& value);
 
     private:
-        Filters::GeneralFilterElements filter_elements_;
+        std::map<std::string, Filters::GeneralFilterElement> filter_elements_;
 };
 
 
