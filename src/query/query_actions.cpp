@@ -23,7 +23,7 @@ using namespace CPW::Query;
 QueryActions::QueryActions() :
     final_query_("")
     ,affected_rows_(0)
-    ,current_filters_(new Filters::FiltersManager)
+    //,current_filters_(new Filters::FiltersManager)
     ,result_json_(new JSON::Object)
     ,app_(Application::instance())
     ,row_value_formatter_(new Tools::RowValueFormatter)
@@ -36,34 +36,80 @@ QueryActions::~QueryActions()
 
 }
 
-void QueryActions::IdentifyFilters_()
+void QueryActions::IdentifyParameters_(Functions::Action& action)
 {
     try
     {
-        Filters::FilterType type;
         auto data_array = get_json_body();
 
         for (std::size_t a = 0; a < data_array->size(); a++)
         {
-            // Get the filter object
+            // Get the action object
                 if(data_array->get(a).isEmpty())
-                    throw std::runtime_error("Data array haves a empty object.");
+                {
+                    app_.logger().error("Data array haves an empty action.");
+                    continue;
+                }
 
-            // Get the type of filter object
-                auto filter = data_array->getObject(a);
-                if(filter->get("type").isEmpty())
-                    throw std::runtime_error("An array object don't haves a type.");
+                auto action_object = data_array->getObject(a);
 
-            // Search if exists
-                if(current_filters_->ExistsType_(filter->get("type").toString()))
-                    type = current_filters_->get_filters_type_map().find(filter->get("type").toString())->second;
-                else
+            // Get the action identifier
+                if(action_object->get("action_id").isEmpty() || !action_object->get("action_id").isString())
+                {
+                    app_.logger().error("The action object does not have an action_id String Object.");
+                    continue;
+                }
+
+                auto action_id = action_object->get("action_id").toString();
+
+            // Verify Action identifier
+                if(action_id != action.get_identifier())
                     continue;
 
-                auto filter_var = data_array->get(a);
+            // Get the parameters object
+                if(action_object->get("parameters").isEmpty() || !action_object->get("parameters").isArray())
+                {
+                    app_.logger().error("The action object does not have a parameters array.");
+                    continue;
+                }
 
-            // Manage the type
-                ManageFilterType_(type, filter_var);
+                auto parameters_array = action_object->getArray("parameters");
+
+            // Iterate over parameters array
+                for(std::size_t b = 0; b < parameters_array->size(); b++)
+                {
+                    // Get parameter object
+                    if(parameters_array->get(b).isEmpty())
+                    {
+                        app_.logger().error("Parameters array haves an empty element.");
+                        continue;
+                    }
+
+                    auto parameter_object = parameters_array->getObject(b);
+
+                    // Get parameter name
+                    if(parameter_object->get("name").isEmpty() || !parameter_object->get("name").isString())
+                    {
+                        app_.logger().error("Parameter name is not a String Object.");
+                        continue;
+                    }
+
+                    auto parameter_name = parameter_object->get("name").toString();
+
+                    // Get parameter value
+                    if(parameter_object->get("value").isEmpty())
+                    {
+                        app_.logger().error("Parameter value is empty.");
+                        continue;
+                    }
+
+                    auto parameter_value = parameter_object->get("value");
+
+                    // Save parameter
+                    auto new_parameter = Query::Parameter(parameter_name, Tools::RowValueFormatter{parameter_value});
+                    action.get_parameters().push_back(std::move(new_parameter));
+                }
+
         }
     }
     catch(std::runtime_error& error)
@@ -76,54 +122,28 @@ void QueryActions::IdentifyFilters_()
     }
 }
 
-void QueryActions::ResetFilters_()
-{
-    current_filters_->get_fields_filter()->get_filter_elements().clear();
-    current_filters_->get_sort_filter()->get_filter_elements().clear();
-    current_filters_->get_general_filter()->get_filter_elements().clear();
-    current_filters_->get_iquals_filter()->get_filter_elements().clear();
-    current_filters_->get_range_filter()->get_filter_elements().clear();
-    current_filters_->get_list_filter()->get_filter_elements().clear();
-    current_filters_->get_like_filter()->get_filter_elements().clear();
-    current_filters_->get_join_filter()->get_filter_elements().clear();
-    current_filters_->get_group_filter()->get_filter_elements().clear();
-    current_filters_->get_values_filter()->get_filter_elements().clear();
-    current_filters_->get_set_filter()->get_filter_elements().clear();
-}
 
-bool QueryActions::ComposeQuery_(TypeAction action_type, std::string table)
+bool QueryActions::ComposeQuery_(Functions::Action& action)
 {
     try
     {
-        // Compose query string
-            std::string tmp_query;
-
-            switch(action_type)
-            {
-                case TypeAction::kInsert: tmp_query = ComposeInsertSentence_(table); break;
-                case TypeAction::kSelect: tmp_query = ComposeSelectSentence_(table); break;
-                case TypeAction::kUpdate: tmp_query = ComposeUpdateSentence_(table); break;
-                case TypeAction::kDelete: tmp_query = ComposeDeleteSentence_(table); break;
-            }
-
         // Create de query statement
             session_ = Query::DatabaseManager::StartSessionMySQL_();
             if(session_.get() == nullptr)
             {
-                throw MySQL::MySQLException("Error to connect to database server");
+                throw MySQL::MySQLException("Error to connect to database server.");
                 return false;
             }
 
             query_ = std::make_shared<Data::Statement>(*session_);
 
         // Set the query
-            final_query_ = std::move(tmp_query);
-            *query_ << final_query_;
+            *query_ << action.get_sql_code();
 
         // Set the parameters
-            for(auto& par : query_parameters_)
+            for(auto& param : action.get_parameters())
             {
-                switch(par.get_row_value_type())
+                switch(param.get_value().get_row_value_type())
                 {
                     case Tools::RowValueType::kEmpty:
                     {
@@ -133,25 +153,25 @@ bool QueryActions::ComposeQuery_(TypeAction action_type, std::string table)
                     }
                     case Tools::RowValueType::kString:
                     {
-                        auto& value = par.get_value_string();
+                        auto& value = param.get_value().get_value_string();
                         *query_ , use(value);
                         break;
                     }
                     case Tools::RowValueType::kInteger:
                     {
-                        auto& value = par.get_value_int();
+                        auto& value = param.get_value().get_value_int();
                         *query_ , use(value);
                         break;
                     }
                     case Tools::RowValueType::kFloat:
                     {
-                        auto& value = par.get_value_float();
+                        auto& value = param.get_value().get_value_float();
                         *query_ , use(value);
                         break;
                     }
                     case Tools::RowValueType::kBoolean:
                     {
-                        auto& value = par.get_value_bool();
+                        auto& value = param.get_value().get_value_bool();
                         *query_ , use(value);
                         break;
                     }
@@ -180,7 +200,7 @@ bool QueryActions::ComposeQuery_(TypeAction action_type, std::string table)
     return false;
 }
 
-bool QueryActions::ExecuteQuery_(HTTPServerResponse& response)
+bool QueryActions::ExecuteQuery_(HTTPServerResponse* response)
 {
     try
     {
@@ -188,19 +208,19 @@ bool QueryActions::ExecuteQuery_(HTTPServerResponse& response)
     }
     catch(MySQL::MySQLException& error)
     {
-        GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, std::string(error.message()));
+        GenericResponse_(*response, HTTPResponse::HTTP_BAD_REQUEST, std::string(error.message()));
         app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.message()));
         return false;
     }
     catch(std::runtime_error& error)
     {
-        GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, std::string(error.what()));
+        GenericResponse_(*response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, std::string(error.what()));
         app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
         return false;
     }
     catch(std::exception& error)
     {
-        GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, std::string(error.what()));
+        GenericResponse_(*response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, std::string(error.what()));
         app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
         return false;
     }

@@ -48,13 +48,14 @@
 #include "filters/filters_manager.h"
 #include "http/common_responses.h"
 #include "tools/row_value_formatter.h"
+#include "functions/function.h"
 
 
 namespace CPW
 {
     namespace Query
     {
-        enum class TypeAction;
+        //enum class TypeAction;
         class QueryActions;
     }
 }
@@ -66,13 +67,13 @@ using namespace Poco::Data;
 using namespace Poco::Data::Keywords;
 
 
-enum class CPW::Query::TypeAction
+/*enum class CPW::Query::TypeAction
 {
     kInsert
     ,kSelect
     ,kUpdate
     ,kDelete
-};
+};*/
 
 
 class CPW::Query::QueryActions :
@@ -80,18 +81,18 @@ class CPW::Query::QueryActions :
     ,public HTTP::CommonResponses
 {
     public:
-        using RowValueFormatterList = std::list<Tools::RowValueFormatter>;
+        //using RowValueFormatterList = std::list<Tools::RowValueFormatter>;
 
         QueryActions();
         ~QueryActions();
 
         std::string get_final_query() const {return final_query_;}
         int get_affected_rows_() const {return affected_rows_;}
-        std::shared_ptr<Filters::FiltersManager>& get_current_filters_()
+        /*std::shared_ptr<Filters::FiltersManager>& get_current_filters_()
         {
             auto& var = current_filters_;
             return var;
-        }
+        }*/
         std::shared_ptr<Data::Session>& get_session()
         {
             auto& var = session_;
@@ -103,38 +104,38 @@ class CPW::Query::QueryActions :
             return var;
         }
         JSON::Object::Ptr get_result_json() const {return result_json_;}
-        RowValueFormatterList& get_query_parameters()
+        /*RowValueFormatterList& get_query_parameters()
         {
             auto& var = query_parameters_;
             return var;
-        }
+        }*/
 
-        void IdentifyFilters_();
-        void ResetFilters_();
-        bool ComposeQuery_(TypeAction action_type, std::string table);
-        bool ExecuteQuery_(HTTPServerResponse& response);
+        void IdentifyParameters_(Functions::Action& action);
+        //void ResetFilters_();
+        bool ComposeQuery_(Functions::Action& action);
+        bool ExecuteQuery_(HTTPServerResponse* response);
         bool ExecuteQuery_();
         bool CreateJSONResult_();
 
     protected:
-        std::string ComposeInsertSentence_(std::string table);
+        /*std::string ComposeInsertSentence_(std::string table);
         std::string ComposeSelectSentence_(std::string table);
         std::string ComposeUpdateSentence_(std::string table);
         std::string ComposeDeleteSentence_(std::string table);
         std::string MakeFinalQuery_(std::vector<std::string>& tmp_query);
         void ManageFilterType_(Filters::FilterType type, Dynamic::Var& filter_var);
-        void ManageFilterTypeFromFiles_(Filters::FilterType type, Dynamic::Var& filter_var);
+        void ManageFilterTypeFromFiles_(Filters::FilterType type, Dynamic::Var& filter_var);*/
 
     private:
         std::string final_query_;
         int affected_rows_;
-        std::shared_ptr<Filters::FiltersManager> current_filters_;
+        //std::shared_ptr<Filters::FiltersManager> current_filters_;
         std::shared_ptr<Data::Session> session_;
         std::shared_ptr<Data::Statement> query_;
         JSON::Object::Ptr result_json_;
         Application& app_;
         std::shared_ptr<Tools::RowValueFormatter> row_value_formatter_;
-        RowValueFormatterList query_parameters_;
+        //RowValueFormatterList query_parameters_;
 };
 
 
