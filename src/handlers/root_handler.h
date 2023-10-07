@@ -72,6 +72,7 @@ namespace CPW
 {
     namespace Handlers
     {
+        class ReferenceContainer;
         class RootHandler;
     }
 }
@@ -88,7 +89,7 @@ using Poco::Data::Statement;
 class CPW::Handlers::RootHandler :
     public HTTPRequestHandler
     ,public HTTP::CommonResponses
-    ,public HTTP::HTTPMethods
+    //,public HTTP::HTTPMethods
 {
     public:
         RootHandler(std::string api_version);
@@ -106,6 +107,26 @@ class CPW::Handlers::RootHandler :
             auto& var = functions_manager_;
             return var;
         }
+        HTTPServerRequest* get_request() const {return request_;}
+        HTTPServerResponse* get_response() const {return response_;}
+        std::list<Tools::Route>& get_routes_list()
+        {
+            auto& var = routes_list_;
+            return var;
+        }
+        std::shared_ptr<CPW::Tools::Route>& get_requested_route()
+        {
+            auto& var = requested_route_;
+            return var;
+        }
+        std::shared_ptr<Query::QueryActions>& get_query_actions()
+        {
+            auto& var = query_actions_;
+            return var;
+        }
+
+        void set_request(HTTPServerRequest& request) {request_ = &request;}
+        void set_response(HTTPServerResponse& response) {response_ = &response;}
 
         virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
@@ -122,12 +143,19 @@ class CPW::Handlers::RootHandler :
     private:
         std::string api_version_;
         std::string user_;
+        std::string method_;
         bool route_verification_;
         Extras::SecurityVerification current_security_;
-        Tools::RequestsManager requests_manager_;
-        std::shared_ptr<Extras::DynamicElements> dynamic_elements_;
+        //Tools::RequestsManager requests_manager_;
+        //std::shared_ptr<Extras::DynamicElements> dynamic_elements_;
         std::list<std::string> targets_;
         Functions::FunctionsManager functions_manager_;
+        HTTPServerRequest* request_;
+        HTTPServerResponse* response_;
+        std::list<Tools::Route> routes_list_;
+        std::shared_ptr<CPW::Tools::Route> requested_route_;
+        std::shared_ptr<Query::QueryActions> query_actions_;
+        Functions::Function* current_function_;
 };
 
 #endif // CPW_HANDLERS_ROOTHANDLER_H

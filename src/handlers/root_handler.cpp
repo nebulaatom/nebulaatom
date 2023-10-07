@@ -24,12 +24,17 @@ RootHandler::RootHandler(std::string api_version) :
     app_(Application::instance())
     ,api_version_(api_version)
     ,user_("null")
+    ,method_("GET")
     ,route_verification_(true)
-    ,dynamic_elements_(new Extras::DynamicElements())
+    ,current_function_(nullptr)
+    //,dynamic_elements_(new Extras::DynamicElements())
 {
-    requests_manager_.set_http_methods(*this);
-    requests_manager_.get_http_methods()->set_dynamic_elements(dynamic_elements_);
-    HTTPMethods::set_dynamic_elements(dynamic_elements_);
+    //requests_manager_.set_http_methods(*this);
+    //requests_manager_.get_http_methods()->set_dynamic_elements(dynamic_elements_);
+    //HTTPMethods::set_dynamic_elements(dynamic_elements_);
+
+    requested_route_ = std::make_shared<Tools::Route>("", std::vector<std::string>{""});
+    query_actions_ = std::make_shared<Query::QueryActions>();
 
     current_security_.set_security_type(Extras::SecurityType::kDisableAll);
 }
@@ -43,58 +48,76 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
 {
     try
     {
+        // Set request and response
+            request_ = &request;
+            response_ = &response;
+            if(request_ == nullptr || response_ == nullptr)
+            {
+                GenericResponse_(*response_, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Request or response is Null Pointer.");
+                return;
+            }
+
         // Use SSL
             SecureStreamSocket socket = static_cast<Net::HTTPServerRequestImpl&>(request).socket();
             if (socket.havePeerCertificate())
                 X509Certificate cert = socket.peerCertificate();
 
-        // Process request and response
-            dynamic_elements_->set_request(request);
-            dynamic_elements_->set_response(response);
-            if(dynamic_elements_->get_request() == nullptr || dynamic_elements_->get_response() == nullptr)
-                GenericResponse_(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Something was wrong with the request or response.");
-
         // Process route
             if(!ProcessRoute_())
                 return;
 
-        // Found the corresponding HTTP method
-            auto method = requests_manager_.get_actions_strings().find(dynamic_elements_->get_request()->getMethod());
-            if(method == requests_manager_.get_actions_strings().end())
-                GenericResponse_(response, HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
+        // Get the corresponding HTTP method
+            method_ = request.getMethod();
 
-        // Call the corresponding HTTP method
-            requests_manager_.get_actions_strings()[dynamic_elements_->get_request()->getMethod()]();
+        // Verify current function
+            if(current_function_ == nullptr)
+            {
+                GenericResponse_(*response_, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Current function is Null Pointer.");
+                return;
+            }
+
+        // Process actions of the function
+            for(auto& action : current_function_->get_actions())
+            {
+                query_actions_->IdentifyParameters_(action);
+                query_actions_->ComposeQuery_(action);
+                query_actions_->ExecuteQuery_(response_);
+            }
     }
     catch(MySQL::MySQLException& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
-        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Error with the database or query. " + error.displayText());
+        GenericResponse_(*response_, HTTPResponse::HTTP_BAD_REQUEST, "Error with the database or query. " + error.displayText());
     }
     catch(RuntimeException& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
-        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
+        GenericResponse_(*response_, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
     }
     catch(JSON::JSONException& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
-        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
+        GenericResponse_(*response_, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
     }
     catch(std::out_of_range& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
-        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
+        GenericResponse_(*response_, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
     catch(std::runtime_error& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
-        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
+        GenericResponse_(*response_, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
     catch(std::exception& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
-        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
+        GenericResponse_(*response_, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
+    }
+    catch(...)
+    {
+        app_.logger().error("- Error on root_handler.cc on handleRequest(): No handled exception.");
+        GenericResponse_(*response_, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. No handled exception." );
     }
 }
 
@@ -104,11 +127,11 @@ bool RootHandler::ProcessRoute_()
         AddRoutes_();
 
         std::vector<std::string> segments;
-        URI(dynamic_elements_->get_request()->getURI()).getPathSegments(segments);
-        dynamic_elements_->set_requested_route(std::make_shared<Tools::Route>("", segments));
+        URI(request_->getURI()).getPathSegments(segments);
+        requested_route_ = std::make_shared<Tools::Route>("", segments);
 
     // Manage the route type
-        switch(dynamic_elements_->get_requested_route()->get_current_route_type())
+        switch(requested_route_->get_current_route_type())
         {
             case CPW::Tools::RouteType::kEndpoint:
             {
@@ -117,7 +140,7 @@ bool RootHandler::ProcessRoute_()
                 // Process the request body
                     if(!ManageRequestBody_())
                     {
-                        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Something was wrong with the Request body.");
+                        GenericResponse_(*response_, HTTPResponse::HTTP_BAD_REQUEST, "Something was wrong with the Request body.");
                         return false;
                     }
 
@@ -125,24 +148,20 @@ bool RootHandler::ProcessRoute_()
                     std::vector<std::string> login_route({"api", api_version_, "system", "login"});
                     std::vector<std::string> logout_route({"api", api_version_, "system", "logout"});
 
-                    if
-                    (
-                        dynamic_elements_->get_requested_route()->get_segments() != login_route
-                        && dynamic_elements_->get_requested_route()->get_segments() != logout_route
-                    )
+                    if(requested_route_->get_segments() != login_route && requested_route_->get_segments() != logout_route)
                     {
                         if(route_verification_)
                         {
                             if(!IdentifyRoute_())
                             {
-                                GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_NOT_FOUND, "The requested endpoint is not available.");
+                                GenericResponse_(*response_, HTTPResponse::HTTP_NOT_FOUND, "The requested endpoint is not available.");
                                 return false;
                             }
                         }
 
                         if(!VerifySession_())
                         {
-                            GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "Session not found.");
+                            GenericResponse_(*response_, HTTPResponse::HTTP_UNAUTHORIZED, "Session not found.");
                             return false;
                         }
 
@@ -174,7 +193,7 @@ bool RootHandler::VerifySession_()
     // Extract session ID
         std::string session_id;
         Poco::Net::NameValueCollection cookies;
-        get_dynamic_elements()->get_request()->getCookies(cookies);
+        request_->getCookies(cookies);
         auto cookie_session = cookies.find("cpw-woodpecker-sid");
         auto sessions = Tools::SessionsHandler::get_sessions();
 
@@ -201,20 +220,16 @@ bool RootHandler::VerifyPermissions_()
 
     // Setting up targets
         Query::QueryActions query_manager;
-        query_manager.get_json_body() = dynamic_elements_->get_query_actions()->get_json_body();
-        query_manager.IdentifyFilters_();
+        query_manager.get_json_body() = query_actions_->get_json_body();
+        //query_manager.IdentifyFilters_();
 
-        auto& joins = query_manager.get_current_filters_()->get_join_filter()->get_filter_elements();
-        targets_.push_back(dynamic_elements_->get_requested_route()->get_target());
-        for(auto join : joins)
-            targets_.push_back(join.get_table());
-
+        targets_.push_back(requested_route_->get_target());
         current_security_.AddTargets_(targets_);
 
     // Verify permissions
     if(!current_security_.VerifyRoutesPermissions_())
     {
-        GenericResponse_(*dynamic_elements_->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
+        GenericResponse_(*response_, HTTPResponse::HTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
         return false;
     }
 
@@ -223,20 +238,30 @@ bool RootHandler::VerifyPermissions_()
 
 bool RootHandler::IdentifyRoute_()
 {
-    auto requested_route = dynamic_elements_->get_requested_route();
-    for(auto& it : dynamic_elements_->get_routes_list())
+    for(auto& it : routes_list_)
     {
-        if(requested_route->SegmentsToString_() == it.SegmentsToString_())
+        if(requested_route_->SegmentsToString_() == it.SegmentsToString_())
         {
-            requested_route->set_target(it.get_target());
+            // Set target
+            requested_route_->set_target(it.get_target());
 
             // Setting up the route functions
-            auto endpoint = requested_route->SegmentsToString_();
+            auto endpoint = requested_route_->SegmentsToString_();
             auto found = get_functions_manager().get_functions().find(endpoint);
             if(found == get_functions_manager().get_functions().end())
                 return false;
 
-            dynamic_elements_->get_query_actions()->get_current_filters_() = found->second.get_filters();
+            // Validate type
+            auto found_type = found->second.get_methods().find(method_);
+            if(found_type == found->second.get_methods().end())
+                return false;
+
+            // Same type
+            if(found_type->second != found->second.get_type())
+                continue;
+
+            current_function_ = &found->second;
+            //query_actions_->get_current_filters_() = found->second.get_filters();
 
             return true;
         }
@@ -247,12 +272,11 @@ bool RootHandler::IdentifyRoute_()
 
 bool RootHandler::ManageRequestBody_()
 {
-    auto query_actions = dynamic_elements_->get_query_actions();
-    std::string request_body = query_actions->ReadBody_(dynamic_elements_->get_request()->stream());
+    std::string request_body = query_actions_->ReadBody_(request_->stream());
 
     if(request_body.empty())
     {
-        URI tmp_uri(dynamic_elements_->get_request()->getURI());
+        URI tmp_uri(request_->getURI());
         if(!(tmp_uri.getQueryParameters().size() > 0))
             return false;
 
@@ -265,7 +289,7 @@ bool RootHandler::ManageRequestBody_()
         request_body = tmp_uri.getQueryParameters()[0].second;
     }
 
-    if(!dynamic_elements_->get_query_actions()->Parse_(request_body))
+    if(!query_actions_->Parse_(request_body))
         return false;
 
     return true;
