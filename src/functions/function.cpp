@@ -4,9 +4,12 @@
 using namespace CPW;
 using namespace CPW::Functions;
 
-Function::Function(std::string endpoint) :
+Function::Function(std::string endpoint, Type type) :
     endpoint_(endpoint)
+    ,type_(type)
 {
-    filters_ = std::make_shared<Filters::FiltersManager>();
-    triggers_ = std::make_shared<Filters::FiltersManager>();
+    methods_.insert({"POST", Type::kPOST});
+    methods_.insert({"GET", Type::kGET});
+    methods_.insert({"PUT", Type::kPUT});
+    methods_.insert({"DEL", Type::kDEL});
 }

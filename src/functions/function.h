@@ -4,9 +4,12 @@
 
 
 #include <string>
+#include <vector>
+#include <map>
 #include <memory>
 
-#include "filters/filters_manager.h"
+#include "functions/action.h"
+#include "query/parameter.h"
 
 
 namespace CPW
@@ -21,27 +24,37 @@ namespace CPW
 class CPW::Functions::Function
 {
     public:
-        Function(std::string endpoint);
+        enum class Type
+        {
+            kPOST
+            ,kGET
+            ,kPUT
+            ,kDEL
+        };
+
+        Function(std::string endpoint, Type type);
 
         std::string get_endpoint() const { return endpoint_; }
-        std::shared_ptr<Filters::FiltersManager>& get_filters()
+        Type get_type() const { return type_; }
+        std::vector<Functions::Action>& get_actions()
         {
-            auto& var = filters_;
+            auto& var = actions_;
             return var;
         }
-        std::shared_ptr<Filters::FiltersManager>& get_triggers()
+        std::map<std::string, Type>& get_methods()
         {
-            auto& var = triggers_;
+            auto& var = methods_;
             return var;
         }
 
         void set_endpoint(std::string endpoint) { endpoint_ = endpoint; }
+        void set_type(Type type) { type_ = type; }
 
     private:
         std::string endpoint_;
-        std::shared_ptr<Filters::FiltersManager> filters_;
-        std::shared_ptr<Filters::FiltersManager> triggers_;
-
+        Type type_;
+        std::vector<Functions::Action> actions_;
+        std::map<std::string, Type> methods_;
 };
 
 
