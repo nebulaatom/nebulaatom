@@ -23,9 +23,11 @@ namespace CPW
 class CPW::Functions::Action
 {
     public:
-        Action();
+        Action(std::string identifier);
 
         std::string get_identifier() const { return identifier_; };
+        std::string get_status() const { return status_; };
+        std::string get_message() const { return message_; };
         std::string get_custom_error() const { return custom_error_; };
         std::vector<Query::Parameter>& get_parameters()
         {
@@ -40,11 +42,15 @@ class CPW::Functions::Action
         }
 
         void set_identifier(std::string identifier) { identifier_ = identifier; };
+        void set_status(std::string status) { status_ = status; };
+        void set_message(std::string message) { message_ = message; };
         void set_custom_error(std::string custom_error) { custom_error_ = custom_error; };
         void set_sql_code(std::string sql_code) { sql_code_ = sql_code; };
 
     private:
         std::string identifier_;
+        std::string status_;
+        std::string message_;
         std::string custom_error_;
         std::vector<Query::Parameter> parameters_;
         std::string sql_code_;
