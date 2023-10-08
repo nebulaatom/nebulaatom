@@ -39,6 +39,8 @@ target_link_libraries(
     loginhandler
     databasemanager
     functionsmanager
+    results
+    parameter
     Poco::Foundation
     Poco::Net
     Poco::NetSSL

@@ -2,6 +2,16 @@
 
 ## Objects libraries
 
+### parameter
+add_library(parameter OBJECT "parameter.cpp")
+target_include_directories(parameter PUBLIC ${HEADER})
+set_target_properties(parameter PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
+### results
+add_library(results OBJECT "results.cpp")
+target_include_directories(results PUBLIC ${HEADER})
+set_target_properties(results PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
 ### queryactions
 add_library(queryactions OBJECT "query_actions.cpp")
 target_include_directories(queryactions PUBLIC ${HEADER})
