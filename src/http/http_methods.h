@@ -20,14 +20,6 @@
 #define CPW_HTTP_HTTPMETHODS_H
 
 
-#include <Poco/Net/HTTPServerRequest.h>
-#include <Poco/Net/HTTPResponse.h>
-#include <Poco/Net/HTTPServerResponse.h>
-
-#include "extras/dynamic_elements.h"
-#include "http/common_responses.h"
-
-
 namespace CPW
 {
     namespace HTTP
@@ -36,33 +28,19 @@ namespace CPW
     }
 }
 
-using namespace Poco;
-using namespace Poco::Net;
-using namespace Poco::Util;
-
 
 class CPW::HTTP::HTTPMethods
 {
     public:
-        using DynamicElementSharedPtr = std::shared_ptr<Extras::DynamicElements>;
-
         HTTPMethods();
         virtual ~HTTPMethods();
 
-        DynamicElementSharedPtr get_dynamic_elements() const {return dynamic_elements_;}
-        void set_dynamic_elements(DynamicElementSharedPtr dynamic_elements) {dynamic_elements_ = dynamic_elements;}
+        virtual void HandleGETMethod_() = 0;
+        virtual void HandlePOSTMethod_() = 0;
+        virtual void HandlePUTMethod_() = 0;
+        virtual void HandleDELMethod_() = 0;
 
-        virtual void HandleGETMethod_();
-        virtual void HandlePOSTMethod_();
-        virtual void HandlePUTMethod_();
-        virtual void HandleDELMethod_();
 
-    protected:
-        bool QueryProcess_(Query::TypeAction action);
-
-    private:
-        DynamicElementSharedPtr dynamic_elements_;
-        CommonResponses responses_;
 };
 
 #endif // CPW_HTTP_HTTPMETHODS_H
