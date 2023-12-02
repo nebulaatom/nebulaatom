@@ -36,18 +36,20 @@ namespace CPW
 }
 
 
-class CPW::Handlers::FrontendHandler : public RootHandler
+class CPW::Handlers::FrontendHandler :
+    public RootHandler
 {
     public:
         FrontendHandler(std::string api_version);
         ~FrontendHandler();
 
     protected:
+        virtual void AddRoutes_() override;
+        virtual void Process_() override;
         virtual void HandleGETMethod_() override;
         virtual void HandlePOSTMethod_() override;
         virtual void HandlePUTMethod_() override;
         virtual void HandleDELMethod_() override;
-        virtual void AddRoutes_() override;
 
     private:
         Files::FileManager file_manager_;

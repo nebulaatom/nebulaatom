@@ -25,6 +25,16 @@ NullHandler::~NullHandler()
 
 }
 
+void NullHandler::AddRoutes_()
+{
+
+}
+
+void NullHandler::Process_()
+{
+    SettingUpFunctions_();
+}
+
 void NullHandler::HandleGETMethod_()
 {
     NullResponse_();
@@ -45,17 +55,12 @@ void NullHandler::HandleDELMethod_()
     NullResponse_();
 }
 
-void NullHandler::AddRoutes_()
-{
-
-}
-
 void NullHandler::NullResponse_()
 {
     HTMLResponse_
     (
-        *get_dynamic_elements()->get_response()
+        *get_response()
         ,HTTPResponse::HTTP_NOT_FOUND
-        ,"Sorry, content not found from" + get_dynamic_elements()->get_request()->getMethod() + " request."
+        ,"Sorry, content not found from" + get_request()->getMethod() + " request."
     );
 }

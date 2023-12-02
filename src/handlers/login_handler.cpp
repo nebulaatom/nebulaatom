@@ -25,9 +25,23 @@ LoginHandler::~LoginHandler()
 
 }
 
+void LoginHandler::AddRoutes_()
+{
+    auto& routes_list = get_routes_list();
+
+    routes_list.push_back({"login", {"api", get_api_version(), "system", "login"}});
+    routes_list.push_back({"logout", {"api", get_api_version(), "system", "logout"}});
+
+}
+
+void LoginHandler::Process_()
+{
+    SettingUpFunctions_();
+}
+
 void LoginHandler::HandleGETMethod_()
 {
-    GenericResponse_(*get_dynamic_elements()->get_response(), HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
+    GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
 }
 
 void LoginHandler::HandlePOSTMethod_()
@@ -35,35 +49,26 @@ void LoginHandler::HandlePOSTMethod_()
     std::vector<std::string> login_route({"api", get_api_version(), "system", "login"});
     std::vector<std::string> logout_route({"api", get_api_version(), "system", "logout"});
 
-    if(get_dynamic_elements()->get_requested_route()->get_segments() == login_route)
+    if(get_requested_route()->get_segments() == login_route)
     {
         StartSession_();
     }
-    else if(get_dynamic_elements()->get_requested_route()->get_segments() == logout_route)
+    else if(get_requested_route()->get_segments() == logout_route)
     {
         EndSession_();
     }
     else
-        GenericResponse_(*get_dynamic_elements()->get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Login route not identified.");
+        GenericResponse_(*get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Login route not identified.");
 }
 
 void LoginHandler::HandlePUTMethod_()
 {
-    GenericResponse_(*get_dynamic_elements()->get_response(), HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
+    GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
 }
 
 void LoginHandler::HandleDELMethod_()
 {
-    GenericResponse_(*get_dynamic_elements()->get_response(), HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
-}
-
-void LoginHandler::AddRoutes_()
-{
-    auto& routes_list = get_dynamic_elements()->get_routes_list();
-
-    routes_list.push_back({"login", {"api", get_api_version(), "system", "login"}});
-    routes_list.push_back({"logout", {"api", get_api_version(), "system", "logout"}});
-
+    GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
 }
 
 void LoginHandler::StartSession_()
@@ -72,18 +77,16 @@ void LoginHandler::StartSession_()
         auto session_id = SessionExists_();
         if(session_id != "")
         {
-            GenericResponse_(*get_dynamic_elements()->get_response(), HTTPResponse::HTTP_OK, "The client has already logged in.");
+            GenericResponse_(*get_response(), HTTPResponse::HTTP_OK, "The client has already logged in.");
             return;
         }
 
     // Get the user and password
-        auto query_actions = get_dynamic_elements()->get_query_actions();
-        auto json_body = query_actions->get_json_body();
         std::string user = "", password = "";
 
-        if(json_body->size() > 0)
+        if(get_json_body()->size() > 0)
         {
-            auto json_auth = json_body->getObject(0);
+            auto json_auth = get_json_body()->getObject(0);
             if(!json_auth->get("user").isEmpty())
                 user = json_auth->get("user").toString();
             if(!json_auth->get("password").isEmpty())
@@ -95,7 +98,7 @@ void LoginHandler::StartSession_()
         get_current_security().get_users_manager().get_current_user().set_password(password);
         if(!get_current_security().get_users_manager().AuthenticateUser_())
         {
-            GenericResponse_(*get_dynamic_elements()->get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "Unauthorized user or wrong user or password.");
+            GenericResponse_(*get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "Unauthorized user or wrong user or password.");
             return;
         }
 
@@ -110,9 +113,9 @@ void LoginHandler::StartSession_()
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
 
-        get_dynamic_elements()->get_response()->addCookie(cookie);
+        get_response()->addCookie(cookie);
 
-        GenericResponse_(*get_dynamic_elements()->get_response(), HTTPResponse::HTTP_OK, "Client logged in.");
+        GenericResponse_(*get_response(), HTTPResponse::HTTP_OK, "Client logged in.");
 }
 
 void LoginHandler::EndSession_()
@@ -128,9 +131,9 @@ void LoginHandler::EndSession_()
         Poco::Net::HTTPCookie cookie("cpw-woodpecker-sid", "");
         cookie.setPath("/");
         cookie.setMaxAge(-1);
-        get_dynamic_elements()->get_response()->addCookie(cookie);
+        get_response()->addCookie(cookie);
 
-        GenericResponse_(*get_dynamic_elements()->get_response(), HTTPResponse::HTTP_OK, "Client logout.");
+        GenericResponse_(*get_response(), HTTPResponse::HTTP_OK, "Client logout.");
 }
 
 std::string LoginHandler::SessionExists_()
@@ -138,7 +141,7 @@ std::string LoginHandler::SessionExists_()
     // Extract session ID
         std::string session_id;
         Poco::Net::NameValueCollection cookies;
-        get_dynamic_elements()->get_request()->getCookies(cookies);
+        get_request()->getCookies(cookies);
         auto cookie_session = cookies.find("cpw-woodpecker-sid");
         auto sessions = Tools::SessionsHandler::get_sessions();
 

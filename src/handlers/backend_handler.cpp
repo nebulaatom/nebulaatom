@@ -27,45 +27,84 @@ BackendHandler::~BackendHandler()
 
 void BackendHandler::AddRoutes_()
 {
-    auto& routes_list = get_dynamic_elements()->get_routes_list();
-
     // Function /api/products
-        auto fm = std::make_shared<Filters::FiltersManager>();
+        std::string endpoint = "/api/products";
+        Functions::Function f1{endpoint, Functions::Function::Type::kGET};
 
-        // Setting up the filters
+        // Setting up the actions
+            Functions::Action a1{"a1"};
+            a1.set_custom_error("No products.");
+            a1.set_sql_code("SELECT COUNT(1) FROM products WHERE available > ?");
+            // Parameters
+                a1.get_parameters().push_back(Query::Parameter{"available", Tools::RowValueFormatter{std::string("3")}});
+            f1.get_actions().push_back(a1);
 
-            // fields filter
-                fm->get_fields_filter()->get_filter_elements().push_back({"name"});
-                fm->get_fields_filter()->get_filter_elements().push_back({"price"});
-                fm->get_fields_filter()->get_filter_elements().push_back({"available"});
-
-            // general filter
-                Filters::GeneralFilterElement gfe = {Tools::RowValueFormatter(std::string("0, 21")), Filters::GeneralFilterElement::Type::kPageLimit};
-                gfe.set_editable(true);
-                fm->get_general_filter()->get_filter_elements().insert({"0", std::move(gfe)});
-
-                Filters::GeneralFilterElement gfe2 = {Tools::RowValueFormatter(std::string("newDB")), Filters::GeneralFilterElement::Type::kAs};
-                fm->get_general_filter()->get_filter_elements().insert({"1", std::move(gfe2)});
-
-            // iquals filter
-                Dynamic::Var val(3);
-                Filters::IqualsFilterElement ele = {"id", {val}, Filters::IqualsFilterElement::Type::kNoIqual};
-                ele.set_editable(true);
-                fm->get_iquals_filter()->get_filter_elements().insert({"0", std::move(ele)});
-
-                Dynamic::Var val2(2);
-                Filters::IqualsFilterElement ele2 = {"id_store", {val2}, Filters::IqualsFilterElement::Type::kNoIqual};
-                ele.set_editable(true);
-                fm->get_iquals_filter()->get_filter_elements().insert({"1", std::move(ele2)});
-
-                Dynamic::Var val3(1);
-                Filters::IqualsFilterElement ele3 = {"id_store_category", {val3}, Filters::IqualsFilterElement::Type::kIqual};
-                fm->get_iquals_filter()->get_filter_elements().insert({"2", std::move(ele3)});
+        // Setting up the actions
+            Functions::Action a2{"a2"};
+            a2.set_custom_error("Error 1");
+            a2.set_sql_code("SELECT * FROM products WHERE id != ? AND price < ?");
+            // Parameters
+                a2.get_parameters().push_back(Query::Parameter{"id", Tools::RowValueFormatter{std::string("2")}});
+                a2.get_parameters().push_back(Query::Parameter{"price", Tools::RowValueFormatter{std::string("10")}});
+            f1.get_actions().push_back(a2);
 
         // Setting up the function
-            Functions::Function f1{"/api/products"};
-            f1.get_filters().swap(fm);
-            get_functions_manager().get_functions().insert({"/api/products", std::move(f1)});
-            routes_list.push_back({"products", "api/products"});
+            get_functions_manager().get_functions().insert({endpoint, std::move(f1)});
+            get_routes_list().push_back({"products", "api/products"});
+
+}
+
+void BackendHandler::Process_()
+{
+    // Verify current function
+        if(get_current_function() == nullptr)
+        {
+            GenericResponse_(*get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Current function is Null Pointer.");
+            return;
+        }
+
+    // Process actions of the function
+        JSON::Array::Ptr results_array = new JSON::Array();
+        for(auto& action : get_current_function()->get_actions())
+        {
+            Query::QueryActions query_actions;
+            query_actions.IdentifyParameters_(action);
+            query_actions.ComposeQuery_(action);
+            query_actions.ExecuteQuery_(action);
+
+            JSON::Object::Ptr json_result = query_actions.CreateJSONResult_();
+            json_result->set("status", action.get_status());
+            json_result->set("message", action.get_message());
+
+            results_array->set(results_array->size(), json_result);
+        }
+
+    // Send results
+
+        CompoundResponse_
+        (
+            *get_response()
+            ,HTTPResponse::HTTP_OK
+            ,results_array
+        );
+}
+
+void BackendHandler::HandleGETMethod_()
+{
+
+}
+
+void BackendHandler::HandlePOSTMethod_()
+{
+
+}
+
+void BackendHandler::HandlePUTMethod_()
+{
+
+}
+
+void BackendHandler::HandleDELMethod_()
+{
 
 }

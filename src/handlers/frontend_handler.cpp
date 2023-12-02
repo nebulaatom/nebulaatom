@@ -33,14 +33,19 @@ FrontendHandler::~FrontendHandler()
 
 void FrontendHandler::AddRoutes_()
 {
-    get_dynamic_elements()->get_routes_list().push_back({});
-    get_dynamic_elements()->get_routes_list().push_back({"uploaded-files", std::vector<std::string>{"uploaded-files"}});
+    get_routes_list().push_back({});
+    get_routes_list().push_back({"uploaded-files", std::vector<std::string>{"uploaded-files"}});
+}
+
+void FrontendHandler::Process_()
+{
+    SettingUpFunctions_();
 }
 
 void FrontendHandler::HandleGETMethod_()
 {
     // Manage the file
-        auto tmp_uri = URI(get_dynamic_elements()->get_request()->getURI());
+        auto tmp_uri = URI(get_request()->getURI());
         auto tmp_file = Files::File("file", Path(tmp_uri.getPath()).getFileName(), "", 0);
         tmp_file.get_requested_path().reset(new Path(file_manager_.get_directory_base() + tmp_uri.getPath(), Path::PATH_NATIVE));
         tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
@@ -51,12 +56,12 @@ void FrontendHandler::HandleGETMethod_()
         file_manager_.set_operation_type(Files::OperationType::kDownload);
         if(!file_manager_.CheckFiles_())
         {
-            HTMLResponse_(*get_dynamic_elements()->get_response(), HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
+            HTMLResponse_(*get_response(), HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
             return;
         }
         if(!file_manager_.IsSupported_(file_manager_.get_files().front()))
         {
-            HTMLResponse_(*get_dynamic_elements()->get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
+            HTMLResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
             return;
         }
 
@@ -64,10 +69,10 @@ void FrontendHandler::HandleGETMethod_()
         file_manager_.ProcessContentLength_(file_manager_.get_files().front());
 
     // Reponse
-        get_dynamic_elements()->get_response()->setStatus(HTTPResponse::HTTP_OK);
-        get_dynamic_elements()->get_response()->setContentType(file_manager_.get_files().front().get_content_type());
-        get_dynamic_elements()->get_response()->setContentLength(file_manager_.get_files().front().get_content_length());
-        std::ostream& out_reponse = get_dynamic_elements()->get_response()->send();
+        get_response()->setStatus(HTTPResponse::HTTP_OK);
+        get_response()->setContentType(file_manager_.get_files().front().get_content_type());
+        get_response()->setContentLength(file_manager_.get_files().front().get_content_length());
+        std::ostream& out_reponse = get_response()->send();
 
     // Download file
         file_manager_.DownloadFile_(out_reponse);
@@ -79,14 +84,14 @@ void FrontendHandler::HandlePOSTMethod_()
 {
     // Manage the file
         file_manager_.set_operation_type(Files::OperationType::kUpload);
-        HTMLForm form(*get_dynamic_elements()->get_request(), get_dynamic_elements()->get_request()->stream(), file_manager_);
+        HTMLForm form(*get_request(), get_request()->stream(), file_manager_);
 
     // Basic operations
         for(auto& file_it : file_manager_.get_files())
         {
             if(!file_manager_.IsSupported_(file_it))
             {
-                HTMLResponse_(*get_dynamic_elements()->get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
+                HTMLResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
                 return;
             }
             app_.logger().information("File: " + file_it.get_requested_file()->path());
@@ -96,11 +101,11 @@ void FrontendHandler::HandlePOSTMethod_()
         file_manager_.UploadFile_();
 
     // Response
-        get_dynamic_elements()->get_response()->setStatus(HTTPResponse::HTTP_OK);
-        get_dynamic_elements()->get_response()->setContentType("application/json");
-        get_dynamic_elements()->get_response()->setChunkedTransferEncoding(true);
+        get_response()->setStatus(HTTPResponse::HTTP_OK);
+        get_response()->setContentType("application/json");
+        get_response()->setChunkedTransferEncoding(true);
 
-        std::ostream& out_reponse = get_dynamic_elements()->get_response()->send();
+        std::ostream& out_reponse = get_response()->send();
 
         file_manager_.get_result()->stringify(out_reponse);
 
@@ -110,8 +115,8 @@ void FrontendHandler::HandlePOSTMethod_()
 void FrontendHandler::HandlePUTMethod_()
 {
     // Manage the file
-        auto tmp_file = Files::File("file", Path(get_dynamic_elements()->get_request()->getURI()).getFileName(), "", 0);
-        tmp_file.get_requested_path().reset(new Path(file_manager_.get_directory_base() + get_dynamic_elements()->get_request()->getURI(), Path::PATH_NATIVE));
+        auto tmp_file = Files::File("file", Path(get_request()->getURI()).getFileName(), "", 0);
+        tmp_file.get_requested_path().reset(new Path(file_manager_.get_directory_base() + get_request()->getURI(), Path::PATH_NATIVE));
         tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
 
         file_manager_.get_files().push_back(tmp_file);
@@ -120,7 +125,7 @@ void FrontendHandler::HandlePUTMethod_()
         file_manager_.set_operation_type(Files::OperationType::kDelete);
         if(!file_manager_.CheckFiles_())
         {
-            HTMLResponse_(*get_dynamic_elements()->get_response(), HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
+            HTMLResponse_(*get_response(), HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
             return;
         }
 
@@ -131,11 +136,11 @@ void FrontendHandler::HandlePUTMethod_()
     // Upload
         file_manager_.get_result()->clear();
         file_manager_.set_operation_type(Files::OperationType::kUpload);
-        HTMLForm form(*get_dynamic_elements()->get_request(), get_dynamic_elements()->get_request()->stream(), file_manager_);
+        HTMLForm form(*get_request(), get_request()->stream(), file_manager_);
 
         if(!file_manager_.IsSupported_(file_manager_.get_files().front()))
         {
-            HTMLResponse_(*get_dynamic_elements()->get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
+            HTMLResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
             return;
         }
         app_.logger().information("File: " + file_manager_.get_files().front().get_requested_file()->path());
@@ -144,11 +149,11 @@ void FrontendHandler::HandlePUTMethod_()
         file_manager_.UploadFile_();
 
     // Response
-        get_dynamic_elements()->get_response()->setStatus(HTTPResponse::HTTP_OK);
-        get_dynamic_elements()->get_response()->setContentType("application/json");
-        get_dynamic_elements()->get_response()->setChunkedTransferEncoding(true);
+        get_response()->setStatus(HTTPResponse::HTTP_OK);
+        get_response()->setContentType("application/json");
+        get_response()->setChunkedTransferEncoding(true);
 
-        std::ostream& out_reponse = get_dynamic_elements()->get_response()->send();
+        std::ostream& out_reponse = get_response()->send();
 
         file_manager_.get_result()->stringify(out_reponse);
 
@@ -158,8 +163,8 @@ void FrontendHandler::HandlePUTMethod_()
 void FrontendHandler::HandleDELMethod_()
 {
     // Manage file
-        auto tmp_file = Files::File("file", Path(get_dynamic_elements()->get_request()->getURI()).getFileName(), "", 0);
-        tmp_file.get_requested_path().reset(new Path(file_manager_.get_directory_base() + get_dynamic_elements()->get_request()->getURI(), Path::PATH_NATIVE));
+        auto tmp_file = Files::File("file", Path(get_request()->getURI()).getFileName(), "", 0);
+        tmp_file.get_requested_path().reset(new Path(file_manager_.get_directory_base() + get_request()->getURI(), Path::PATH_NATIVE));
         tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
 
         file_manager_.get_files().push_back(tmp_file);
@@ -168,18 +173,18 @@ void FrontendHandler::HandleDELMethod_()
         file_manager_.set_operation_type(Files::OperationType::kDelete);
         if(!file_manager_.CheckFiles_())
         {
-            HTMLResponse_(*get_dynamic_elements()->get_response(), HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
+            HTMLResponse_(*get_response(), HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
             return;
         }
 
         file_manager_.RemoveFile_();
 
     // Response
-        get_dynamic_elements()->get_response()->setStatus(HTTPResponse::HTTP_OK);
-        get_dynamic_elements()->get_response()->setContentType("application/json");
-        get_dynamic_elements()->get_response()->setChunkedTransferEncoding(true);
+        get_response()->setStatus(HTTPResponse::HTTP_OK);
+        get_response()->setContentType("application/json");
+        get_response()->setChunkedTransferEncoding(true);
 
-        std::ostream& out_reponse = get_dynamic_elements()->get_response()->send();
+        std::ostream& out_reponse = get_response()->send();
 
         file_manager_.get_result()->stringify(out_reponse);
 

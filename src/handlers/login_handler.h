@@ -32,18 +32,20 @@ namespace CPW
 }
 
 
-class CPW::Handlers::LoginHandler : public RootHandler
+class CPW::Handlers::LoginHandler :
+    public RootHandler
 {
     public:
         using RootHandler::RootHandler;
         virtual ~LoginHandler();
 
     protected:
+        virtual void AddRoutes_() override;
+        virtual void Process_() override;
         virtual void HandleGETMethod_() override;
         virtual void HandlePOSTMethod_() override;
         virtual void HandlePUTMethod_() override;
         virtual void HandleDELMethod_() override;
-        virtual void AddRoutes_() override;
         void StartSession_();
         void EndSession_();
         std::string SessionExists_();

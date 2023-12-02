@@ -32,6 +32,7 @@ class CPW::Functions::Function
             ,kDEL
         };
 
+        Function();
         Function(std::string endpoint, Type type);
 
         std::string get_endpoint() const { return endpoint_; }

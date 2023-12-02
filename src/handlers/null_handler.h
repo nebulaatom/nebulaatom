@@ -32,18 +32,20 @@ namespace CPW
 }
 
 
-class CPW::Handlers::NullHandler : public RootHandler
+class CPW::Handlers::NullHandler :
+    public RootHandler
 {
     public:
         using RootHandler::RootHandler;
         virtual ~NullHandler();
 
     protected:
+        virtual void AddRoutes_() override;
+        virtual void Process_() override;
         virtual void HandleGETMethod_() override;
         virtual void HandlePOSTMethod_() override;
         virtual void HandlePUTMethod_() override;
         virtual void HandleDELMethod_() override;
-        virtual void AddRoutes_() override;
 
     private:
         void NullResponse_();
