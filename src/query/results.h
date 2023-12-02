@@ -21,6 +21,7 @@
 
 
 #include <vector>
+#include <algorithm>
 
 #include "tools/row_value_formatter.h"
 
@@ -29,25 +30,44 @@ namespace CPW
 {
     namespace Query
     {
+        class Field;
         class Row;
         class Results;
     }
 }
 
 
+class CPW::Query::Field
+{
+    public:
+        Field(std::string column_name, Tools::RowValueFormatter value);
+
+        std::string get_column_name() const { return column_name_;}
+        Tools::RowValueFormatter get_value() const {return value_;}
+
+        void set_column_name(std::string column_name) { column_name_ = column_name;}
+        void set_value(Tools::RowValueFormatter value) { value_ = value;}
+
+    private:
+        std::string column_name_;
+        Tools::RowValueFormatter value_;
+};
+
 class CPW::Query::Row
 {
     public:
         Row();
 
-        std::vector<Tools::RowValueFormatter>& get_fields()
+        std::vector<Field>& get_fields()
         {
             auto& var = fields_;
             return var;
         }
 
+        Field FindField_(std::string column_name);
+
     private:
-        std::vector<Tools::RowValueFormatter> fields_;
+        std::vector<Field> fields_;
 };
 
 class CPW::Query::Results
