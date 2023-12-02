@@ -23,10 +23,7 @@ using namespace CPW::Query;
 QueryActions::QueryActions() :
     final_query_("")
     ,affected_rows_(0)
-    //,current_filters_(new Filters::FiltersManager)
-    ,result_json_(new JSON::Object)
     ,app_(Application::instance())
-    ,row_value_formatter_(new Tools::RowValueFormatter)
 {
 
 }
@@ -200,35 +197,7 @@ bool QueryActions::ComposeQuery_(Functions::Action& action)
     return false;
 }
 
-bool QueryActions::ExecuteQuery_(HTTPServerResponse* response)
-{
-    try
-    {
-        affected_rows_ = query_->execute();
-    }
-    catch(MySQL::MySQLException& error)
-    {
-        GenericResponse_(*response, HTTPResponse::HTTP_BAD_REQUEST, std::string(error.message()));
-        app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.message()));
-        return false;
-    }
-    catch(std::runtime_error& error)
-    {
-        GenericResponse_(*response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, std::string(error.what()));
-        app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
-        return false;
-    }
-    catch(std::exception& error)
-    {
-        GenericResponse_(*response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, std::string(error.what()));
-        app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
-        return false;
-    }
-
-    return true;
-}
-
-bool QueryActions::ExecuteQuery_()
+void QueryActions::ExecuteQuery_(Functions::Action& action)
 {
     try
     {
@@ -237,28 +206,83 @@ bool QueryActions::ExecuteQuery_()
     catch(MySQL::MySQLException& error)
     {
         app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.message()));
-        return false;
+        return;
     }
     catch(std::runtime_error& error)
     {
         app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
-        return false;
+        return;
     }
     catch(std::exception& error)
     {
         app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
-        return false;
+        return;
     }
-
-    return true;
 }
 
-bool QueryActions::CreateJSONResult_()
+CPW::Query::Results QueryActions::MakeResults_(Functions::Action& action)
 {
     try
     {
         // Variables
-            result_json_->clear();
+            Query::Results results;
+            Data::RecordSet results_dataquery(*query_);
+
+        // Default values
+            if(query_.get() == nullptr)
+            {
+                return results;
+            }
+
+        // Save columns names
+            /*for (std::size_t col = 0; col < results_dataquery.columnCount(); ++col)
+                results.get_columns().push_back(results_dataquery.columnName(col));*/
+
+        // Make Results
+            for(auto& it : results_dataquery)
+            {
+                Query::Row row_fields;
+
+                std::size_t col = 0;
+                for(size_t a = 0; a < it.fieldCount(); a++)
+                {
+                    auto column_name = results_dataquery.columnName(col);
+                    auto value = it.get(a);
+                    row_fields.get_fields().push_back(Query::Field{column_name, Tools::RowValueFormatter(value)});
+                    col++;
+                }
+
+                results.get_rows().push_back(std::move(row_fields));
+            }
+
+        // Return results
+            return results;
+    }
+    catch(JSON::JSONException& error)
+    {
+        app_.logger().error("- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.message()));
+        return Query::Results{};
+    }
+    catch(std::runtime_error& error)
+    {
+        app_.logger().error("- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what()));
+        return Query::Results{};
+    }
+    catch(std::exception& error)
+    {
+        app_.logger().error("- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what()));
+        return Query::Results{};
+    }
+
+    return Query::Results();
+}
+
+JSON::Object::Ptr QueryActions::CreateJSONResult_()
+{
+    try
+    {
+        // Variables
+            JSON::Object::Ptr result_json;
             Data::RecordSet results(*query_);
             JSON::Array::Ptr results_array = new JSON::Array();
             JSON::Array::Ptr columns_array = new JSON::Array();
@@ -266,9 +290,9 @@ bool QueryActions::CreateJSONResult_()
         // Default values
             if(query_.get() == nullptr)
             {
-                result_json_->set("columns", columns_array);
-                result_json_->set("results", results_array);
-                return false;
+                result_json->set("columns", columns_array);
+                result_json->set("results", results_array);
+                return result_json;
             }
 
         // Save columns names
@@ -284,21 +308,20 @@ bool QueryActions::CreateJSONResult_()
                 {
                     auto var = it.get(a);
 
-                    row_value_formatter_.reset(new Tools::RowValueFormatter(var));
-                    row_value_formatter_->Format_();
-                    switch(row_value_formatter_->get_row_value_type())
+                    auto row_value_formatter = Tools::RowValueFormatter(var);
+                    switch(row_value_formatter.get_row_value_type())
                     {
                         case Tools::RowValueType::kEmpty:
                             row_fields->set(row_fields->size(), "");
                             break;
                         case Tools::RowValueType::kString:
-                            row_fields->set(row_fields->size(), row_value_formatter_->get_value_string());
+                            row_fields->set(row_fields->size(), row_value_formatter.get_value_string());
                             break;
                         case Tools::RowValueType::kInteger:
-                            row_fields->set(row_fields->size(), row_value_formatter_->get_value_int());
+                            row_fields->set(row_fields->size(), row_value_formatter.get_value_int());
                             break;
                         case Tools::RowValueType::kFloat:
-                            row_fields->set(row_fields->size(), row_value_formatter_->get_value_float());
+                            row_fields->set(row_fields->size(), row_value_formatter.get_value_float());
                             break;
                         default:
                             row_fields->set(row_fields->size(), "");
@@ -309,185 +332,24 @@ bool QueryActions::CreateJSONResult_()
                 results_array->set(results_array->size(), row_fields);
             }
 
-            result_json_->set("columns", columns_array);
-            result_json_->set("results", results_array);
+            result_json->set("columns", columns_array);
+            result_json->set("results", results_array);
+
+            return result_json;
     }
     catch(JSON::JSONException& error)
     {
         app_.logger().error("- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.message()));
-        return false;
+        return JSON::Object::Ptr{};
     }
     catch(std::runtime_error& error)
     {
         app_.logger().error("- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what()));
-        return false;
+        return JSON::Object::Ptr{};
     }
     catch(std::exception& error)
     {
         app_.logger().error("- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what()));
-        return false;
-    }
-
-    return true;
-}
-
-std::string QueryActions::ComposeInsertSentence_(std::string table)
-{
-    // Sentence type and Table
-        std::vector<std::string> tmp_query = {"INSERT INTO " + table + " ("};
-
-    // Fields
-        current_filters_->get_fields_filter()->Incorporate_(tmp_query, query_parameters_);
-        tmp_query.push_back(")");
-
-    // Values
-        current_filters_->get_values_filter()->Incorporate_(tmp_query, query_parameters_);
-
-    tmp_query.push_back(";");
-
-    std::string final_query = "";
-    for(auto it : tmp_query)
-        final_query += it + " ";
-
-    return final_query;
-}
-
-std::string QueryActions::ComposeSelectSentence_(std::string table)
-{
-    // Sentence type and fields
-        std::vector<std::string> tmp_query = {"SELECT"};
-
-        if(current_filters_->get_fields_filter()->get_filter_elements().size() < 1)
-            tmp_query.push_back("*");
-        else
-            current_filters_->get_fields_filter()->Incorporate_(tmp_query, query_parameters_);
-
-    // Table
-        tmp_query.push_back("FROM " + table);
-        current_filters_->get_general_filter()->IncorporateSelected_(tmp_query, Filters::GeneralFilterElement::Type::kAs);
-
-    // Joins
-        current_filters_->get_join_filter()->Incorporate_(tmp_query, query_parameters_);
-
-    // Conditions
-        current_filters_->get_iquals_filter()->Incorporate_(tmp_query, query_parameters_);
-        current_filters_->get_range_filter()->Incorporate_(tmp_query, query_parameters_);
-        current_filters_->get_list_filter()->Incorporate_(tmp_query, query_parameters_);
-        current_filters_->get_like_filter()->Incorporate_(tmp_query, query_parameters_);
-
-    // Group and Sort conditions
-        current_filters_->get_group_filter()->Incorporate_(tmp_query, query_parameters_);
-        current_filters_->get_sort_filter()->Incorporate_(tmp_query, query_parameters_);
-
-    // Page and Limit condition
-        current_filters_->get_general_filter()->IncorporateSelected_(tmp_query, Filters::GeneralFilterElement::Type::kPageLimit);
-
-    return MakeFinalQuery_(tmp_query);
-}
-
-std::string QueryActions::ComposeUpdateSentence_(std::string table)
-{
-    // Sentence type and table
-        std::vector<std::string> tmp_query = {"UPDATE"};
-        tmp_query.push_back(table);
-        current_filters_->get_general_filter()->IncorporateSelected_(tmp_query, Filters::GeneralFilterElement::Type::kAs);
-
-    // Joins
-        current_filters_->get_join_filter()->Incorporate_(tmp_query, query_parameters_);
-
-    // Set
-        current_filters_->get_set_filter()->Incorporate_(tmp_query, query_parameters_);
-
-    // Conditions
-        current_filters_->get_iquals_filter()->Incorporate_(tmp_query, query_parameters_);
-        current_filters_->get_range_filter()->Incorporate_(tmp_query, query_parameters_);
-        current_filters_->get_list_filter()->Incorporate_(tmp_query, query_parameters_);
-        current_filters_->get_like_filter()->Incorporate_(tmp_query, query_parameters_);
-
-    // Sort conditions
-        current_filters_->get_sort_filter()->Incorporate_(tmp_query, query_parameters_);
-
-    // Limit condition
-        current_filters_->get_general_filter()->IncorporateSelected_(tmp_query, Filters::GeneralFilterElement::Type::kLimit);
-
-    return MakeFinalQuery_(tmp_query);
-}
-
-std::string QueryActions::ComposeDeleteSentence_(std::string table)
-{
-    // Sentence type and Table
-        std::vector<std::string> tmp_query = {"DELETE"};
-        current_filters_->get_fields_filter()->Incorporate_(tmp_query, query_parameters_);
-
-        tmp_query.push_back("FROM " + table);
-
-    // Joins
-        current_filters_->get_join_filter()->Incorporate_(tmp_query, query_parameters_);
-
-    // Conditions
-        current_filters_->get_iquals_filter()->Incorporate_(tmp_query, query_parameters_);
-        current_filters_->get_range_filter()->Incorporate_(tmp_query, query_parameters_);
-        current_filters_->get_list_filter()->Incorporate_(tmp_query, query_parameters_);
-        current_filters_->get_like_filter()->Incorporate_(tmp_query, query_parameters_);
-
-    // Sort conditions
-        current_filters_->get_sort_filter()->Incorporate_(tmp_query, query_parameters_);
-
-    // Limit condition
-        current_filters_->get_general_filter()->IncorporateSelected_(tmp_query, Filters::GeneralFilterElement::Type::kLimit);
-
-    return MakeFinalQuery_(tmp_query);
-}
-
-std::string QueryActions::MakeFinalQuery_(std::vector<std::string>& tmp_query)
-{
-    tmp_query.push_back(";");
-    std::string final_query = "";
-
-    for(auto it : tmp_query)
-        final_query += it + " ";
-
-    return final_query;
-}
-
-void QueryActions::ManageFilterType_(Filters::FilterType type, Dynamic::Var& filter_var)
-{
-    switch(type)
-    {
-        case Filters::FilterType::kGeneral: current_filters_->get_general_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kIqual: current_filters_->get_iquals_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kRange: current_filters_->get_range_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kList: current_filters_->get_list_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kLike: current_filters_->get_like_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kValues: current_filters_->get_values_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kSet: current_filters_->get_set_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kUnknown:
-        case Filters::FilterType::kFields:
-        case Filters::FilterType::kSort:
-        case Filters::FilterType::kJoin:
-        case Filters::FilterType::kGroup:
-        default:
-            break;
-    }
-}
-
-void QueryActions::ManageFilterTypeFromFiles_(Filters::FilterType type, Dynamic::Var& filter_var)
-{
-    switch(type)
-    {
-        case Filters::FilterType::kFields: current_filters_->get_fields_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kSort: current_filters_->get_sort_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kGeneral: current_filters_->get_general_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kIqual: current_filters_->get_iquals_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kRange: current_filters_->get_range_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kList: current_filters_->get_list_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kLike: current_filters_->get_like_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kJoin: current_filters_->get_join_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kGroup: current_filters_->get_group_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kValues: current_filters_->get_values_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kSet: current_filters_->get_set_filter()->Identify_(filter_var); break;
-        case Filters::FilterType::kUnknown:
-        default:
-            break;
+        return JSON::Object::Ptr{};
     }
 }
