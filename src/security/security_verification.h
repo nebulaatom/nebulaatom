@@ -52,15 +52,8 @@ enum class CPW::Extras::SecurityType
 class CPW::Extras::SecurityVerification
 {
     public:
-        using Target = Poco::Tuple<std::string, std::string>;
-
         SecurityVerification();
 
-        std::list<Target>& get_targets()
-        {
-            auto& var = targets_;
-            return var;
-        }
         std::list<Tools::Route>& get_routes_to_verify()
         {
             auto& var = routes_to_verify_;
@@ -89,7 +82,6 @@ class CPW::Extras::SecurityVerification
         bool VerifyRoutesPermissions_();
 
     private:
-        std::list<Target> targets_;
         std::list<Tools::Route> routes_to_verify_;
         Security::PermissionsManager permissions_manager_;
         Security::UsersManager users_manager_;

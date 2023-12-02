@@ -29,7 +29,7 @@ bool UsersManager::AuthenticateUser_()
 {
     try
     {
-        // Variables
+        /*// Variables
             int count = 0;
             Dynamic::Var username(current_user_.get_username());
             Dynamic::Var password(current_user_.get_password());
@@ -49,8 +49,31 @@ bool UsersManager::AuthenticateUser_()
             *query_manager_.get_query() , into(count);
             if(!query_manager_.ExecuteQuery_())
                 return false;
+            */
 
-            if(count > 0)
+        // Variables
+            Query::QueryActions query_manager;
+        // Setting up the action
+            Functions::Action action{""};
+            action.set_custom_error("User not found.");
+            std::string sql_code =
+                "SELECT id "
+                "FROM _woodpecker_users "
+                "WHERE username = ? AND password = ?"
+            ;
+            action.set_sql_code(sql_code);
+            action.get_parameters().push_back(Query::Parameter{"username", Tools::RowValueFormatter{current_user_.get_username()}});
+            action.get_parameters().push_back(Query::Parameter{"password", Tools::RowValueFormatter{current_user_.get_password()}});
+
+        // Execute de query
+            Query::QueryActions query_actions;
+            //query_actions.IdentifyParameters_(action);
+            query_actions.ComposeQuery_(action);
+            query_actions.ExecuteQuery_(action);
+            auto results = query_actions.MakeResults_(action);
+
+        // Verify results
+            if(results.get_rows().size() > 0)
                 return true;
             else
                 return false;

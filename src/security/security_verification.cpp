@@ -29,7 +29,7 @@ void SecurityVerification::AddTargets_(std::list<std::string>& targets)
 {
     try
     {
-        // Variables
+        /*// Variables
             auto result_json = query_manager_.get_result_json();
             auto& general = query_manager_.get_current_filters_()->get_general_filter()->get_filter_elements();
             auto& fields = query_manager_.get_current_filters_()->get_fields_filter()->get_filter_elements();
@@ -55,16 +55,49 @@ void SecurityVerification::AddTargets_(std::list<std::string>& targets)
                 return;
             *query_manager_.get_query() , into(targets_);
             if(!query_manager_.ExecuteQuery_())
-                return;
+                return;*/
+
+        // Variables
+            Query::QueryActions query_manager;
+
+        // Setting up the action
+            Functions::Action action{""};
+            action.set_custom_error("Permissions not found.");
+            std::string sql_code =
+                "SELECT tp.table_name, tp.route "
+                "FROM _woodpecker_tables_permissions tp "
+                "WHERE tp.table_name IN ("
+            ;
+
+            // Add targets
+            auto targets_size = targets.size();
+            for(std::size_t i = 0; i < targets_size; i++)
+            {
+                if(i != targets_size - 1)
+                    sql_code += "?, ";
+                else
+                    sql_code += "?)";
+            }
+
+            action.set_sql_code(sql_code);
+
+            // Parameters
+                for(auto& target : targets)
+                    action.get_parameters().push_back(Query::Parameter{"available", Tools::RowValueFormatter{target}});
+
+        // Execute de query
+            Query::QueryActions query_actions;
+            //query_actions.IdentifyParameters_(action);
+            query_actions.ComposeQuery_(action);
+            query_actions.ExecuteQuery_(action);
+            auto results = query_actions.MakeResults_(action);
 
         // Iterate over the results
-            for(auto target : targets_)
+            for(auto& row : results.get_rows())
             {
                 // Verify and assign fields
-                std::string table_name, route_string;
-
-                table_name = target.get<0>();
-                route_string = target.get<1>();
+                auto table_name = row.FindField_("tp.table_name").get_value().get_value_string();
+                auto route_string = row.FindField_("tp.route").get_value().get_value_string();
 
                 // Create route
                 Tools::Route route {table_name, route_string};

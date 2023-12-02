@@ -104,55 +104,40 @@ void PermissionsManager::LoadPermissions_()
 
         // Variables
             Query::QueryActions query_manager;
-            std::list<PermissionToLoad> permissions_to_load;
-            auto result_json = query_manager.get_result_json();
-            auto& fields = query_manager.get_current_filters_()->get_fields_filter()->get_filter_elements();
-            auto& joins = query_manager.get_current_filters_()->get_join_filter()->get_filter_elements();
-            auto& general = query_manager.get_current_filters_()->get_general_filter()->get_filter_elements();
 
-        // Reset filters
-            query_manager.ResetFilters_();
+        // Setting up the action
+            Functions::Action action{""};
+            action.set_custom_error("Permissions not found.");
+            std::string sql_code =
+                "SELECT tp.table_name, tp.route, u.username, u.id, at.name, up.granted, up.descendant "
+                "FROM _woodpecker_user_permissions up "
+                "JOIN _woodpecker_tables_permissions tp ON tp.id = up.id_table_permission "
+                "JOIN _woodpecker_users u ON u.id = up.id_user "
+                "JOIN _woodpecker_action_types at ON at.id = up.id_action_type"
+            ;
+            action.set_sql_code(sql_code);
 
-        // Add filters
-            general.insert({"0", {Tools::RowValueFormatter{std::string("up")}, Filters::GeneralFilterElement::Type::kAs}});
-            fields.push_back({"tp.table_name", "", "no-quotes"});
-            fields.push_back({"tp.route", "", "no-quotes"});
-            fields.push_back({"u.username", "", "no-quotes"});
-            fields.push_back({"u.id", "", "no-quotes"});
-            fields.push_back({"at.name", "", "no-quotes"});
-            fields.push_back({"up.granted", "", "no-quotes"});
-            fields.push_back({"up.descendant", "", "no-quotes"});
-            joins.push_back({"_woodpecker_tables_permissions", "tp", {{"tp.id", {"up.id_table_permission", false}}}, "inner"});
-            joins.push_back({"_woodpecker_users", "u", {{"u.id", {"up.id_user", false}}}, "inner"});
-            joins.push_back({"_woodpecker_action_types", "at", {{"at.id", {"up.id_action_type", false}}}, "inner"});
-
-        // Execute the query
-            if(!query_manager.ComposeQuery_(Query::TypeAction::kSelect, "_woodpecker_user_permissions"))
-                return;
-            query_manager.get_query()->reset(*query_manager.get_session());
-            *query_manager.get_query() << query_manager.get_final_query() , into(permissions_to_load);
-            if(!query_manager.ExecuteQuery_())
-                return;
+        // Execute de query
+            Query::QueryActions query_actions;
+            //query_actions.IdentifyParameters_(action);
+            query_actions.ComposeQuery_(action);
+            query_actions.ExecuteQuery_(action);
+            auto results = query_actions.MakeResults_(action);
 
         // Iterate over the results
-            for(auto it : permissions_to_load)
+            for(auto& row : results.get_rows())
             {
-                // Verify and assign fields
-                std::string table_name, route, user, action_type;
-                bool granted, descendant;
-                int id;
-                ActionType action_mapped = ActionType::kRead;
-
                 // Get elements
-                table_name = it.get<0>();
-                route = it.get<1>();
-                user = it.get<2>();
-                id = it.get<3>();
-                action_type = it.get<4>();
-                granted = it.get<5>();
-                descendant = it.get<6>();
+                auto table_name = row.FindField_("tp.table_name").get_value().get_value_string();
+                auto route = row.FindField_("tp.route").get_value().get_value_string();
+                auto user = row.FindField_("u.username").get_value().get_value_string();
+                auto id = row.FindField_("u.id").get_value().get_value_int();
+                auto action_type = row.FindField_("at.name").get_value().get_value_string();
+                auto granted = row.FindField_("up.granted").get_value().get_value_bool();
+                auto descendant = row.FindField_("up.descendant").get_value().get_value_bool();
 
                 // Create permission
+                ActionType action_mapped = ActionType::kRead;
                 auto found = action_type_map_.find(action_type);
                 if(found != action_type_map_.end())
                     action_mapped = found->second;
