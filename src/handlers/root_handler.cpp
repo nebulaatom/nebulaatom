@@ -27,14 +27,8 @@ RootHandler::RootHandler(std::string api_version) :
     ,method_("GET")
     ,route_verification_(true)
     ,current_function_(nullptr)
-    //,dynamic_elements_(new Extras::DynamicElements())
 {
-    //requests_manager_.set_http_methods(*this);
-    //requests_manager_.get_http_methods()->set_dynamic_elements(dynamic_elements_);
-    //HTTPMethods::set_dynamic_elements(dynamic_elements_);
-
     requested_route_ = std::make_shared<Tools::Route>("", std::vector<std::string>{""});
-    query_actions_ = std::make_shared<Query::QueryActions>();
 
     current_security_.set_security_type(Extras::SecurityType::kDisableAll);
 }
@@ -69,20 +63,8 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
         // Get the corresponding HTTP method
             method_ = request.getMethod();
 
-        // Verify current function
-            if(current_function_ == nullptr)
-            {
-                GenericResponse_(*response_, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Current function is Null Pointer.");
-                return;
-            }
-
-        // Process actions of the function
-            for(auto& action : current_function_->get_actions())
-            {
-                query_actions_->IdentifyParameters_(action);
-                query_actions_->ComposeQuery_(action);
-                query_actions_->ExecuteQuery_(response_);
-            }
+        // Handler Process
+            Process_();
     }
     catch(MySQL::MySQLException& error)
     {
@@ -118,6 +100,30 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): No handled exception.");
         GenericResponse_(*response_, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. No handled exception." );
+    }
+}
+
+void RootHandler::SettingUpFunctions_()
+{
+    Functions::Function f1("", Functions::Function::Type::kGET);
+    auto found = f1.get_methods().find(get_method());
+    if(found != f1.get_methods().end())
+    {
+        GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Method not found.");
+        return;
+    }
+
+    switch(found->second)
+    {
+        case Functions::Function::Type::kPOST: HandlePOSTMethod_(); break;
+        case Functions::Function::Type::kGET: HandleGETMethod_(); break;
+        case Functions::Function::Type::kPUT: HandlePUTMethod_(); break;
+        case Functions::Function::Type::kDEL: HandleDELMethod_(); break;
+        default:
+        {
+            GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Method not found.");
+            return;
+        }
     }
 }
 
@@ -219,10 +225,6 @@ bool RootHandler::VerifyPermissions_()
         current_security_.get_users_manager().get_current_user().set_username(user_);
 
     // Setting up targets
-        Query::QueryActions query_manager;
-        query_manager.get_json_body() = query_actions_->get_json_body();
-        //query_manager.IdentifyFilters_();
-
         targets_.push_back(requested_route_->get_target());
         current_security_.AddTargets_(targets_);
 
@@ -272,7 +274,7 @@ bool RootHandler::IdentifyRoute_()
 
 bool RootHandler::ManageRequestBody_()
 {
-    std::string request_body = query_actions_->ReadBody_(request_->stream());
+    std::string request_body = ReadBody_(request_->stream());
 
     if(request_body.empty())
     {
@@ -289,7 +291,7 @@ bool RootHandler::ManageRequestBody_()
         request_body = tmp_uri.getQueryParameters()[0].second;
     }
 
-    if(!query_actions_->Parse_(request_body))
+    if(!Parse_(request_body))
         return false;
 
     return true;

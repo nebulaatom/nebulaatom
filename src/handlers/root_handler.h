@@ -89,14 +89,18 @@ using Poco::Data::Statement;
 class CPW::Handlers::RootHandler :
     public HTTPRequestHandler
     ,public HTTP::CommonResponses
-    //,public HTTP::HTTPMethods
+    ,public HTTP::HTTPMethods
+    ,public Tools::ManageJSON
 {
     public:
         RootHandler(std::string api_version);
         virtual ~RootHandler();
 
         std::string get_api_version() const {return api_version_;}
-        Application& get_app() const {return app_;};
+        std::string get_user() const { return user_; }
+        std::string get_method() const { return method_; }
+        bool get_route_verification() const { return route_verification_; }
+        Application& get_app() const {return app_;}
         Extras::SecurityVerification& get_current_security()
         {
             auto& var = current_security_;
@@ -119,9 +123,9 @@ class CPW::Handlers::RootHandler :
             auto& var = requested_route_;
             return var;
         }
-        std::shared_ptr<Query::QueryActions>& get_query_actions()
+        Functions::Function* get_current_function()
         {
-            auto& var = query_actions_;
+            auto& var = current_function_;
             return var;
         }
 
@@ -132,11 +136,17 @@ class CPW::Handlers::RootHandler :
 
     protected:
         virtual void AddRoutes_() = 0;
+        virtual void Process_() = 0;
+        void SettingUpFunctions_();
         bool ProcessRoute_();
         bool VerifySession_();
         bool VerifyPermissions_();
         bool IdentifyRoute_();
         bool ManageRequestBody_();
+        virtual void HandlePOSTMethod_() = 0;
+        virtual void HandleGETMethod_() = 0;
+        virtual void HandlePUTMethod_() = 0;
+        virtual void HandleDELMethod_() = 0;
 
         Application& app_;
 
@@ -146,15 +156,12 @@ class CPW::Handlers::RootHandler :
         std::string method_;
         bool route_verification_;
         Extras::SecurityVerification current_security_;
-        //Tools::RequestsManager requests_manager_;
-        //std::shared_ptr<Extras::DynamicElements> dynamic_elements_;
         std::list<std::string> targets_;
         Functions::FunctionsManager functions_manager_;
         HTTPServerRequest* request_;
         HTTPServerResponse* response_;
         std::list<Tools::Route> routes_list_;
         std::shared_ptr<CPW::Tools::Route> requested_route_;
-        std::shared_ptr<Query::QueryActions> query_actions_;
         Functions::Function* current_function_;
 };
 
