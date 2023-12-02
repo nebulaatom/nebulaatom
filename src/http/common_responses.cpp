@@ -30,17 +30,11 @@ CommonResponses::~CommonResponses()
 
 }
 
-void CommonResponses::CompoundResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message, JSON::Object::Ptr result_json, int affected_rows)
+void CommonResponses::CompoundResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, JSON::Array::Ptr result_json)
 {
     response.setStatus(status);
     response.setContentType("application/json");
     response.setChunkedTransferEncoding(true);
-
-    FillStatusMessage_(result_json, status, message);
-
-    JSON::Object meta;
-    meta.set("affected_rows", affected_rows);
-    result_json->set("meta", meta);
 
     std::ostream& out = response.send();
     result_json->stringify(out);
@@ -147,16 +141,4 @@ void CommonResponses::FillResponses_()
 
 void CommonResponses::FillStatusMessage_(JSON::Object::Ptr json_object, HTTPResponse::HTTPStatus status, std::string message)
 {
-    auto found = responses_.find(status);
-    if(found != responses_.end())
-    {
-        json_object->set("status", responses_[status].second);
-        json_object->set("message", message);
-    }
-    else
-    {
-        json_object->set("status", responses_[HTTPResponse::HTTP_INTERNAL_SERVER_ERROR].second);
-        json_object->set("message", "Error on HTTPStatus");
-    }
-
 }
