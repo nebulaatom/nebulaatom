@@ -107,7 +107,7 @@ void RootHandler::SettingUpFunctions_()
 {
     Functions::Function f1("", Functions::Function::Type::kGET);
     auto found = f1.get_methods().find(get_method());
-    if(found != f1.get_methods().end())
+    if(found == f1.get_methods().end())
     {
         GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Method not found.");
         return;
