@@ -69,7 +69,11 @@ bool UsersManager::AuthenticateUser_()
             Query::QueryActions query_actions;
             //query_actions.IdentifyParameters_(action);
             query_actions.ComposeQuery_(action);
+            if(action.get_error())
+                return false;
             query_actions.ExecuteQuery_(action);
+            if(action.get_error())
+                return false;
             auto results = query_actions.MakeResults_(action);
 
         // Verify results

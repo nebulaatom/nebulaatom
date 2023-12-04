@@ -89,15 +89,19 @@ void SecurityVerification::AddTargets_(std::list<std::string>& targets)
             Query::QueryActions query_actions;
             //query_actions.IdentifyParameters_(action);
             query_actions.ComposeQuery_(action);
+            if(action.get_error())
+                return;
             query_actions.ExecuteQuery_(action);
+            if(action.get_error())
+                return;
             auto results = query_actions.MakeResults_(action);
 
         // Iterate over the results
             for(auto& row : results.get_rows())
             {
                 // Verify and assign fields
-                auto table_name = row.FindField_("tp.table_name").get_value().get_value_string();
-                auto route_string = row.FindField_("tp.route").get_value().get_value_string();
+                auto table_name = row.FindField_("table_name").get_value().get_value_string();
+                auto route_string = row.FindField_("route").get_value().get_value_string();
 
                 // Create route
                 Tools::Route route {table_name, route_string};

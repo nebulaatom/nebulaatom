@@ -109,7 +109,7 @@ void PermissionsManager::LoadPermissions_()
             Functions::Action action{""};
             action.set_custom_error("Permissions not found.");
             std::string sql_code =
-                "SELECT tp.table_name, tp.route, u.username, u.id, at.name, up.granted, up.descendant "
+                "SELECT tp.table_name, tp.route, u.username, u.id AS id_user, at.name AS action_name, up.granted, up.descendant "
                 "FROM _woodpecker_user_permissions up "
                 "JOIN _woodpecker_tables_permissions tp ON tp.id = up.id_table_permission "
                 "JOIN _woodpecker_users u ON u.id = up.id_user "
@@ -121,20 +121,24 @@ void PermissionsManager::LoadPermissions_()
             Query::QueryActions query_actions;
             //query_actions.IdentifyParameters_(action);
             query_actions.ComposeQuery_(action);
+            if(action.get_error())
+                return;
             query_actions.ExecuteQuery_(action);
+            if(action.get_error())
+                return;
             auto results = query_actions.MakeResults_(action);
 
         // Iterate over the results
             for(auto& row : results.get_rows())
             {
                 // Get elements
-                auto table_name = row.FindField_("tp.table_name").get_value().get_value_string();
-                auto route = row.FindField_("tp.route").get_value().get_value_string();
-                auto user = row.FindField_("u.username").get_value().get_value_string();
-                auto id = row.FindField_("u.id").get_value().get_value_int();
-                auto action_type = row.FindField_("at.name").get_value().get_value_string();
-                auto granted = row.FindField_("up.granted").get_value().get_value_bool();
-                auto descendant = row.FindField_("up.descendant").get_value().get_value_bool();
+                auto table_name = row.FindField_("table_name").get_value().get_value_string();
+                auto route = row.FindField_("route").get_value().get_value_string();
+                auto user = row.FindField_("username").get_value().get_value_string();
+                auto id_user = row.FindField_("id_user").get_value().get_value_int();
+                auto action_type = row.FindField_("action_name").get_value().get_value_string();
+                auto granted = row.FindField_("granted").get_value().get_value_int() == 1? true : false;
+                auto descendant = row.FindField_("descendant").get_value().get_value_int() == 1? true : false;
 
                 // Create permission
                 ActionType action_mapped = ActionType::kRead;
@@ -142,7 +146,7 @@ void PermissionsManager::LoadPermissions_()
                 if(found != action_type_map_.end())
                     action_mapped = found->second;
 
-                Permission p {granted, {table_name, route}, std::make_shared<User>(id, user, ""), action_mapped, descendant};
+                Permission p {granted, {table_name, route}, std::make_shared<User>(id_user, user, ""), action_mapped, descendant};
 
                 permissions_.push_back(std::move(p));
             }
