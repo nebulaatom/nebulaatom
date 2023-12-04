@@ -95,6 +95,8 @@ class CPW::Query::QueryActions :
         JSON::Object::Ptr CreateJSONResult_();
 
     private:
+        void StablishActionError_(Functions::Action& action, std::string error);
+
         std::string final_query_;
         int affected_rows_;
         std::shared_ptr<Data::Session> session_;

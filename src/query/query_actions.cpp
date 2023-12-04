@@ -111,11 +111,15 @@ void QueryActions::IdentifyParameters_(Functions::Action& action)
     }
     catch(std::runtime_error& error)
     {
-        app_.logger().error("- Error on query_actions.cc on IdentifyFilters_(): " + std::string(error.what()));
+        std::string string_error = "- Error on query_actions.cc on IdentifyFilters_(): " + std::string(error.what());
+        app_.logger().error(string_error);
+        StablishActionError_(action, string_error);
     }
     catch(JSON::JSONException& error)
     {
-        app_.logger().error("- Error on query_actions.cc on IdentifyFilters_(): " + std::string(error.what()));
+        std::string string_error = "- Error on query_actions.cc on IdentifyFilters_(): " + std::string(error.what());
+        app_.logger().error(string_error);
+        StablishActionError_(action, string_error);
     }
 }
 
@@ -181,17 +185,23 @@ bool QueryActions::ComposeQuery_(Functions::Action& action)
     }
     catch(MySQL::MySQLException& error)
     {
-        app_.logger().error("- Error on query_actions.cc on ComposeQuery_(): " + std::string(error.message()));
+        std::string string_error = "- Error on query_actions.cc on ComposeQuery_(): " + std::string(error.message());
+        app_.logger().error(string_error);
+        StablishActionError_(action, string_error);
         return false;
     }
     catch(std::runtime_error& error)
     {
-        app_.logger().error("- Error on query_actions.cc on ComposeQuery_(): " + std::string(error.what()));
+        std::string string_error = "- Error on query_actions.cc on ComposeQuery_(): " + std::string(error.what());
+        app_.logger().error(string_error);
+        StablishActionError_(action, string_error);
         return false;
     }
     catch(std::exception& error)
     {
-        app_.logger().error("- Error on query_actions.cc on ComposeQuery_(): " + std::string(error.what()));
+        std::string string_error = "- Error on query_actions.cc on ComposeQuery_(): " + std::string(error.what());
+        app_.logger().error(string_error);
+        StablishActionError_(action, string_error);
         return false;
     }
     return false;
@@ -205,17 +215,23 @@ void QueryActions::ExecuteQuery_(Functions::Action& action)
     }
     catch(MySQL::MySQLException& error)
     {
-        app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.message()));
+        std::string string_error = "- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.message());
+        app_.logger().error(string_error);
+        StablishActionError_(action, string_error);
         return;
     }
     catch(std::runtime_error& error)
     {
-        app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
+        std::string string_error = "- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what());
+        app_.logger().error(string_error);
+        StablishActionError_(action, string_error);
         return;
     }
     catch(std::exception& error)
     {
-        app_.logger().error("- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what()));
+        std::string string_error = "- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what());
+        app_.logger().error(string_error);
+        StablishActionError_(action, string_error);
         return;
     }
 }
@@ -233,10 +249,6 @@ CPW::Query::Results QueryActions::MakeResults_(Functions::Action& action)
             {
                 return results;
             }
-
-        // Save columns names
-            /*for (std::size_t col = 0; col < results_dataquery.columnCount(); ++col)
-                results.get_columns().push_back(results_dataquery.columnName(col));*/
 
         // Make Results
             for(auto& it : results_dataquery)
@@ -260,17 +272,23 @@ CPW::Query::Results QueryActions::MakeResults_(Functions::Action& action)
     }
     catch(JSON::JSONException& error)
     {
-        app_.logger().error("- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.message()));
+        std::string string_error = "- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.message());
+        app_.logger().error(string_error);
+        StablishActionError_(action, string_error);
         return Query::Results{};
     }
     catch(std::runtime_error& error)
     {
-        app_.logger().error("- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what()));
+        std::string string_error = "- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what());
+        app_.logger().error(string_error);
+        StablishActionError_(action, string_error);
         return Query::Results{};
     }
     catch(std::exception& error)
     {
-        app_.logger().error("- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what()));
+        std::string string_error = "- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what());
+        app_.logger().error(string_error);
+        StablishActionError_(action, string_error);
         return Query::Results{};
     }
 
@@ -282,58 +300,50 @@ JSON::Object::Ptr QueryActions::CreateJSONResult_()
     try
     {
         // Variables
-            JSON::Object::Ptr result_json;
+            JSON::Object::Ptr result_json = new JSON::Object();
+            JSON::Array::Ptr data_array = new JSON::Array();
             Data::RecordSet results(*query_);
-            JSON::Array::Ptr results_array = new JSON::Array();
-            JSON::Array::Ptr columns_array = new JSON::Array();
 
         // Default values
             if(query_.get() == nullptr)
             {
-                result_json->set("columns", columns_array);
-                result_json->set("results", results_array);
+                result_json->set("data", data_array);
                 return result_json;
             }
-
-        // Save columns names
-            for (std::size_t col = 0; col < results.columnCount(); ++col)
-                columns_array->set(columns_array->size(), results.columnName(col));
 
         // Make JSON data
             for(auto& it : results)
             {
-                JSON::Array::Ptr row_fields = new JSON::Array();
+                JSON::Object::Ptr row_fields = new JSON::Object();
 
                 for(size_t a = 0; a < it.fieldCount(); a++)
                 {
                     auto var = it.get(a);
-
-                    auto row_value_formatter = Tools::RowValueFormatter(var);
-                    switch(row_value_formatter.get_row_value_type())
+                    auto row_value = Tools::RowValueFormatter(var);
+                    switch(row_value.get_row_value_type())
                     {
-                        case Tools::RowValueType::kEmpty:
-                            row_fields->set(row_fields->size(), "");
-                            break;
-                        case Tools::RowValueType::kString:
-                            row_fields->set(row_fields->size(), row_value_formatter.get_value_string());
-                            break;
-                        case Tools::RowValueType::kInteger:
-                            row_fields->set(row_fields->size(), row_value_formatter.get_value_int());
+                        case Tools::RowValueType::kBoolean:
+                            row_fields->set(results.columnName(a), row_value.get_value_bool());
                             break;
                         case Tools::RowValueType::kFloat:
-                            row_fields->set(row_fields->size(), row_value_formatter.get_value_float());
+                            row_fields->set(results.columnName(a), row_value.get_value_float());
                             break;
-                        default:
-                            row_fields->set(row_fields->size(), "");
+                        case Tools::RowValueType::kInteger:
+                            row_fields->set(results.columnName(a), row_value.get_value_int());
+                            break;
+                        case Tools::RowValueType::kString:
+                            row_fields->set(results.columnName(a), row_value.get_value_string());
+                            break;
+                        case Tools::RowValueType::kEmpty:
+                            row_fields->set(results.columnName(a), "");
                             break;
                     }
                 }
 
-                results_array->set(results_array->size(), row_fields);
+                data_array->set(data_array->size(), row_fields);
             }
 
-            result_json->set("columns", columns_array);
-            result_json->set("results", results_array);
+            result_json->set("data", data_array);
 
             return result_json;
     }
@@ -352,4 +362,10 @@ JSON::Object::Ptr QueryActions::CreateJSONResult_()
         app_.logger().error("- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what()));
         return JSON::Object::Ptr{};
     }
+}
+
+void QueryActions::StablishActionError_(Functions::Action& action, std::string error)
+{
+    action.set_error(true);
+    action.set_custom_error(error);
 }
