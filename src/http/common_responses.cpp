@@ -30,7 +30,7 @@ CommonResponses::~CommonResponses()
 
 }
 
-void CommonResponses::CompoundResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, JSON::Array::Ptr result_json)
+void CommonResponses::CompoundResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, JSON::Object::Ptr result_json)
 {
     response.setStatus(status);
     response.setContentType("application/json");
@@ -141,4 +141,15 @@ void CommonResponses::FillResponses_()
 
 void CommonResponses::FillStatusMessage_(JSON::Object::Ptr json_object, HTTPResponse::HTTPStatus status, std::string message)
 {
+    auto found = responses_.find(status);
+    if(found != responses_.end())
+    {
+        json_object->set("status", responses_[status].second);
+        json_object->set("message", message);
+    }
+    else
+    {
+        json_object->set("status", responses_[HTTPResponse::HTTP_INTERNAL_SERVER_ERROR].second);
+        json_object->set("message", "Error on HTTPStatus");
+    }
 }

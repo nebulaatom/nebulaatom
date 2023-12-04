@@ -63,7 +63,7 @@ class CPW::HTTP::CommonResponses
             return var;
         }
 
-        void CompoundResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, JSON::Array::Ptr result_json);
+        void CompoundResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, JSON::Object::Ptr result_json);
         void GenericResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message);
         void HTMLResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message);
 
