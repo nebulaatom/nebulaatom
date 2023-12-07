@@ -41,6 +41,7 @@ target_link_libraries(
     functionsmanager
     results
     parameter
+    condition
     Poco::Foundation
     Poco::Net
     Poco::NetSSL

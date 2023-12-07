@@ -17,6 +17,11 @@ add_library(queryactions OBJECT "query_actions.cpp")
 target_include_directories(queryactions PUBLIC ${HEADER})
 set_target_properties(queryactions PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
+### condition
+add_library(condition OBJECT "condition.cpp")
+target_include_directories(condition PUBLIC ${HEADER})
+set_target_properties(condition PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
 ### databasemanager
 add_library(databasemanager OBJECT "database_manager.cpp")
 target_include_directories(databasemanager PUBLIC ${HEADER})
