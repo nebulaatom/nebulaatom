@@ -37,16 +37,22 @@ namespace CPW
 class CPW::Query::Parameter
 {
     public:
-        Parameter(std::string name, Tools::RowValueFormatter value);
+        Parameter(std::string name, Tools::RowValueFormatter value, bool editable = false);
 
+        std::string get_name() const { return name_; }
+        bool get_editable() const { return editable_; }
         Tools::RowValueFormatter& get_value()
         {
             auto& var = value_;
             return var;
         }
 
+        void set_name(std::string name) { name_ = name; }
+        void set_editable(bool editable) { editable_ = editable; }
+
     private:
         std::string name_;
+        bool editable_;
         Tools::RowValueFormatter value_;
 };
 
