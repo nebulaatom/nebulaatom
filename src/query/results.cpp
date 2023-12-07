@@ -32,3 +32,16 @@ Results::Results()
 {
 
 }
+
+Field* Results::FindField_(ConditionalField& field)
+{
+    if(field.row < rows_.size() - 1)
+        return nullptr;
+    auto& row = rows_[field.row].get_fields();
+
+    if(field.column < row.size() - 1)
+        return nullptr;
+    auto& field_value = row[field.column];
+
+    return &field_value;
+}

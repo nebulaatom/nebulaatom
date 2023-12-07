@@ -30,12 +30,20 @@ namespace CPW
 {
     namespace Query
     {
+        struct ConditionalField;
         class Field;
         class Row;
         class Results;
     }
 }
 
+
+struct CPW::Query::ConditionalField
+{
+    ConditionalField(std::size_t row, std::size_t column) : row(row), column(column) {}
+    std::size_t row;
+    std::size_t column;
+};
 
 class CPW::Query::Field
 {
@@ -80,6 +88,8 @@ class CPW::Query::Results
             auto& var = rows_;
             return var;
         }
+
+        Field* FindField_(ConditionalField& field);
 
     private:
         std::vector<Row> rows_;
