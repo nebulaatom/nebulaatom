@@ -95,6 +95,7 @@ class CPW::Query::QueryActions :
         JSON::Object::Ptr CreateJSONResult_();
 
     private:
+        bool InitializeQuery_(Functions::Action& action);
         void StablishActionError_(Functions::Action& action, std::string error);
 
         std::string final_query_;

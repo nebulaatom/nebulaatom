@@ -148,15 +148,9 @@ bool QueryActions::ComposeQuery_(Functions::Action& action)
 {
     try
     {
-        // Create de query statement
-            session_ = Query::DatabaseManager::StartSessionMySQL_();
-            if(session_.get() == nullptr)
-            {
-                throw MySQL::MySQLException("Error to connect to database server.");
+        // Initialize de query statement
+            if(!InitializeQuery_(action))
                 return false;
-            }
-
-            query_ = std::make_shared<Data::Statement>(*session_);
 
         // Set the query
             *query_ << action.get_sql_code();
@@ -384,6 +378,44 @@ JSON::Object::Ptr QueryActions::CreateJSONResult_()
         app_.logger().error("- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what()));
         return JSON::Object::Ptr{};
     }
+}
+
+bool QueryActions::InitializeQuery_(Functions::Action& action)
+{
+    try
+    {
+        session_ = Query::DatabaseManager::StartSessionMySQL_();
+        if(session_.get() == nullptr)
+        {
+            throw MySQL::MySQLException("Error to connect to database server.");
+            return false;
+        }
+
+        query_ = std::make_shared<Data::Statement>(*session_);
+        return true;
+    }
+    catch(MySQL::MySQLException& error)
+    {
+        std::string string_error = "- Error on query_actions.cc on InitializeQuery_(): " + std::string(error.message());
+        app_.logger().error(string_error);
+        StablishActionError_(action, string_error);
+        return false;
+    }
+    catch(std::runtime_error& error)
+    {
+        std::string string_error = "- Error on query_actions.cc on InitializeQuery_(): " + std::string(error.what());
+        app_.logger().error(string_error);
+        StablishActionError_(action, string_error);
+        return false;
+    }
+    catch(std::exception& error)
+    {
+        std::string string_error = "- Error on query_actions.cc on InitializeQuery_(): " + std::string(error.what());
+        app_.logger().error(string_error);
+        StablishActionError_(action, string_error);
+        return false;
+    }
+    return false;
 }
 
 void QueryActions::StablishActionError_(Functions::Action& action, std::string error)

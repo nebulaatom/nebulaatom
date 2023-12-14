@@ -37,7 +37,7 @@ void BackendHandler::AddRoutes_()
             a1.set_custom_error("Error Action 1.");
             a1.set_sql_code("SELECT id FROM stores WHERE name = ?");
             // Parameters
-                a1.get_parameters().push_back(Query::Parameter{"name", Tools::RowValueFormatter{std::string("")}, true});
+                a1.get_parameters().push_back(Query::Parameter{"storeName", Tools::RowValueFormatter{std::string("")}, true});
             // Conditions
                 a1.get_conditions().push_back(Query::Condition{Query::ConditionType::kGreatherThan, Query::Field{"", Tools::RowValueFormatter{0}}, Query::ConditionalField{0, 0}});
             f1.get_actions().push_back(a1);
@@ -48,8 +48,8 @@ void BackendHandler::AddRoutes_()
             a2.set_final(true);
             a2.set_sql_code("SELECT * FROM products WHERE id_store = ? AND price < ?");
             // Parameters
-                a2.get_parameters().push_back(Query::Parameter{"id_store", Query::ConditionalField{0, 0}, a1.get_results(), false});
-                a2.get_parameters().push_back(Query::Parameter{"price", Tools::RowValueFormatter{100}, true});
+                a2.get_parameters().push_back(Query::Parameter{"idStore", Query::ConditionalField{0, 0}, a1.get_results(), false});
+                a2.get_parameters().push_back(Query::Parameter{"productPrice", Tools::RowValueFormatter{100}, true});
             f1.get_actions().push_back(a2);
 
         // Setting up the function
@@ -75,26 +75,39 @@ void BackendHandler::Process_()
             Query::QueryActions query_actions;
             query_actions.get_json_body().reset(get_json_body());
 
+            // Identify parameters
             query_actions.IdentifyParameters_(action);
             if(action.get_error())
             {
                 GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, action.get_custom_error());
                 return;
             }
+
+            // Compose query
             query_actions.ComposeQuery_(action);
             if(action.get_error())
             {
                 GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, action.get_custom_error());
                 return;
             }
+
+            // Execute query
             query_actions.ExecuteQuery_(action);
             if(action.get_error())
             {
                 GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, action.get_custom_error());
                 return;
             }
-            // Verify Conditions
+
+            // Make results
             query_actions.MakeResults_(action);
+            if(action.get_error())
+            {
+                GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, action.get_custom_error());
+                return;
+            }
+
+            // Verify Conditions
             for(auto& condition : action.get_conditions())
             {
                 if(!condition.VerifyCondition_(action.get_results()))
@@ -103,7 +116,6 @@ void BackendHandler::Process_()
                     return;
                 }
             }
-            //results_.emplace(std::pair{action.get_identifier(), std::move(results)});
 
             if(action.get_final())
             {

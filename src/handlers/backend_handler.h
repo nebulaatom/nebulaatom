@@ -20,8 +20,6 @@
 #define CPW_HANDLERS_BACKENDHANDLER_H
 
 
-#include <string>
-
 #include "handlers/root_handler.h"
 
 namespace CPW
@@ -39,12 +37,6 @@ class CPW::Handlers::BackendHandler : public RootHandler
         using RootHandler::RootHandler;
         virtual ~BackendHandler();
 
-        std::map<std::string, Query::Results>& get_results()
-        {
-            auto& var = results_;
-            return var;
-        }
-
     protected:
         virtual void AddRoutes_() override;
         virtual void Process_() override;
@@ -53,8 +45,6 @@ class CPW::Handlers::BackendHandler : public RootHandler
         virtual void HandlePUTMethod_() override;
         virtual void HandleDELMethod_() override;
 
-    private:
-        std::map<std::string, Query::Results> results_;
 };
 
 #endif // CPW_HANDLERS_BACKENDHANDLER_H
