@@ -164,6 +164,14 @@ bool QueryActions::ComposeQuery_(Functions::Action& action)
         // Set the parameters
             for(auto& param : action.get_parameters())
             {
+                // Verify conditional parameter
+                if(param.get_parameter_type() == ParameterType::kConditional)
+                {
+                    auto row_value = param.get_result()->FindField_(param.get_conditional_field());
+                    param.set_value(row_value->get_value());
+                }
+
+                // Add final value to query
                 switch(param.get_value().get_row_value_type())
                 {
                     case Tools::RowValueType::kEmpty:
