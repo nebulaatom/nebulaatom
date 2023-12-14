@@ -126,10 +126,10 @@ void PermissionsManager::LoadPermissions_()
             query_actions.ExecuteQuery_(action);
             if(action.get_error())
                 return;
-            auto results = query_actions.MakeResults_(action);
+            query_actions.MakeResults_(action);
 
         // Iterate over the results
-            for(auto& row : results.get_rows())
+            for(auto& row : action.get_results()->get_rows())
             {
                 // Get elements
                 auto table_name = row.FindField_("table_name").get_value().get_value_string();

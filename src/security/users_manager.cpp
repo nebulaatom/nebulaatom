@@ -62,8 +62,8 @@ bool UsersManager::AuthenticateUser_()
                 "WHERE username = ? AND password = ?"
             ;
             action.set_sql_code(sql_code);
-            action.get_parameters().push_back(Query::Parameter{"username", Tools::RowValueFormatter{current_user_.get_username()}});
-            action.get_parameters().push_back(Query::Parameter{"password", Tools::RowValueFormatter{current_user_.get_password()}});
+            action.get_parameters().push_back(Query::Parameter{"username", Tools::RowValueFormatter{current_user_.get_username()}, false});
+            action.get_parameters().push_back(Query::Parameter{"password", Tools::RowValueFormatter{current_user_.get_password()}, false});
 
         // Execute de query
             Query::QueryActions query_actions;
@@ -74,10 +74,10 @@ bool UsersManager::AuthenticateUser_()
             query_actions.ExecuteQuery_(action);
             if(action.get_error())
                 return false;
-            auto results = query_actions.MakeResults_(action);
+            query_actions.MakeResults_(action);
 
         // Verify results
-            if(results.get_rows().size() > 0)
+            if(action.get_results()->get_rows().size() > 0)
                 return true;
             else
                 return false;

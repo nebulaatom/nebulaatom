@@ -83,7 +83,7 @@ void SecurityVerification::AddTargets_(std::list<std::string>& targets)
 
             // Parameters
                 for(auto& target : targets)
-                    action.get_parameters().push_back(Query::Parameter{"available", Tools::RowValueFormatter{target}});
+                    action.get_parameters().push_back(Query::Parameter{"available", Tools::RowValueFormatter{target}, false});
 
         // Execute de query
             Query::QueryActions query_actions;
@@ -94,10 +94,10 @@ void SecurityVerification::AddTargets_(std::list<std::string>& targets)
             query_actions.ExecuteQuery_(action);
             if(action.get_error())
                 return;
-            auto results = query_actions.MakeResults_(action);
+            query_actions.MakeResults_(action);
 
         // Iterate over the results
-            for(auto& row : results.get_rows())
+            for(auto& row : action.get_results()->get_rows())
             {
                 // Verify and assign fields
                 auto table_name = row.FindField_("table_name").get_value().get_value_string();
