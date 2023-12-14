@@ -17,6 +17,9 @@
 */
 
 #include "query/query_actions.h"
+#include "query/parameter.h"
+#include "query/results.h"
+#include "tools/row_value_formatter.h"
 
 using namespace CPW::Query;
 
@@ -37,7 +40,7 @@ void QueryActions::IdentifyParameters_(Functions::Action& action)
 {
     try
     {
-        auto data_array = get_json_body();
+        auto& data_array = get_json_body();
 
         for (std::size_t a = 0; a < data_array->size(); a++)
         {
@@ -102,9 +105,26 @@ void QueryActions::IdentifyParameters_(Functions::Action& action)
 
                     auto parameter_value = parameter_object->get("value");
 
-                    // Save parameter
-                    auto new_parameter = Query::Parameter(parameter_name, Tools::RowValueFormatter{parameter_value});
-                    action.get_parameters().push_back(std::move(new_parameter));
+                    // Find if exists parameter
+                    auto found_param = std::find_if(action.get_parameters().begin(), action.get_parameters().end(), [parameter_name](Query::Parameter parameter)
+                    {
+                        return parameter.get_name() == parameter_name;
+                    });
+
+                    // Remplace parameter value
+                    if(found_param != action.get_parameters().end())
+                    {
+                        if(found_param->get_editable())
+                        {
+                            auto index = std::distance(action.get_parameters().begin(), found_param);
+                            action.get_parameters().erase(found_param);
+
+                            // Insert new element
+                            auto parameter = Query::Parameter(parameter_name, parameter_value, true);
+                            action.get_parameters().insert(action.get_parameters().begin() + index, std::move(parameter));
+                        }
+                    }
+
                 }
 
         }

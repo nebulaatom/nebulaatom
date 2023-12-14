@@ -91,7 +91,7 @@ class CPW::Query::QueryActions :
         void IdentifyParameters_(Functions::Action& action);
         bool ComposeQuery_(Functions::Action& action);
         void ExecuteQuery_(Functions::Action& action);
-        Query::Results MakeResults_(Functions::Action& action);
+        void MakeResults_(Functions::Action& action);
         JSON::Object::Ptr CreateJSONResult_();
 
     private:
