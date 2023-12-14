@@ -21,6 +21,7 @@
 
 
 #include "query/results.h"
+#include "tools/row_value_formatter.h"
 
 
 namespace CPW
@@ -45,13 +46,13 @@ enum class CPW::Query::ConditionType
 class CPW::Query::Condition
 {
     public:
-        Condition(ConditionType type, Field field_condition, ConditionalField field_value);
-        Condition(ConditionType type, Field field_condition, std::vector<ConditionalField> field_values);
+        Condition(ConditionType type, Tools::RowValueFormatter row_value, ConditionalField field_value);
+        Condition(Tools::RowValueFormatter row_value, std::vector<ConditionalField> field_values);
 
         ConditionType get_type() const { return type_; }
-        Field& get_field_condition()
+        Tools::RowValueFormatter& get_row_value()
         {
-            auto& var = field_condition_;
+            auto& var = row_value_;
             return var;
         }
         ConditionalField& get_field_value()
@@ -71,7 +72,7 @@ class CPW::Query::Condition
 
     private:
         ConditionType type_;
-        Field field_condition_;
+        Tools::RowValueFormatter row_value_;
         ConditionalField field_value_;
         std::vector<ConditionalField> field_values_;
 };
