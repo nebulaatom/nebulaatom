@@ -6,9 +6,9 @@
 #include <string>
 #include <vector>
 
-#include "tools/row_value_formatter.h"
 #include "query/results.h"
 #include "query/parameter.h"
+#include "query/condition.h"
 
 
 namespace CPW
@@ -36,8 +36,13 @@ class CPW::Functions::Action
             auto& var = parameters_;
             return var;
         }
+        std::vector<Query::Condition>& get_conditions()
+        {
+            auto& var = conditions_;
+            return var;
+        }
         std::string get_sql_code() const { return sql_code_; };
-        Query::Results& get_results()
+        std::shared_ptr<Query::Results>& get_results()
         {
             auto& var = results_;
             return var;
@@ -59,8 +64,9 @@ class CPW::Functions::Action
         bool final_;
         bool error_;
         std::vector<Query::Parameter> parameters_;
+        std::vector<Query::Condition> conditions_;
         std::string sql_code_;
-        Query::Results results_;
+        std::shared_ptr<Query::Results> results_;
 };
 
 #endif // FUNCTIONS_ACTION_H
