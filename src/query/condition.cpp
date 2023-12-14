@@ -20,13 +20,13 @@ Condition::Condition(ConditionType type, Field field_condition, std::vector<Cond
 
 }
 
-bool Condition::VerifyCondition_(Results& results)
+bool Condition::VerifyCondition_(std::shared_ptr<Results>& results)
 {
     switch(type_)
     {
         case ConditionType::kIqual:
         {
-            auto field = results.FindField_(field_value_);
+            auto field = results->FindField_(field_value_);
             if(field == nullptr)
                 return false;
 
@@ -50,7 +50,7 @@ bool Condition::VerifyCondition_(Results& results)
         }
         case ConditionType::kNoIqual:
         {
-            auto field = results.FindField_(field_value_);
+            auto field = results->FindField_(field_value_);
             if(field == nullptr)
                 return false;
 
@@ -74,7 +74,7 @@ bool Condition::VerifyCondition_(Results& results)
         }
         case ConditionType::kGreatherThan:
         {
-            auto field = results.FindField_(field_value_);
+            auto field = results->FindField_(field_value_);
             if(field == nullptr)
                 return false;
 
@@ -98,7 +98,7 @@ bool Condition::VerifyCondition_(Results& results)
         }
         case ConditionType::kSmallerThan:
         {
-            auto field = results.FindField_(field_value_);
+            auto field = results->FindField_(field_value_);
             if(field == nullptr)
                 return false;
 
@@ -124,7 +124,7 @@ bool Condition::VerifyCondition_(Results& results)
         {
             for(auto& value : field_values_)
             {
-                auto field = results.FindField_(value);
+                auto field = results->FindField_(value);
                 if(field == nullptr)
                     return false;
 

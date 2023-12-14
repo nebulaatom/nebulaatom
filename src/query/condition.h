@@ -20,9 +20,6 @@
 #define CPW_QUERY_CONDITION_H
 
 
-#include <string>
-
-#include "tools/row_value_formatter.h"
 #include "query/results.h"
 
 
@@ -70,7 +67,7 @@ class CPW::Query::Condition
 
         void set_type(ConditionType type) { type_ = type; }
 
-        bool VerifyCondition_(Results& results);
+        bool VerifyCondition_(std::shared_ptr<Results>& results);
 
     private:
         ConditionType type_;
