@@ -33,19 +33,22 @@ void BackendHandler::AddRoutes_()
 
         // Setting up the actions
             Functions::Action a1{"a1"};
-            a1.set_custom_error("No products.");
-            a1.set_sql_code("SELECT COUNT(1) FROM products WHERE available > ?");
+            a1.set_custom_error("Error Action 1.");
+            a1.set_sql_code("SELECT id FROM stores WHERE name = ?");
             // Parameters
-                a1.get_parameters().push_back(Query::Parameter{"available", Tools::RowValueFormatter{std::string("3")}});
+                a1.get_parameters().push_back(Query::Parameter{"name", Tools::RowValueFormatter{std::string("")}, true});
+            // Conditions
+                a1.get_conditions().push_back(Query::Condition{Query::ConditionType::kGreatherThan, Query::Field{"", Tools::RowValueFormatter{0}}, Query::ConditionalField{0, 0}});
             f1.get_actions().push_back(a1);
 
         // Setting up the actions
             Functions::Action a2{"a2"};
-            a2.set_custom_error("Error 1");
-            a2.set_sql_code("SELECT * FROM products WHERE id != ? AND price < ?");
+            a2.set_custom_error("Error Action 2");
+            a2.set_final(true);
+            a2.set_sql_code("SELECT * FROM products WHERE id_store = ? AND price < ?");
             // Parameters
-                a2.get_parameters().push_back(Query::Parameter{"id", Tools::RowValueFormatter{std::string("2")}});
-                a2.get_parameters().push_back(Query::Parameter{"price", Tools::RowValueFormatter{std::string("10")}});
+                a2.get_parameters().push_back(Query::Parameter{"id_store", Query::ConditionalField{0, 0}, a1.get_results(), false});
+                a2.get_parameters().push_back(Query::Parameter{"price", Tools::RowValueFormatter{100}, true});
             f1.get_actions().push_back(a2);
 
         // Setting up the function
