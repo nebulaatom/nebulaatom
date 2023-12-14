@@ -1,5 +1,6 @@
 
 #include "results.h"
+#include "tools/row_value_formatter.h"
 
 using namespace CPW::Query;
 
@@ -33,15 +34,19 @@ Results::Results()
 
 }
 
-Field* Results::FindField_(ConditionalField& field)
+std::shared_ptr<Field> Results::FindField_(ConditionalField& field)
 {
-    if(field.row < rows_.size() - 1)
-        return nullptr;
-    auto& row = rows_[field.row].get_fields();
+    auto field_result = std::make_shared<Field>("", Tools::RowValueFormatter{0});
 
-    if(field.column < row.size() - 1)
-        return nullptr;
-    auto& field_value = row[field.column];
+    if(field.get_row() < rows_.size() - 1)
+        return field_result;
+    auto& row = rows_[field.get_row()].get_fields();
 
-    return &field_value;
+    if(field.get_column() < row.size() - 1)
+        return field_result;
+    auto& field_value = row[field.get_column()];
+
+    field_result = std::make_shared<Field>(field_value);
+
+    return field_result;
 }

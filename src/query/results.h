@@ -30,7 +30,7 @@ namespace CPW
 {
     namespace Query
     {
-        struct ConditionalField;
+        class ConditionalField;
         class Field;
         class Row;
         class Results;
@@ -38,11 +38,20 @@ namespace CPW
 }
 
 
-struct CPW::Query::ConditionalField
+class CPW::Query::ConditionalField
 {
-    ConditionalField(std::size_t row, std::size_t column) : row(row), column(column) {}
-    std::size_t row;
-    std::size_t column;
+    public:
+        ConditionalField(std::size_t row, std::size_t column) : row_(row), column_(column) {}
+
+        std::size_t get_row() const { return row_; }
+        std::size_t get_column() const { return column_; }
+
+        void set_row(std::size_t row) { row_ = row; }
+        void set_column(std::size_t column) { column_ = column; }
+
+    private:
+        std::size_t row_;
+        std::size_t column_;
 };
 
 class CPW::Query::Field
@@ -52,6 +61,11 @@ class CPW::Query::Field
 
         std::string get_column_name() const { return column_name_;}
         Tools::RowValueFormatter get_value() const {return value_;}
+        Tools::RowValueFormatter& get_value()
+        {
+            auto& var = value_;
+            return var;
+        }
 
         void set_column_name(std::string column_name) { column_name_ = column_name;}
         void set_value(Tools::RowValueFormatter value) { value_ = value;}
@@ -89,7 +103,7 @@ class CPW::Query::Results
             return var;
         }
 
-        Field* FindField_(ConditionalField& field);
+        std::shared_ptr<Field> FindField_(ConditionalField& field);
 
     private:
         std::vector<Row> rows_;
