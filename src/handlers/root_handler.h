@@ -66,6 +66,7 @@
 #include "tools/manage_json.h"
 #include "security/user.h"
 #include "functions/functions_manager.h"
+#include "query/condition.h"
 
 
 namespace CPW
