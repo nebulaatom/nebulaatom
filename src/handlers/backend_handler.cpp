@@ -17,6 +17,7 @@
 */
 
 #include "handlers/backend_handler.h"
+#include "query/results.h"
 
 using namespace CPW::Handlers;
 
@@ -67,28 +68,57 @@ void BackendHandler::Process_()
         }
 
     // Process actions of the function
-        JSON::Array::Ptr results_array = new JSON::Array();
+        JSON::Object::Ptr json_result = new JSON::Object();
         for(auto& action : get_current_function()->get_actions())
         {
+            std::cout << "Function: " << get_current_function()->get_endpoint() << ", Action: " << action.get_identifier() << ", Final: " << action.get_final() << std::endl;
             Query::QueryActions query_actions;
+            query_actions.get_json_body().reset(get_json_body());
+
             query_actions.IdentifyParameters_(action);
+            if(action.get_error())
+            {
+                GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, action.get_custom_error());
+                return;
+            }
             query_actions.ComposeQuery_(action);
+            if(action.get_error())
+            {
+                GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, action.get_custom_error());
+                return;
+            }
             query_actions.ExecuteQuery_(action);
+            if(action.get_error())
+            {
+                GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, action.get_custom_error());
+                return;
+            }
+            // Verify Conditions
+            query_actions.MakeResults_(action);
+            for(auto& condition : action.get_conditions())
+            {
+                if(!condition.VerifyCondition_(action.get_results()))
+                {
+                    GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Condition error.");
+                    return;
+                }
+            }
+            //results_.emplace(std::pair{action.get_identifier(), std::move(results)});
 
-            JSON::Object::Ptr json_result = query_actions.CreateJSONResult_();
-            json_result->set("status", action.get_status());
-            json_result->set("message", action.get_message());
-
-            results_array->set(results_array->size(), json_result);
+            if(action.get_final())
+            {
+                json_result = query_actions.CreateJSONResult_();
+                json_result->set("status", action.get_status());
+                json_result->set("message", action.get_message());
+            }
         }
 
     // Send results
-
         CompoundResponse_
         (
             *get_response()
             ,HTTPResponse::HTTP_OK
-            ,results_array
+            ,json_result
         );
 }
 
