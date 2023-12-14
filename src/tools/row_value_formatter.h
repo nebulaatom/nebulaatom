@@ -90,6 +90,8 @@ class CPW::Tools::RowValueFormatter
             return var;
         }
 
+        void set_value(Poco::Dynamic::Var* value) { value_ = value; }
+
         void Format_();
 
     private:

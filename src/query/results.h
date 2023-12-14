@@ -21,7 +21,6 @@
 
 
 #include <vector>
-#include <algorithm>
 
 #include "tools/row_value_formatter.h"
 

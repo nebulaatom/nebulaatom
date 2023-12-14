@@ -70,6 +70,7 @@ class CPW::Query::Parameter
         void set_parameter_type(ParameterType parameter_type) { parameter_type_ = parameter_type; }
         void set_name(std::string name) { name_ = name; }
         void set_editable(bool editable) { editable_ = editable; }
+        void set_value(Tools::RowValueFormatter value) { value_ = value; }
 
     private:
         ParameterType parameter_type_;
