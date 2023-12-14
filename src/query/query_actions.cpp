@@ -264,19 +264,16 @@ void QueryActions::ExecuteQuery_(Functions::Action& action)
     }
 }
 
-CPW::Query::Results QueryActions::MakeResults_(Functions::Action& action)
+void QueryActions::MakeResults_(Functions::Action& action)
 {
     try
     {
         // Variables
-            Query::Results results;
             Data::RecordSet results_dataquery(*query_);
 
         // Default values
             if(query_.get() == nullptr)
-            {
-                return results;
-            }
+                return;
 
         // Make Results
             for(auto& it : results_dataquery)
@@ -292,35 +289,32 @@ CPW::Query::Results QueryActions::MakeResults_(Functions::Action& action)
                     col++;
                 }
 
-                results.get_rows().push_back(std::move(row_fields));
+                action.get_results()->get_rows().push_back(std::move(row_fields));
             }
-
-        // Return results
-            return results;
     }
     catch(JSON::JSONException& error)
     {
         std::string string_error = "- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.message());
         app_.logger().error(string_error);
         StablishActionError_(action, string_error);
-        return Query::Results{};
+        return;
     }
     catch(std::runtime_error& error)
     {
         std::string string_error = "- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what());
         app_.logger().error(string_error);
         StablishActionError_(action, string_error);
-        return Query::Results{};
+        return;
     }
     catch(std::exception& error)
     {
         std::string string_error = "- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what());
         app_.logger().error(string_error);
         StablishActionError_(action, string_error);
-        return Query::Results{};
+        return;
     }
 
-    return Query::Results();
+    return;
 }
 
 JSON::Object::Ptr QueryActions::CreateJSONResult_()
