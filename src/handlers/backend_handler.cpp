@@ -17,7 +17,9 @@
 */
 
 #include "handlers/backend_handler.h"
+#include "query/condition.h"
 #include "query/results.h"
+#include "tools/row_value_formatter.h"
 
 using namespace CPW::Handlers;
 
@@ -39,7 +41,7 @@ void BackendHandler::AddRoutes_()
             // Parameters
                 a1.get_parameters().push_back(Query::Parameter{"storeName", Tools::RowValueFormatter{std::string("")}, true});
             // Conditions
-                a1.get_conditions().push_back(Query::Condition{Query::ConditionType::kGreatherThan, Query::Field{"", Tools::RowValueFormatter{0}}, Query::ConditionalField{0, 0}});
+                a1.get_conditions().push_back(Query::Condition{Query::ConditionType::kGreatherThan, Tools::RowValueFormatter(0), Query::ConditionalField(0, 0)});
             f1.get_actions().push_back(a1);
 
         // Setting up the actions
