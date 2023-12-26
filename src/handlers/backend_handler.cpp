@@ -20,6 +20,7 @@
 #include "query/condition.h"
 #include "query/results.h"
 #include "tools/row_value_formatter.h"
+#include "yaml-cpp/node/type.h"
 
 using namespace CPW::Handlers;
 
@@ -57,6 +58,146 @@ void BackendHandler::AddRoutes_()
         // Setting up the function
             get_functions_manager().get_functions().insert({endpoint, std::move(f1)});
             get_routes_list().push_back({"products", "api/products"});
+
+    // YAML
+    YAML::Node config = YAML::LoadFile("functions.yaml");
+
+    if (!config["functions"])
+    {
+        std::cout << "The functions.yaml file is malformed. ERRYML001." << std::endl;
+        return;
+    }
+
+    for(YAML::const_iterator it = config["functions"].begin(); it != config["functions"].end(); ++it)
+    {
+        // Basic function properties
+        std::cout << "-- Function: " << it->first.as<std::string>() << "\n";
+        if (!it->second["endpoint"])
+        {
+            std::cout << "The functions.yaml file is malformed. ERRYML002." << std::endl;
+            return;
+        }
+        if (!it->second["type"])
+        {
+            std::cout << "The functions.yaml file is malformed. ERRYML003." << std::endl;
+            return;
+        }
+        if (!it->second["actions"])
+        {
+            std::cout << "The functions.yaml file is malformed. ERRYML004." << std::endl;
+            return;
+        }
+        std::cout << "--- Endpoint: " << it->second["endpoint"].as<std::string>() << "\n";
+        std::cout << "--- Type: " << it->second["type"].as<std::string>() << "\n";
+
+        // Actions
+        auto actions = it->second["actions"];
+        for(YAML::const_iterator it2 = actions.begin(); it2 != actions.end(); ++it2)
+        {
+            // Basic actions properties
+            std::cout << "--- Action: " << it2->first.as<std::string>() << "\n";
+            if (!it2->second["customError"])
+            {
+                std::cout << "The functions.yaml file is malformed. ERRYML005." << std::endl;
+                return;
+            }
+            if (!it2->second["sqlCode"])
+            {
+                std::cout << "The functions.yaml file is malformed. ERRYML006." << std::endl;
+                return;
+            }
+            if (!it2->second["final"])
+            {
+                std::cout << "The functions.yaml file is malformed. ERRYML007." << std::endl;
+                return;
+            }
+            std::cout << "---- customError: " << it2->second["customError"].as<std::string>() << "\n";
+            std::cout << "---- sqlCode: " << it2->second["sqlCode"].as<std::string>() << "\n";
+            std::cout << "---- final: " << it2->second["final"].as<std::string>() << "\n";
+
+            // Parameters
+            auto parameters = it2->second["parameters"];
+            for(YAML::const_iterator it3 = parameters.begin(); it3 != parameters.end(); ++it3)
+            {
+                // Basic parameter properties
+                std::cout << "---- Parameter: " << it3->first.as<std::string>() << "\n";
+                if (!it3->second["value"])
+                {
+                    std::cout << "The functions.yaml file is malformed. ERRYML008." << std::endl;
+                    return;
+                }
+                if (!it3->second["editable"])
+                {
+                    std::cout << "The functions.yaml file is malformed. ERRYML009." << std::endl;
+                    return;
+                }
+
+                // Value
+                if(it3->second["value"].IsScalar())
+                    std::cout << "----- value: " << it3->second["value"].as<std::string>() << "\n";
+                else if(it3->second["value"].IsMap())
+                {
+                    if(!it3->second["value"]["x"])
+                        std::cout << "The functions.yaml file is malformed. ERRYML010." << std::endl;
+                    if(!it3->second["value"]["y"])
+                        std::cout << "The functions.yaml file is malformed. ERRYML011." << std::endl;
+
+                    std::cout << "----- value x: " << it3->second["value"]["x"].as<std::string>() << "\n";
+                    std::cout << "----- value y: " << it3->second["value"]["y"].as<std::string>() << "\n";
+                }
+                else
+                    std::cout << "The functions.yaml file is malformed. ERRYML012." << std::endl;
+
+                std::cout << "----- editable: " << it3->second["editable"].as<std::string>() << "\n";
+            }
+
+            // Conditions
+            auto conditions = it2->second["conditions"];
+            for(YAML::const_iterator it4 = conditions.begin(); it4 != conditions.end(); ++it4)
+            {
+                // Basic condition properties
+                std::cout << "---- Condition: " << it4->first.as<std::string>() << "\n";
+                if (!it4->second["type"])
+                {
+                    std::cout << "The functions.yaml file is malformed. ERRYML013." << std::endl;
+                    return;
+                }
+                if (!it4->second["value"])
+                {
+                    std::cout << "The functions.yaml file is malformed. ERRYML014." << std::endl;
+                    return;
+                }
+                if (!it4->second["conditionalField"]["x"] || !it4->second["conditionalField"]["y"])
+                {
+                    std::cout << "The functions.yaml file is malformed. ERRYML015." << std::endl;
+                    return;
+                }
+
+                // Value
+                if(it4->second["value"].IsScalar())
+                    std::cout << "----- value: " << it4->second["value"].as<std::string>() << "\n";
+                else if(it4->second["value"].IsSequence())
+                {
+                    auto values = it4->second["value"];
+
+                    for(YAML::const_iterator it5 = values.begin(); it5 != values.end(); ++it5)
+                    {
+                        if(!it5->IsScalar())
+                            std::cout << "The functions.yaml file is malformed. ERRYML016." << std::endl;
+
+                        std::cout << "----- value: " << it5->as<std::string>() << "\n";
+                    }
+
+                }
+                else
+                    std::cout << "The functions.yaml file is malformed. ERRYML017." << std::endl;
+
+                std::cout << "----- type: " << it4->second["type"].as<std::string>() << "\n";
+                std::cout << "----- conditionalField x: " << it4->second["conditionalField"]["x"].as<std::string>() << "\n";
+                std::cout << "----- conditionalField y: " << it4->second["conditionalField"]["y"].as<std::string>() << "\n";
+            }
+        }
+    }
 
 }
 

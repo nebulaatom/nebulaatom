@@ -29,6 +29,7 @@
 #include <functional>
 #include <stdexcept>
 
+#include "yaml-cpp/yaml.h"
 #include "Poco/Exception.h"
 #include "Poco/Util/ServerApplication.h"
 #include <Poco/Net/HTTPRequestHandler.h>
