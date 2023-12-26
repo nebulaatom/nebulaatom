@@ -46,8 +46,8 @@ enum class CPW::Query::ConditionType
 class CPW::Query::Condition
 {
     public:
-        Condition(ConditionType type, Tools::RowValueFormatter row_value, ConditionalField field_value);
-        Condition(Tools::RowValueFormatter row_value, std::vector<ConditionalField> field_values);
+        Condition(ConditionType type, Tools::RowValueFormatter row_value, ConditionalField conditional_field);
+        Condition(std::vector<Tools::RowValueFormatter> row_values, ConditionalField conditional_field);
 
         ConditionType get_type() const { return type_; }
         Tools::RowValueFormatter& get_row_value()
@@ -55,14 +55,14 @@ class CPW::Query::Condition
             auto& var = row_value_;
             return var;
         }
-        ConditionalField& get_field_value()
+        std::vector<Tools::RowValueFormatter>& get_row_values()
         {
-            auto& var = field_value_;
+            auto& var = row_values_;
             return var;
         }
-        std::vector<ConditionalField>& get_field_values()
+        ConditionalField& get_conditional_field()
         {
-            auto& var = field_values_;
+            auto& var = conditional_field_;
             return var;
         }
 
@@ -73,8 +73,8 @@ class CPW::Query::Condition
     private:
         ConditionType type_;
         Tools::RowValueFormatter row_value_;
-        ConditionalField field_value_;
-        std::vector<ConditionalField> field_values_;
+        std::vector<Tools::RowValueFormatter> row_values_;
+        ConditionalField conditional_field_;
 };
 
 #endif // CPW_QUERY_CONDITION_H
