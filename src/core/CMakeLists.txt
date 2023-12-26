@@ -49,4 +49,5 @@ target_link_libraries(
     Poco::Data
     Poco::DataMySQL
     Poco::JSON
+    yaml-cpp::yaml-cpp
 )
