@@ -22,7 +22,7 @@
 using namespace CPW::Tools;
 
 RowValueFormatter::RowValueFormatter() :
-    row_value_type_(RowValueType::kString)
+    row_value_type_(RowValueType::kEmpty)
     ,value_string_("")
     ,value_int_(0)
     ,value_float_(0.f)
