@@ -67,6 +67,7 @@ class CPW::Query::Condition
         }
 
         void set_type(ConditionType type) { type_ = type; }
+        void set_row_value(Tools::RowValueFormatter row_value) { row_value_ = row_value; }
 
         bool VerifyCondition_(std::shared_ptr<Results>& results);
 

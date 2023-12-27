@@ -143,21 +143,21 @@ bool Condition::VerifyCondition_(std::shared_ptr<Results>& results)
                     return false;
                 else if(value.get_row_value_type() == Tools::RowValueType::kFloat)
                 {
-                    if(value.get_value_bool() == field->get_value().get_value_bool())
+                    if(value.get_value_float() == field->get_value().get_value_float())
                         return true;
                     else
                         continue;
                 }
                 else if(value.get_row_value_type() == Tools::RowValueType::kInteger)
                 {
-                    if(value.get_value_bool() == field->get_value().get_value_bool())
+                    if(value.get_value_int() == field->get_value().get_value_int())
                         return true;
                     else
                         continue;
                 }
                 else if(value.get_row_value_type() == Tools::RowValueType::kString)
                 {
-                    if(value.get_value_bool() == field->get_value().get_value_bool())
+                    if(value.get_value_string() == field->get_value().get_value_string())
                         return true;
                     else
                         continue;
