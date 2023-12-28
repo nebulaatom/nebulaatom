@@ -17,6 +17,7 @@
 */
 
 #include "handlers/backend_handler.h"
+#include "functions/action.h"
 #include "functions/function.h"
 #include "query/condition.h"
 #include "query/parameter.h"
@@ -32,98 +33,80 @@ BackendHandler::~BackendHandler()
 
 void BackendHandler::AddRoutes_()
 {
-    /*// Function /api/products
-        std::string endpoint = "/api/products";
-        Functions::Function f1{endpoint, Functions::Function::Type::kGET};
-
-        // Setting up the actions
-            Functions::Action a1{"a1"};
-            a1.set_custom_error("Error Action 1.");
-            a1.set_sql_code("SELECT id FROM stores WHERE name = ?");
-            // Parameters
-                a1.get_parameters().push_back(Query::Parameter{"storeName", Tools::RowValueFormatter{std::string("")}, true});
-            // Conditions
-                a1.get_conditions().push_back(Query::Condition{Query::ConditionType::kGreatherThan, Tools::RowValueFormatter(0), Query::ConditionalField(0, 0)});
-            f1.get_actions().push_back(a1);
-
-        // Setting up the actions
-            Functions::Action a2{"a2"};
-            a2.set_custom_error("Error Action 2");
-            a2.set_final(true);
-            a2.set_sql_code("SELECT * FROM products WHERE id_store = ? AND price < ?");
-            // Parameters
-                a2.get_parameters().push_back(Query::Parameter{"idStore", Query::ConditionalField{0, 0}, a1.get_results(), false});
-                a2.get_parameters().push_back(Query::Parameter{"productPrice", Tools::RowValueFormatter{100}, true});
-            f1.get_actions().push_back(a2);
-
-        // Setting up the function
-            get_functions_manager().get_functions().insert({endpoint, std::move(f1)});
-            get_routes_list().push_back({"products", "api/products"});
-    */
-    // Read YAML functions
+    // Read YAML functions file
     YAML::Node config = YAML::LoadFile("functions.yaml");
 
     if (!config["functions"] || !config["functions"].IsMap())
     {
-        std::cout << "The functions.yaml file is malformed. ERRYML001." << std::endl;
+        app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML001.");
         return;
     }
 
+    // Functions
     for(YAML::const_iterator it = config["functions"].begin(); it != config["functions"].end(); ++it)
     {
-        // Basic function properties
+        Functions::Function function{"", Functions::Function::Type::kGET};
+
+        // Endpoint
         if (!it->second["endpoint"] || !it->second["endpoint"].IsScalar())
         {
-            std::cout << "The functions.yaml file is malformed. ERRYML002." << std::endl;
+            app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML002.");
             return;
         }
+        function.set_endpoint(it->second["endpoint"].as<std::string>());
+
+        // Endpoint 2
         if (!it->second["endpoint2"] || !it->second["endpoint2"].IsScalar())
         {
-            std::cout << "The functions.yaml file is malformed. ERRYML002_2." << std::endl;
-            return;
-        }
-        if (!it->second["target"] || !it->second["target"].IsScalar())
-        {
-            std::cout << "The functions.yaml file is malformed. ERRYML002_3." << std::endl;
-            return;
-        }
-        if (!it->second["type"] || !it->second["type"].IsScalar())
-        {
-            std::cout << "The functions.yaml file is malformed. ERRYML003." << std::endl;
-            return;
-        }
-        if (!it->second["actions"] || !it->second["actions"].IsMap())
-        {
-            std::cout << "The functions.yaml file is malformed. ERRYML004." << std::endl;
+            app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML003.");
             return;
         }
 
-        Functions::Function function{it->second["endpoint"].as<std::string>(), Functions::Function::Type::kGET};
+        // Target
+        if (!it->second["target"] || !it->second["target"].IsScalar())
+        {
+            app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML004.");
+            return;
+        }
+
+        // Function Type
+        if (!it->second["type"] || !it->second["type"].IsScalar())
+        {
+            app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML005.");
+            return;
+        }
 
         auto found_function_type = function.get_methods().find(it->second["type"].as<std::string>());
         if(found_function_type != function.get_methods().end())
             function.set_type(found_function_type->second);
 
         // Actions
+        if (!it->second["actions"] || !it->second["actions"].IsMap())
+        {
+            app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML006.");
+            return;
+        }
+
         auto actions = it->second["actions"];
         for(YAML::const_iterator it2 = actions.begin(); it2 != actions.end(); ++it2)
         {
-            // Basic actions properties
             Functions::Action action{it2->first.as<std::string>()};
+
+            // Basic actions properties verification
 
             if (!it2->second["customError"] || !it2->second["customError"].IsScalar())
             {
-                std::cout << "The functions.yaml file is malformed. ERRYML005." << std::endl;
+                app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML007.");
                 return;
             }
             if (!it2->second["sqlCode"] || !it2->second["sqlCode"].IsScalar())
             {
-                std::cout << "The functions.yaml file is malformed. ERRYML006." << std::endl;
+                app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML008.");
                 return;
             }
             if (!it2->second["final"] || !it2->second["final"].IsScalar())
             {
-                std::cout << "The functions.yaml file is malformed. ERRYML007." << std::endl;
+                app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML009.");
                 return;
             }
 
@@ -135,72 +118,95 @@ void BackendHandler::AddRoutes_()
             auto parameters = it2->second["parameters"];
             for(YAML::const_iterator it3 = parameters.begin(); it3 != parameters.end(); ++it3)
             {
-                // Basic parameter properties
                 Query::Parameter parameter{it3->first.as<std::string>(), Tools::RowValueFormatter{}, false};
+
+                // Basic parameter properties
 
                 if (!it3->second["type"] || !it3->second["type"].IsScalar())
                 {
-                    std::cout << "The functions.yaml file is malformed. ERRYML008." << std::endl;
+                    app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML010.");
                     return;
                 }
                 if (!it3->second["value"])
                 {
-                    std::cout << "The functions.yaml file is malformed. ERRYML008_2." << std::endl;
+                    app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML011.");
                     return;
                 }
                 if (!it3->second["editable"] || !it3->second["editable"].IsScalar())
                 {
-                    std::cout << "The functions.yaml file is malformed. ERRYML009." << std::endl;
+                    app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML012.");
                     return;
                 }
 
-                auto type = it3->second["type"].as<std::string>();
-                auto val = it3->second["value"];
-                if(type == "conditional")
+                parameter.set_editable(it3->second["editable"].as<bool>());
+
+                // Parameter value and type
+                auto parameter_type = it3->second["type"].as<std::string>();
+                auto parameter_value = it3->second["value"];
+                if(parameter_type == "conditional")
                 {
                     parameter.set_parameter_type(Query::ParameterType::kConditional);
 
-                    if(!val["row"] || !val["row"].IsScalar())
-                        std::cout << "The functions.yaml file is malformed. ERRYML010." << std::endl;
-                    if(!val["column"] || !val["column"].IsScalar())
-                        std::cout << "The functions.yaml file is malformed. ERRYML011." << std::endl;
-                    if(!val["action_results"] || !val["action_results"].IsScalar())
-                        std::cout << "The functions.yaml file is malformed. ERRYML011_2." << std::endl;
-
-                    parameter.get_conditional_field().set_row(val["row"].as<int>());
-                    parameter.get_conditional_field().set_column(val["column"].as<int>());
-                    
-                    for(auto action : function.get_actions())
+                    // Basic parameter type/value properties
+                    if(!parameter_value["row"] || !parameter_value["row"].IsScalar())
                     {
-                        if(action.get_identifier() == val["action_results"].as<std::string>())
-                        {
-                            auto& param_result = parameter.get_result();
-                            auto action_result = action.get_results();
-                            param_result = action_result;
-
-                            break;
-                        }
+                        app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML013.");
+                        return;
                     }
+                    if(!parameter_value["column"] || !parameter_value["column"].IsScalar())
+                    {
+                        app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML014.");
+                        return;
+                    }
+                    if(!parameter_value["action_results"] || !parameter_value["action_results"].IsScalar())
+                    {
+                        app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML015.");
+                        return;
+                    }
+
+                    parameter.get_conditional_field().set_row(parameter_value["row"].as<int>());
+                    parameter.get_conditional_field().set_column(parameter_value["column"].as<int>());
+                    
+
+                    // Parameter action results
+                    auto action_found = std::find_if(function.get_actions().begin(), function.get_actions().end(),[&parameter_value](Functions::Action& action)
+                    {
+                        return action.get_identifier() == parameter_value["action_results"].as<std::string>();
+                    });
+
+                    if(action_found == function.get_actions().end())
+                    {
+                        app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML016.");
+                        return;
+                    }
+
+                    auto& param_result = parameter.get_result();
+                    auto action_result = action_found->get_results();
+                    param_result = action_result;
+
                 }
-                else if(type == "field")
+                else if(parameter_type == "field")
                 {
                     parameter.set_parameter_type(Query::ParameterType::kField);
 
-                    if(val["string"] && val["string"].IsScalar())
-                        parameter.set_value(Tools::RowValueFormatter{val["string"].as<std::string>()});
-                    else if(val["int"] && val["int"].IsScalar())
-                        parameter.set_value(Tools::RowValueFormatter{val["int"].as<int>()});
-                    else if(val["float"] && val["float"].IsScalar())
-                        parameter.set_value(Tools::RowValueFormatter{val["float"].as<float>()});
+                    if(parameter_value["string"] && parameter_value["string"].IsScalar())
+                        parameter.set_value(Tools::RowValueFormatter{parameter_value["string"].as<std::string>()});
+                    else if(parameter_value["int"] && parameter_value["int"].IsScalar())
+                        parameter.set_value(Tools::RowValueFormatter{parameter_value["int"].as<int>()});
+                    else if(parameter_value["float"] && parameter_value["float"].IsScalar())
+                        parameter.set_value(Tools::RowValueFormatter{parameter_value["float"].as<float>()});
+                    else
+                    {
+                        app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML017.");
+                        return;
+                    }
                 }
                 else
                 {
-                    std::cout << "The functions.yaml file is malformed. ERRYML009_2." << std::endl;
+                    app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML017.");
                     return;
                 }
                 
-                parameter.set_editable(it3->second["editable"].as<bool>());
-
                 action.get_parameters().push_back(std::move(parameter));
             }
 
@@ -208,21 +214,27 @@ void BackendHandler::AddRoutes_()
             auto conditions = it2->second["conditions"];
             for(YAML::const_iterator it4 = conditions.begin(); it4 != conditions.end(); ++it4)
             {
+                auto condition = Query::Condition{Query::ConditionType::kGreatherThan, Tools::RowValueFormatter{}, Query::ConditionalField{0, 0}};
+
                 // Basic condition properties
-                auto condition = Query::Condition{Query::ConditionType::kGreatherThan, Tools::RowValueFormatter{}, Query::ConditionalField(0, 0)};
                 if (!it4->second["type"] || !it4->second["type"].IsScalar())
                 {
-                    std::cout << "The functions.yaml file is malformed. ERRYML013." << std::endl;
+                    app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML018.");
                     return;
                 }
                 if (!it4->second["value"])
                 {
-                    std::cout << "The functions.yaml file is malformed. ERRYML014." << std::endl;
+                    app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML019.");
                     return;
                 }
-                if (!it4->second["conditionalField"]["row"] || !it4->second["conditionalField"]["column"])
+                if (!it4->second["conditionalField"]["row"] || !it4->second["conditionalField"]["row"].IsScalar())
                 {
-                    std::cout << "The functions.yaml file is malformed. ERRYML015." << std::endl;
+                    app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML020.");
+                    return;
+                }
+                if (!it4->second["conditionalField"]["column"] || !it4->second["conditionalField"]["column"].IsScalar())
+                {
+                    app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML021.");
                     return;
                 }
 
@@ -232,6 +244,11 @@ void BackendHandler::AddRoutes_()
                 else if(condition_type == "GreatherThan") condition.set_type(Query::ConditionType::kGreatherThan);
                 else if(condition_type == "SmallerThan") condition.set_type(Query::ConditionType::kSmallerThan);
                 else if(condition_type == "List") condition.set_type(Query::ConditionType::kList);
+                else
+                {
+                    app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML022.");
+                    return;
+                }
 
                 // Value
                 if(condition_type == "List")
@@ -248,7 +265,7 @@ void BackendHandler::AddRoutes_()
                             condition.get_row_values().push_back(Tools::RowValueFormatter{it5->second.as<float>()});
                         else
                         {
-                            std::cout << "The functions.yaml file is malformed. ERRYML015_3." << std::endl;
+                            app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML023.");
                             return;
                         }
                     }
@@ -265,7 +282,7 @@ void BackendHandler::AddRoutes_()
                         condition.set_row_value(Tools::RowValueFormatter{value["float"].as<float>()});
                     else
                     {
-                        std::cout << "The functions.yaml file is malformed. ERRYML015_2." << std::endl;
+                        app_.logger().error("- Error on backend_handler.cpp on AddRoutes_(): The functions.yaml file is malformed. ERRYML024.");
                         return;
                     }
                 }
