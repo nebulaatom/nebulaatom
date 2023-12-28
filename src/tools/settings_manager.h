@@ -46,6 +46,12 @@ using namespace Poco::Util;
 class CPW::Tools::SettingsManager
 {
     public:
+        struct BasicProperties
+        {
+            int port, max_queued, max_threads;
+            std::string db_host, db_port, db_name, db_user, db_password;
+        };
+
         SettingsManager();
 
         Functions::FunctionsManager& get_functions_manager()
@@ -53,11 +59,18 @@ class CPW::Tools::SettingsManager
             auto& var = functions_manager_;
             return var;
         }
+        BasicProperties& get_basic_properties_()
+        {
+            auto& var = basic_properties_;
+            return var;
+        }
 
         static void ReadFunctions_();
+        static void ReadBasicProperties_();
 
     private:
         static Functions::FunctionsManager functions_manager_;
+        static BasicProperties basic_properties_;
 };
 
 #endif // CPW_TOOLS_SETTINGS_MANAGER_H

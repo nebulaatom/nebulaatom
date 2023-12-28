@@ -23,10 +23,10 @@ using namespace CPW;
 using namespace CPW::Tools;
 
 Functions::FunctionsManager SettingsManager::functions_manager_ = {};
+SettingsManager::BasicProperties SettingsManager::basic_properties_ = {};
 
 SettingsManager::SettingsManager()
 {
-    ReadFunctions_();
 }
 
 void SettingsManager::ReadFunctions_()
@@ -300,12 +300,77 @@ void SettingsManager::ReadFunctions_()
             }
 
             // Save the function
-            functions_manager_.get_functions().insert({it->second["endpoint"].as<std::string>(), std::move(function)});
+            auto endpoint = it->second["endpoint"].as<std::string>();
+            functions_manager_.get_functions().emplace(std::make_pair(endpoint, std::move(function)));
         }
     }
     catch(std::exception& e)
     {
         std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): " << e.what() << std::endl;
+        return;
+    }
+}
+
+void SettingsManager::ReadBasicProperties_()
+{
+    try
+    {
+        basic_properties_.port = 80;
+        basic_properties_.max_queued = 100;
+        basic_properties_.max_threads = 16;
+        basic_properties_.db_host = "";
+        basic_properties_.db_port = "";
+        basic_properties_.db_name = "";
+        basic_properties_.db_user = "";
+        basic_properties_.db_password = "";
+        
+        // Read YAML functions file
+        YAML::Node config = YAML::LoadFile("properties.yaml");
+
+        // Port
+        if (config["port"] && config["port"].IsScalar())
+        {
+            basic_properties_.port = config["port"].as<int>();
+        }
+        // Max Queued
+        if (config["max_queued"] && config["max_queued"].IsScalar())
+        {
+            basic_properties_.max_queued = config["max_queued"].as<int>();
+        }
+        // Max threads
+        if (config["max_threads"] && config["max_threads"].IsScalar())
+        {
+            basic_properties_.max_threads = config["max_threads"].as<int>();
+        }
+        // DB Host
+        if (config["db_host"] && config["db_host"].IsScalar())
+        {
+            basic_properties_.db_host = config["db_host"].as<std::string>();
+        }
+        // DB Port
+        if (config["db_port"] && config["db_port"].IsScalar())
+        {
+            basic_properties_.db_port = config["db_port"].as<std::string>();
+        }
+        // DB Name
+        if (config["db_name"] && config["db_name"].IsScalar())
+        {
+            basic_properties_.db_name = config["db_name"].as<std::string>();
+        }
+        // DB User
+        if (config["db_user"] && config["db_user"].IsScalar())
+        {
+            basic_properties_.db_user = config["db_user"].as<std::string>();
+        }
+        // DB Password
+        if (config["db_password"] && config["db_password"].IsScalar())
+        {
+            basic_properties_.db_password = config["db_password"].as<std::string>();
+        }
+    }
+    catch(std::exception& e)
+    {
+        std::cout << "- Error on settings_manager.cpp on ReadBasicProperties_(): " << e.what() << std::endl;
         return;
     }
 }
