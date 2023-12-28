@@ -36,6 +36,8 @@ class CPW::Functions::Function
         Function(std::string endpoint, Type type);
 
         std::string get_endpoint() const { return endpoint_; }
+        std::string get_endpoint2() const { return endpoint2_; }
+        std::string get_target() const { return target_; }
         Type get_type() const { return type_; }
         std::vector<Functions::Action>& get_actions()
         {
@@ -49,10 +51,14 @@ class CPW::Functions::Function
         }
 
         void set_endpoint(std::string endpoint) { endpoint_ = endpoint; }
+        void set_endpoint2(std::string endpoint2) { endpoint2_ = endpoint2; }
+        void set_target(std::string target) { target_ = target; }
         void set_type(Type type) { type_ = type; }
 
     private:
         std::string endpoint_;
+        std::string endpoint2_;
+        std::string target_;
         Type type_;
         std::vector<Functions::Action> actions_;
         std::map<std::string, Type> methods_;
