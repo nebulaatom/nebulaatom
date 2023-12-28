@@ -249,8 +249,8 @@ bool RootHandler::IdentifyRoute_()
 
             // Setting up the route functions
             auto endpoint = requested_route_->SegmentsToString_();
-            auto found = get_functions_manager().get_functions().find(endpoint);
-            if(found == get_functions_manager().get_functions().end())
+            auto found = settings_manager_.get_functions_manager().get_functions().find(endpoint);
+            if(found == settings_manager_.get_functions_manager().get_functions().end())
                 return false;
 
             // Validate type

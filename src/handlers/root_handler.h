@@ -68,6 +68,7 @@
 #include "security/user.h"
 #include "functions/functions_manager.h"
 #include "query/condition.h"
+#include "tools/settings_manager.h"
 
 
 namespace CPW
@@ -103,14 +104,14 @@ class CPW::Handlers::RootHandler :
         std::string get_method() const { return method_; }
         bool get_route_verification() const { return route_verification_; }
         Application& get_app() const {return app_;}
+        Tools::SettingsManager& get_settings_manager()
+        {
+            auto& var = settings_manager_;
+            return var;
+        }
         Extras::SecurityVerification& get_current_security()
         {
             auto& var = current_security_;
-            return var;
-        }
-        Functions::FunctionsManager& get_functions_manager()
-        {
-            auto& var = functions_manager_;
             return var;
         }
         HTTPServerRequest* get_request() const {return request_;}
@@ -157,9 +158,9 @@ class CPW::Handlers::RootHandler :
         std::string user_;
         std::string method_;
         bool route_verification_;
+        Tools::SettingsManager settings_manager_;
         Extras::SecurityVerification current_security_;
         std::list<std::string> targets_;
-        Functions::FunctionsManager functions_manager_;
         HTTPServerRequest* request_;
         HTTPServerResponse* response_;
         std::list<Tools::Route> routes_list_;
