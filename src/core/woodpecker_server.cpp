@@ -17,17 +17,19 @@
 */
 
 #include "woodpecker_server.h"
+#include "tools/settings_manager.h"
 
 using namespace CPW::Core;
 
-WoodpeckerServer::WoodpeckerServer(Poco::UInt16 port) :
-    port_(port)
-    ,server_params_(new HTTPServerParams())
+WoodpeckerServer::WoodpeckerServer() :
+    server_params_(new HTTPServerParams())
     ,handler_factory_(new HandlerFactory())
     ,app_(Application::instance())
 {
     Poco::Net::initializeSSL();
     Query::DatabaseManager::StartMySQL_();
+    Tools::SettingsManager::ReadFunctions_();
+    Tools::SettingsManager::ReadBasicProperties_();
 }
 
 WoodpeckerServer::~WoodpeckerServer()
@@ -52,10 +54,10 @@ int WoodpeckerServer::main(const std::vector<std::string>& args)
     try
     {
         arguments_ = &args;
-        server_params_->setMaxQueued(100);
-        server_params_->setMaxThreads(16);
+        server_params_->setMaxQueued(settings_manager_.get_basic_properties_().max_queued);
+        server_params_->setMaxThreads(settings_manager_.get_basic_properties_().max_threads);
 
-        server_socket_ = std::make_shared<SecureServerSocket>(port_);
+        server_socket_ = std::make_shared<SecureServerSocket>(settings_manager_.get_basic_properties_().port);
         server_ = std::make_unique<HTTPServer>(handler_factory_, *server_socket_.get(), server_params_);
 
         return Init_();
@@ -97,7 +99,7 @@ int WoodpeckerServer::main(const std::vector<std::string>& args)
 int WoodpeckerServer::Init_()
 {
     server_->start();
-    app_.logger().information("- Server started at port " + format("%d", static_cast<int>(port_)));
+    app_.logger().information("- Server started at port " + format("%d", settings_manager_.get_basic_properties_().port));
 
     waitForTerminationRequest();
 

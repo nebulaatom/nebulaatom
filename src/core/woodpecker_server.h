@@ -40,6 +40,7 @@
 
 #include "core/handler_factory.h"
 #include "query/database_manager.h"
+#include "tools/settings_manager.h"
 
 
 namespace CPW
@@ -58,14 +59,9 @@ using namespace Poco::Util;
 class CPW::Core::WoodpeckerServer : public ServerApplication
 {
     public:
-        WoodpeckerServer(Poco::UInt16 port);
+        WoodpeckerServer();
         virtual ~WoodpeckerServer();
 
-        Poco::UInt16& get_port()
-        {
-            auto& var = port_;
-            return var;
-        }
         HTTPServerParams::Ptr get_server_params()
         {
             auto& var = server_params_;
@@ -94,13 +90,13 @@ class CPW::Core::WoodpeckerServer : public ServerApplication
         int Init_();
 
     private:
-        Poco::UInt16 port_;
         HTTPServerParams::Ptr server_params_;
         std::shared_ptr<SecureServerSocket> server_socket_;
         std::unique_ptr<HTTPServer> server_;
         HandlerFactory* handler_factory_;
         Application& app_;
         const std::vector<std::string>* arguments_;
+        Tools::SettingsManager settings_manager_;
 };
 
 #endif // CPW_CORE_WOODPECKERSERVER_H

@@ -30,6 +30,8 @@
 #include <Poco/Data/MySQL/MySQLException.h>
 #include <Poco/Data/Statement.h>
 
+#include "tools/settings_manager.h"
+
 
 namespace CPW
 {
@@ -54,6 +56,8 @@ class CPW::Query::DatabaseManager
         static void StopMySQL_();
         static std::shared_ptr<Data::Session> StartSessionMySQL_();
 
+    private:
+        static Tools::SettingsManager settings_manager_;
 };
 
 #endif // CPW_QUERY_DATABASE_MANAGER_H
