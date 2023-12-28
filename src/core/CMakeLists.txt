@@ -42,6 +42,7 @@ target_link_libraries(
     results
     parameter
     condition
+    settingsmanager
     Poco::Foundation
     Poco::Net
     Poco::NetSSL

@@ -31,3 +31,8 @@ set_target_properties(managejson PROPERTIES POSITION_INDEPENDENT_CODE 1)
 add_library(sessionshandler OBJECT "sessions_handler.cpp")
 target_include_directories(sessionshandler PUBLIC ${HEADER})
 set_target_properties(sessionshandler PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
+### settingsmanager
+add_library(settingsmanager OBJECT "settings_manager.cpp")
+target_include_directories(settingsmanager PUBLIC ${HEADER})
+set_target_properties(settingsmanager PROPERTIES POSITION_INDEPENDENT_CODE 1)
