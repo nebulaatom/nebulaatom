@@ -17,6 +17,7 @@
 */
 
 #include "handlers/root_handler.h"
+#include "query/results.h"
 
 using namespace CPW::Handlers;
 
@@ -26,9 +27,9 @@ RootHandler::RootHandler(std::string api_version) :
     ,user_("null")
     ,method_("GET")
     ,route_verification_(true)
-    ,current_function_(nullptr)
+    ,current_function_()
 {
-    requested_route_ = std::make_shared<Tools::Route>("", std::vector<std::string>{""});
+    requested_route_ = std::make_shared<Tools::Route>(std::vector<std::string>{""});
 
     current_security_.set_security_type(Extras::SecurityType::kDisableAll);
 }
@@ -134,7 +135,7 @@ bool RootHandler::ProcessRoute_()
 
         std::vector<std::string> segments;
         URI(request_->getURI()).getPathSegments(segments);
-        requested_route_ = std::make_shared<Tools::Route>("", segments);
+        requested_route_ = std::make_shared<Tools::Route>(segments);
 
     // Manage the route type
         switch(requested_route_->get_current_route_type())
@@ -224,12 +225,8 @@ bool RootHandler::VerifyPermissions_()
     // Setting up user
         current_security_.get_users_manager().get_current_user().set_username(user_);
 
-    // Setting up targets
-        targets_.push_back(requested_route_->get_target());
-        current_security_.AddTargets_(targets_);
-
     // Verify permissions
-    if(!current_security_.VerifyRoutesPermissions_())
+    if(!current_security_.VerifyRoutesPermissions_(*requested_route_, method_))
     {
         GenericResponse_(*response_, HTTPResponse::HTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
         return false;
@@ -244,9 +241,6 @@ bool RootHandler::IdentifyRoute_()
     {
         if(requested_route_->SegmentsToString_() == it.SegmentsToString_())
         {
-            // Set target
-            requested_route_->set_target(it.get_target());
-
             // Setting up the route functions
             auto endpoint = requested_route_->SegmentsToString_();
             auto found = settings_manager_.get_functions_manager().get_functions().find(endpoint);
@@ -262,8 +256,12 @@ bool RootHandler::IdentifyRoute_()
             if(found_type->second != found->second.get_type())
                 continue;
 
-            current_function_ = &found->second;
-            //query_actions_->get_current_filters_() = found->second.get_filters();
+            // Copy function and reset results
+            current_function_ = found->second;
+            for(auto& action : current_function_.get_actions())
+            {
+                action.get_results() = std::make_shared<Query::Results>();
+            }
 
             return true;
         }

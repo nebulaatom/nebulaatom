@@ -61,7 +61,6 @@
 #include "tools/route.h"
 #include "http/common_responses.h"
 #include "security/security_verification.h"
-#include "extras/dynamic_elements.h"
 #include "http/http_methods.h"
 #include "tools/requests_manager.h"
 #include "tools/manage_json.h"
@@ -126,7 +125,7 @@ class CPW::Handlers::RootHandler :
             auto& var = requested_route_;
             return var;
         }
-        Functions::Function* get_current_function()
+        Functions::Function& get_current_function()
         {
             auto& var = current_function_;
             return var;
@@ -165,7 +164,7 @@ class CPW::Handlers::RootHandler :
         HTTPServerResponse* response_;
         std::list<Tools::Route> routes_list_;
         std::shared_ptr<CPW::Tools::Route> requested_route_;
-        Functions::Function* current_function_;
+        Functions::Function current_function_;
 };
 
 #endif // CPW_HANDLERS_ROOTHANDLER_H
