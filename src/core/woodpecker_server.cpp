@@ -17,7 +17,6 @@
 */
 
 #include "woodpecker_server.h"
-#include "tools/settings_manager.h"
 
 using namespace CPW::Core;
 
@@ -30,6 +29,7 @@ WoodpeckerServer::WoodpeckerServer() :
     Query::DatabaseManager::StartMySQL_();
     Tools::SettingsManager::ReadFunctions_();
     Tools::SettingsManager::ReadBasicProperties_();
+    Tools::SessionsHandler::ReadSessions_();
 }
 
 WoodpeckerServer::~WoodpeckerServer()

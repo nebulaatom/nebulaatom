@@ -41,6 +41,7 @@
 #include "core/handler_factory.h"
 #include "query/database_manager.h"
 #include "tools/settings_manager.h"
+#include "tools/sessions_handler.h"
 
 
 namespace CPW
