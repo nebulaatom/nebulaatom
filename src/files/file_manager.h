@@ -44,6 +44,7 @@
 
 #include "files/file_properties.h"
 #include "files/file.h"
+#include "tools/settings_manager.h"
 
 
 namespace CPW
@@ -118,6 +119,7 @@ class CPW::Files::FileManager: public Net::PartHandler
         std::string directory_for_temp_files_;
         JSON::Array::Ptr result_;
         std::vector<Files::File> files_;
+        Tools::SettingsManager settings_manager_;
 };
 
 #endif // CPW_FILES_FILEMANAGER_H

@@ -321,6 +321,10 @@ void SettingsManager::ReadBasicProperties_()
         basic_properties_.db_name = "";
         basic_properties_.db_user = "";
         basic_properties_.db_password = "";
+        basic_properties_.session_max_age = 3600;
+        basic_properties_.directory_base = "/var/www";
+        basic_properties_.directory_for_uploaded_files = "/var/www";
+        basic_properties_.directory_for_temp_files = "/tmp";
         
         // Read YAML functions file
         YAML::Node config = YAML::LoadFile("properties.yaml");
@@ -339,6 +343,26 @@ void SettingsManager::ReadBasicProperties_()
         if (config["max_threads"] && config["max_threads"].IsScalar())
         {
             basic_properties_.max_threads = config["max_threads"].as<int>();
+        }
+        // Session max age
+        if (config["session_max_age"] && config["session_max_age"].IsScalar())
+        {
+            basic_properties_.session_max_age = config["session_max_age"].as<int>();
+        }
+        // Directory base
+        if (config["directory_base"] && config["directory_base"].IsScalar())
+        {
+            basic_properties_.directory_base = config["directory_base"].as<std::string>();
+        }
+        // Directory for uploaded files
+        if (config["directory_for_uploaded_files"] && config["directory_for_uploaded_files"].IsScalar())
+        {
+            basic_properties_.directory_for_uploaded_files = config["directory_for_uploaded_files"].as<std::string>();
+        }
+        // Directory for temp files
+        if (config["directory_for_temp_files"] && config["directory_for_temp_files"].IsScalar())
+        {
+            basic_properties_.directory_for_temp_files = config["directory_for_temp_files"].as<std::string>();
         }
         // DB Host
         if (config["db_host"] && config["db_host"].IsScalar())

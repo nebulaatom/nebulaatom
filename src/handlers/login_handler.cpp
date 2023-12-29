@@ -103,7 +103,7 @@ void LoginHandler::StartSession_()
         }
 
     // Create the session
-        auto session = Tools::SessionsHandler::CreateSession_(user, "/", 2592000);
+        auto session = Tools::SessionsHandler::CreateSession_(user, "/", get_settings_manager().get_basic_properties_().session_max_age);
 
     // Response
         Poco::Net::HTTPCookie cookie("cpw-woodpecker-sid", session.get_id());

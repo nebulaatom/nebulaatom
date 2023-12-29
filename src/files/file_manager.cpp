@@ -22,12 +22,12 @@ using namespace CPW::Files;
 
 FileManager::FileManager() :
     operation_type_(OperationType::kDownload)
-    ,directory_base_("/srv/www/pedidosturpial")
-    ,directory_for_uploaded_files_("/srv/www/pedidosturpial/uploaded-files")
-    ,directory_for_temp_files_("/tmp")
 {
     AddSupportedFiles_();
     result_ = new JSON::Array();
+    directory_base_ = settings_manager_.get_basic_properties_().directory_base;
+    directory_for_uploaded_files_ = settings_manager_.get_basic_properties_().directory_for_uploaded_files;
+    directory_for_temp_files_ = settings_manager_.get_basic_properties_().directory_for_temp_files;
 }
 
 FileManager::~FileManager()
