@@ -10,17 +10,18 @@ Parameter::Parameter(std::string name, Tools::RowValueFormatter value, bool edit
     ,editable_(editable)
     ,value_(value)
     ,conditional_field_(0, 0)
+    ,conditional_field_action_("")
 {
-    result_ = std::make_shared<Query::Results>();
+    
 }
 
-Parameter::Parameter(std::string name, Query::ConditionalField conditional_field, std::shared_ptr<Query::Results> result, bool editable) :
+Parameter::Parameter(std::string name, Query::ConditionalField conditional_field, std::string conditional_field_action, bool editable) :
     parameter_type_(ParameterType::kConditional)
     ,name_(name)
     ,editable_(editable)
     ,value_(Tools::RowValueFormatter(0))
     ,conditional_field_(conditional_field)
-    ,result_(result)
+    ,conditional_field_action_(conditional_field_action)
 {
 
 }

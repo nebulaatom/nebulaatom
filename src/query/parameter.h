@@ -46,7 +46,7 @@ class CPW::Query::Parameter
 {
     public:
         Parameter(std::string name, Tools::RowValueFormatter value, bool editable);
-        Parameter(std::string name, Query::ConditionalField conditional_field, std::shared_ptr<Query::Results> result, bool editable);
+        Parameter(std::string name, Query::ConditionalField conditional_field, std::string conditional_field_action, bool editable);
 
         ParameterType get_parameter_type() const { return parameter_type_; }
         std::string get_name() const { return name_; }
@@ -61,16 +61,13 @@ class CPW::Query::Parameter
             auto& var = conditional_field_;
             return var;
         }
-        std::shared_ptr<Query::Results>& get_result()
-        {
-            auto& var = result_;
-            return var;
-        }
+        std::string get_conditional_field_action() const { return conditional_field_action_; }
 
         void set_parameter_type(ParameterType parameter_type) { parameter_type_ = parameter_type; }
         void set_name(std::string name) { name_ = name; }
         void set_editable(bool editable) { editable_ = editable; }
         void set_value(Tools::RowValueFormatter value) { value_ = value; }
+        void set_conditional_field_action(std::string conditional_field_action) { conditional_field_action_ = conditional_field_action; }
 
     private:
         ParameterType parameter_type_;
@@ -78,7 +75,7 @@ class CPW::Query::Parameter
         bool editable_;
         Tools::RowValueFormatter value_;
         Query::ConditionalField conditional_field_;
-        std::shared_ptr<Query::Results> result_;
+        std::string conditional_field_action_;
 };
 
 #endif // CPW_QUERY_PARAMETER_H

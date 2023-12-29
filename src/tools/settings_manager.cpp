@@ -181,10 +181,8 @@ void SettingsManager::ReadFunctions_()
                             std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML016." << std::endl;
                             return;
                         }
-
-                        auto& param_result = parameter.get_result();
-                        auto action_result = action_found->get_results();
-                        param_result = action_result;
+                        
+                        parameter.set_conditional_field_action(parameter_value["action_results"].as<std::string>());
 
                     }
                     else if(parameter_type == "field")

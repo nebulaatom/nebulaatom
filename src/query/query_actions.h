@@ -87,6 +87,15 @@ class CPW::Query::QueryActions :
             auto& var = query_;
             return var;
         }
+        Functions::Function* get_current_function()
+        {
+            return current_function_;
+        }
+
+        void set_current_function(Functions::Function* function)
+        {
+            current_function_ = function;
+        }
 
         void IdentifyParameters_(Functions::Action& action);
         bool ComposeQuery_(Functions::Action& action);
@@ -103,6 +112,7 @@ class CPW::Query::QueryActions :
         std::shared_ptr<Data::Session> session_;
         std::shared_ptr<Data::Statement> query_;
         Application& app_;
+        Functions::Function* current_function_;
 };
 
 

@@ -27,6 +27,7 @@ QueryActions::QueryActions() :
     final_query_("")
     ,affected_rows_(0)
     ,app_(Application::instance())
+    ,current_function_(nullptr)
 {
 
 }
@@ -159,10 +160,19 @@ bool QueryActions::ComposeQuery_(Functions::Action& action)
             for(auto& param : action.get_parameters())
             {
                 // Verify conditional parameter
-                if(param.get_parameter_type() == ParameterType::kConditional)
+                if(param.get_parameter_type() == ParameterType::kConditional && current_function_ != nullptr)
                 {
-                    auto row_value = param.get_result()->FindField_(param.get_conditional_field());
-                    param.set_value(row_value->get_value());
+                    // Find action results
+                    auto action_found = std::find_if(current_function_->get_actions().begin(), current_function_->get_actions().end(),[&param](Functions::Action& action)
+                    {
+                        return action.get_identifier() == param.get_conditional_field_action();
+                    });
+
+                    if(action_found != current_function_->get_actions().end())
+                    {
+                        auto row_value = action_found->get_results()->FindField_(param.get_conditional_field());
+                        param.set_value(row_value->get_value());
+                    }
                 }
 
                 // Add final value to query

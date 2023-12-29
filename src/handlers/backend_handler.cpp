@@ -22,6 +22,7 @@
 #include "query/condition.h"
 #include "query/parameter.h"
 #include "query/results.h"
+#include "tools/route.h"
 #include "tools/row_value_formatter.h"
 
 using namespace CPW::Handlers;
@@ -35,24 +36,24 @@ void BackendHandler::AddRoutes_()
 {
     for(auto& function : get_settings_manager().get_functions_manager().get_functions())
     {
-        get_routes_list().push_back({function.second.get_target(), function.second.get_endpoint2()});
+        get_routes_list().push_back(Tools::Route{function.second.get_endpoint2()});
     }
 }
 
 void BackendHandler::Process_()
 {
     // Verify current function
-        if(get_current_function() == nullptr)
+        if(get_current_function().get_actions().empty())
         {
-            GenericResponse_(*get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Current function is Null Pointer.");
+            GenericResponse_(*get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Current function has no actions.");
             return;
         }
 
     // Process actions of the function
         JSON::Object::Ptr json_result = new JSON::Object();
-        for(auto& action : get_current_function()->get_actions())
+        for(auto& action : get_current_function().get_actions())
         {
-            std::cout << "Function: " << get_current_function()->get_endpoint() << ", Action: " << action.get_identifier() << ", Final: " << action.get_final() << std::endl;
+            std::cout << "Function: " << get_current_function().get_endpoint() << ", Action: " << action.get_identifier() << ", Final: " << action.get_final() << std::endl;
             Query::QueryActions query_actions;
             query_actions.get_json_body().reset(get_json_body());
 
@@ -65,6 +66,7 @@ void BackendHandler::Process_()
             }
 
             // Compose query
+            query_actions.set_current_function(&get_current_function());
             query_actions.ComposeQuery_(action);
             if(action.get_error())
             {
