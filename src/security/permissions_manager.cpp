@@ -27,62 +27,32 @@ std::map<std::string, ActionType> PermissionsManager::action_type_map_ = {};
 PermissionsManager::PermissionsManager()
 {
     LoadPermissions_();
+    FillActionTypeMap_();
 }
 
-std::_List_iterator<Permission> PermissionsManager::FindPermission_(Tools::Route& requested_route)
+std::_List_iterator<Permission> PermissionsManager::FindPermission_(Tools::Route& route, std::string user, std::string action_type)
 {
-    auto found_permission = permissions_.end();
-    std::string current_path = "";
+    auto permission_final = permissions_.end();
 
-    for (const auto& char_segment : requested_route.SegmentsToString_())
+    ActionType action_mapped = ActionType::kRead;
+    auto action_found = action_type_map_.find(action_type);
+    if(action_found != action_type_map_.end())
+        action_mapped = action_found->second;
+
+    auto permission_found = std::find_if(permissions_.begin(), permissions_.end(), [&](Permission& permission)
     {
-        current_path = current_path + char_segment;
 
-        auto found = std::find_if(permissions_.begin(), permissions_.end(), [&current_path](Permission& permission)
-        {
-            auto string_route = permission.get_route().SegmentsToString_();
-            return string_route == current_path;
-        });
+        return permission.get_route().SegmentsToString_() == route.SegmentsToString_()
+        && permission.get_user()->get_username() == user
+        && permission.get_action_type() == action_mapped;
+    });
 
-        if (found != permissions_.end())
-        {
-            found_permission = found;
-        }
+    if (permission_found != permissions_.end())
+    {
+        permission_final = permission_found;
     }
 
-    return found_permission;
-}
-
-bool PermissionsManager::VerifyPermission_(Tools::Route& requested_route, User& user, std::_List_iterator<Permission> found_permission)
-{
-    if(found_permission == permissions_.end())
-        return false;
-
-    // Verify if are same users
-    if(user.get_username() != found_permission->get_user()->get_username())
-        return false;
-
-    // Verify if are same route
-    bool same_route = false;
-    if(requested_route.SegmentsToString_() == found_permission->get_route().SegmentsToString_())
-        same_route = true;
-
-    // Get granted and descendant
-    bool granted = found_permission->get_granted();
-    bool descendant = found_permission->get_descendant();
-
-    // Verify permissions
-    if(same_route)
-    {
-        return granted;
-    }
-    else
-    {
-        if(granted && descendant)
-            return true;
-        else
-            return false;
-    }
+    return permission_final;
 }
 
 void PermissionsManager::FillActionTypeMap_()
@@ -102,24 +72,18 @@ void PermissionsManager::LoadPermissions_()
             return;
         }
 
-        // Variables
-            Query::QueryActions query_manager;
-
         // Setting up the action
             Functions::Action action{""};
             action.set_custom_error("Permissions not found.");
             std::string sql_code =
-                "SELECT tp.table_name, tp.route, u.username, u.id AS id_user, at.name AS action_name, up.granted, up.descendant "
-                "FROM _woodpecker_user_permissions up "
-                "JOIN _woodpecker_tables_permissions tp ON tp.id = up.id_table_permission "
-                "JOIN _woodpecker_users u ON u.id = up.id_user "
-                "JOIN _woodpecker_action_types at ON at.id = up.id_action_type"
+                "SELECT wp.endpoint AS endpoint, wu.username AS username, wu.id AS id_user, wp.action AS action "
+                "FROM _woodpecker_permissions wp "
+                "JOIN _woodpecker_users wu ON wu.id = wp.id_user"
             ;
             action.set_sql_code(sql_code);
 
-        // Execute de query
+        // Query process
             Query::QueryActions query_actions;
-            //query_actions.IdentifyParameters_(action);
             query_actions.ComposeQuery_(action);
             if(action.get_error())
                 return;
@@ -132,21 +96,18 @@ void PermissionsManager::LoadPermissions_()
             for(auto& row : action.get_results()->get_rows())
             {
                 // Get elements
-                auto table_name = row.FindField_("table_name").get_value().get_value_string();
-                auto route = row.FindField_("route").get_value().get_value_string();
-                auto user = row.FindField_("username").get_value().get_value_string();
+                auto endpoint = row.FindField_("endpoint").get_value().get_value_string();
+                auto username = row.FindField_("username").get_value().get_value_string();
                 auto id_user = row.FindField_("id_user").get_value().get_value_int();
-                auto action_type = row.FindField_("action_name").get_value().get_value_string();
-                auto granted = row.FindField_("granted").get_value().get_value_int() == 1? true : false;
-                auto descendant = row.FindField_("descendant").get_value().get_value_int() == 1? true : false;
+                auto action = row.FindField_("action").get_value().get_value_string();
 
                 // Create permission
                 ActionType action_mapped = ActionType::kRead;
-                auto found = action_type_map_.find(action_type);
+                auto found = action_type_map_.find(action);
                 if(found != action_type_map_.end())
                     action_mapped = found->second;
 
-                Permission p {granted, {table_name, route}, std::make_shared<User>(id_user, user, ""), action_mapped, descendant};
+                Permission p {{endpoint}, std::make_shared<User>(id_user, username, ""), action_mapped};
 
                 permissions_.push_back(std::move(p));
             }

@@ -60,7 +60,7 @@ class CPW::Security::PermissionsManager
             return var;
         }
 
-        static std::_List_iterator<Permission> FindPermission_(Tools::Route& requested_route);
+        static std::_List_iterator<Permission> FindPermission_(Tools::Route& route, std::string user, std::string action_type);
         static bool VerifyPermission_(Tools::Route& requested_route, User& user, std::_List_iterator<Permission> found_permission);
 
     protected:
