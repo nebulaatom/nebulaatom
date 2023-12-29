@@ -16,7 +16,6 @@ target_link_libraries(
     woodpeckerserver
     handlerfactory
     queryactions
-    dynamicelements
     httpmethods
     securityverification
     roothandler
