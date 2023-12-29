@@ -21,19 +21,15 @@
 using namespace CPW::Security;
 
 Permission::Permission() :
-    granted_(false)
-    ,descendant_(false)
-    ,route_({})
-    ,user_({})
+    route_()
+    ,user_()
     ,action_type_(ActionType::kRead)
 {
 
 }
 
-Permission::Permission(bool granted, Tools::Route route, std::shared_ptr<User> user, ActionType action_type, bool descendant = false) :
-    granted_(granted)
-    ,descendant_(descendant)
-    ,route_(route)
+Permission::Permission(Tools::Route route, std::shared_ptr<User> user, ActionType action_type) :
+    route_(route)
     ,user_(user)
     ,action_type_(action_type)
 {

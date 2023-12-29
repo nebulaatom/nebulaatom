@@ -50,10 +50,8 @@ class CPW::Security::Permission
 {
     public:
         Permission();
-        Permission(bool granted_, Tools::Route route_, std::shared_ptr<User> user_, ActionType action_type, bool descendant);
+        Permission(Tools::Route route_, std::shared_ptr<User> user_, ActionType action_type);
 
-        bool get_granted() const { return granted_; }
-        bool get_descendant() const { return descendant_; }
         Tools::Route& get_route()
         {
             auto& var = route_;
@@ -66,14 +64,10 @@ class CPW::Security::Permission
         }
         ActionType get_action_type() const { return action_type_; }
 
-        void set_granted(bool granted) { granted_ = granted; }
-        void set_descendant(bool descendant) { descendant_ = descendant; }
         void set_route(Tools::Route route) { route_ = route; }
         void set_action_type(ActionType& action_type) { action_type_ = action_type; }
 
     private:
-        bool granted_;
-        bool descendant_;
         Tools::Route route_;
         std::shared_ptr<User> user_;
         ActionType action_type_;
