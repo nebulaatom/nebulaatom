@@ -40,7 +40,7 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 
         URI(request.getURI()).getPathSegments(segments);
 
-        CPW::Tools::Route requested_route("", segments);
+        CPW::Tools::Route requested_route(segments);
 
         switch(requested_route.get_current_route_type())
         {
@@ -103,7 +103,7 @@ void HandlerFactory::CreateConnections_()
         HandlerType::kNull
         ,new Tools::HandlerConnection
         {
-            CPW::Tools::Route("null", std::vector<std::string>{""})
+            CPW::Tools::Route(std::vector<std::string>{""})
             ,[&](){return new CPW::Handlers::NullHandler(api_version_);}
         }
     ));
@@ -112,7 +112,7 @@ void HandlerFactory::CreateConnections_()
         HandlerType::kBackend
         ,new Tools::HandlerConnection
         {
-            CPW::Tools::Route("", std::vector<std::string>{"api", api_version_})
+            CPW::Tools::Route(std::vector<std::string>{"api", api_version_})
             ,[&](){return new CPW::Handlers::BackendHandler(api_version_);}
         }
     ));
@@ -121,7 +121,7 @@ void HandlerFactory::CreateConnections_()
         HandlerType::kLogin
         ,new Tools::HandlerConnection
         {
-            CPW::Tools::Route("", std::vector<std::string>{"api", api_version_})
+            CPW::Tools::Route(std::vector<std::string>{"api", api_version_})
             ,[&](){return new CPW::Handlers::LoginHandler(api_version_);}
         }
     ));
@@ -130,7 +130,7 @@ void HandlerFactory::CreateConnections_()
         HandlerType::kFrontend
         ,new Tools::HandlerConnection
         {
-            CPW::Tools::Route("", std::vector<std::string>{""})
+            CPW::Tools::Route(std::vector<std::string>{""})
             ,[&](){return new CPW::Handlers::FrontendHandler(api_version_);}
         }
     ));

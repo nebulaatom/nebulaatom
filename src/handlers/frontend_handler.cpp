@@ -34,7 +34,7 @@ FrontendHandler::~FrontendHandler()
 void FrontendHandler::AddRoutes_()
 {
     get_routes_list().push_back({});
-    get_routes_list().push_back({"uploaded-files", std::vector<std::string>{"uploaded-files"}});
+    get_routes_list().push_back({std::vector<std::string>{"uploaded-files"}});
 }
 
 void FrontendHandler::Process_()

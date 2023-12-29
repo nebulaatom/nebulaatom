@@ -29,8 +29,8 @@ void LoginHandler::AddRoutes_()
 {
     auto& routes_list = get_routes_list();
 
-    routes_list.push_back({"login", {"api", get_api_version(), "system", "login"}});
-    routes_list.push_back({"logout", {"api", get_api_version(), "system", "logout"}});
+    routes_list.push_back({{"api", get_api_version(), "system", "login"}});
+    routes_list.push_back({{"api", get_api_version(), "system", "logout"}});
 
 }
 
