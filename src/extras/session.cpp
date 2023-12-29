@@ -21,11 +21,10 @@
 using namespace CPW::Extras;
 
 Session::Session() :
-        id_("")
-        ,path_("/")
-        ,user_("")
-        ,max_age_(3600)
-        ,last_access_()
+    id_("")
+    ,path_("/")
+    ,user_("")
+    ,max_age_(3600)
 {
     GenerateSessionID_();
 }

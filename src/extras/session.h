@@ -63,11 +63,11 @@ class CPW::Extras::Session
         {
             return max_age_;
         }
-        Poco::DateTime get_last_access() const
+        
+        void set_id(std::string id)
         {
-            return last_access_;
+            id_ = id;
         }
-
         void set_path(std::string path)
         {
             path_ = path;
@@ -92,8 +92,6 @@ class CPW::Extras::Session
         std::string path_;
         std::string user_;
         int max_age_;
-        Poco::DateTime last_access_;
-
 };
 
 
