@@ -17,6 +17,9 @@
  */
 
 #include "tools/sessions_handler.h"
+#include "Poco/Exception.h"
+#include "query/parameter.h"
+#include "tools/row_value_formatter.h"
 
 using namespace CPW::Tools;
 
@@ -30,6 +33,59 @@ SessionsHandler::SessionsHandler()
 SessionsHandler::~SessionsHandler()
 {
 
+}
+
+void SessionsHandler::ReadSessions_()
+{
+    try
+    {
+        // Setting up the action
+            Functions::Action action{""};
+            action.set_custom_error("Sessions not found.");
+            action.set_sql_code("SELECT * FROM _woodpecker_sessions");
+
+        // Query process
+            Query::QueryActions query_actions;
+            query_actions.ComposeQuery_(action);
+            if(action.get_error())
+            {
+                std::cout << "- Error on sessions_handler.cpp on ReadSessions_(): " << action.get_custom_error() << std::endl;
+                return;
+            }
+            query_actions.ExecuteQuery_(action);
+            if(action.get_error())
+            {
+                std::cout << "- Error on sessions_handler.cpp on ReadSessions_(): " << action.get_custom_error() << std::endl;
+                return;
+            }
+            query_actions.MakeResults_(action);
+            if(action.get_error())
+            {
+                std::cout << "- Error on sessions_handler.cpp on ReadSessions_(): " << action.get_custom_error() << std::endl;
+                return;
+            }
+
+            for(auto& row : action.get_results()->get_rows())
+            {
+                auto identifier = row.FindField_("identifier").get_value().get_value_string();
+                auto path = row.FindField_("path").get_value().get_value_string();
+                auto user = row.FindField_("user").get_value().get_value_string();
+                auto max_age = row.FindField_("max_age").get_value().get_value_int();
+
+                Extras::Session new_session;
+                new_session.set_id(identifier);
+                new_session.set_user(user);
+                new_session.set_path(path);
+                new_session.set_max_age(max_age);
+
+                sessions_.emplace(identifier, std::move(new_session));
+
+            }
+    }
+    catch(MySQL::MySQLException& error)
+    {
+        std::cout << "- Error on sessions_handler.cpp on ReadSessions_(): " << std::string(error.message()) << std::endl;
+    }
 }
 
 CPW::Extras::Session& SessionsHandler::CreateSession_(std::string user, std::string path, int max_age)
@@ -50,13 +106,67 @@ CPW::Extras::Session& SessionsHandler::CreateSession_(std::string user, std::str
     }
 
     sessions_.emplace(id, std::move(new_session));
+
+    // Save in DB
+    try
+    {
+        // Setting up the action
+            Functions::Action action{""};
+            action.set_custom_error("Session not saved.");
+            std::string sql_code =
+                "INSERT INTO _woodpecker_sessions (identifier, path, user, max_age) "
+                "VALUES (?, ?, ?, ?)"
+            ;
+            action.set_sql_code(sql_code);
+            action.get_parameters().push_back(Query::Parameter{"identifier", Tools::RowValueFormatter{id}, false});
+            action.get_parameters().push_back(Query::Parameter{"path", Tools::RowValueFormatter{path}, false});
+            action.get_parameters().push_back(Query::Parameter{"user", Tools::RowValueFormatter{user}, false});
+            action.get_parameters().push_back(Query::Parameter{"max_age", Tools::RowValueFormatter{max_age}, false});
+
+        // Query process
+            Query::QueryActions query_actions;
+            query_actions.ComposeQuery_(action);
+            if(action.get_error())
+                return sessions_.at(id);
+            query_actions.ExecuteQuery_(action);
+    }
+    catch(MySQL::MySQLException& error)
+    {
+        std::cout << "- Error on sessions_handler.cpp on CreateSession_(): " << std::string(error.message()) << std::endl;
+    }
+
     return sessions_.at(id);
 }
 
 void SessionsHandler::DeleteSession_(std::string id)
 {
-    if(sessions_.find(id) != sessions_.end())
-        sessions_.erase(id);
+    if(sessions_.find(id) == sessions_.end())
+        return;
+
+    sessions_.erase(id);
+
+    try
+    {
+        // Setting up the action
+            Functions::Action action{""};
+            action.set_custom_error("Session not saved.");
+            std::string sql_code =
+                "DELETE FROM _woodpecker_sessions WHERE identifier = ?"
+            ;
+            action.set_sql_code(sql_code);
+            action.get_parameters().push_back(Query::Parameter{"identifier", Tools::RowValueFormatter{id}, false});
+
+        // Query process
+            Query::QueryActions query_actions;
+            query_actions.ComposeQuery_(action);
+            if(action.get_error())
+                return;
+            query_actions.ExecuteQuery_(action);
+    }
+    catch(MySQL::MySQLException& error)
+    {
+        std::cout << "- Error on sessions_handler.cpp on DeleteSession_(): " << std::string(error.message()) << std::endl;
+    }
 }
 
 bool SessionsHandler::SessionExists_(std::string id)

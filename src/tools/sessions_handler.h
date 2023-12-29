@@ -24,6 +24,7 @@
 #include <map>
 
 #include "extras/session.h"
+#include "query/query_actions.h"
 
 namespace CPW
 {
@@ -46,6 +47,7 @@ class CPW::Tools::SessionsHandler
             return var;
         }
 
+        static void ReadSessions_();
         static CPW::Extras::Session& CreateSession_(std::string user, std::string path, int max_age);
         static void DeleteSession_(std::string id);
 
