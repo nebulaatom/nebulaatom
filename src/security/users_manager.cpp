@@ -29,30 +29,6 @@ bool UsersManager::AuthenticateUser_()
 {
     try
     {
-        /*// Variables
-            int count = 0;
-            Dynamic::Var username(current_user_.get_username());
-            Dynamic::Var password(current_user_.get_password());
-            auto result_json = query_manager_.get_result_json();
-            auto& fields = query_manager_.get_current_filters_()->get_fields_filter()->get_filter_elements();
-            auto& iquals = query_manager_.get_current_filters_()->get_iquals_filter()->get_filter_elements();
-
-        // Add filters
-            query_manager_.ResetFilters_();
-            fields.push_back({"COUNT(1)"});
-            iquals.insert({"0", {"username", username, Filters::IqualsFilterElement::Type::kIqual}});
-            iquals.insert({"1", {"password", password, Filters::IqualsFilterElement::Type::kIqual}});
-
-        // Execute the query
-            if(!query_manager_.ComposeQuery_(Query::TypeAction::kSelect, "_woodpecker_users"))
-                return false;
-            *query_manager_.get_query() , into(count);
-            if(!query_manager_.ExecuteQuery_())
-                return false;
-            */
-
-        // Variables
-            Query::QueryActions query_manager;
         // Setting up the action
             Functions::Action action{""};
             action.set_custom_error("User not found.");
@@ -65,9 +41,8 @@ bool UsersManager::AuthenticateUser_()
             action.get_parameters().push_back(Query::Parameter{"username", Tools::RowValueFormatter{current_user_.get_username()}, false});
             action.get_parameters().push_back(Query::Parameter{"password", Tools::RowValueFormatter{current_user_.get_password()}, false});
 
-        // Execute de query
+        // Query process
             Query::QueryActions query_actions;
-            //query_actions.IdentifyParameters_(action);
             query_actions.ComposeQuery_(action);
             if(action.get_error())
                 return false;

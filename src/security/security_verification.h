@@ -54,11 +54,6 @@ class CPW::Extras::SecurityVerification
     public:
         SecurityVerification();
 
-        std::list<Tools::Route>& get_routes_to_verify()
-        {
-            auto& var = routes_to_verify_;
-            return var;
-        }
         Security::PermissionsManager& get_permissions_manager()
         {
             auto& var = permissions_manager_;
@@ -78,11 +73,9 @@ class CPW::Extras::SecurityVerification
 
         void set_security_type(Extras::SecurityType security_type) { security_type_ = security_type; }
 
-        void AddTargets_(std::list<std::string>& targets);
-        bool VerifyRoutesPermissions_();
+        bool VerifyRoutesPermissions_(Tools::Route& route, std::string action_type);
 
     private:
-        std::list<Tools::Route> routes_to_verify_;
         Security::PermissionsManager permissions_manager_;
         Security::UsersManager users_manager_;
         Extras::SecurityType security_type_;
