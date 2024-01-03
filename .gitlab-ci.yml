@@ -20,6 +20,8 @@ build-application:
       mariadb-dev
       gtest
       gtest-dev
+      yaml-cpp
+      yaml-cpp-dev
   script:
     - mkdir ./build-app
     - cd ./build-app
