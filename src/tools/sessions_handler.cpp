@@ -42,7 +42,7 @@ void SessionsHandler::ReadSessions_()
         // Setting up the action
             Functions::Action action{""};
             action.set_custom_error("Sessions not found.");
-            action.set_sql_code("SELECT * FROM _woodpecker_sessions");
+            action.set_sql_code("SELECT * FROM _woodpecker_sessions WHERE NOW() < reg_date + INTERVAL max_age SECOND");
 
         // Query process
             Query::QueryActions query_actions;
