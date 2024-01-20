@@ -30,7 +30,7 @@ bool UsersManager::AuthenticateUser_()
     try
     {
         // Setting up the action
-            Functions::Action action{""};
+            Functions::SQLAction action{""};
             action.set_custom_error("User not found.");
             std::string sql_code =
                 "SELECT id "
@@ -42,14 +42,13 @@ bool UsersManager::AuthenticateUser_()
             action.get_parameters().push_back(Query::Parameter{"password", Tools::RowValueFormatter{current_user_.get_password()}, false});
 
         // Query process
-            Query::QueryActions query_actions;
-            query_actions.ComposeQuery_(action);
+            action.ComposeQuery_();
             if(action.get_error())
                 return false;
-            query_actions.ExecuteQuery_(action);
+            action.ExecuteQuery_();
             if(action.get_error())
                 return false;
-            query_actions.MakeResults_(action);
+            action.MakeResults_();
 
         // Verify results
             if(action.get_results()->get_rows().size() > 0)

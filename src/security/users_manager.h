@@ -25,7 +25,7 @@
 
 #include "Poco/Tuple.h"
 
-#include "query/query_actions.h"
+#include "functions/sql_action.h"
 #include "security/user.h"
 
 
@@ -53,7 +53,6 @@ class CPW::Security::UsersManager
 
     private:
         User current_user_;
-        Query::QueryActions query_manager_;
 };
 
 
