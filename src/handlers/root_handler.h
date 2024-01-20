@@ -58,6 +58,7 @@
 
 #include "tools/sessions_handler.h"
 #include "query/database_manager.h"
+#include "query/query_actions.h"
 #include "tools/route.h"
 #include "http/common_responses.h"
 #include "security/security_verification.h"

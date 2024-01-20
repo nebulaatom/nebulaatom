@@ -21,6 +21,7 @@
 
 
 #include "handlers/root_handler.h"
+#include "query/results.h"
 
 namespace CPW
 {
@@ -34,6 +35,8 @@ namespace CPW
 class CPW::Handlers::BackendHandler : public RootHandler
 {
     public:
+        using VectorShrResults = std::vector<std::shared_ptr<Query::Results>>;
+
         using RootHandler::RootHandler;
         virtual ~BackendHandler();
 
@@ -45,6 +48,8 @@ class CPW::Handlers::BackendHandler : public RootHandler
         virtual void HandlePUTMethod_() override;
         virtual void HandleDELMethod_() override;
 
+    private:
+        VectorShrResults shared_results_;
 };
 
 #endif // CPW_HANDLERS_BACKENDHANDLER_H

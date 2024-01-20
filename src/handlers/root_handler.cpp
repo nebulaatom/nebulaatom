@@ -17,7 +17,6 @@
 */
 
 #include "handlers/root_handler.h"
-#include "query/results.h"
 
 using namespace CPW::Handlers;
 
@@ -260,7 +259,7 @@ bool RootHandler::IdentifyRoute_()
             current_function_ = found->second;
             for(auto& action : current_function_.get_actions())
             {
-                action.get_results() = std::make_shared<Query::Results>();
+                action->get_results() = std::make_shared<Query::Results>();
             }
 
             return true;

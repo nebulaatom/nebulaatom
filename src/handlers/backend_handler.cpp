@@ -17,13 +17,6 @@
 */
 
 #include "handlers/backend_handler.h"
-#include "functions/action.h"
-#include "functions/function.h"
-#include "query/condition.h"
-#include "query/parameter.h"
-#include "query/results.h"
-#include "tools/route.h"
-#include "tools/row_value_formatter.h"
 
 using namespace CPW::Handlers;
 
@@ -49,62 +42,55 @@ void BackendHandler::Process_()
             return;
         }
 
+    // Setup shared results
+
+        for(auto& action : get_current_function().get_actions())
+        {
+            shared_results_.push_back(action->get_results());
+        }
+
     // Process actions of the function
+        std::cout << "Function: " << get_current_function().get_endpoint() << std::endl;
         JSON::Object::Ptr json_result = new JSON::Object();
         for(auto& action : get_current_function().get_actions())
         {
-            std::cout << "Function: " << get_current_function().get_endpoint() << ", Action: " << action.get_identifier() << ", Final: " << action.get_final() << std::endl;
-            Query::QueryActions query_actions;
-            query_actions.get_json_body().reset(get_json_body());
+            std::cout << "Action: " << action->get_identifier() << ", Final: " << action->get_final() << std::endl;
 
-            // Identify parameters
-            query_actions.IdentifyParameters_(action);
-            if(action.get_error())
-            {
-                GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, action.get_custom_error());
-                return;
-            }
+            // Set json values
+            action->get_json_body().reset(get_json_body());
+            action->get_json_result().reset(json_result);
 
-            // Compose query
-            query_actions.set_current_function(&get_current_function());
-            query_actions.ComposeQuery_(action);
-            if(action.get_error())
+            // Copy actions
+            action->get_actions().clear();
+            auto& actions = get_current_function().get_actions();
+            action->get_actions().insert(action->get_actions().end(), actions.begin(), actions.end());
+            
+            switch(action->get_action_type())
             {
-                GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, action.get_custom_error());
-                return;
-            }
-
-            // Execute query
-            query_actions.ExecuteQuery_(action);
-            if(action.get_error())
-            {
-                GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, action.get_custom_error());
-                return;
-            }
-
-            // Make results
-            query_actions.MakeResults_(action);
-            if(action.get_error())
-            {
-                GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, action.get_custom_error());
-                return;
-            }
-
-            // Verify Conditions
-            for(auto& condition : action.get_conditions())
-            {
-                if(!condition.VerifyCondition_(action.get_results()))
+                case Functions::ActionType::kSQL:
                 {
-                    GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Condition error.");
-                    return;
-                }
-            }
+                    if(!action->Work_())
+                    {
+                        GenericResponse_(*get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, action->get_custom_error());
+                        return;
+                    }
 
-            if(action.get_final())
-            {
-                json_result = query_actions.CreateJSONResult_();
-                json_result->set("status", action.get_status());
-                json_result->set("message", action.get_message());
+                    break;
+                }
+                case Functions::ActionType::kEmail:
+                {
+                    if(!action->Work_())
+                    {
+                        GenericResponse_(*get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, action->get_custom_error());
+                        return;
+                    }
+
+                    JSON::Array::Ptr data_array = new JSON::Array();
+                    json_result->set("data", data_array);
+                    json_result->set("status", "OK.");
+                    json_result->set("message", "OK.");
+                    break;
+                }
             }
         }
 
