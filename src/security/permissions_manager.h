@@ -27,7 +27,7 @@
 
 #include <Poco/Util/ServerApplication.h>
 
-#include "query/query_actions.h"
+#include "functions/sql_action.h"
 #include "security/permission.h"
 #include "tools/route.h"
 

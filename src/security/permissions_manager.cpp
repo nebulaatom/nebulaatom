@@ -73,7 +73,7 @@ void PermissionsManager::LoadPermissions_()
         }
 
         // Setting up the action
-            Functions::Action action{""};
+            Functions::SQLAction action{""};
             action.set_custom_error("Permissions not found.");
             std::string sql_code =
                 "SELECT wp.endpoint AS endpoint, wu.username AS username, wu.id AS id_user, wp.action AS action "
@@ -83,14 +83,13 @@ void PermissionsManager::LoadPermissions_()
             action.set_sql_code(sql_code);
 
         // Query process
-            Query::QueryActions query_actions;
-            query_actions.ComposeQuery_(action);
+            action.ComposeQuery_();
             if(action.get_error())
                 return;
-            query_actions.ExecuteQuery_(action);
+            action.ExecuteQuery_();
             if(action.get_error())
                 return;
-            query_actions.MakeResults_(action);
+            action.MakeResults_();
 
         // Iterate over the results
             for(auto& row : action.get_results()->get_rows())
