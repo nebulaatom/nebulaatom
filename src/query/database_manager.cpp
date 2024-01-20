@@ -17,11 +17,10 @@
  */
 
 #include "query/database_manager.h"
+#include "tools/settings_manager.h"
 
 using namespace CPW;
 using namespace CPW::Query;
-
-Tools::SettingsManager DatabaseManager::settings_manager_ = {};
 
 DatabaseManager::DatabaseManager()
 {
@@ -45,11 +44,13 @@ void DatabaseManager::StopMySQL_()
 
 std::shared_ptr<Data::Session> DatabaseManager::StartSessionMySQL_()
 {
-    std::string db_host = settings_manager_.get_basic_properties_().db_host;
-    std::string db_port = settings_manager_.get_basic_properties_().db_port;
-    std::string db_name = settings_manager_.get_basic_properties_().db_name;
-    std::string db_user = settings_manager_.get_basic_properties_().db_user;
-    std::string db_password = settings_manager_.get_basic_properties_().db_password;
+    Tools::SettingsManager settings_manager;
+
+    std::string db_host = settings_manager.get_basic_properties_().db_host;
+    std::string db_port = settings_manager.get_basic_properties_().db_port;
+    std::string db_name = settings_manager.get_basic_properties_().db_name;
+    std::string db_user = settings_manager.get_basic_properties_().db_user;
+    std::string db_password = settings_manager.get_basic_properties_().db_password;
 
     return std::make_shared<Data::Session>
     (

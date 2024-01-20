@@ -56,8 +56,6 @@ class CPW::Query::DatabaseManager
         static void StopMySQL_();
         static std::shared_ptr<Data::Session> StartSessionMySQL_();
 
-    private:
-        static Tools::SettingsManager settings_manager_;
 };
 
 #endif // CPW_QUERY_DATABASE_MANAGER_H
