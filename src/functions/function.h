@@ -24,6 +24,8 @@ namespace CPW
 class CPW::Functions::Function
 {
     public:
+        using ActionPtr = std::shared_ptr<Action>;
+
         enum class Type
         {
             kPOST
@@ -39,7 +41,7 @@ class CPW::Functions::Function
         std::string get_endpoint2() const { return endpoint2_; }
         std::string get_target() const { return target_; }
         Type get_type() const { return type_; }
-        std::vector<Functions::Action>& get_actions()
+        std::vector<ActionPtr>& get_actions()
         {
             auto& var = actions_;
             return var;
@@ -60,7 +62,7 @@ class CPW::Functions::Function
         std::string endpoint2_;
         std::string target_;
         Type type_;
-        std::vector<Functions::Action> actions_;
+        std::vector<ActionPtr> actions_;
         std::map<std::string, Type> methods_;
 };
 
