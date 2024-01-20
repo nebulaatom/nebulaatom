@@ -48,7 +48,6 @@
 #include "filters/filters_manager.h"
 #include "http/common_responses.h"
 #include "tools/row_value_formatter.h"
-#include "functions/function.h"
 #include "query/results.h"
 
 
@@ -60,59 +59,12 @@ namespace CPW
     }
 }
 
-using namespace Poco;
-using namespace Poco::Util;
-using namespace Poco::Net;
-using namespace Poco::Data;
-using namespace Poco::Data::Keywords;
 
-
-class CPW::Query::QueryActions :
-    public Tools::ManageJSON
-    ,public HTTP::CommonResponses
+class CPW::Query::QueryActions
 {
     public:
         QueryActions();
         ~QueryActions();
-
-        std::string get_final_query() const {return final_query_;}
-        int get_affected_rows_() const {return affected_rows_;}
-        std::shared_ptr<Data::Session>& get_session()
-        {
-            auto& var = session_;
-            return var;
-        }
-        std::shared_ptr<Data::Statement>& get_query()
-        {
-            auto& var = query_;
-            return var;
-        }
-        Functions::Function* get_current_function()
-        {
-            return current_function_;
-        }
-
-        void set_current_function(Functions::Function* function)
-        {
-            current_function_ = function;
-        }
-
-        void IdentifyParameters_(Functions::Action& action);
-        bool ComposeQuery_(Functions::Action& action);
-        void ExecuteQuery_(Functions::Action& action);
-        void MakeResults_(Functions::Action& action);
-        JSON::Object::Ptr CreateJSONResult_();
-
-    private:
-        bool InitializeQuery_(Functions::Action& action);
-        void StablishActionError_(Functions::Action& action, std::string error);
-
-        std::string final_query_;
-        int affected_rows_;
-        std::shared_ptr<Data::Session> session_;
-        std::shared_ptr<Data::Statement> query_;
-        Application& app_;
-        Functions::Function* current_function_;
 };
 
 
