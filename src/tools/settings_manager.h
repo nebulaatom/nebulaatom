@@ -24,6 +24,11 @@
 #include <memory>
 #include <string>
 
+#include "functions/sql_action.h"
+#include "functions/email_action.h"
+#include "functions/action.h"
+#include "yaml-cpp/node/detail/iterator_fwd.h"
+#include "yaml-cpp/node/node.h"
 #include "yaml-cpp/yaml.h"
 #include "Poco/Exception.h"
 #include "Poco/Util/ServerApplication.h"
@@ -67,6 +72,10 @@ class CPW::Tools::SettingsManager
 
         static void ReadFunctions_();
         static void ReadBasicProperties_();
+
+    protected:
+        static void ReadFunctionsParameters_(Functions::Function& function, Functions::Function::ActionPtr action, YAML::Node& parameters);
+        static void ReadFunctionsConditions_(std::shared_ptr<Functions::Action> action, YAML::Node& conditions);
 
     private:
         static Functions::FunctionsManager functions_manager_;
