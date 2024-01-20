@@ -38,6 +38,10 @@ target_link_libraries(
     loginhandler
     databasemanager
     functionsmanager
+    function
+    action
+    sqlaction
+    emailaction
     results
     parameter
     condition
