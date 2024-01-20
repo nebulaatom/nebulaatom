@@ -24,7 +24,7 @@
 #include <map>
 
 #include "extras/session.h"
-#include "query/query_actions.h"
+#include "functions/sql_action.h"
 
 namespace CPW
 {
