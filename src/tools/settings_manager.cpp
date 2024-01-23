@@ -35,177 +35,206 @@ void SettingsManager::ReadFunctions_()
         // Read YAML functions file
         YAML::Node config = YAML::LoadFile("functions.yaml");
 
-        if (!config["functions"] || !config["functions"].IsMap())
+        auto functions = config["functions"];
+        if (!VerifyYAMLMapNode_(functions))
         {
-            std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML001." << std::endl;
+            PrintError_("ReadFunctions_", "functions");
             return;
         }
 
         // Functions
-        for(YAML::const_iterator it = config["functions"].begin(); it != config["functions"].end(); ++it)
+        for(YAML::const_iterator it = functions.begin(); it != functions.end(); ++it)
         {
             Functions::Function function{"", Functions::Function::Type::kGET};
 
             // Endpoint
-            if (!it->second["endpoint"] || !it->second["endpoint"].IsScalar())
+            auto endpoint = it->second["endpoint"];
+            if (!VerifyYAMLScalarNode_(endpoint))
             {
-                std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML002." << std::endl;
+                PrintError_("ReadFunctions_", "Endpoint");
                 return;
             }
-            function.set_endpoint(it->second["endpoint"].as<std::string>());
+            function.set_endpoint(endpoint.as<std::string>());
 
             // Endpoint 2
-            if (!it->second["endpoint2"] || !it->second["endpoint2"].IsScalar())
+            auto endpoint2 = it->second["endpoint2"];
+            if (!VerifyYAMLScalarNode_(endpoint))
             {
-                std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML003." << std::endl;
+                PrintError_("ReadFunctions_", "endpoint2");
                 return;
             }
-            function.set_endpoint2(it->second["endpoint2"].as<std::string>());
+            function.set_endpoint2(endpoint2.as<std::string>());
 
             // Target
-            if (!it->second["target"] || !it->second["target"].IsScalar())
+            auto target = it->second["target"];
+            if (!VerifyYAMLScalarNode_(endpoint))
             {
-                std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML004." << std::endl;
+                PrintError_("ReadFunctions_", "target");
                 return;
             }
-            function.set_target(it->second["target"].as<std::string>());
+            function.set_target(target.as<std::string>());
 
             // Function Type
-            if (!it->second["type"] || !it->second["type"].IsScalar())
+            auto type = it->second["type"];
+            if (!VerifyYAMLScalarNode_(type))
             {
-                std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML005." << std::endl;
+                PrintError_("ReadFunctions_", "type");
                 return;
             }
 
-            auto found_function_type = function.get_methods().find(it->second["type"].as<std::string>());
+            auto found_function_type = function.get_methods().find(type.as<std::string>());
             if(found_function_type != function.get_methods().end())
                 function.set_type(found_function_type->second);
 
             // Actions
-            if (!it->second["actions"] || !it->second["actions"].IsMap())
+            auto actions = it->second["actions"];
+            if (!VerifyYAMLMapNode_(actions))
             {
-                std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML006." << std::endl;
+                PrintError_("ReadFunctions_", "actions");
                 return;
             }
 
-            auto actions = it->second["actions"];
             for(YAML::const_iterator it2 = actions.begin(); it2 != actions.end(); ++it2)
             {
-                if (!it2->second["type"] || !it2->second["type"].IsScalar())
+                Functions::Function::ActionPtr action;
+
+                // customError
+                auto custom_error = it2->second["customError"];
+                if (!VerifyYAMLScalarNode_(custom_error))
                 {
-                    std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML006_2." << std::endl;
+                    PrintError_("ReadFunctions_", "customError");
+                    return;
+                }
+                action->set_custom_error(it2->second["customError"].as<std::string>());
+
+                // final
+                auto final = it2->second["final"];
+                if (!VerifyYAMLScalarNode_(final))
+                {
+                    PrintError_("ReadFunctions_", "final");
+                    return;
+                }
+                action->set_final(it2->second["final"].as<bool>());
+
+                // parameters
+                auto parameters = it2->second["parameters"];
+                ReadFunctionsParameters_(function, action, parameters);
+
+                // Action type
+                auto action_type = it2->second["type"];
+                if (!VerifyYAMLScalarNode_(action_type))
+                {
+                    PrintError_("ReadFunctions_", "action_type");
                     return;
                 }
 
-                Functions::Function::ActionPtr action;
-
-                if(it2->second["type"].as<std::string>() == "sql")
+                if(action_type.as<std::string>() == "sql")
                 {
                     // SQL Action
-                    auto action2 = std::make_shared<Functions::SQLAction>(it2->first.as<std::string>());
+                    auto action_object = std::make_shared<Functions::SQLAction>(it2->first.as<std::string>());
 
-                    if (!it2->second["sqlCode"] || !it2->second["sqlCode"].IsScalar())
-                    {
-                        std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML008_1." << std::endl;
-                        return;
-                    }
+                        // sqlCode
+                        auto sql_code = it2->second["sqlCode"];
+                        if (!VerifyYAMLScalarNode_(sql_code))
+                        {
+                            PrintError_("ReadFunctions_", "sqlCode");
+                            return;
+                        }
+                        action_object->set_sql_code(sql_code.as<std::string>());
 
-                    action2->set_sql_code(it2->second["sqlCode"].as<std::string>());
+                        // conditions
+                        auto conditions = it2->second["conditions"];
+                        ReadFunctionsConditions_(action_object, conditions);
 
-                    auto conditions = it2->second["conditions"];
-                    ReadFunctionsConditions_(action2, conditions);
-
-                    action = action2;
+                    action = action_object;
                 }
                 else if(it2->second["type"].as<std::string>() == "email")
                 {
                     // Email Action
-                    auto action2 = std::make_shared<Functions::EmailAction>(it2->first.as<std::string>());
+                    auto action_object = std::make_shared<Functions::EmailAction>(it2->first.as<std::string>());
 
-                    if (!it2->second["mailHost"] || !it2->second["mailHost"].IsScalar())
-                    {
-                        std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML008_2." << std::endl;
-                        return;
-                    }
-                    if (!it2->second["sender"] || !it2->second["sender"].IsScalar())
-                    {
-                        std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML008_3." << std::endl;
-                        return;
-                    }
-                    if (!it2->second["recipient"] || !it2->second["recipient"].IsScalar())
-                    {
-                        std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML008_4." << std::endl;
-                        return;
-                    }
-                    if (!it2->second["subject"] || !it2->second["subject"].IsScalar())
-                    {
-                        std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML008_5." << std::endl;
-                        return;
-                    }
-                    if (!it2->second["message"] || !it2->second["message"].IsScalar())
-                    {
-                        std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML008_6." << std::endl;
-                        return;
-                    }
-                    if (!it2->second["emailUser"] || !it2->second["emailUser"].IsScalar())
-                    {
-                        std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML008_7." << std::endl;
-                        return;
-                    }
-                    if (!it2->second["emailPassword"] || !it2->second["emailPassword"].IsScalar())
-                    {
-                        std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML008_8." << std::endl;
-                        return;
-                    }
+                        // mailHost
+                        auto mail_host = it2->second["mailHost"];
+                        if (!VerifyYAMLScalarNode_(mail_host))
+                        {
+                            PrintError_("ReadFunctions_", "mailHost");
+                            return;
+                        }
+                        action_object->set_mail_host(mail_host.as<std::string>());
 
-                    action2->set_mail_host(it2->second["mailHost"].as<std::string>());
-                    action2->set_sender(it2->second["sender"].as<std::string>());
-                    action2->set_recipient(it2->second["recipient"].as<std::string>());
-                    action2->set_subject(it2->second["subject"].as<std::string>());
-                    action2->set_email_message(it2->second["message"].as<std::string>());
-                    action2->set_email_user(it2->second["emailUser"].as<std::string>());
-                    action2->set_email_password(it2->second["emailPassword"].as<std::string>());
+                        // sender
+                        auto sender = it2->second["sender"];
+                        if (!VerifyYAMLScalarNode_(sender))
+                        {
+                            PrintError_("ReadFunctions_", "sender");
+                            return;
+                        }
+                        action_object->set_sender(sender.as<std::string>());
 
-                    action = action2;
+                        // recipient
+                        auto recipient = it2->second["recipient"];
+                        if (!VerifyYAMLScalarNode_(recipient))
+                        {
+                            PrintError_("ReadFunctions_", "recipient");
+                            return;
+                        }
+                        action_object->set_recipient(recipient.as<std::string>());
+
+                        // subject
+                        auto subject = it2->second["subject"];
+                        if (!VerifyYAMLScalarNode_(subject))
+                        {
+                            PrintError_("ReadFunctions_", "subject");
+                            return;
+                        }
+                        action_object->set_subject(subject.as<std::string>());
+
+                        // message
+                        auto message = it2->second["message"];
+                        if (!VerifyYAMLScalarNode_(message))
+                        {
+                            PrintError_("ReadFunctions_", "message");
+                            return;
+                        }
+                        action_object->set_email_message(message.as<std::string>());
+
+                        // emailUser
+                        auto email_user = it2->second["emailUser"];
+                        if (!VerifyYAMLScalarNode_(email_user))
+                        {
+                            PrintError_("ReadFunctions_", "emailUser");
+                            return;
+                        }
+                        action_object->set_email_user(email_user.as<std::string>());
+
+                        // emailPassword
+                        auto email_password = it2->second["emailPassword"];
+                        if (!VerifyYAMLScalarNode_(email_password))
+                        {
+                            PrintError_("ReadFunctions_", "emailPassword");
+                            return;
+                        }
+                        action_object->set_email_password(email_password.as<std::string>());
+
+                    action = action_object;
                 }
                 else
                 {
-                    std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML006_3." << std::endl;
+                    PrintError_("ReadFunctions_", "action_type");
                     return;
                 }
-
-                // General Action
-                if (!it2->second["customError"] || !it2->second["customError"].IsScalar())
-                {
-                    std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML007." << std::endl;
-                    return;
-                }
-                if (!it2->second["final"] || !it2->second["final"].IsScalar())
-                {
-                    std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML009." << std::endl;
-                    return;
-                }
-
-                action->set_custom_error(it2->second["customError"].as<std::string>());
-                action->set_final(it2->second["final"].as<bool>());
-
-                // Read Parameters and Conditions
-
-                auto parameters = it2->second["parameters"];
-                ReadFunctionsParameters_(function, action, parameters);
 
                 // Save action
                 function.get_actions().push_back(std::move(action));
             }
 
             // Save the function
-            auto endpoint = it->second["endpoint"].as<std::string>();
-            functions_manager_.get_functions().emplace(std::make_pair(endpoint, std::move(function)));
+            functions_manager_.get_functions().emplace(std::make_pair(endpoint.as<std::string>(), std::move(function)));
         }
     }
     catch(std::exception& e)
     {
-        std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): " << e.what() << std::endl;
+        PrintError_("ReadFunctions_", "MSG: " + std::string(e.what()));
         return;
     }
 }
