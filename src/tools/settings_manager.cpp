@@ -575,3 +575,24 @@ void SettingsManager::ReadBasicProperties_()
         return;
     }
 }
+
+bool SettingsManager::VerifyYAMLScalarNode_(YAML::Node& node)
+{
+    if(!node || !node.IsScalar())
+        return false;
+    else
+        return true;
+}
+
+void SettingsManager::PrintError_(std::string function, std::string variable)
+{
+    std::cout << "- Error on settings_manager.cpp on " << function << "(): The functions.yaml file is malformed. ERRYML" << function << "-" << variable << std::endl;
+}
+
+bool SettingsManager::VerifyYAMLMapNode_(YAML::Node& node)
+{
+    if(!node || !node.IsMap())
+        return false;
+    else
+        return true;
+}

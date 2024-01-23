@@ -76,6 +76,9 @@ class CPW::Tools::SettingsManager
     protected:
         static void ReadFunctionsParameters_(Functions::Function& function, Functions::Function::ActionPtr action, YAML::Node& parameters);
         static void ReadFunctionsConditions_(std::shared_ptr<Functions::Action> action, YAML::Node& conditions);
+        static bool VerifyYAMLScalarNode_(YAML::Node& node);
+        static bool VerifyYAMLMapNode_(YAML::Node& node);
+        static void PrintError_(std::string function, std::string variable);
 
     private:
         static Functions::FunctionsManager functions_manager_;
