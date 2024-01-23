@@ -242,98 +242,102 @@ void SettingsManager::ReadFunctions_()
 void SettingsManager::ReadFunctionsParameters_(Functions::Function& function, Functions::Function::ActionPtr action, YAML::Node& parameters)
 {
     // Parameters
-    for(YAML::const_iterator it3 = parameters.begin(); it3 != parameters.end(); ++it3)
+    for(YAML::const_iterator it = parameters.begin(); it != parameters.end(); ++it)
     {
-        Query::Parameter parameter{it3->first.as<std::string>(), Tools::RowValueFormatter{}, false};
+        Query::Parameter parameter{it->first.as<std::string>(), Tools::RowValueFormatter{}, false};
 
-        // Basic parameter properties
-
-        if (!it3->second["type"] || !it3->second["type"].IsScalar())
+        // type
+        auto type = it->second["type"];
+        if (!VerifyYAMLScalarNode_(type))
         {
-            std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML010." << std::endl;
-            return;
-        }
-        if (!it3->second["value"])
-        {
-            std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML011." << std::endl;
-            return;
-        }
-        if (!it3->second["editable"] || !it3->second["editable"].IsScalar())
-        {
-            std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML012." << std::endl;
+            PrintError_("ReadFunctionsParameters_", "type");
             return;
         }
 
-        parameter.set_editable(it3->second["editable"].as<bool>());
+        // editable
+        auto editable = it->second["editable"];
+        if (!VerifyYAMLScalarNode_(editable))
+        {
+            PrintError_("ReadFunctionsParameters_", "editable");
+            return;
+        }
+        parameter.set_editable(it->second["editable"].as<bool>());
 
         // Parameter value and type
-        auto parameter_type = it3->second["type"].as<std::string>();
-        auto parameter_value = it3->second["value"];
-        if(parameter_type == "conditional")
+        auto value = it->second["value"];
+        if (!VerifyYAMLMapNode_(value))
+        {
+            PrintError_("ReadFunctionsParameters_", "value");
+            return;
+        }
+        
+        if(type.as<std::string>() == "conditional")
         {
             parameter.set_parameter_type(Query::ParameterType::kConditional);
 
-            // Basic parameter type/value properties
-            if(!parameter_value["row"] || !parameter_value["row"].IsScalar())
+            // row
+            auto row = value["row"];
+            if (!VerifyYAMLScalarNode_(row))
             {
-                std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML013." << std::endl;
+                PrintError_("ReadFunctionsParameters_", "row");
                 return;
             }
-            if(!parameter_value["column"] || !parameter_value["column"].IsScalar())
-            {
-                std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML014." << std::endl;
-                return;
-            }
-            if(!parameter_value["action_results"] || !parameter_value["action_results"].IsScalar())
-            {
-                std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML015." << std::endl;
-                return;
-            }
+            parameter.get_conditional_field().set_row(row.as<int>());
 
-            parameter.get_conditional_field().set_row(parameter_value["row"].as<int>());
-            parameter.get_conditional_field().set_column(parameter_value["column"].as<int>());
-            
-
-            // Parameter action results
-            auto action_found = std::find_if(function.get_actions().begin(), function.get_actions().end(),[&parameter_value](Functions::Function::ActionPtr& action)
+            // column
+            auto column = value["column"];
+            if (!VerifyYAMLScalarNode_(column))
             {
-                return action->get_identifier() == parameter_value["action_results"].as<std::string>();
+                PrintError_("ReadFunctionsParameters_", "column");
+                return;
+            }
+            parameter.get_conditional_field().set_column(column.as<int>());
+
+            // action_results
+            auto action_results = value["action_results"];
+            if (!VerifyYAMLScalarNode_(action_results))
+            {
+                PrintError_("ReadFunctionsParameters_", "action_results");
+                return;
+            }
+            auto action_found = std::find_if(function.get_actions().begin(), function.get_actions().end(),[&action_results](Functions::Function::ActionPtr& action)
+            {
+                return action->get_identifier() == action_results.as<std::string>();
             });
-
             if(action_found == function.get_actions().end())
             {
-                std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML016." << std::endl;
+                PrintError_("ReadFunctionsParameters_", "action_results:action_found");
                 return;
             }
-            
-            parameter.set_conditional_field_action(parameter_value["action_results"].as<std::string>());
+            parameter.set_conditional_field_action(action_results.as<std::string>());
 
         }
-        else if(parameter_type == "field")
+        else if(type.as<std::string>() == "field")
         {
             parameter.set_parameter_type(Query::ParameterType::kField);
 
-            if(parameter_value["string"] && parameter_value["string"].IsScalar())
-                parameter.set_value(Tools::RowValueFormatter{parameter_value["string"].as<std::string>()});
-            else if(parameter_value["int"] && parameter_value["int"].IsScalar())
-                parameter.set_value(Tools::RowValueFormatter{parameter_value["int"].as<int>()});
-            else if(parameter_value["float"] && parameter_value["float"].IsScalar())
-                parameter.set_value(Tools::RowValueFormatter{parameter_value["float"].as<float>()});
+            // value_string
+            auto value_string = value["string"];
+            if (VerifyYAMLScalarNode_(value_string))
+                parameter.set_value(Tools::RowValueFormatter{value_string.as<std::string>()});
+            else if (VerifyYAMLScalarNode_(value_string))
+                parameter.set_value(Tools::RowValueFormatter{value_string.as<int>()});
+            else if (VerifyYAMLScalarNode_(value_string))
+                parameter.set_value(Tools::RowValueFormatter{value_string.as<float>()});
             else
             {
-                std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML017." << std::endl;
+                PrintError_("ReadFunctionsParameters_", "value:string-int-float");
                 return;
             }
         }
         else
         {
-            std::cout << "- Error on settings_manager.cpp on ReadFunctions_(): The functions.yaml file is malformed. ERRYML017." << std::endl;
+            PrintError_("ReadFunctionsParameters_", "type:value");
             return;
         }
         
         action->get_parameters().push_back(std::move(parameter));
     }
-
 }
 
 void SettingsManager::ReadFunctionsConditions_(std::shared_ptr<Functions::Action> action, YAML::Node& conditions)
