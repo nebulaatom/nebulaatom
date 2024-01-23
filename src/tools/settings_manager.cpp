@@ -460,70 +460,118 @@ void SettingsManager::ReadBasicProperties_()
         // Read YAML functions file
         YAML::Node config = YAML::LoadFile("properties.yaml");
 
-        // Port
-        if (config["port"] && config["port"].IsScalar())
+        // port
+        auto port = config["port"];
+        if (!VerifyYAMLScalarNode_(port))
         {
-            basic_properties_.port = config["port"].as<int>();
+            PrintError_("ReadBasicProperties_", "port");
+            return;
         }
-        // Max Queued
-        if (config["max_queued"] && config["max_queued"].IsScalar())
+        basic_properties_.port = port.as<int>();
+        
+        // max_queued
+        auto max_queued = config["max_queued"];
+        if (!VerifyYAMLScalarNode_(max_queued))
         {
-            basic_properties_.max_queued = config["max_queued"].as<int>();
+            PrintError_("ReadBasicProperties_", "max_queued");
+            return;
         }
-        // Max threads
-        if (config["max_threads"] && config["max_threads"].IsScalar())
+        basic_properties_.max_queued = max_queued.as<int>();
+        
+        // max_threads
+        auto max_threads = config["max_threads"];
+        if (!VerifyYAMLScalarNode_(max_threads))
         {
-            basic_properties_.max_threads = config["max_threads"].as<int>();
+            PrintError_("ReadBasicProperties_", "max_threads");
+            return;
         }
-        // Session max age
-        if (config["session_max_age"] && config["session_max_age"].IsScalar())
+        basic_properties_.max_threads = max_threads.as<int>();
+        
+        // session_max_age
+        auto session_max_age = config["session_max_age"];
+        if (!VerifyYAMLScalarNode_(session_max_age))
         {
-            basic_properties_.session_max_age = config["session_max_age"].as<int>();
+            PrintError_("ReadBasicProperties_", "session_max_age");
+            return;
         }
-        // Directory base
-        if (config["directory_base"] && config["directory_base"].IsScalar())
+        basic_properties_.session_max_age = session_max_age.as<int>();
+        
+        // directory_base
+        auto directory_base = config["directory_base"];
+        if (!VerifyYAMLScalarNode_(directory_base))
         {
-            basic_properties_.directory_base = config["directory_base"].as<std::string>();
+            PrintError_("ReadBasicProperties_", "directory_base");
+            return;
         }
-        // Directory for uploaded files
-        if (config["directory_for_uploaded_files"] && config["directory_for_uploaded_files"].IsScalar())
+        basic_properties_.directory_base = directory_base.as<std::string>();
+        
+        // directory_for_uploaded_files
+        auto directory_for_uploaded_files = config["directory_for_uploaded_files"];
+        if (!VerifyYAMLScalarNode_(directory_for_uploaded_files))
         {
-            basic_properties_.directory_for_uploaded_files = config["directory_for_uploaded_files"].as<std::string>();
+            PrintError_("ReadBasicProperties_", "directory_for_uploaded_files");
+            return;
         }
-        // Directory for temp files
-        if (config["directory_for_temp_files"] && config["directory_for_temp_files"].IsScalar())
+        basic_properties_.directory_for_uploaded_files = directory_for_uploaded_files.as<std::string>();
+        
+        // directory_for_temp_files
+        auto directory_for_temp_files = config["directory_for_temp_files"];
+        if (!VerifyYAMLScalarNode_(directory_for_temp_files))
         {
-            basic_properties_.directory_for_temp_files = config["directory_for_temp_files"].as<std::string>();
+            PrintError_("ReadBasicProperties_", "directory_for_temp_files");
+            return;
         }
-        // DB Host
-        if (config["db_host"] && config["db_host"].IsScalar())
+        basic_properties_.directory_for_temp_files = directory_for_temp_files.as<std::string>();
+        
+        // db_host
+        auto db_host = config["db_host"];
+        if (!VerifyYAMLScalarNode_(db_host))
         {
-            basic_properties_.db_host = config["db_host"].as<std::string>();
+            PrintError_("ReadBasicProperties_", "db_host");
+            return;
         }
-        // DB Port
-        if (config["db_port"] && config["db_port"].IsScalar())
+        basic_properties_.db_host = db_host.as<std::string>();
+        
+        // db_port
+        auto db_port = config["db_port"];
+        if (!VerifyYAMLScalarNode_(db_port))
         {
-            basic_properties_.db_port = config["db_port"].as<std::string>();
+            PrintError_("ReadBasicProperties_", "db_port");
+            return;
         }
-        // DB Name
-        if (config["db_name"] && config["db_name"].IsScalar())
+        basic_properties_.db_port = db_port.as<std::string>();
+        
+        // db_name
+        auto db_name = config["db_name"];
+        if (!VerifyYAMLScalarNode_(db_name))
         {
-            basic_properties_.db_name = config["db_name"].as<std::string>();
+            PrintError_("ReadBasicProperties_", "db_name");
+            return;
         }
-        // DB User
-        if (config["db_user"] && config["db_user"].IsScalar())
+        basic_properties_.db_name = db_name.as<std::string>();
+        
+        // db_user
+        auto db_user = config["db_user"];
+        if (!VerifyYAMLScalarNode_(db_user))
         {
-            basic_properties_.db_user = config["db_user"].as<std::string>();
+            PrintError_("ReadBasicProperties_", "db_user");
+            return;
         }
-        // DB Password
-        if (config["db_password"] && config["db_password"].IsScalar())
+        basic_properties_.db_user = db_user.as<std::string>();
+        
+        // db_password
+        auto db_password = config["db_password"];
+        if (!VerifyYAMLScalarNode_(db_password))
         {
-            basic_properties_.db_password = config["db_password"].as<std::string>();
+            PrintError_("ReadBasicProperties_", "db_password");
+            return;
         }
+        basic_properties_.db_password = db_password.as<std::string>();
+        
     }
     catch(std::exception& e)
     {
-        std::cout << "- Error on settings_manager.cpp on ReadBasicProperties_(): " << e.what() << std::endl;
+        PrintError_("ReadBasicProperties_", "general: " + std::string(e.what()));
         return;
     }
 }
