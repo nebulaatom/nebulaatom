@@ -25,17 +25,17 @@ WoodpeckerServer::WoodpeckerServer() :
     ,handler_factory_(new HandlerFactory())
     ,app_(Application::instance())
 {
-    Poco::Net::initializeSSL();
-    Query::DatabaseManager::StartMySQL_();
-    Tools::SettingsManager::ReadFunctions_();
-    Tools::SettingsManager::ReadBasicProperties_();
-    Tools::SessionsHandler::ReadSessions_();
+    //Poco::Net::initializeSSL();
+    //Tools::SettingsManager::ReadBasicProperties_();
+    //Query::DatabaseManager::StartMySQL_();
+    //Tools::SettingsManager::ReadFunctions_();
+    //Tools::SessionsHandler::ReadSessions_();
 }
 
 WoodpeckerServer::~WoodpeckerServer()
 {
-    Poco::Net::uninitializeSSL();
-    Query::DatabaseManager::StopMySQL_();
+    //Poco::Net::uninitializeSSL();
+    //Query::DatabaseManager::StopMySQL_();
 }
 
 void WoodpeckerServer::initialize(Application& self)
@@ -57,7 +57,8 @@ int WoodpeckerServer::main(const std::vector<std::string>& args)
         server_params_->setMaxQueued(settings_manager_.get_basic_properties_().max_queued);
         server_params_->setMaxThreads(settings_manager_.get_basic_properties_().max_threads);
 
-        server_socket_ = std::make_shared<SecureServerSocket>(settings_manager_.get_basic_properties_().port);
+        //server_socket_ = std::make_shared<SecureServerSocket>(settings_manager_.get_basic_properties_().port);
+        server_socket_ = std::make_shared<ServerSocket>(settings_manager_.get_basic_properties_().port);
         server_ = std::make_unique<HTTPServer>(handler_factory_, *server_socket_.get(), server_params_);
 
         return Init_();

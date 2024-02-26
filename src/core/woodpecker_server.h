@@ -73,6 +73,11 @@ class CPW::Core::WoodpeckerServer : public ServerApplication
             auto var = server_socket_.get();
             return var;
         }
+        SecureServerSocket* get_secure_server_socket()
+        {
+            auto var = secure_server_socket_.get();
+            return var;
+        }
         HTTPServer* get_server()
         {
             auto var = server_.get();
@@ -92,7 +97,8 @@ class CPW::Core::WoodpeckerServer : public ServerApplication
 
     private:
         HTTPServerParams::Ptr server_params_;
-        std::shared_ptr<SecureServerSocket> server_socket_;
+        std::shared_ptr<ServerSocket> server_socket_;
+        std::shared_ptr<SecureServerSocket> secure_server_socket_;
         std::unique_ptr<HTTPServer> server_;
         HandlerFactory* handler_factory_;
         Application& app_;
