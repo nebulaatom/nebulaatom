@@ -82,16 +82,31 @@ class CPW::Core::HandlerFactory :
     ,public CPW::HTTP::CommonResponses
 {
     public:
+        using HandlerMap = std::map<HandlerType, std::unique_ptr<Tools::HandlerConnection>>;
+        using FunctionRequest = std::function<CPW::Handlers::RootHandler*()>;
+
         HandlerFactory();
         virtual ~HandlerFactory();
         virtual HTTPRequestHandler* createRequestHandler(const HTTPServerRequest& request);
 
+        HandlerMap& get_handlers()
+        {
+            auto& var = handlers_;
+            return var;
+        }
+        std::shared_ptr<FunctionRequest>& get_request_handler_creator()
+        {
+            auto& var = request_handler_creator_;
+            return var;
+        }
+
     protected:
-        void CreateConnections_();
+        void CreateHandlers_();
 
     private:
         std::string api_version_;
-        std::map<HandlerType, std::unique_ptr<Tools::HandlerConnection>> connections_;
+        std::shared_ptr<FunctionRequest> request_handler_creator_;
+        HandlerMap handlers_;
         Application& app_;
 };
 

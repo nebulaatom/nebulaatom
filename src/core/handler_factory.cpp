@@ -17,6 +17,7 @@
 */
 
 #include "handler_factory.h"
+#include "handlers/null_handler.h"
 
 using namespace CPW::Core;
 
@@ -24,7 +25,8 @@ HandlerFactory::HandlerFactory() :
     api_version_("v0")
     ,app_(Application::instance())
 {
-    CreateConnections_();
+    request_handler_creator_ = std::make_shared<FunctionRequest>([&](){return new CPW::Handlers::NullHandler(api_version_);});
+    CreateHandlers_();
 }
 
 HandlerFactory::~HandlerFactory()
@@ -36,7 +38,9 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 {
     try
     {
-        std::vector<std::string> segments;
+        return (*request_handler_creator_)();
+        
+        /*std::vector<std::string> segments;
 
         URI(request.getURI()).getPathSegments(segments);
 
@@ -54,18 +58,18 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
                     requested_route.get_segments() == login_route
                     || requested_route.get_segments() == logout_route
                 )
-                    return connections_[HandlerType::kLogin]->return_handler_();
+                    return handlers_[HandlerType::kLogin]->return_handler_();
                 else
-                    return connections_[HandlerType::kBackend]->return_handler_();
+                    return handlers_[HandlerType::kBackend]->return_handler_();
 
                 break;
             }
             case CPW::Tools::RouteType::kEntrypoint:
             {
-                return connections_[HandlerType::kFrontend]->return_handler_();
+                return handlers_[HandlerType::kFrontend]->return_handler_();
                 break;
             }
-        }
+        }*/
     }
     catch(MySQL::MySQLException& error)
     {
@@ -93,12 +97,12 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
         GenericResponse_(request.response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
 
-    return connections_[HandlerType::kNull]->return_handler_();
+    return handlers_[HandlerType::kNull]->return_handler_();
 }
 
-void HandlerFactory::CreateConnections_()
+void HandlerFactory::CreateHandlers_()
 {
-    connections_.insert(std::make_pair
+    handlers_.insert(std::make_pair
     (
         HandlerType::kNull
         ,new Tools::HandlerConnection
@@ -107,7 +111,7 @@ void HandlerFactory::CreateConnections_()
             ,[&](){return new CPW::Handlers::NullHandler(api_version_);}
         }
     ));
-    connections_.insert(std::make_pair
+    handlers_.insert(std::make_pair
     (
         HandlerType::kBackend
         ,new Tools::HandlerConnection
@@ -116,7 +120,7 @@ void HandlerFactory::CreateConnections_()
             ,[&](){return new CPW::Handlers::BackendHandler(api_version_);}
         }
     ));
-    connections_.insert(std::make_pair
+    handlers_.insert(std::make_pair
     (
         HandlerType::kLogin
         ,new Tools::HandlerConnection
@@ -125,7 +129,7 @@ void HandlerFactory::CreateConnections_()
             ,[&](){return new CPW::Handlers::LoginHandler(api_version_);}
         }
     ));
-    connections_.insert(std::make_pair
+    handlers_.insert(std::make_pair
     (
         HandlerType::kFrontend
         ,new Tools::HandlerConnection
