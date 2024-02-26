@@ -1,10 +1,10 @@
 # Install files
 
 ## Project
-install(
-	TARGETS ${PROJECT_NAME} 
-	DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+#install(
+#	TARGETS ${PROJECT_NAME} 
+#	DESTINATION ${CMAKE_INSTALL_BINDIR}
+#)
 
 ## Header files
 install(

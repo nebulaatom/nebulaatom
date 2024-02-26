@@ -1,3 +1,4 @@
+
 # Targets
 
 ## Objects libraries
@@ -24,7 +25,7 @@ target_link_libraries(
     frontendhandler
     route
     commonresponses
-    filtersmanager
+    #filtersmanager
     managejson
     requestsmanager
     handlerconnection
@@ -55,3 +56,5 @@ target_link_libraries(
     Poco::JSON
     yaml-cpp::yaml-cpp
 )
+
+target_include_directories(woodpeckerserver PUBLIC ${HEADER})

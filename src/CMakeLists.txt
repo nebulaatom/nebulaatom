@@ -1,8 +1,3 @@
-# Testing
-if(${PROJECT_NAME}_TESTING)
-    enable_testing()
-    add_subdirectory(tests)
-endif()
 
 # Find packages
 
@@ -25,15 +20,16 @@ include_directories(${MySQL_INCLUDE_DIRS})
 add_subdirectory(core)
 add_subdirectory(extras)
 add_subdirectory(files)
-add_subdirectory(filters)
+#add_subdirectory(filters)
 add_subdirectory(functions)
 add_subdirectory(handlers)
 add_subdirectory(http)
 add_subdirectory(query)
 add_subdirectory(security)
 add_subdirectory(tools)
+add_subdirectory(examples)
 
 ## Main executable
-add_executable(${PROJECT_NAME} "main.cpp")
-target_include_directories(${PROJECT_NAME} PUBLIC ${HEADER})
-target_link_libraries(${PROJECT_NAME} PUBLIC woodpeckerserver)
+#add_executable(${PROJECT_NAME} "main.cpp")
+#target_include_directories(${PROJECT_NAME} PUBLIC ${HEADER})
+#target_link_libraries(${PROJECT_NAME} PUBLIC woodpeckerserver)
