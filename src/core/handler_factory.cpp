@@ -25,7 +25,7 @@ HandlerFactory::HandlerFactory() :
     api_version_("v0")
     ,app_(Application::instance())
 {
-    request_handler_creator_ = std::make_shared<FunctionRequest>([&](){return new CPW::Handlers::NullHandler(api_version_);});
+    request_handler_creator_ = std::make_shared<FunctionRequest>([&](const HTTPServerRequest&){return new CPW::Handlers::NullHandler(api_version_);});
     CreateHandlers_();
 }
 
@@ -38,7 +38,7 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 {
     try
     {
-        return (*request_handler_creator_)();
+        return (*request_handler_creator_)(request);
         
         /*std::vector<std::string> segments;
 

@@ -83,7 +83,7 @@ class CPW::Core::HandlerFactory :
 {
     public:
         using HandlerMap = std::map<HandlerType, std::unique_ptr<Tools::HandlerConnection>>;
-        using FunctionRequest = std::function<CPW::Handlers::RootHandler*()>;
+        using FunctionRequest = std::function<CPW::Handlers::RootHandler*(const HTTPServerRequest& request)>;
 
         HandlerFactory();
         virtual ~HandlerFactory();
