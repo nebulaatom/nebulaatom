@@ -51,15 +51,6 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
                 return;
             }
 
-        // Use SSL
-            SecureStreamSocket socket = static_cast<Net::HTTPServerRequestImpl&>(request).socket();
-            if (socket.havePeerCertificate())
-                X509Certificate cert = socket.peerCertificate();
-
-        // Process route
-            if(!ProcessRoute_())
-                return;
-
         // Get the corresponding HTTP method
             method_ = request.getMethod();
 
@@ -292,4 +283,42 @@ bool RootHandler::ManageRequestBody_()
         return false;
 
     return true;
+}
+
+void RootHandler::AddRoutes_()
+{
+
+}
+
+void RootHandler::Process_()
+{
+    // Use SSL
+        /*SecureStreamSocket socket = static_cast<Net::HTTPServerRequestImpl&>(request).socket();
+        if (socket.havePeerCertificate())
+            X509Certificate cert = socket.peerCertificate();*/
+
+    // Process route
+        if(!ProcessRoute_())
+            return;
+
+}
+
+void RootHandler::HandleGETMethod_()
+{
+
+}
+
+void RootHandler::HandlePOSTMethod_()
+{
+
+}
+
+void RootHandler::HandlePUTMethod_()
+{
+
+}
+
+void RootHandler::HandleDELMethod_()
+{
+
 }

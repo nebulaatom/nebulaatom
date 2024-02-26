@@ -138,18 +138,18 @@ class CPW::Handlers::RootHandler :
         virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
     protected:
-        virtual void AddRoutes_() = 0;
-        virtual void Process_() = 0;
+        virtual void AddRoutes_();
+        virtual void Process_();
         void SettingUpFunctions_();
         bool ProcessRoute_();
         bool VerifySession_();
         bool VerifyPermissions_();
         bool IdentifyRoute_();
         bool ManageRequestBody_();
-        virtual void HandlePOSTMethod_() = 0;
-        virtual void HandleGETMethod_() = 0;
-        virtual void HandlePUTMethod_() = 0;
-        virtual void HandleDELMethod_() = 0;
+        virtual void HandlePOSTMethod_();
+        virtual void HandleGETMethod_();
+        virtual void HandlePUTMethod_();
+        virtual void HandleDELMethod_();
 
         Application& app_;
 
