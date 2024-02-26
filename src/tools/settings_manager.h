@@ -24,9 +24,6 @@
 #include <memory>
 #include <string>
 
-#include "functions/sql_action.h"
-#include "functions/email_action.h"
-#include "functions/action.h"
 #include "yaml-cpp/node/detail/iterator_fwd.h"
 #include "yaml-cpp/node/node.h"
 #include "yaml-cpp/yaml.h"
@@ -34,6 +31,9 @@
 #include "Poco/Util/ServerApplication.h"
 
 #include "functions/functions_manager.h"
+//#include "functions/sql_action.h"
+#include "functions/email_action.h"
+#include "functions/action.h"
 
 
 namespace CPW
@@ -48,6 +48,7 @@ using namespace Poco;
 using namespace Poco::Util;
 
 
+class SQLAction;
 class CPW::Tools::SettingsManager
 {
     public:

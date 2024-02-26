@@ -1,9 +1,12 @@
 
 #include "functions/sql_action.h"
+#include "query/database_manager.h"
+#include "tools/settings_manager.h"
 
-using namespace CPW::Functions;
+using namespace CPW;
+using namespace Functions;
 
-SQLAction::SQLAction(std::string identifier) :
+Functions::SQLAction::SQLAction(std::string identifier) :
     Action(identifier)
     ,app_(Application::instance())
     ,sql_code_("SELECT 1")
@@ -13,7 +16,7 @@ SQLAction::SQLAction(std::string identifier) :
     set_action_type(ActionType::kSQL);
 }
 
-bool SQLAction::Work_()
+bool Functions::SQLAction::Work_()
 {
     // Identify parameters
     IdentifyParameters_();
@@ -55,7 +58,7 @@ bool SQLAction::Work_()
     return true;
 }
 
-bool SQLAction::ComposeQuery_()
+bool Functions::SQLAction::ComposeQuery_()
 {
     try
     {
@@ -152,7 +155,7 @@ bool SQLAction::ComposeQuery_()
     return false;
 }
 
-void SQLAction::ExecuteQuery_()
+void Functions::SQLAction::ExecuteQuery_()
 {
     try
     {
@@ -184,7 +187,7 @@ void SQLAction::ExecuteQuery_()
     }
 }
 
-void SQLAction::MakeResults_()
+void Functions::SQLAction::MakeResults_()
 {
     try
     {
@@ -240,7 +243,7 @@ void SQLAction::MakeResults_()
     return;
 }
 
-JSON::Object::Ptr SQLAction::CreateJSONResult_()
+JSON::Object::Ptr Functions::SQLAction::CreateJSONResult_()
 {
     try
     {
@@ -309,7 +312,7 @@ JSON::Object::Ptr SQLAction::CreateJSONResult_()
     }
 }
 
-bool SQLAction::InitializeQuery_()
+bool Functions::SQLAction::InitializeQuery_()
 {
     try
     {

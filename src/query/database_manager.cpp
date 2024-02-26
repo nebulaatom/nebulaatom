@@ -22,6 +22,8 @@
 using namespace CPW;
 using namespace CPW::Query;
 
+bool DatabaseManager::initialized_ = false;
+
 DatabaseManager::DatabaseManager()
 {
 
@@ -35,11 +37,13 @@ DatabaseManager::~DatabaseManager()
 void DatabaseManager::StartMySQL_()
 {
     Data::MySQL::Connector::registerConnector();
+    initialized_ = true;
 }
 
 void DatabaseManager::StopMySQL_()
 {
-    Data::MySQL::Connector::unregisterConnector();
+    if(initialized_)
+        Data::MySQL::Connector::unregisterConnector();
 }
 
 std::shared_ptr<Data::Session> DatabaseManager::StartSessionMySQL_()

@@ -17,18 +17,31 @@
  */
 
 #include "tools/settings_manager.h"
+#include "functions/sql_action.h"
 
 using namespace CPW;
-using namespace CPW::Tools;
+using namespace Tools;
 
-Functions::FunctionsManager SettingsManager::functions_manager_ = {};
-SettingsManager::BasicProperties SettingsManager::basic_properties_ = {};
+Functions::FunctionsManager Tools::SettingsManager::functions_manager_ = {};
+Tools::SettingsManager::BasicProperties Tools::SettingsManager::basic_properties_ = {};
 
-SettingsManager::SettingsManager()
+Tools::SettingsManager::SettingsManager()
 {
+    basic_properties_.port = 8080;
+    basic_properties_.max_queued = 100;
+    basic_properties_.max_threads = 16;
+    basic_properties_.db_host = "127.0.0.1";
+    basic_properties_.db_port = "3306";
+    basic_properties_.db_name = "dbname";
+    basic_properties_.db_user = "dbuser";
+    basic_properties_.db_password = "dbpassword";
+    basic_properties_.session_max_age = 3600;
+    basic_properties_.directory_base = "/var/www";
+    basic_properties_.directory_for_uploaded_files = "/var/www";
+    basic_properties_.directory_for_temp_files = "/tmp";
 }
 
-void SettingsManager::ReadFunctions_()
+void Tools::SettingsManager::ReadFunctions_()
 {
     try
     {
@@ -239,7 +252,7 @@ void SettingsManager::ReadFunctions_()
     }
 }
 
-void SettingsManager::ReadFunctionsParameters_(Functions::Function& function, Functions::Function::ActionPtr action, YAML::Node& parameters)
+void Tools::SettingsManager::ReadFunctionsParameters_(Functions::Function& function, Functions::Function::ActionPtr action, YAML::Node& parameters)
 {
     // Parameters
     for(YAML::const_iterator it = parameters.begin(); it != parameters.end(); ++it)
@@ -340,7 +353,7 @@ void SettingsManager::ReadFunctionsParameters_(Functions::Function& function, Fu
     }
 }
 
-void SettingsManager::ReadFunctionsConditions_(std::shared_ptr<Functions::Action> action, YAML::Node& conditions)
+void Tools::SettingsManager::ReadFunctionsConditions_(std::shared_ptr<Functions::Action> action, YAML::Node& conditions)
 {
     // Conditions
     for(YAML::const_iterator it = conditions.begin(); it != conditions.end(); ++it)
@@ -440,23 +453,10 @@ void SettingsManager::ReadFunctionsConditions_(std::shared_ptr<Functions::Action
     }
 }
 
-void SettingsManager::ReadBasicProperties_()
+void Tools::SettingsManager::ReadBasicProperties_()
 {
     try
     {
-        basic_properties_.port = 80;
-        basic_properties_.max_queued = 100;
-        basic_properties_.max_threads = 16;
-        basic_properties_.db_host = "";
-        basic_properties_.db_port = "";
-        basic_properties_.db_name = "";
-        basic_properties_.db_user = "";
-        basic_properties_.db_password = "";
-        basic_properties_.session_max_age = 3600;
-        basic_properties_.directory_base = "/var/www";
-        basic_properties_.directory_for_uploaded_files = "/var/www";
-        basic_properties_.directory_for_temp_files = "/tmp";
-        
         // Read YAML functions file
         YAML::Node config = YAML::LoadFile("properties.yaml");
 
@@ -576,7 +576,7 @@ void SettingsManager::ReadBasicProperties_()
     }
 }
 
-bool SettingsManager::VerifyYAMLScalarNode_(YAML::Node& node)
+bool Tools::SettingsManager::VerifyYAMLScalarNode_(YAML::Node& node)
 {
     if(!node || !node.IsScalar())
         return false;
@@ -584,12 +584,12 @@ bool SettingsManager::VerifyYAMLScalarNode_(YAML::Node& node)
         return true;
 }
 
-void SettingsManager::PrintError_(std::string function, std::string variable)
+void Tools::SettingsManager::PrintError_(std::string function, std::string variable)
 {
     std::cout << "- Error on settings_manager.cpp on " << function << "(): The functions.yaml file is malformed. ERRYML" << function << "-" << variable << std::endl;
 }
 
-bool SettingsManager::VerifyYAMLMapNode_(YAML::Node& node)
+bool Tools::SettingsManager::VerifyYAMLMapNode_(YAML::Node& node)
 {
     if(!node || !node.IsMap())
         return false;

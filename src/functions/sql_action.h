@@ -33,7 +33,8 @@
 #include "http/common_responses.h"
 #include "tools/row_value_formatter.h"
 #include "query/results.h"
-#include "query/database_manager.h"
+//#include "query/database_manager.h"
+//#include "tools/settings_manager.h"
 
 
 namespace CPW
@@ -50,6 +51,9 @@ using namespace Poco::Net;
 using namespace Poco::Data;
 using namespace Poco::Data::Keywords;
 
+
+class DatabaseManager;
+class SettingsManager;
 
 class CPW::Functions::SQLAction :
     public CPW::Functions::Action
