@@ -26,7 +26,7 @@ std::map<std::string, ActionType> PermissionsManager::action_type_map_ = {};
 
 PermissionsManager::PermissionsManager()
 {
-    LoadPermissions_();
+    // LoadPermissions_();
     FillActionTypeMap_();
 }
 
