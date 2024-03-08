@@ -214,6 +214,9 @@ void Functions::SQLAction::MakeResults_()
 
                 get_results()->get_rows().push_back(std::move(row_fields));
             }
+
+        // Close session
+            session_->close();
     }
     catch(JSON::JSONException& error)
     {
