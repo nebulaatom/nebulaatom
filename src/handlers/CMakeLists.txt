@@ -26,3 +26,8 @@ set_target_properties(frontendhandler PROPERTIES POSITION_INDEPENDENT_CODE 1)
 add_library(loginhandler OBJECT "login_handler.cpp")
 target_include_directories(loginhandler PUBLIC ${HEADER})
 set_target_properties(loginhandler PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
+### customhandler
+add_library(customhandler OBJECT "custom_handler.cpp")
+target_include_directories(customhandler PUBLIC ${HEADER})
+set_target_properties(customhandler PROPERTIES POSITION_INDEPENDENT_CODE 1)
