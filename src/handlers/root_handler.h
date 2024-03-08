@@ -126,6 +126,11 @@ class CPW::Handlers::RootHandler :
             auto& var = requested_route_;
             return var;
         }
+        Functions::FunctionsManager& get_functions_manager()
+        {
+            auto& var = functions_manager_;
+            return var;
+        }
         Functions::Function& get_current_function()
         {
             auto& var = current_function_;
@@ -138,14 +143,14 @@ class CPW::Handlers::RootHandler :
         virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
     protected:
-        virtual void AddRoutes_();
+        virtual void AddActions_();
         virtual void Process_();
         void SettingUpFunctions_();
         bool ProcessRoute_();
         bool VerifySession_();
         bool VerifyPermissions_();
         bool IdentifyRoute_();
-        bool ManageRequestBody_();
+        void ManageRequestBody_();
         virtual void HandlePOSTMethod_();
         virtual void HandleGETMethod_();
         virtual void HandlePUTMethod_();
@@ -165,6 +170,7 @@ class CPW::Handlers::RootHandler :
         HTTPServerResponse* response_;
         std::list<Tools::Route> routes_list_;
         std::shared_ptr<CPW::Tools::Route> requested_route_;
+        Functions::FunctionsManager functions_manager_;
         Functions::Function current_function_;
 };
 

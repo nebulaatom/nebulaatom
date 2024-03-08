@@ -51,6 +51,7 @@ class CPW::Tools::ManageJSON
         ~ManageJSON();
 
         JSON::Array::Ptr& get_json_body(){return json_body_;}
+        std::string get_json_body_string() const { return json_body_string_; }
 
         std::string ReadBody_(std::istream& stream);
         bool Parse_(std::string string_to_parse);
@@ -59,6 +60,7 @@ class CPW::Tools::ManageJSON
 
     private:
         JSON::Array::Ptr json_body_;
+        std::string json_body_string_;
 };
 
 #endif // CPW_TOOLS_MANAGEJSON_H

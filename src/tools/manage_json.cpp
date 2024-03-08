@@ -22,6 +22,7 @@ using namespace CPW::Tools;
 
 ManageJSON::ManageJSON() :
     json_body_(new JSON::Array())
+    ,json_body_string_("")
 {
 
 }
@@ -55,6 +56,7 @@ bool ManageJSON::Parse_(std::string string_to_parse)
         return false;
 
     json_body_ = var_tmp.extract<JSON::Array::Ptr>();
+    json_body_string_ = string_to_parse;
 
     return true;
 }
