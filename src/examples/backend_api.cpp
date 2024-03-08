@@ -77,7 +77,6 @@ int main(int argc, char** argv)
 
     // Setup
         Query::DatabaseManager::StartMySQL_();
-        Tools::SettingsManager::SetUpProperties_();
         Tools::SettingsManager::ReadBasicProperties_();
         Security::PermissionsManager::LoadPermissions_();
 
@@ -85,7 +84,7 @@ int main(int argc, char** argv)
         Tools::SessionsManager::ReadSessions_();
 
     // Setting up handler
-        auto hello_handler = new Core::HandlerFactory::FunctionRequest([&](const HTTPServerRequest& request)
+        app.CustomHandlerCreator_([&](const HTTPServerRequest& request)
         {
             // Set route
             std::vector<std::string> segments;
@@ -106,11 +105,10 @@ int main(int argc, char** argv)
             return handler;
         });
 
-    auto& request_handler_creator = app.get_handler_factory()->get_request_handler_creator();
-    request_handler_creator.reset(hello_handler);
+    // Run
+        auto code = app.run(argc, argv);
 
-    auto code = app.run(argc, argv);
-
-    Query::DatabaseManager::StopMySQL_();
-    return code;
+    // End
+        Query::DatabaseManager::StopMySQL_();
+        return code;
 }
