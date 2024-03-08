@@ -25,6 +25,7 @@ WoodpeckerServer::WoodpeckerServer() :
     ,handler_factory_(new HandlerFactory())
     ,app_(Application::instance())
 {
+    Tools::SettingsManager::SetUpProperties_();
     //Poco::Net::initializeSSL();
     //Tools::SettingsManager::ReadBasicProperties_();
     //Query::DatabaseManager::StartMySQL_();
@@ -36,6 +37,20 @@ WoodpeckerServer::~WoodpeckerServer()
 {
     //Poco::Net::uninitializeSSL();
     //Query::DatabaseManager::StopMySQL_();
+}
+
+void WoodpeckerServer::CustomHandlerCreator_(HandlerFactory::FunctionHandlerCreator handler_creator)
+{
+    handler_factory_->set_handler_creator(std::move(handler_creator));
+}
+
+void WoodpeckerServer::AddHandler_(std::string route, HandlerFactory::FunctionHandler handler)
+{
+    std::vector<std::string> segments;
+    URI(route).getPathSegments(segments);
+    Tools::Route requested_route(segments);
+
+    handler_factory_->get_connections().insert({route, Tools::HandlerConnection{requested_route, handler}});
 }
 
 void WoodpeckerServer::initialize(Application& self)

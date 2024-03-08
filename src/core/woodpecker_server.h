@@ -89,6 +89,9 @@ class CPW::Core::WoodpeckerServer : public ServerApplication
             return var;
         }
 
+        void CustomHandlerCreator_(HandlerFactory::FunctionHandlerCreator handler_creator);
+        void AddHandler_(std::string route, HandlerFactory::FunctionHandler handler);
+
     protected:
         virtual int main(const std::vector<std::string>& args);
         virtual void initialize(Application& self);
