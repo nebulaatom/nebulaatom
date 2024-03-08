@@ -1,5 +1,6 @@
 
 #include "functions/action.h"
+#include "Poco/JSON/Object.h"
 #include "Poco/Util/Application.h"
 
 using namespace CPW::Functions;
@@ -15,6 +16,7 @@ Action::Action(std::string identifier) :
     ,error_(false)
 {
     results_ = std::make_shared<Query::Results>();
+    json_result_ = new JSON::Object;
 }
 
 Action::~Action()
