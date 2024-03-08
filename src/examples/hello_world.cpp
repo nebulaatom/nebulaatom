@@ -1,23 +1,10 @@
 
 #include "core/handler_factory.h"
 #include "core/woodpecker_server.h"
-#include "handlers/root_handler.h"
+#include "handlers/custom_handler.h"
 #include <Poco/Net/HTTPResponse.h>
 
 using namespace CPW;
-
-class HelloHandler : public Handlers::RootHandler
-{
-    public:
-        HelloHandler() : Handlers::RootHandler(){}
-        virtual ~HelloHandler() {}
-
-        void Process_() override
-        {
-            // Say hello
-            HTMLResponse_(*get_response(), HTTPResponse::HTTP_OK, "Hello!");
-        }
-};
 
 int main(int argc, char** argv)
 {
@@ -25,7 +12,12 @@ int main(int argc, char** argv)
 
     app.CustomHandlerCreator_([&](const HTTPServerRequest&)
     {
-        return new HelloHandler;
+        auto handler = new Handlers::CustomHandler;
+        handler->SetProcessFunction([&]()
+        {
+            handler->CustomHTMLResponse_(*handler->get_response(), HTTPResponse::HTTP_OK, "Hello!");
+        });
+        return handler;
     });
 
     return app.run(argc, argv);
