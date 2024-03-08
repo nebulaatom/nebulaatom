@@ -2,6 +2,7 @@
 #include "core/handler_factory.h"
 #include "core/woodpecker_server.h"
 #include "handlers/root_handler.h"
+#include <Poco/Net/HTTPResponse.h>
 
 using namespace CPW;
 
@@ -16,7 +17,7 @@ class HelloHandler : public Handlers::RootHandler
             try
             {
                 // Say Hello
-                    GenericResponse_(*get_response(), HTTPResponse::HTTP_OK, "Hello!");
+                    HTMLResponse_(*get_response(), HTTPResponse::HTTP_OK, "Hello!");
             }
             catch(std::exception& error)
             {
@@ -36,6 +37,9 @@ int main(int argc, char** argv)
 	try
 	{
 		Core::WoodpeckerServer app;
+
+        // Setup
+            Tools::SettingsManager::SetUpProperties_();
 
         auto hello_handler = new Core::HandlerFactory::FunctionRequest([&](const HTTPServerRequest& request)
         {

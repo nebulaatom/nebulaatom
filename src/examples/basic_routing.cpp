@@ -63,6 +63,9 @@ int main(int argc, char** argv)
 	try
 	{
 		Core::WoodpeckerServer app;
+        
+        // Setup
+            Tools::SettingsManager::SetUpProperties_();
 
         auto hello_handler = new Core::HandlerFactory::FunctionRequest([&](const HTTPServerRequest& request)
         {
