@@ -18,14 +18,25 @@
 
 #include "handler_factory.h"
 #include "handlers/null_handler.h"
+#include "tools/handler_connection.h"
 
 using namespace CPW::Core;
 
 HandlerFactory::HandlerFactory() :
     app_(Application::instance())
 {
-    request_handler_creator_ = std::make_shared<FunctionRequest>([&](const HTTPServerRequest&){return new CPW::Handlers::NullHandler();});
-    CreateHandlers_();
+    handler_creator_ = [&](const HTTPServerRequest& request)
+    {
+        // Find route and handler
+        FunctionHandler f;
+        auto found = connections_.find(request.getURI());
+        if(found != connections_.end())
+            f = found->second.return_handler_;
+        else
+            f = [&](){return new CPW::Handlers::NullHandler();};
+
+        return f();
+    };
 }
 
 HandlerFactory::~HandlerFactory()
@@ -37,10 +48,7 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 {
     try
     {
-        if(request_handler_creator_ != nullptr)
-            return (*request_handler_creator_)(request);
-        else
-            return new CPW::Handlers::NullHandler();
+        return handler_creator_(request);
         
         /*std::vector<std::string> segments;
 
@@ -99,45 +107,5 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
         GenericResponse_(request.response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
 
-    return handlers_[HandlerType::kNull]->return_handler_();
-}
-
-void HandlerFactory::CreateHandlers_()
-{
-    handlers_.insert(std::make_pair
-    (
-        HandlerType::kNull
-        ,new Tools::HandlerConnection
-        {
-            CPW::Tools::Route(std::vector<std::string>{""})
-            ,[&](){return new CPW::Handlers::NullHandler();}
-        }
-    ));
-    handlers_.insert(std::make_pair
-    (
-        HandlerType::kBackend
-        ,new Tools::HandlerConnection
-        {
-            CPW::Tools::Route(std::vector<std::string>{"api"})
-            ,[&](){return new CPW::Handlers::BackendHandler();}
-        }
-    ));
-    handlers_.insert(std::make_pair
-    (
-        HandlerType::kLogin
-        ,new Tools::HandlerConnection
-        {
-            CPW::Tools::Route(std::vector<std::string>{"api"})
-            ,[&](){return new CPW::Handlers::LoginHandler();}
-        }
-    ));
-    handlers_.insert(std::make_pair
-    (
-        HandlerType::kFrontend
-        ,new Tools::HandlerConnection
-        {
-            CPW::Tools::Route(std::vector<std::string>{""})
-            ,[&](){return new CPW::Handlers::FrontendHandler();}
-        }
-    ));
+    return new CPW::Handlers::NullHandler();
 }

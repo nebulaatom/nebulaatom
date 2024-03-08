@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_CORE_HANDLERFACTORY_H
-#define CPW_CORE_HANDLERFACTORY_H
+#ifndef CPW_CORE_HANDLER_FACTORY_H
+#define CPW_CORE_HANDLER_FACTORY_H
 
 
 #include <map>
@@ -63,50 +63,41 @@ namespace CPW
 {
     namespace Core
     {
-        enum class HandlerType;
         class HandlerFactory;
     }
 }
-
-enum class CPW::Core::HandlerType
-{
-    kBackend
-    ,kFrontend
-    ,kLogin
-    ,kNull
-};
-
 
 class CPW::Core::HandlerFactory :
     public HTTPRequestHandlerFactory
     ,public CPW::HTTP::CommonResponses
 {
     public:
-        using HandlerMap = std::map<HandlerType, std::unique_ptr<Tools::HandlerConnection>>;
-        using FunctionRequest = std::function<CPW::Handlers::RootHandler*(const HTTPServerRequest& request)>;
+        using FunctionHandler = std::function<CPW::Handlers::RootHandler*()>;
+        using FunctionHandlerCreator = std::function<CPW::Handlers::RootHandler*(const HTTPServerRequest& request)>;
+        using Connections = std::map<std::string, Tools::HandlerConnection>;
 
         HandlerFactory();
         virtual ~HandlerFactory();
+        
+        Connections& get_connections()
+        {
+            auto& var = connections_;
+            return var;
+        }
+        FunctionHandlerCreator& get_handler_creator_()
+        {
+            auto& var = handler_creator_;
+            return var;
+        }
+
+        void set_handler_creator(FunctionHandlerCreator handler_creator){ handler_creator_ = handler_creator; }
+
         virtual HTTPRequestHandler* createRequestHandler(const HTTPServerRequest& request);
 
-        HandlerMap& get_handlers()
-        {
-            auto& var = handlers_;
-            return var;
-        }
-        std::shared_ptr<FunctionRequest>& get_request_handler_creator()
-        {
-            auto& var = request_handler_creator_;
-            return var;
-        }
-
-    protected:
-        void CreateHandlers_();
-
     private:
-        std::shared_ptr<FunctionRequest> request_handler_creator_;
-        HandlerMap handlers_;
+        FunctionHandlerCreator handler_creator_;
+        Connections connections_;
         Application& app_;
 };
 
-#endif // CPW_CORE_HANDLERFACTORY_H
+#endif // CPW_CORE_HANDLER_FACTORY_H
