@@ -25,7 +25,7 @@ LoginHandler::~LoginHandler()
 
 }
 
-void LoginHandler::AddRoutes_()
+void LoginHandler::AddActions_()
 {
     auto& routes_list = get_routes_list();
 
@@ -46,8 +46,8 @@ void LoginHandler::HandleGETMethod_()
 
 void LoginHandler::HandlePOSTMethod_()
 {
-    std::vector<std::string> login_route({"api", get_api_version(), "system", "login"});
-    std::vector<std::string> logout_route({"api", get_api_version(), "system", "logout"});
+    std::vector<std::string> login_route({"api", "system", "login"});
+    std::vector<std::string> logout_route({"api", "system", "logout"});
 
     if(get_requested_route()->get_segments() == login_route)
     {
@@ -106,7 +106,7 @@ void LoginHandler::StartSession_()
         auto session = Tools::SessionsHandler::CreateSession_(user, "/", get_settings_manager().get_basic_properties_().session_max_age);
 
     // Response
-        Poco::Net::HTTPCookie cookie("cpw-woodpecker-sid", session.get_id());
+        Poco::Net::HTTPCookie cookie("nebula-atom-sid", session.get_id());
         cookie.setPath(session.get_path());
         cookie.setMaxAge(session.get_max_age());
         cookie.setSameSite(Poco::Net::HTTPCookie::SAME_SITE_STRICT);

@@ -40,7 +40,7 @@ class CPW::Handlers::NullHandler :
         virtual ~NullHandler();
 
     protected:
-        virtual void AddRoutes_() override;
+        virtual void AddActions_() override;
         virtual void Process_() override;
         virtual void HandleGETMethod_() override;
         virtual void HandlePOSTMethod_() override;

@@ -25,7 +25,7 @@ NullHandler::~NullHandler()
 
 }
 
-void NullHandler::AddRoutes_()
+void NullHandler::AddActions_()
 {
 
 }
