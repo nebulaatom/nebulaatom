@@ -43,7 +43,7 @@
 #include <Poco/Data/Statement.h>
 
 #include "tools/handler_connection.h"
-#include "tools/sessions_handler.h"
+#include "tools/sessions_manager.h"
 #include "query/database_manager.h"
 #include "tools/route.h"
 #include "http/common_responses.h"

@@ -56,7 +56,7 @@
 #include "Poco/Net/SecureServerSocket.h"
 #include "Poco/Net/X509Certificate.h"
 
-#include "tools/sessions_handler.h"
+#include "tools/sessions_manager.h"
 #include "query/database_manager.h"
 #include "query/query_actions.h"
 #include "tools/route.h"

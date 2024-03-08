@@ -103,7 +103,7 @@ void LoginHandler::StartSession_()
         }
 
     // Create the session
-        auto session = Tools::SessionsHandler::CreateSession_(user, "/", get_settings_manager().get_basic_properties_().session_max_age);
+        auto session = Tools::SessionsManager::CreateSession_(user, "/", get_settings_manager().get_basic_properties_().session_max_age);
 
     // Response
         Poco::Net::HTTPCookie cookie("nebula-atom-sid", session.get_id());
@@ -124,7 +124,7 @@ void LoginHandler::EndSession_()
         auto session_id = SessionExists_();
         if (session_id != "")
         {
-            Tools::SessionsHandler::DeleteSession_(session_id);
+            Tools::SessionsManager::DeleteSession_(session_id);
         }
 
     // Response
@@ -143,7 +143,7 @@ std::string LoginHandler::SessionExists_()
         Poco::Net::NameValueCollection cookies;
         get_request()->getCookies(cookies);
         auto cookie_session = cookies.find("cpw-woodpecker-sid");
-        auto sessions = Tools::SessionsHandler::get_sessions();
+        auto sessions = Tools::SessionsManager::get_sessions();
 
     // Session exists
         if(cookie_session == cookies.end())

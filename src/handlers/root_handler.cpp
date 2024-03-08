@@ -202,7 +202,7 @@ bool RootHandler::VerifySession_()
         Poco::Net::NameValueCollection cookies;
         request_->getCookies(cookies);
         auto cookie_session = cookies.find("nebula-atom-sid");
-        auto sessions = Tools::SessionsHandler::get_sessions();
+        auto sessions = Tools::SessionsManager::get_sessions();
 
     // Verify Cookie session and session
         if(cookie_session != cookies.end())

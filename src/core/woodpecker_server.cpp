@@ -29,7 +29,7 @@ WoodpeckerServer::WoodpeckerServer() :
     //Tools::SettingsManager::ReadBasicProperties_();
     //Query::DatabaseManager::StartMySQL_();
     //Tools::SettingsManager::ReadFunctions_();
-    //Tools::SessionsHandler::ReadSessions_();
+    //Tools::SessionsManager::ReadSessions_();
 }
 
 WoodpeckerServer::~WoodpeckerServer()
