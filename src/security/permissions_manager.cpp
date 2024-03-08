@@ -76,9 +76,9 @@ void PermissionsManager::LoadPermissions_()
             Functions::SQLAction action{""};
             action.set_custom_error("Permissions not found.");
             std::string sql_code =
-                "SELECT wp.endpoint AS endpoint, wu.username AS username, wu.id AS id_user, wp.action AS action "
-                "FROM _woodpecker_permissions wp "
-                "JOIN _woodpecker_users wu ON wu.id = wp.id_user"
+                "SELECT ap.endpoint AS endpoint, au.username AS username, au.id AS id_user, ap.action AS action "
+                "FROM _atom_permissions ap "
+                "JOIN _atom_users au ON au.id = ap.id_user"
             ;
             action.set_sql_code(sql_code);
 

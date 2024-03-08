@@ -34,7 +34,7 @@ bool UsersManager::AuthenticateUser_()
             action.set_custom_error("User not found.");
             std::string sql_code =
                 "SELECT id "
-                "FROM _woodpecker_users "
+                "FROM _atom_users "
                 "WHERE username = ? AND password = ?"
             ;
             action.set_sql_code(sql_code);

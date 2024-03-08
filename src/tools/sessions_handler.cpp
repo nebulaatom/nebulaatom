@@ -42,7 +42,7 @@ void SessionsHandler::ReadSessions_()
         // Setting up the action
             Functions::SQLAction action{""};
             action.set_custom_error("Sessions not found.");
-            action.set_sql_code("SELECT * FROM _woodpecker_sessions WHERE NOW() < reg_date + INTERVAL max_age SECOND");
+            action.set_sql_code("SELECT * FROM _atom_sessions WHERE NOW() < reg_date + INTERVAL max_age SECOND");
 
         // Query process
             action.ComposeQuery_();
@@ -113,7 +113,7 @@ CPW::Extras::Session& SessionsHandler::CreateSession_(std::string user, std::str
             Functions::SQLAction action{""};
             action.set_custom_error("Session not saved.");
             std::string sql_code =
-                "INSERT INTO _woodpecker_sessions (identifier, path, user, max_age) "
+                "INSERT INTO _atom_sessions (identifier, path, user, max_age) "
                 "VALUES (?, ?, ?, ?)"
             ;
             action.set_sql_code(sql_code);
