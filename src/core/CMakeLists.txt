@@ -22,6 +22,7 @@ target_link_libraries(
     roothandler
     nullhandler
     backendhandler
+    customhandler
     frontendhandler
     route
     commonresponses
