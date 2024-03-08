@@ -36,7 +36,7 @@ void LoginHandler::AddFunctions_()
 
 void LoginHandler::Process_()
 {
-    SettingUpFunctions_();
+    CallHTTPMethod_();
 }
 
 void LoginHandler::HandleGETMethod_()

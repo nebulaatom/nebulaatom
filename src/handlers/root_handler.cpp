@@ -104,7 +104,7 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
     }
 }
 
-void RootHandler::SettingUpFunctions_()
+void RootHandler::CallHTTPMethod_()
 {
     Functions::Function f1("", Functions::Function::Type::kGET);
     auto found = f1.get_methods().find(get_method());

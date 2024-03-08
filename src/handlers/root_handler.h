@@ -144,7 +144,7 @@ class CPW::Handlers::RootHandler :
     protected:
         virtual void AddFunctions_();
         virtual void Process_();
-        void SettingUpFunctions_();
+        void CallHTTPMethod_();
         bool ProcessRoute_();
         bool VerifySession_();
         bool VerifyPermissions_();

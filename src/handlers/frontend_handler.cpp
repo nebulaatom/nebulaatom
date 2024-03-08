@@ -39,7 +39,7 @@ void FrontendHandler::AddFunctions_()
 
 void FrontendHandler::Process_()
 {
-    SettingUpFunctions_();
+    CallHTTPMethod_();
 }
 
 void FrontendHandler::HandleGETMethod_()

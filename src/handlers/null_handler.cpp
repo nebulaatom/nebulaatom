@@ -32,7 +32,7 @@ void NullHandler::AddFunctions_()
 
 void NullHandler::Process_()
 {
-    SettingUpFunctions_();
+    CallHTTPMethod_();
 }
 
 void NullHandler::HandleGETMethod_()
