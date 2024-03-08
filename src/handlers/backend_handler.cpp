@@ -25,15 +25,40 @@ BackendHandler::~BackendHandler()
 
 }
 
-void BackendHandler::AddRoutes_()
+void BackendHandler::AddActions_()
 {
-    for(auto& function : get_settings_manager().get_functions_manager().get_functions())
+    for(auto& function : get_functions_manager().get_functions())
     {
         get_routes_list().push_back(Tools::Route{function.second.get_endpoint2()});
     }
 }
 
 void BackendHandler::Process_()
+{
+    ProcessActions_();
+}
+
+void BackendHandler::HandleGETMethod_()
+{
+
+}
+
+void BackendHandler::HandlePOSTMethod_()
+{
+
+}
+
+void BackendHandler::HandlePUTMethod_()
+{
+
+}
+
+void BackendHandler::HandleDELMethod_()
+{
+
+}
+
+void BackendHandler::ProcessActions_()
 {
     // Verify current function
         if(get_current_function().get_actions().empty())
@@ -56,9 +81,8 @@ void BackendHandler::Process_()
         {
             std::cout << "Action: " << action->get_identifier() << ", Final: " << action->get_final() << std::endl;
 
-            // Set json values
+            // Set JSNO body
             action->get_json_body().reset(get_json_body());
-            action->get_json_result().reset(json_result);
 
             // Copy actions
             action->get_actions().clear();
@@ -74,7 +98,6 @@ void BackendHandler::Process_()
                         GenericResponse_(*get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, action->get_custom_error());
                         return;
                     }
-
                     break;
                 }
                 case Functions::ActionType::kEmail:
@@ -92,6 +115,11 @@ void BackendHandler::Process_()
                     break;
                 }
             }
+
+            // Set JSON results
+            if(action->get_final())
+                json_result.reset(action->get_json_result());
+
         }
 
     // Send results
@@ -101,24 +129,4 @@ void BackendHandler::Process_()
             ,HTTPResponse::HTTP_OK
             ,json_result
         );
-}
-
-void BackendHandler::HandleGETMethod_()
-{
-
-}
-
-void BackendHandler::HandlePOSTMethod_()
-{
-
-}
-
-void BackendHandler::HandlePUTMethod_()
-{
-
-}
-
-void BackendHandler::HandleDELMethod_()
-{
-
 }

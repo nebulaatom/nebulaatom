@@ -41,12 +41,14 @@ class CPW::Handlers::BackendHandler : public RootHandler
         virtual ~BackendHandler();
 
     protected:
-        virtual void AddRoutes_() override;
+        virtual void AddActions_() override;
         virtual void Process_() override;
         virtual void HandleGETMethod_() override;
         virtual void HandlePOSTMethod_() override;
         virtual void HandlePUTMethod_() override;
         virtual void HandleDELMethod_() override;
+
+        void ProcessActions_();
 
     private:
         VectorShrResults shared_results_;
