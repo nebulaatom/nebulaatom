@@ -51,6 +51,14 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
                 return;
             }
 
+        // Set requested route
+            std::vector<std::string> segments;
+            URI(request_->getURI()).getPathSegments(segments);
+            requested_route_ = std::make_shared<Tools::Route>(segments);
+
+        // Process the request body
+            ManageRequestBody_();
+
         // Get the corresponding HTTP method
             method_ = request.getMethod();
 
@@ -119,9 +127,9 @@ void RootHandler::SettingUpFunctions_()
 }
 
 bool RootHandler::ProcessRoute_()
-{
+{/*
     // Prepare routes
-        AddRoutes_();
+        AddActions_();
 
         std::vector<std::string> segments;
         URI(request_->getURI()).getPathSegments(segments);
@@ -181,7 +189,7 @@ bool RootHandler::ProcessRoute_()
                 break;
             }
         }
-
+*/
     return true;
 }
 
@@ -191,7 +199,7 @@ bool RootHandler::VerifySession_()
         std::string session_id;
         Poco::Net::NameValueCollection cookies;
         request_->getCookies(cookies);
-        auto cookie_session = cookies.find("cpw-woodpecker-sid");
+        auto cookie_session = cookies.find("nebula-atom-sid");
         auto sessions = Tools::SessionsHandler::get_sessions();
 
     // Verify Cookie session and session
@@ -205,9 +213,11 @@ bool RootHandler::VerifySession_()
 
             // Get the session user
                 user_ = sessions.at(session_id).get_user();
-        }
 
-    return true;
+            return true;
+        }
+        else
+            return false;
 }
 
 bool RootHandler::VerifyPermissions_()
@@ -233,8 +243,8 @@ bool RootHandler::IdentifyRoute_()
         {
             // Setting up the route functions
             auto endpoint = requested_route_->SegmentsToString_();
-            auto found = settings_manager_.get_functions_manager().get_functions().find(endpoint);
-            if(found == settings_manager_.get_functions_manager().get_functions().end())
+            auto found = functions_manager_.get_functions().find(endpoint);
+            if(found == functions_manager_.get_functions().end())
                 return false;
 
             // Validate type
@@ -260,7 +270,7 @@ bool RootHandler::IdentifyRoute_()
     return false;
 }
 
-bool RootHandler::ManageRequestBody_()
+void RootHandler::ManageRequestBody_()
 {
     std::string request_body = ReadBody_(request_->stream());
 
@@ -268,24 +278,18 @@ bool RootHandler::ManageRequestBody_()
     {
         URI tmp_uri(request_->getURI());
         if(!(tmp_uri.getQueryParameters().size() > 0))
-            return false;
-
+            return;
         if(tmp_uri.getQueryParameters()[0].first != "json")
-            return false;
-
+            return;
         if(tmp_uri.getQueryParameters()[0].second.empty())
-            return false;
-
+            return;
         request_body = tmp_uri.getQueryParameters()[0].second;
     }
 
-    if(!Parse_(request_body))
-        return false;
-
-    return true;
+    Parse_(request_body);
 }
 
-void RootHandler::AddRoutes_()
+void RootHandler::AddActions_()
 {
 
 }
