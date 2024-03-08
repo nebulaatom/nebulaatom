@@ -95,6 +95,17 @@ void CommonResponses::HTMLResponse_(HTTPServerResponse& response, HTTPResponse::
     out.flush();
 }
 
+void CommonResponses::CustomHTMLResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string html_message)
+{
+    response.setStatus(status);
+    response.setContentType("text/html");
+    response.setChunkedTransferEncoding(true);
+
+    std::ostream& out = response.send();
+    out << html_message;
+    out.flush();
+}
+
 void CommonResponses::FillResponses_()
 {
     responses_.emplace(std::make_pair
