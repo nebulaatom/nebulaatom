@@ -20,9 +20,8 @@
 
 using namespace CPW::Handlers;
 
-RootHandler::RootHandler(std::string api_version) :
+RootHandler::RootHandler() :
     app_(Application::instance())
-    ,api_version_(api_version)
     ,user_("null")
     ,method_("GET")
     ,route_verification_(true)
@@ -55,6 +54,9 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
             std::vector<std::string> segments;
             URI(request_->getURI()).getPathSegments(segments);
             requested_route_ = std::make_shared<Tools::Route>(segments);
+
+        // Add functions
+            AddFunctions_();
 
         // Process the request body
             ManageRequestBody_();
@@ -129,7 +131,7 @@ void RootHandler::SettingUpFunctions_()
 bool RootHandler::ProcessRoute_()
 {/*
     // Prepare routes
-        AddActions_();
+        AddFunctions_();
 
         std::vector<std::string> segments;
         URI(request_->getURI()).getPathSegments(segments);
@@ -289,7 +291,7 @@ void RootHandler::ManageRequestBody_()
     Parse_(request_body);
 }
 
-void RootHandler::AddActions_()
+void RootHandler::AddFunctions_()
 {
 
 }

@@ -96,10 +96,9 @@ class CPW::Handlers::RootHandler :
     ,public Tools::ManageJSON
 {
     public:
-        RootHandler(std::string api_version);
+        RootHandler();
         virtual ~RootHandler();
 
-        std::string get_api_version() const {return api_version_;}
         std::string get_user() const { return user_; }
         std::string get_method() const { return method_; }
         bool get_route_verification() const { return route_verification_; }
@@ -143,7 +142,7 @@ class CPW::Handlers::RootHandler :
         virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
     protected:
-        virtual void AddActions_();
+        virtual void AddFunctions_();
         virtual void Process_();
         void SettingUpFunctions_();
         bool ProcessRoute_();
@@ -159,7 +158,6 @@ class CPW::Handlers::RootHandler :
         Application& app_;
 
     private:
-        std::string api_version_;
         std::string user_;
         std::string method_;
         bool route_verification_;

@@ -9,7 +9,7 @@ using namespace CPW;
 class HelloHandler : public Handlers::RootHandler
 {
     public:
-        HelloHandler() : Handlers::RootHandler("v1"){}
+        HelloHandler() : Handlers::RootHandler(){}
         virtual ~HelloHandler() {}
 
         void Process_() override

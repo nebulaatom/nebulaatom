@@ -25,7 +25,7 @@ NullHandler::~NullHandler()
 
 }
 
-void NullHandler::AddActions_()
+void NullHandler::AddFunctions_()
 {
 
 }

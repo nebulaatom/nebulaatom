@@ -20,8 +20,8 @@
 
 using namespace CPW::Handlers;
 
-FrontendHandler::FrontendHandler(std::string api_version) :
-    RootHandler(api_version)
+FrontendHandler::FrontendHandler() :
+    RootHandler()
 {
 
 }
@@ -31,7 +31,7 @@ FrontendHandler::~FrontendHandler()
 
 }
 
-void FrontendHandler::AddActions_()
+void FrontendHandler::AddFunctions_()
 {
     get_routes_list().push_back({});
     get_routes_list().push_back({std::vector<std::string>{"uploaded-files"}});

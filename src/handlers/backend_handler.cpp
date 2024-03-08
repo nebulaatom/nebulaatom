@@ -25,7 +25,7 @@ BackendHandler::~BackendHandler()
 
 }
 
-void BackendHandler::AddActions_()
+void BackendHandler::AddFunctions_()
 {
     for(auto& function : get_functions_manager().get_functions())
     {

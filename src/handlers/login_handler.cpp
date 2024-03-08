@@ -25,12 +25,12 @@ LoginHandler::~LoginHandler()
 
 }
 
-void LoginHandler::AddActions_()
+void LoginHandler::AddFunctions_()
 {
     auto& routes_list = get_routes_list();
 
-    routes_list.push_back({{"api", get_api_version(), "system", "login"}});
-    routes_list.push_back({{"api", get_api_version(), "system", "logout"}});
+    routes_list.push_back({{"api", "system", "login"}});
+    routes_list.push_back({{"api", "system", "logout"}});
 
 }
 

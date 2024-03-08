@@ -13,10 +13,10 @@ using namespace CPW;
 class MainHandler : public Handlers::BackendHandler
 {
     public:
-        MainHandler() : Handlers::BackendHandler("v1"){}
+        MainHandler() : Handlers::BackendHandler(){}
         virtual ~MainHandler() {}
 
-        void AddActions_() override
+        void AddFunctions_() override
         {
             // Function /api/products
                 std::string endpoint = "/api/products";
@@ -39,7 +39,7 @@ class MainHandler : public Handlers::BackendHandler
                         a2->get_parameters().push_back(Query::Parameter{"id_store", Query::ConditionalField{0, 0}, "a1", false});
                     f1.get_actions().push_back(a2);
 
-                // Setting up the function
+            // Setting up the function
                     get_functions_manager().get_functions().insert({endpoint, std::move(f1)});
                     get_routes_list().push_back(Tools::Route("api/products"));
 
@@ -49,13 +49,6 @@ class MainHandler : public Handlers::BackendHandler
         {
             try
             {
-                // Prepare routes
-                    AddActions_();
-
-                    std::vector<std::string> segments;
-                    URI(get_request()->getURI()).getPathSegments(segments);
-                    get_requested_route() = std::make_shared<Tools::Route>(segments);
-
                 // Set security type
                     get_current_security().set_security_type(Extras::SecurityType::kDisableAll);
                     
@@ -122,7 +115,7 @@ int main(int argc, char** argv)
                 // Return handler
                 Handlers::RootHandler* handler;
                 if(requested_route.get_segments() == login_route || requested_route.get_segments() == logout_route)
-                    handler = new Handlers::LoginHandler("v1");
+                    handler = new Handlers::LoginHandler();
                 else
                     handler = new MainHandler;
 

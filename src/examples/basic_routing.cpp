@@ -9,7 +9,7 @@ using namespace CPW;
 class HTMLHandler : public Handlers::RootHandler
 {
     public:
-        HTMLHandler() : Handlers::RootHandler("v1"){}
+        HTMLHandler() : Handlers::RootHandler(){}
         virtual ~HTMLHandler() {}
 
         void Process_() override
@@ -35,7 +35,7 @@ class HTMLHandler : public Handlers::RootHandler
 class JSONHandler : public Handlers::RootHandler
 {
     public:
-        JSONHandler() : Handlers::RootHandler("v1"){}
+        JSONHandler() : Handlers::RootHandler(){}
         virtual ~JSONHandler() {}
 
         void Process_() override
@@ -80,7 +80,7 @@ int main(int argc, char** argv)
             }
             else
             {
-                handler = new Handlers::NullHandler("");
+                handler = new Handlers::NullHandler();
             }
 
             return handler;

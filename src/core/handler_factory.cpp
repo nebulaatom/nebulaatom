@@ -22,10 +22,9 @@
 using namespace CPW::Core;
 
 HandlerFactory::HandlerFactory() :
-    api_version_("v0")
-    ,app_(Application::instance())
+    app_(Application::instance())
 {
-    request_handler_creator_ = std::make_shared<FunctionRequest>([&](const HTTPServerRequest&){return new CPW::Handlers::NullHandler(api_version_);});
+    request_handler_creator_ = std::make_shared<FunctionRequest>([&](const HTTPServerRequest&){return new CPW::Handlers::NullHandler();});
     CreateHandlers_();
 }
 
@@ -41,7 +40,7 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
         if(request_handler_creator_ != nullptr)
             return (*request_handler_creator_)(request);
         else
-            return new CPW::Handlers::NullHandler(api_version_);
+            return new CPW::Handlers::NullHandler();
         
         /*std::vector<std::string> segments;
 
@@ -111,7 +110,7 @@ void HandlerFactory::CreateHandlers_()
         ,new Tools::HandlerConnection
         {
             CPW::Tools::Route(std::vector<std::string>{""})
-            ,[&](){return new CPW::Handlers::NullHandler(api_version_);}
+            ,[&](){return new CPW::Handlers::NullHandler();}
         }
     ));
     handlers_.insert(std::make_pair
@@ -119,8 +118,8 @@ void HandlerFactory::CreateHandlers_()
         HandlerType::kBackend
         ,new Tools::HandlerConnection
         {
-            CPW::Tools::Route(std::vector<std::string>{"api", api_version_})
-            ,[&](){return new CPW::Handlers::BackendHandler(api_version_);}
+            CPW::Tools::Route(std::vector<std::string>{"api"})
+            ,[&](){return new CPW::Handlers::BackendHandler();}
         }
     ));
     handlers_.insert(std::make_pair
@@ -128,8 +127,8 @@ void HandlerFactory::CreateHandlers_()
         HandlerType::kLogin
         ,new Tools::HandlerConnection
         {
-            CPW::Tools::Route(std::vector<std::string>{"api", api_version_})
-            ,[&](){return new CPW::Handlers::LoginHandler(api_version_);}
+            CPW::Tools::Route(std::vector<std::string>{"api"})
+            ,[&](){return new CPW::Handlers::LoginHandler();}
         }
     ));
     handlers_.insert(std::make_pair
@@ -138,7 +137,7 @@ void HandlerFactory::CreateHandlers_()
         ,new Tools::HandlerConnection
         {
             CPW::Tools::Route(std::vector<std::string>{""})
-            ,[&](){return new CPW::Handlers::FrontendHandler(api_version_);}
+            ,[&](){return new CPW::Handlers::FrontendHandler();}
         }
     ));
 }

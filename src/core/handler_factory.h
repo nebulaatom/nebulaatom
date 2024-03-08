@@ -104,7 +104,6 @@ class CPW::Core::HandlerFactory :
         void CreateHandlers_();
 
     private:
-        std::string api_version_;
         std::shared_ptr<FunctionRequest> request_handler_creator_;
         HandlerMap handlers_;
         Application& app_;
