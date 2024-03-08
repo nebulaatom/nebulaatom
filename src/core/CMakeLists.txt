@@ -35,7 +35,7 @@ target_link_libraries(
     file
     rowvalueformatter
     session
-    sessionshandler
+    sessionsmanager
     loginhandler
     databasemanager
     functionsmanager

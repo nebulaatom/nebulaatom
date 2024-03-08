@@ -27,10 +27,10 @@ add_library(managejson OBJECT "manage_json.cpp")
 target_include_directories(managejson PUBLIC ${HEADER})
 set_target_properties(managejson PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
-### sessionshandler
-add_library(sessionshandler OBJECT "sessions_handler.cpp")
-target_include_directories(sessionshandler PUBLIC ${HEADER})
-set_target_properties(sessionshandler PROPERTIES POSITION_INDEPENDENT_CODE 1)
+### sessionsmanager
+add_library(sessionsmanager OBJECT "sessions_manager.cpp")
+target_include_directories(sessionsmanager PUBLIC ${HEADER})
+set_target_properties(sessionsmanager PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
 ### settingsmanager
 add_library(settingsmanager OBJECT "settings_manager.cpp")
