@@ -60,17 +60,13 @@ class CPW::Tools::SettingsManager
 
         SettingsManager();
 
-        Functions::FunctionsManager& get_functions_manager()
-        {
-            auto& var = functions_manager_;
-            return var;
-        }
         BasicProperties& get_basic_properties_()
         {
             auto& var = basic_properties_;
             return var;
         }
 
+        static void SetUpProperties_();
         static void ReadFunctions_();
         static void ReadBasicProperties_();
 
@@ -82,7 +78,6 @@ class CPW::Tools::SettingsManager
         static void PrintError_(std::string function, std::string variable);
 
     private:
-        static Functions::FunctionsManager functions_manager_;
         static BasicProperties basic_properties_;
 };
 

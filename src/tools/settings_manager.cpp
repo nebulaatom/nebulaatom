@@ -22,10 +22,14 @@
 using namespace CPW;
 using namespace Tools;
 
-Functions::FunctionsManager Tools::SettingsManager::functions_manager_ = {};
 Tools::SettingsManager::BasicProperties Tools::SettingsManager::basic_properties_ = {};
 
 Tools::SettingsManager::SettingsManager()
+{
+    
+}
+
+void Tools::SettingsManager::SetUpProperties_()
 {
     basic_properties_.port = 8080;
     basic_properties_.max_queued = 100;
@@ -43,7 +47,7 @@ Tools::SettingsManager::SettingsManager()
 
 void Tools::SettingsManager::ReadFunctions_()
 {
-    try
+    /*try
     {
         // Read YAML functions file
         YAML::Node config = YAML::LoadFile("functions.yaml");
@@ -249,7 +253,7 @@ void Tools::SettingsManager::ReadFunctions_()
     {
         PrintError_("ReadFunctions_", "MSG: " + std::string(e.what()));
         return;
-    }
+    }*/
 }
 
 void Tools::SettingsManager::ReadFunctionsParameters_(Functions::Function& function, Functions::Function::ActionPtr action, YAML::Node& parameters)
@@ -586,7 +590,7 @@ bool Tools::SettingsManager::VerifyYAMLScalarNode_(YAML::Node& node)
 
 void Tools::SettingsManager::PrintError_(std::string function, std::string variable)
 {
-    std::cout << "- Error on settings_manager.cpp on " << function << "(): The functions.yaml file is malformed. ERRYML" << function << "-" << variable << std::endl;
+    std::cout << "- Error on settings_manager.cpp on " << function << "(): The yaml file is malformed. ERRYML" << function << "(" << variable << ")" << std::endl;
 }
 
 bool Tools::SettingsManager::VerifyYAMLMapNode_(YAML::Node& node)
