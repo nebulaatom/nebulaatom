@@ -47,96 +47,70 @@ class MainHandler : public Handlers::BackendHandler
 
         void Process_() override
         {
-            try
-            {
-                // Set security type
-                    get_current_security().set_security_type(Extras::SecurityType::kDisableAll);
-                    
-                // Route identification
-                    if(!IdentifyRoute_())
-                    {
-                        GenericResponse_(*get_response(), HTTPResponse::HTTP_NOT_FOUND, "The requested endpoint is not available.");
-                        return;
-                    }
+            // Set security type
+                get_current_security().set_security_type(Extras::SecurityType::kDisableAll);
+                
+            // Route identification
+                if(!IdentifyRoute_())
+                {
+                    GenericResponse_(*get_response(), HTTPResponse::HTTP_NOT_FOUND, "The requested endpoint is not available.");
+                    return;
+                }
 
-                    if(!VerifySession_())
-                    {
-                        GenericResponse_(*get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "Session not found.");
-                        return;
-                    }
+                if(!VerifySession_())
+                {
+                    GenericResponse_(*get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "Session not found.");
+                    return;
+                }
 
-                    if(!VerifyPermissions_())
-                        return;
+                if(!VerifyPermissions_())
+                    return;
 
-                // Process actions
-                    ProcessActions_();
-
-            }
-            catch(std::exception& error)
-            {
-                app_.logger().error("- Error on backend_api.cpp on Process_(): " + std::string(error.what()));
-                GenericResponse_(*get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
-            }
-            catch(...)
-            {
-                app_.logger().error("- Error on backend_api.cpp on Process_(): No handled exception.");
-                GenericResponse_(*get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. No handled exception." );
-            }
+            // Process actions
+                ProcessActions_();
         }
 };
 
 int main(int argc, char** argv)
 {
-	try
-	{
-		Core::WoodpeckerServer app;
+    Core::WoodpeckerServer app;
 
-        // Setup
-            Query::DatabaseManager::StartMySQL_();
-            Tools::SettingsManager::SetUpProperties_();
-            Tools::SettingsManager::ReadBasicProperties_();
-            Security::PermissionsManager::LoadPermissions_();
+    // Setup
+        Query::DatabaseManager::StartMySQL_();
+        Tools::SettingsManager::SetUpProperties_();
+        Tools::SettingsManager::ReadBasicProperties_();
+        Security::PermissionsManager::LoadPermissions_();
 
-        // Read sessions
-            Tools::SessionsHandler::ReadSessions_();
+    // Read sessions
+        Tools::SessionsManager::ReadSessions_();
 
-        // Setting up handler
-            auto hello_handler = new Core::HandlerFactory::FunctionRequest([&](const HTTPServerRequest& request)
-            {
-                // Set route
-                std::vector<std::string> segments;
-                URI(request.getURI()).getPathSegments(segments);
-                CPW::Tools::Route requested_route(segments);
+    // Setting up handler
+        auto hello_handler = new Core::HandlerFactory::FunctionRequest([&](const HTTPServerRequest& request)
+        {
+            // Set route
+            std::vector<std::string> segments;
+            URI(request.getURI()).getPathSegments(segments);
+            CPW::Tools::Route requested_route(segments);
 
-                // Login/logout routes
-                std::vector<std::string> login_route({"api", "system", "login"});
-                std::vector<std::string> logout_route({"api", "system", "logout"});
+            // Login/logout routes
+            std::vector<std::string> login_route({"api", "system", "login"});
+            std::vector<std::string> logout_route({"api", "system", "logout"});
 
-                // Return handler
-                Handlers::RootHandler* handler;
-                if(requested_route.get_segments() == login_route || requested_route.get_segments() == logout_route)
-                    handler = new Handlers::LoginHandler();
-                else
-                    handler = new MainHandler;
+            // Return handler
+            Handlers::RootHandler* handler;
+            if(requested_route.get_segments() == login_route || requested_route.get_segments() == logout_route)
+                handler = new Handlers::LoginHandler();
+            else
+                handler = new MainHandler;
 
-                return handler;
-            });
+            return handler;
+        });
 
-        auto& request_handler_creator = app.get_handler_factory()->get_request_handler_creator();
-        request_handler_creator.reset(hello_handler);
+    auto& request_handler_creator = app.get_handler_factory()->get_request_handler_creator();
+    request_handler_creator.reset(hello_handler);
 
-		return app.run(argc, argv);
-	}
-    catch (std::exception const& error)
-    {
-        Application::instance().logger().error("- Error on hello_world.cpp on main(): " + std::string(error.what()));
-        return -1;
-    }
-    catch (...)
-    {
-        Application::instance().logger().error("- Error on hello_world.cpp on main(): uncaught error");
-        return -1;
-    }
+    auto code = app.run(argc, argv);
 
     Query::DatabaseManager::StopMySQL_();
+    return code;
 }
