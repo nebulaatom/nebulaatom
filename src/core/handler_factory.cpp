@@ -38,7 +38,10 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 {
     try
     {
-        return (*request_handler_creator_)(request);
+        if(request_handler_creator_ != nullptr)
+            return (*request_handler_creator_)(request);
+        else
+            return new CPW::Handlers::NullHandler(api_version_);
         
         /*std::vector<std::string> segments;
 
