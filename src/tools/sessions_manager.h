@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_HTTP_SESSIONS_HANDLER_H
-#define CPW_HTTP_SESSIONS_HANDLER_H
+#ifndef CPW_HTTP_SESSIONS_MANAGER_H
+#define CPW_HTTP_SESSIONS_MANAGER_H
 
 
 #include <string>
@@ -30,16 +30,16 @@ namespace CPW
 {
     namespace Tools
     {
-        class SessionsHandler;
+        class SessionsManager;
     }
 }
 
 
-class CPW::Tools::SessionsHandler
+class CPW::Tools::SessionsManager
 {
     public:
-        SessionsHandler();
-        ~SessionsHandler();
+        SessionsManager();
+        ~SessionsManager();
 
         static std::map<std::string, CPW::Extras::Session>& get_sessions()
         {
@@ -58,4 +58,4 @@ class CPW::Tools::SessionsHandler
         static std::map<std::string, CPW::Extras::Session> sessions_;
 };
 
-#endif // CPW_HTTP_SESSIONS_HANDLER_H
+#endif // CPW_HTTP_SESSIONS_MANAGER_H

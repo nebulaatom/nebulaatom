@@ -16,26 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tools/sessions_handler.h"
+#include "tools/sessions_manager.h"
 #include "Poco/Exception.h"
 #include "query/parameter.h"
 #include "tools/row_value_formatter.h"
 
 using namespace CPW::Tools;
 
-std::map<std::string, CPW::Extras::Session> SessionsHandler::sessions_ = {};
+std::map<std::string, CPW::Extras::Session> SessionsManager::sessions_ = {};
 
-SessionsHandler::SessionsHandler()
+SessionsManager::SessionsManager()
 {
 
 }
 
-SessionsHandler::~SessionsHandler()
+SessionsManager::~SessionsManager()
 {
 
 }
 
-void SessionsHandler::ReadSessions_()
+void SessionsManager::ReadSessions_()
 {
     try
     {
@@ -48,19 +48,19 @@ void SessionsHandler::ReadSessions_()
             action.ComposeQuery_();
             if(action.get_error())
             {
-                std::cout << "- Error on sessions_handler.cpp on ReadSessions_(): " << action.get_custom_error() << std::endl;
+                std::cout << "- Error on sessions_manager.cpp on ReadSessions_(): " << action.get_custom_error() << std::endl;
                 return;
             }
             action.ExecuteQuery_();
             if(action.get_error())
             {
-                std::cout << "- Error on sessions_handler.cpp on ReadSessions_(): " << action.get_custom_error() << std::endl;
+                std::cout << "- Error on sessions_manager.cpp on ReadSessions_(): " << action.get_custom_error() << std::endl;
                 return;
             }
             action.MakeResults_();
             if(action.get_error())
             {
-                std::cout << "- Error on sessions_handler.cpp on ReadSessions_(): " << action.get_custom_error() << std::endl;
+                std::cout << "- Error on sessions_manager.cpp on ReadSessions_(): " << action.get_custom_error() << std::endl;
                 return;
             }
 
@@ -83,11 +83,11 @@ void SessionsHandler::ReadSessions_()
     }
     catch(MySQL::MySQLException& error)
     {
-        std::cout << "- Error on sessions_handler.cpp on ReadSessions_(): " << std::string(error.message()) << std::endl;
+        std::cout << "- Error on sessions_manager.cpp on ReadSessions_(): " << std::string(error.message()) << std::endl;
     }
 }
 
-CPW::Extras::Session& SessionsHandler::CreateSession_(std::string user, std::string path, int max_age)
+CPW::Extras::Session& SessionsManager::CreateSession_(std::string user, std::string path, int max_age)
 {
     Extras::Session new_session;
     new_session.set_user(user);
@@ -130,13 +130,13 @@ CPW::Extras::Session& SessionsHandler::CreateSession_(std::string user, std::str
     }
     catch(MySQL::MySQLException& error)
     {
-        std::cout << "- Error on sessions_handler.cpp on CreateSession_(): " << std::string(error.message()) << std::endl;
+        std::cout << "- Error on sessions_manager.cpp on CreateSession_(): " << std::string(error.message()) << std::endl;
     }
 
     return sessions_.at(id);
 }
 
-void SessionsHandler::DeleteSession_(std::string id)
+void SessionsManager::DeleteSession_(std::string id)
 {
     if(sessions_.find(id) == sessions_.end())
         return;
@@ -162,11 +162,11 @@ void SessionsHandler::DeleteSession_(std::string id)
     }
     catch(MySQL::MySQLException& error)
     {
-        std::cout << "- Error on sessions_handler.cpp on DeleteSession_(): " << std::string(error.message()) << std::endl;
+        std::cout << "- Error on sessions_manager.cpp on DeleteSession_(): " << std::string(error.message()) << std::endl;
     }
 }
 
-bool SessionsHandler::SessionExists_(std::string id)
+bool SessionsManager::SessionExists_(std::string id)
 {
     return sessions_.find(id) != sessions_.end();
 }
