@@ -30,48 +30,48 @@ CommonResponses::~CommonResponses()
 
 }
 
-void CommonResponses::CompoundResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, JSON::Object::Ptr result_json)
+void CommonResponses::CompoundResponse_(HTTP::Status status, JSON::Object::Ptr result_json)
 {
-    response.setStatus(status);
-    response.setContentType("application/json");
-    response.setChunkedTransferEncoding(true);
+    response_->setStatus(responses_.find(status)->second.http_status);
+    response_->setContentType("application/json");
+    response_->setChunkedTransferEncoding(true);
 
-    std::ostream& out = response.send();
+    std::ostream& out = response_->send();
     result_json->stringify(out);
     out.flush();
 }
 
-void CommonResponses::GenericResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message)
+void CommonResponses::JSONResponse_(HTTP::Status status, std::string message)
 {
-    response.setStatus(status);
-    response.setContentType("application/json");
-    response.setChunkedTransferEncoding(true);
+    response_->setStatus(responses_.find(status)->second.http_status);
+    response_->setContentType("application/json");
+    response_->setChunkedTransferEncoding(true);
 
     JSON::Object::Ptr object_json = new JSON::Object;
 
     FillStatusMessage_(object_json, status, message);
 
-    std::ostream& out = response.send();
+    std::ostream& out = response_->send();
     object_json->stringify(out);
     out.flush();
 }
 
-void CommonResponses::HTMLResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message)
+void CommonResponses::HTMLResponse_(HTTP::Status status, std::string message)
 {
-    response.setStatus(status);
-    response.setContentType("text/html");
-    response.setChunkedTransferEncoding(true);
+    response_->setStatus(responses_.find(status)->second.http_status);
+    response_->setContentType("text/html");
+    response_->setChunkedTransferEncoding(true);
 
-    std::ostream& out = response.send();
+    std::ostream& out = response_->send();
 
     auto found = responses_.find(status);
     if(found != responses_.end())
     {
         out <<
             "<html>"
-                "<head><title>" << status << " " << responses_[status].second << " | CPW Woodpecker</title></head>"
+                "<head><title>" << responses_.find(status)->second.status_int << " " << responses_.find(status)->second.message << " | CPW Woodpecker</title></head>"
                 "<body>"
-                    "<center><h1>Status: " << status << " " << responses_[status].second << "</h1></center>"
+                    "<center><h1>Status: " << responses_.find(status)->second.status_int << " " << responses_.find(status)->second.message << "</h1></center>"
                     "<center><h3>Message: " << message << "</h3></center>"
                     "<center><hr>CPW Woodpecker/" << PACKAGE_VERSION_COMPLETE << "</center>"
                 "</body>"
@@ -82,9 +82,9 @@ void CommonResponses::HTMLResponse_(HTTPServerResponse& response, HTTPResponse::
     {
         out <<
             "<html>"
-                "<head><title>" << responses_[HTTPResponse::HTTP_INTERNAL_SERVER_ERROR].second << " | CPW Woodpecker</title></head>"
+                "<head><title>" << responses_.find(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR)->second.message << " | CPW Woodpecker</title></head>"
                 "<body>"
-                    "<center><h1>Status: " << HTTPResponse::HTTP_INTERNAL_SERVER_ERROR << " " << responses_[HTTPResponse::HTTP_INTERNAL_SERVER_ERROR].second << "</h1></center>"
+                    "<center><h1>Status: 500 " << responses_.find(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR)->second.message << "</h1></center>"
                     "<center><h3>Message: " << "Error in HTTPStatus." << "</h3></center>"
                     "<center>CPW Woodpecker/" << PACKAGE_VERSION_COMPLETE << "</center>"
                 "</body>"
@@ -95,72 +95,40 @@ void CommonResponses::HTMLResponse_(HTTPServerResponse& response, HTTPResponse::
     out.flush();
 }
 
-void CommonResponses::CustomHTMLResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string html_message)
+void CommonResponses::CustomHTMLResponse_(HTTP::Status status, std::string html_message)
 {
-    response.setStatus(status);
-    response.setContentType("text/html");
-    response.setChunkedTransferEncoding(true);
+    response_->setStatus(responses_.find(status)->second.http_status);
+    response_->setContentType("text/html");
+    response_->setChunkedTransferEncoding(true);
 
-    std::ostream& out = response.send();
+    std::ostream& out = response_->send();
     out << html_message;
     out.flush();
 }
 
 void CommonResponses::FillResponses_()
 {
-    responses_.emplace(std::make_pair
-    (
-        HTTPResponse::HTTP_OK
-        ,std::make_pair(ResponseType::kSuccess, "Ok")
-    ));
-    responses_.emplace(std::make_pair
-    (
-        HTTPResponse::HTTP_BAD_REQUEST
-        ,std::make_pair(ResponseType::kWarning, "Client-side input fails validation")
-    ));
-    responses_.emplace(std::make_pair
-    (
-        HTTPResponse::HTTP_UNAUTHORIZED
-        ,std::make_pair(ResponseType::kWarning, "The user isn’t not authorized to access to this resource")
-    ));
-    responses_.emplace(std::make_pair
-    (
-        HTTPResponse::HTTP_FORBIDDEN
-        ,std::make_pair(ResponseType::kWarning, "The user is authenticated, but it’s not allowed to access to this resource")
-    ));
-    responses_.emplace(std::make_pair
-    (
-        HTTPResponse::HTTP_NOT_FOUND
-        ,std::make_pair(ResponseType::kWarning, "Resource is not found")
-    ));
-    responses_.emplace(std::make_pair
-    (
-        HTTPResponse::HTTP_INTERNAL_SERVER_ERROR
-        ,std::make_pair(ResponseType::kError, "Something was wrong")
-    ));
-    responses_.emplace(std::make_pair
-    (
-        HTTPResponse::HTTP_BAD_GATEWAY
-        ,std::make_pair(ResponseType::kError, "Invalid response from an upstream server")
-    ));
-    responses_.emplace(std::make_pair
-    (
-        HTTPResponse::HTTP_SERVICE_UNAVAILABLE
-        ,std::make_pair(ResponseType::kError, "Something unexpected happened on server side")
-    ));
+    responses_.emplace(std::make_pair(Status::kOK, Attributes{HTTPResponse::HTTP_OK, 200,ResponseType::kSuccess, "Ok"}));
+    responses_.emplace(std::make_pair(Status::kHTTP_BAD_REQUEST, Attributes{HTTPResponse::HTTP_BAD_REQUEST, 400, ResponseType::kWarning, "Client-side input fails validation"}));
+    responses_.emplace(std::make_pair(Status::kHTTP_UNAUTHORIZED, Attributes{HTTPResponse::HTTP_UNAUTHORIZED, 401, ResponseType::kWarning, "The user isn’t not authorized to access to this resource"}));
+    responses_.emplace(std::make_pair(Status::kHTTP_FORBIDDEN, Attributes{HTTPResponse::HTTP_FORBIDDEN, 403, ResponseType::kWarning, "The user is not allowed to access to this resource"}));
+    responses_.emplace(std::make_pair(Status::kHTTP_NOT_FOUND, Attributes{HTTPResponse::HTTP_NOT_FOUND, 404, ResponseType::kInformation, "Resource is not found"}));
+    responses_.emplace(std::make_pair(Status::kHTTP_INTERNAL_SERVER_ERROR, Attributes{HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, 500, ResponseType::kError, "Something was wrong"}));
+    responses_.emplace(std::make_pair(Status::kHTTP_BAD_GATEWAY, Attributes{HTTPResponse::HTTP_BAD_GATEWAY, 502, ResponseType::kError, "Invalid response from an upstream server"}));
+    responses_.emplace(std::make_pair(Status::kHTTP_SERVICE_UNAVAILABLE, Attributes{HTTPResponse::HTTP_SERVICE_UNAVAILABLE, 503, ResponseType::kError, "Something unexpected happened on server side"}));
 }
 
-void CommonResponses::FillStatusMessage_(JSON::Object::Ptr json_object, HTTPResponse::HTTPStatus status, std::string message)
+void CommonResponses::FillStatusMessage_(JSON::Object::Ptr json_object, HTTP::Status status, std::string message)
 {
     auto found = responses_.find(status);
     if(found != responses_.end())
     {
-        json_object->set("status", responses_[status].second);
+        json_object->set("status", responses_.find(status)->second.message);
         json_object->set("message", message);
     }
     else
     {
-        json_object->set("status", responses_[HTTPResponse::HTTP_INTERNAL_SERVER_ERROR].second);
+        json_object->set("status", responses_.find(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR)->second.message);
         json_object->set("message", "Error on HTTPStatus");
     }
 }

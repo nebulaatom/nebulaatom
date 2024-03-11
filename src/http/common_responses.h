@@ -35,6 +35,7 @@ namespace CPW
     namespace HTTP
     {
         enum class ResponseType;
+        enum class Status;
         class CommonResponses;
     }
 }
@@ -51,29 +52,52 @@ enum class CPW::HTTP::ResponseType
     ,kSuccess
 };
 
+enum class CPW::HTTP::Status
+{
+    kOK = 200
+    ,kHTTP_BAD_REQUEST = 400
+    ,kHTTP_UNAUTHORIZED = 401
+    ,kHTTP_FORBIDDEN = 403
+    ,kHTTP_NOT_FOUND = 404
+    ,kHTTP_INTERNAL_SERVER_ERROR = 500
+    ,kHTTP_BAD_GATEWAY = 502
+    ,kHTTP_SERVICE_UNAVAILABLE = 503
+};
+
 class CPW::HTTP::CommonResponses
 {
     public:
+        struct Attributes
+        {
+            HTTPResponse::HTTPStatus http_status;
+            int status_int;
+            ResponseType response_type;
+            std::string message;
+        };
+
         CommonResponses();
         ~CommonResponses();
 
-        std::map<HTTPResponse::HTTPStatus, std::pair<ResponseType, std::string>>& get_responses_()
+        std::map<HTTP::Status, Attributes>& get_responses_()
         {
             auto& var = responses_;
             return var;
         }
 
-        void CompoundResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, JSON::Object::Ptr result_json);
-        void GenericResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message);
-        void HTMLResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message);
-        void CustomHTMLResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string html_message);
+        void set_response(HTTPServerResponse* response) { response_ = response; }
+
+        void CompoundResponse_(HTTP::Status status, JSON::Object::Ptr result_json);
+        void JSONResponse_(HTTP::Status status, std::string message);
+        void HTMLResponse_(HTTP::Status status, std::string message);
+        void CustomHTMLResponse_(HTTP::Status status, std::string html_message);
 
     protected:
         void FillResponses_();
-        void FillStatusMessage_(JSON::Object::Ptr json_object, HTTPResponse::HTTPStatus status, std::string message);
+        void FillStatusMessage_(JSON::Object::Ptr json_object, HTTP::Status status, std::string message);
 
     private:
-        std::map<HTTPResponse::HTTPStatus, std::pair<ResponseType, std::string>> responses_;
+        HTTPServerResponse* response_;
+        std::map<HTTP::Status, Attributes> responses_;
 };
 
 #endif // CPW_HTTP_COMMONRESPONSES_H
