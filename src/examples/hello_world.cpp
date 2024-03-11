@@ -12,12 +12,10 @@ int main(int argc, char** argv)
 
     app.CustomHandlerCreator_([&](const HTTPServerRequest&)
     {
-        auto handler = new Handlers::CustomHandler;
-        handler->SetProcessFunction([&]()
+        return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
         {
-            handler->CustomHTMLResponse_(*handler->get_response(), HTTPResponse::HTTP_OK, "Hello!");
+            self.CustomHTMLResponse_(HTTP::Status::kOK, "Hello!");
         });
-        return handler;
     });
 
     return app.run(argc, argv);

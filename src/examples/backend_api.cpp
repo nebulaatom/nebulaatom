@@ -3,7 +3,6 @@
 #include "core/woodpecker_server.h"
 #include "handlers/backend_handler.h"
 #include "handlers/login_handler.h"
-#include "handlers/null_handler.h"
 #include "handlers/root_handler.h"
 #include "tools/route.h"
 #include "tools/settings_manager.h"
@@ -53,13 +52,13 @@ class MainHandler : public Handlers::BackendHandler
             // Route identification
                 if(!IdentifyRoute_())
                 {
-                    GenericResponse_(*get_response(), HTTPResponse::HTTP_NOT_FOUND, "The requested endpoint is not available.");
+                    JSONResponse_(HTTP::Status::kHTTP_NOT_FOUND, "The requested endpoint is not available.");
                     return;
                 }
 
                 if(!VerifySession_())
                 {
-                    GenericResponse_(*get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "Session not found.");
+                    JSONResponse_(HTTP::Status::kHTTP_UNAUTHORIZED, "Session not found.");
                     return;
                 }
 
