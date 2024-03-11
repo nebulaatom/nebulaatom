@@ -17,6 +17,7 @@
 */
 
 #include "handlers/root_handler.h"
+#include "http/common_responses.h"
 
 using namespace CPW::Handlers;
 
@@ -25,10 +26,11 @@ RootHandler::RootHandler() :
     ,user_("null")
     ,method_("GET")
     ,route_verification_(true)
+    ,request_(nullptr)
+    ,response_(nullptr)
     ,current_function_()
 {
     requested_route_ = std::make_shared<Tools::Route>(std::vector<std::string>{""});
-
     current_security_.set_security_type(Extras::SecurityType::kDisableAll);
 }
 
@@ -44,9 +46,11 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
         // Set request and response
             request_ = &request;
             response_ = &response;
+            HTTP::CommonResponses::set_response(response_);
+            
             if(request_ == nullptr || response_ == nullptr)
             {
-                GenericResponse_(*response_, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Request or response is Null Pointer.");
+                JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Request or response is Null Pointer.");
                 return;
             }
 
@@ -70,37 +74,37 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
     catch(MySQL::MySQLException& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
-        GenericResponse_(*response_, HTTPResponse::HTTP_BAD_REQUEST, "Error with the database or query. " + error.displayText());
+        JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Error with the database or query. " + error.displayText());
     }
     catch(RuntimeException& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
-        GenericResponse_(*response_, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
+        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
     }
     catch(JSON::JSONException& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
-        GenericResponse_(*response_, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
+        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
     }
     catch(std::out_of_range& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
-        GenericResponse_(*response_, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
+        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
     catch(std::runtime_error& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
-        GenericResponse_(*response_, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
+        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
     catch(std::exception& error)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
-        GenericResponse_(*response_, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
+        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
     catch(...)
     {
         app_.logger().error("- Error on root_handler.cc on handleRequest(): No handled exception.");
-        GenericResponse_(*response_, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. No handled exception." );
+        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. No handled exception." );
     }
 }
 
@@ -110,7 +114,7 @@ void RootHandler::CallHTTPMethod_()
     auto found = f1.get_methods().find(get_method());
     if(found == f1.get_methods().end())
     {
-        GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Method not found.");
+        JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Method not found.");
         return;
     }
 
@@ -122,7 +126,7 @@ void RootHandler::CallHTTPMethod_()
         case Functions::Function::Type::kDEL: HandleDELMethod_(); break;
         default:
         {
-            GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Method not found.");
+            JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Method not found.");
             return;
         }
     }
@@ -147,7 +151,7 @@ bool RootHandler::ProcessRoute_()
                 // Process the request body
                     if(!ManageRequestBody_())
                     {
-                        GenericResponse_(*response_, HTTPResponse::HTTP_BAD_REQUEST, "Something was wrong with the Request body.");
+                        JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Something was wrong with the Request body.");
                         return false;
                     }
 
@@ -161,14 +165,14 @@ bool RootHandler::ProcessRoute_()
                         {
                             if(!IdentifyRoute_())
                             {
-                                GenericResponse_(*response_, HTTPResponse::HTTP_NOT_FOUND, "The requested endpoint is not available.");
+                                JSONResponse_(HTTP::Status::kHTTP_NOT_FOUND, "The requested endpoint is not available.");
                                 return false;
                             }
                         }
 
                         if(!VerifySession_())
                         {
-                            GenericResponse_(*response_, HTTPResponse::HTTP_UNAUTHORIZED, "Session not found.");
+                            JSONResponse_(HTTP::Status::kHTTP_UNAUTHORIZED, "Session not found.");
                             return false;
                         }
 
@@ -230,7 +234,7 @@ bool RootHandler::VerifyPermissions_()
     // Verify permissions
     if(!current_security_.VerifyRoutesPermissions_(*requested_route_, method_))
     {
-        GenericResponse_(*response_, HTTPResponse::HTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
+        JSONResponse_(HTTP::Status::kHTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
         return false;
     }
 

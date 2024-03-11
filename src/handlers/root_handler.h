@@ -113,8 +113,6 @@ class CPW::Handlers::RootHandler :
             auto& var = current_security_;
             return var;
         }
-        HTTPServerRequest* get_request() const {return request_;}
-        HTTPServerResponse* get_response() const {return response_;}
         std::list<Tools::Route>& get_routes_list()
         {
             auto& var = routes_list_;
@@ -136,12 +134,12 @@ class CPW::Handlers::RootHandler :
             return var;
         }
 
-        void set_request(HTTPServerRequest& request) {request_ = &request;}
-        void set_response(HTTPServerResponse& response) {response_ = &response;}
-
         virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
 
     protected:
+        HTTPServerRequest* get_request() { return request_; }
+        HTTPServerResponse* get_response() { return response_; }
+        
         virtual void AddFunctions_();
         virtual void Process_();
         void CallHTTPMethod_();

@@ -63,7 +63,7 @@ void BackendHandler::ProcessActions_()
     // Verify current function
         if(get_current_function().get_actions().empty())
         {
-            GenericResponse_(*get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Current function has no actions.");
+            JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Current function has no actions.");
             return;
         }
 
@@ -95,7 +95,7 @@ void BackendHandler::ProcessActions_()
                 {
                     if(!action->Work_())
                     {
-                        GenericResponse_(*get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, action->get_custom_error());
+                        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, action->get_custom_error());
                         return;
                     }
                     break;
@@ -104,7 +104,7 @@ void BackendHandler::ProcessActions_()
                 {
                     if(!action->Work_())
                     {
-                        GenericResponse_(*get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, action->get_custom_error());
+                        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, action->get_custom_error());
                         return;
                     }
 
@@ -123,10 +123,5 @@ void BackendHandler::ProcessActions_()
         }
 
     // Send results
-        CompoundResponse_
-        (
-            *get_response()
-            ,HTTPResponse::HTTP_OK
-            ,json_result
-        );
+        CompoundResponse_(HTTP::Status::kOK, json_result);
 }

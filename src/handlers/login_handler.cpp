@@ -41,7 +41,7 @@ void LoginHandler::Process_()
 
 void LoginHandler::HandleGETMethod_()
 {
-    GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
+    JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
 }
 
 void LoginHandler::HandlePOSTMethod_()
@@ -58,17 +58,17 @@ void LoginHandler::HandlePOSTMethod_()
         EndSession_();
     }
     else
-        GenericResponse_(*get_response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Login route not identified.");
+        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Login route not identified.");
 }
 
 void LoginHandler::HandlePUTMethod_()
 {
-    GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
+    JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
 }
 
 void LoginHandler::HandleDELMethod_()
 {
-    GenericResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
+    JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
 }
 
 void LoginHandler::StartSession_()
@@ -77,7 +77,7 @@ void LoginHandler::StartSession_()
         auto session_id = SessionExists_();
         if(session_id != "")
         {
-            GenericResponse_(*get_response(), HTTPResponse::HTTP_OK, "The client has already logged in.");
+            JSONResponse_(HTTP::Status::kOK, "The client has already logged in.");
             return;
         }
 
@@ -98,7 +98,7 @@ void LoginHandler::StartSession_()
         get_current_security().get_users_manager().get_current_user().set_password(password);
         if(!get_current_security().get_users_manager().AuthenticateUser_())
         {
-            GenericResponse_(*get_response(), HTTPResponse::HTTP_UNAUTHORIZED, "Unauthorized user or wrong user or password.");
+            JSONResponse_(HTTP::Status::kHTTP_UNAUTHORIZED, "Unauthorized user or wrong user or password.");
             return;
         }
 
@@ -115,7 +115,7 @@ void LoginHandler::StartSession_()
 
         get_response()->addCookie(cookie);
 
-        GenericResponse_(*get_response(), HTTPResponse::HTTP_OK, "Client logged in.");
+        JSONResponse_(HTTP::Status::kOK, "Client logged in.");
 }
 
 void LoginHandler::EndSession_()
@@ -133,7 +133,7 @@ void LoginHandler::EndSession_()
         cookie.setMaxAge(-1);
         get_response()->addCookie(cookie);
 
-        GenericResponse_(*get_response(), HTTPResponse::HTTP_OK, "Client logout.");
+        JSONResponse_(HTTP::Status::kOK, "Client logout.");
 }
 
 std::string LoginHandler::SessionExists_()

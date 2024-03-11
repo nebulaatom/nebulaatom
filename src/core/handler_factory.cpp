@@ -17,7 +17,9 @@
 */
 
 #include "handler_factory.h"
+#include "Poco/Net/HTTPServerResponse.h"
 #include "handlers/null_handler.h"
+#include "http/common_responses.h"
 #include "tools/handler_connection.h"
 
 using namespace CPW::Core;
@@ -48,6 +50,8 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 {
     try
     {
+        HTTP::CommonResponses::set_response(&request.response());
+
         return handler_creator_(request);
         
         /*std::vector<std::string> segments;
@@ -84,27 +88,27 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
     catch(MySQL::MySQLException& error)
     {
         app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
-        GenericResponse_(request.response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Error with the database. " + error.displayText());
+        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Error with the database. " + error.displayText());
     }
     catch(JSON::JSONException& error)
     {
         app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
-        GenericResponse_(request.response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
+        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
     }
     catch(Poco::NullPointerException& error)
     {
         app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
-        GenericResponse_(request.response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
+        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
     }
     catch(std::runtime_error& error)
     {
         app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + std::string(error.what()));
-        GenericResponse_(request.response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
+        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
     catch(std::exception& error)
     {
         app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + std::string(error.what()));
-        GenericResponse_(request.response(), HTTPResponse::HTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
+        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
 
     return new CPW::Handlers::NullHandler();

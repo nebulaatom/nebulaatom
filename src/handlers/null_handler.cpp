@@ -57,10 +57,5 @@ void NullHandler::HandleDELMethod_()
 
 void NullHandler::NullResponse_()
 {
-    HTMLResponse_
-    (
-        *get_response()
-        ,HTTPResponse::HTTP_NOT_FOUND
-        ,"Sorry, content not found from" + get_request()->getMethod() + " request."
-    );
+    HTMLResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Sorry, content not found from " + get_request()->getMethod() + " request.");
 }

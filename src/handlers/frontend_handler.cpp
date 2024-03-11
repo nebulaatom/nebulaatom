@@ -56,12 +56,12 @@ void FrontendHandler::HandleGETMethod_()
         file_manager_.set_operation_type(Files::OperationType::kDownload);
         if(!file_manager_.CheckFiles_())
         {
-            HTMLResponse_(*get_response(), HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
+            HTMLResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Requested file bad check.");
             return;
         }
         if(!file_manager_.IsSupported_(file_manager_.get_files().front()))
         {
-            HTMLResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
+            HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Requested file is not supported.");
             return;
         }
 
@@ -91,7 +91,7 @@ void FrontendHandler::HandlePOSTMethod_()
         {
             if(!file_manager_.IsSupported_(file_it))
             {
-                HTMLResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
+                HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Requested file is not supported.");
                 return;
             }
             app_.logger().information("File: " + file_it.get_requested_file()->path());
@@ -125,7 +125,7 @@ void FrontendHandler::HandlePUTMethod_()
         file_manager_.set_operation_type(Files::OperationType::kDelete);
         if(!file_manager_.CheckFiles_())
         {
-            HTMLResponse_(*get_response(), HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
+            HTMLResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Requested file bad check.");
             return;
         }
 
@@ -140,7 +140,7 @@ void FrontendHandler::HandlePUTMethod_()
 
         if(!file_manager_.IsSupported_(file_manager_.get_files().front()))
         {
-            HTMLResponse_(*get_response(), HTTPResponse::HTTP_BAD_REQUEST, "Requested file is not supported.");
+            HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Requested file is not supported.");
             return;
         }
         app_.logger().information("File: " + file_manager_.get_files().front().get_requested_file()->path());
@@ -173,7 +173,7 @@ void FrontendHandler::HandleDELMethod_()
         file_manager_.set_operation_type(Files::OperationType::kDelete);
         if(!file_manager_.CheckFiles_())
         {
-            HTMLResponse_(*get_response(), HTTPResponse::HTTP_NOT_FOUND, "Requested file bad check.");
+            HTMLResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Requested file bad check.");
             return;
         }
 
