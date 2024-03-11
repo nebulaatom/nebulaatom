@@ -21,13 +21,7 @@
 
 using namespace CPW::Handlers;
 
-CustomHandler::CustomHandler() :
-    RootHandler()
-{
-
-}
-
-CustomHandler::CustomHandler(std::function<void()> process_function) :  
+CustomHandler::CustomHandler(std::function<void(CustomHandler&)> process_function) :  
     RootHandler()
     ,process_function_(process_function)
 {
@@ -39,11 +33,6 @@ CustomHandler::~CustomHandler()
 
 }
 
-void CustomHandler::SetProcessFunction(std::function<void()> process_function)
-{
-    process_function_ = process_function;
-}
-
 void CustomHandler::AddFunctions_()
 {
 
@@ -51,7 +40,7 @@ void CustomHandler::AddFunctions_()
 
 void CustomHandler::Process_()
 {
-    process_function_();
+    process_function_(*this);
 }
 
 void CustomHandler::HandleGETMethod_()

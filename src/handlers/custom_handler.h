@@ -36,17 +36,14 @@ class CPW::Handlers::CustomHandler :
     public RootHandler
 {
     public:
-        CustomHandler();
-        CustomHandler(std::function<void()> process_function);
+        CustomHandler(std::function<void(CustomHandler&)> process_function);
         virtual ~CustomHandler();
 
-        std::function<void()>& get_process_function()
+        std::function<void(CustomHandler&)>& get_process_function()
         {
             auto& var = process_function_;
             return var;
         }
-
-        void SetProcessFunction(std::function<void()> process_function);
 
     protected:
         virtual void AddFunctions_() override;
@@ -57,7 +54,7 @@ class CPW::Handlers::CustomHandler :
         virtual void HandleDELMethod_() override;
 
     private:
-        std::function<void()> process_function_;
+        std::function<void(CustomHandler&)> process_function_;
 };
 
 #endif // CPW_HANDLERS_CUSTOM_HANDLER_H
