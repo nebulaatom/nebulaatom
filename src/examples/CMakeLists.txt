@@ -13,3 +13,8 @@ target_link_libraries(basicrouting PUBLIC woodpeckerserver)
 add_executable(backendapi "backend_api.cpp")
 target_include_directories(backendapi PUBLIC ${HEADER})
 target_link_libraries(backendapi PUBLIC woodpeckerserver)
+
+## webserver
+add_executable(webserver "webserver.cpp")
+target_include_directories(webserver PUBLIC ${HEADER})
+target_link_libraries(webserver PUBLIC woodpeckerserver)

@@ -30,5 +30,13 @@
             ,"args": []
             ,"cwd": "${workspaceFolder}/build"
         }
+        ,{
+            "type": "lldb"
+            ,"request": "launch"
+            ,"name": "WebServer (Debug)"
+            ,"program": "${workspaceFolder}/build/Debug/src/examples/webserver"
+            ,"args": []
+            ,"cwd": "${workspaceFolder}/build"
+        }
     ]
 }
