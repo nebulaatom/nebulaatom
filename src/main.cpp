@@ -1,5 +1,5 @@
 /*
- * CPW Woodpecker Server
+ * Nebula Atom
  * Copyright (C) 2021 NebulaCSF support@cpwonline.org
  *
  * This program is free software: you can redistribute it and/or modify
