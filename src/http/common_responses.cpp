@@ -69,11 +69,11 @@ void CommonResponses::HTMLResponse_(HTTP::Status status, std::string message)
     {
         out <<
             "<html>"
-                "<head><title>" << responses_.find(status)->second.status_int << " " << responses_.find(status)->second.message << " | CPW Woodpecker</title></head>"
+                "<head><title>" << responses_.find(status)->second.status_int << " " << responses_.find(status)->second.message << " | Nebula Atom</title></head>"
                 "<body>"
                     "<center><h1>Status: " << responses_.find(status)->second.status_int << " " << responses_.find(status)->second.message << "</h1></center>"
                     "<center><h3>Message: " << message << "</h3></center>"
-                    "<center><hr>CPW Woodpecker/" << PACKAGE_VERSION_COMPLETE << "</center>"
+                    "<center><hr>Nebula Atom/" << PACKAGE_VERSION_COMPLETE << "</center>"
                 "</body>"
             "</html>"
         ;
@@ -82,11 +82,11 @@ void CommonResponses::HTMLResponse_(HTTP::Status status, std::string message)
     {
         out <<
             "<html>"
-                "<head><title>" << responses_.find(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR)->second.message << " | CPW Woodpecker</title></head>"
+                "<head><title>" << responses_.find(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR)->second.message << " | Nebula Atom</title></head>"
                 "<body>"
                     "<center><h1>Status: 500 " << responses_.find(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR)->second.message << "</h1></center>"
                     "<center><h3>Message: " << "Error in HTTPStatus." << "</h3></center>"
-                    "<center>CPW Woodpecker/" << PACKAGE_VERSION_COMPLETE << "</center>"
+                    "<center>Nebula Atom/" << PACKAGE_VERSION_COMPLETE << "</center>"
                 "</body>"
             "</html>"
         ;
