@@ -1,7 +1,6 @@
 /*
 * Nebula Atom
-* Copyright (C) 2021 NebulaCSF support@cpwonline.org
-*
+
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
@@ -27,7 +26,7 @@
 #include <Poco/JSON/JSON.h>
 #include <Poco/JSON/Object.h>
 
-#include "cpw-woodpecker-serverConfig.h"
+#include "nebula-atomConfig.h"
 
 
 namespace Atom

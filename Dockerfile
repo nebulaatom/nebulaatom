@@ -7,9 +7,9 @@ RUN apk --no-cache add \
     poco-dev \
     mariadb-dev
 
-WORKDIR /usr/src/cpw-woodpecker
+WORKDIR /usr/src/nebula-atom
 
-COPY . /usr/src/cpw-woodpecker
+COPY . /usr/src/nebula-atom
 
 RUN mkdir ./build-app \
     && cd ./build-app \
@@ -23,8 +23,8 @@ RUN apk --no-cache add poco
 
 WORKDIR /usr/local/bin
 
-COPY --from=build /usr/local/bin/cpw-woodpecker-server ./cpw-woodpecker-server
+COPY --from=build /usr/local/bin/nebula-atom ./nebula-atom
 
 EXPOSE 8080
 
-CMD ["./cpw-woodpecker-server"]
+CMD ["./nebula-atom"]

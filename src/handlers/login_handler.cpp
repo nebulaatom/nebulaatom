@@ -1,7 +1,6 @@
 /*
 * Nebula Atom
-* Copyright (C) 2021 NebulaCSF support@cpwonline.org
-*
+
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
@@ -128,7 +127,7 @@ void LoginHandler::EndSession_()
         }
 
     // Response
-        Poco::Net::HTTPCookie cookie("cpw-woodpecker-sid", "");
+        Poco::Net::HTTPCookie cookie("nebula-atom-sid", "");
         cookie.setPath("/");
         cookie.setMaxAge(-1);
         get_response()->addCookie(cookie);
@@ -142,7 +141,7 @@ std::string LoginHandler::SessionExists_()
         std::string session_id;
         Poco::Net::NameValueCollection cookies;
         get_request()->getCookies(cookies);
-        auto cookie_session = cookies.find("cpw-woodpecker-sid");
+        auto cookie_session = cookies.find("nebula-atom-sid");
         auto sessions = Tools::SessionsManager::get_sessions();
 
     // Session exists

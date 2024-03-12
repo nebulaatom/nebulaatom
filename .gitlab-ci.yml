@@ -25,7 +25,7 @@ build-application:
   script:
     - mkdir ./build-app
     - cd ./build-app
-    - cmake ../ -DCMAKE_INSTALL_PREFIX=/usr/local -Dcpw-woodpecker-server_TESTING=ON
+    - cmake ../ -DCMAKE_INSTALL_PREFIX=/usr/local -Dnebula-atom_TESTING=ON
     - cmake --build ./
     - cmake --build ./ --target install
     - ./src/tests/test_gen

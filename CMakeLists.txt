@@ -2,7 +2,7 @@
 
 ## Project
 cmake_minimum_required(VERSION 3.16)
-project("cpw-woodpecker-server" LANGUAGES CXX C)
+project("nebula-atom" LANGUAGES CXX C)
 include(cmake/general_options.cmake)
 include(cmake/build_settings.cmake)
 
