@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMEXTRAS_VALUESPROPERTIES_H
-#define ATOMEXTRAS_VALUESPROPERTIES_H
+#ifndef ATOM_EXTRAS_VALUESPROPERTIES
+#define ATOM_EXTRAS_VALUESPROPERTIES
 
 
 #include <string>
@@ -89,4 +89,4 @@ class AtomExtras::ValuesProperties
         bool quotes_;
 };
 
-#endif // ATOMEXTRAS_VALUESPROPERTIES_H
+#endif // ATOM_EXTRAS_VALUESPROPERTIES

@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMFILTERS_SORT_FILTER_H
-#define ATOMFILTERS_SORT_FILTER_H
+#ifndef ATOMFILTERS_SORT_FILTER
+#define ATOMFILTERS_SORT_FILTER
 
 
 #include "filters/filter.h"
@@ -83,4 +83,4 @@ class AtomFilters::SortFilter : Filters::Filter
 };
 
 
-#endif // ATOMFILTERS_SORT_FILTER_H
+#endif // ATOMFILTERS_SORT_FILTER

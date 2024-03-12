@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMHANDLERS_FRONTENDHANDLER_H
-#define ATOMHANDLERS_FRONTENDHANDLER_H
+#ifndef ATOMANDLERS_FRONTENDHANDLER
+#define ATOMANDLERS_FRONTENDHANDLER
 
 #include <string>
 #include <map>
@@ -54,4 +54,4 @@ class AtomHandlers::FrontendHandler :
         Files::FileManager file_manager_;
 };
 
-#endif // ATOMHANDLERS_FRONTENDHANDLER_H
+#endif // ATOMANDLERS_FRONTENDHANDLER

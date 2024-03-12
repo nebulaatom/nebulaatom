@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMHANDLERS_LOGINHANDLER_H
-#define ATOMHANDLERS_LOGINHANDLER_H
+#ifndef ATOMANDLERS_LOGINHANDLER
+#define ATOMANDLERS_LOGINHANDLER
 
 
 #include "handlers/root_handler.h"
@@ -52,4 +52,4 @@ class AtomHandlers::LoginHandler :
     private:
 };
 
-#endif // ATOMHANDLERS_LOGINHANDLER_H
+#endif // ATOMANDLERS_LOGINHANDLER

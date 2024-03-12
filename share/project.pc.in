@@ -9,7 +9,7 @@ docdir=${prefix}/@CMAKE_INSTALL_DOCDIR@/@PROJECT_NAME@
 Name: @NAME_PROJECT@
 Description: Description for project
 Version: @PACKAGE_VERSION@
-URL: https://www.cpwonline.org/
+URL: https://www.nebulacsf.com/
 Requires: #dep1-1.0 dep2-1.0 dep3-1.0
 Libs: -L${libdir} -l@PROJECT_NAME@
 Cflags: -I${includedir}

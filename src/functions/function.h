@@ -1,6 +1,6 @@
 
-#ifndef ATOMFUNCTIONS_FUNCTION_H
-#define ATOMFUNCTIONS_FUNCTION_H
+#ifndef ATOM_FUNCTIONS_FUNCTION
+#define ATOM_FUNCTIONS_FUNCTION
 
 
 #include <string>
@@ -67,4 +67,4 @@ class AtomFunctions::Function
 };
 
 
-#endif // ATOMFUNCTIONS_FUNCTION_H
+#endif // ATOM_FUNCTIONS_FUNCTION

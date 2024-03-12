@@ -17,8 +17,8 @@
 */
 
 
-#ifndef USER_H
-#define USER_H
+#ifndef USER
+#define USER
 
 
 #include <string>
@@ -54,4 +54,4 @@ class AtomSecurity::User
 };
 
 
-#endif // USER_H
+#endif // USER

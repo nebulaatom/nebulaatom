@@ -2,8 +2,8 @@
 // SPDX-FileCopyrightText: 2022 <copyright holder> <email>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef ATOMFILES_FILE_H
-#define ATOMFILES_FILE_H
+#ifndef ATOMFILES_FILE
+#define ATOMFILES_FILE
 
 
 #include <string>
@@ -84,4 +84,4 @@ class AtomFiles::File
         std::shared_ptr<Poco::File> tmp_file_;
 };
 
-#endif // ATOMFILES_FILE_H
+#endif // ATOMFILES_FILE

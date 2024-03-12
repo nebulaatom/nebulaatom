@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMFILTERS_IQUALS_FILTER_H
-#define ATOMFILTERS_IQUALS_FILTER_H
+#ifndef ATOMFILTERS_IQUALS_FILTER
+#define ATOMFILTERS_IQUALS_FILTER
 
 
 #include "filters/filter.h"
@@ -86,4 +86,4 @@ class AtomFilters::IqualsFilter : Filters::Filter
 };
 
 
-#endif // ATOMFILTERS_IQUALS_FILTER_H
+#endif // ATOMFILTERS_IQUALS_FILTER

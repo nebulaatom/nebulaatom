@@ -1,6 +1,6 @@
 
-#ifndef ATOMFUNCTIONS_FUNCTIONS_MANAGER_H
-#define ATOMFUNCTIONS_FUNCTIONS_MANAGER_H
+#ifndef ATOM_FUNCTIONS_FUNCTIONS_MANAGER
+#define ATOM_FUNCTIONS_FUNCTIONS_MANAGER
 
 
 #include <string>
@@ -33,4 +33,4 @@ class AtomFunctions::FunctionsManager
         std::map<std::string, Functions::Function> functions_;
 };
 
-#endif // ATOMFUNCTIONS_FUNCTIONS_MANAGER_H
+#endif // ATOM_FUNCTIONS_FUNCTIONS_MANAGER

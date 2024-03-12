@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMHANDLERS_NULLHANDLER_H
-#define ATOMHANDLERS_NULLHANDLER_H
+#ifndef ATOMANDLERS_NULLHANDLER
+#define ATOMANDLERS_NULLHANDLER
 
 
 #include "handlers/root_handler.h"
@@ -50,4 +50,4 @@ class AtomHandlers::NullHandler :
         void NullResponse_();
 };
 
-#endif // ATOMHANDLERS_NULLHANDLER_H
+#endif // ATOMANDLERS_NULLHANDLER

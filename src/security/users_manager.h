@@ -17,8 +17,8 @@
 */
 
 
-#ifndef USERS_MANAGER_H
-#define USERS_MANAGER_H
+#ifndef USERS_MANAGER
+#define USERS_MANAGER
 
 
 #include <string>
@@ -56,4 +56,4 @@ class AtomSecurity::UsersManager
 };
 
 
-#endif // USERS_MANAGER_H
+#endif // USERS_MANAGER

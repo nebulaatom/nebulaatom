@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMQUERY_QUERYACTIONS_H
-#define ATOMQUERY_QUERYACTIONS_H
+#ifndef ATOM_QUERY_QUERYACTIONS
+#define ATOM_QUERY_QUERYACTIONS
 
 
 #include <istream>
@@ -67,4 +67,4 @@ class AtomQuery::QueryActions
 };
 
 
-#endif // ATOMQUERY_QUERYACTIONS_H
+#endif // ATOM_QUERY_QUERYACTIONS

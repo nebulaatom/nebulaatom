@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMFILTERS_GENERAL_FILTER_H
-#define ATOMFILTERS_GENERAL_FILTER_H
+#ifndef ATOMFILTERS_GENERAL_FILTER
+#define ATOMFILTERS_GENERAL_FILTER
 
 
 #include "filters/filter.h"
@@ -85,4 +85,4 @@ class AtomFilters::GeneralFilter : Filters::Filter
 };
 
 
-#endif // ATOMFILTERS_GENERAL_FILTER_H
+#endif // ATOMFILTERS_GENERAL_FILTER

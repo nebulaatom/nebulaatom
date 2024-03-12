@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOMFILES_FILEPROPERTIES_H
-#define ATOMFILES_FILEPROPERTIES_H
+#ifndef ATOMFILES_FILEPROPERTIES
+#define ATOMFILES_FILEPROPERTIES
 
 
 #include <string>
@@ -60,4 +60,4 @@ class AtomFiles::FileProperties
 		std::vector<std::string> other_extensions_;
 };
 
-#endif // ATOMFILES_FILEPROPERTIES_H
+#endif // ATOMFILES_FILEPROPERTIES

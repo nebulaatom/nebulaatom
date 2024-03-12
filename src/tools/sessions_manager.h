@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOMHTTP_SESSIONS_MANAGER_H
-#define ATOMHTTP_SESSIONS_MANAGER_H
+#ifndef ATOMTTP_SESSIONS_MANAGER
+#define ATOMTTP_SESSIONS_MANAGER
 
 
 #include <string>
@@ -58,4 +58,4 @@ class AtomTools::SessionsManager
         static std::map<std::string, AtomExtras::Session> sessions_;
 };
 
-#endif // ATOMHTTP_SESSIONS_MANAGER_H
+#endif // ATOMTTP_SESSIONS_MANAGER

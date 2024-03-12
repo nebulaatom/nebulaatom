@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMTOOLS_MANAGEJSON_H
-#define ATOMTOOLS_MANAGEJSON_H
+#ifndef ATOM_TOOLS_MANAGEJSON
+#define ATOM_TOOLS_MANAGEJSON
 
 
 #include <istream>
@@ -63,4 +63,4 @@ class AtomTools::ManageJSON
         std::string json_body_string_;
 };
 
-#endif // ATOMTOOLS_MANAGEJSON_H
+#endif // ATOM_TOOLS_MANAGEJSON

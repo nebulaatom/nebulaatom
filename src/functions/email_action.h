@@ -1,6 +1,6 @@
 
-#ifndef FUNCTIONS_EMAIL_ACTION_H
-#define FUNCTIONS_EMAIL_ACTION_H
+#ifndef FUNCTIONS_EMAIL_ACTION
+#define FUNCTIONS_EMAIL_ACTION
 
 
 #include <string>
@@ -87,4 +87,4 @@ class AtomFunctions::EmailAction : public AtomFunctions::Action
         std::string email_password_;
 };
 
-#endif // FUNCTIONS_EMAIL_ACTION_H
+#endif // FUNCTIONS_EMAIL_ACTION

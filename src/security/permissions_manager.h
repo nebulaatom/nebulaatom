@@ -17,8 +17,8 @@
 */
 
 
-#ifndef PERMISSIONS_MANAGER_H
-#define PERMISSIONS_MANAGER_H
+#ifndef PERMISSIONS_MANAGER
+#define PERMISSIONS_MANAGER
 
 
 #include <string>
@@ -73,4 +73,4 @@ class AtomSecurity::PermissionsManager
 };
 
 
-#endif // PERMISSIONS_MANAGER_H
+#endif // PERMISSIONS_MANAGER

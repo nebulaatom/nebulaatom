@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOMQUERY_CONDITION_H
-#define ATOMQUERY_CONDITION_H
+#ifndef ATOM_QUERY_CONDITION
+#define ATOM_QUERY_CONDITION
 
 
 #include "query/results.h"
@@ -78,4 +78,4 @@ class AtomQuery::Condition
         ConditionalField conditional_field_;
 };
 
-#endif // ATOMQUERY_CONDITION_H
+#endif // ATOM_QUERY_CONDITION

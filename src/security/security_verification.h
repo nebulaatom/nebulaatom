@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMSECURITY_SECURITY_VERIFICATION_H
-#define ATOMSECURITY_SECURITY_VERIFICATION_H
+#ifndef ATOM_SECURITY_SECURITY_VERIFICATION
+#define ATOM_SECURITY_SECURITY_VERIFICATION
 
 
 #include <string>
@@ -83,4 +83,4 @@ class AtomExtras::SecurityVerification
 };
 
 
-#endif // ATOMSECURITY_SECURITY_VERIFICATION_H
+#endif // ATOM_SECURITY_SECURITY_VERIFICATION

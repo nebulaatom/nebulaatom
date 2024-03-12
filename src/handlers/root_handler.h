@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMHANDLERS_ROOTHANDLER_H
-#define ATOMHANDLERS_ROOTHANDLER_H
+#ifndef ATOMANDLERS_ROOTHANDLER
+#define ATOMANDLERS_ROOTHANDLER
 
 
 #include <istream>
@@ -169,4 +169,4 @@ class AtomHandlers::RootHandler :
         Functions::Function current_function_;
 };
 
-#endif // ATOMHANDLERS_ROOTHANDLER_H
+#endif // ATOMANDLERS_ROOTHANDLER

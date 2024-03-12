@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMFILES_FILEMANAGER_H
-#define ATOMFILES_FILEMANAGER_H
+#ifndef ATOMFILES_FILEMANAGER
+#define ATOMFILES_FILEMANAGER
 
 
 #include <string>
@@ -121,4 +121,4 @@ class AtomFiles::FileManager: public Net::PartHandler
         Tools::SettingsManager settings_manager_;
 };
 
-#endif // ATOMFILES_FILEMANAGER_H
+#endif // ATOMFILES_FILEMANAGER

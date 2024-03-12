@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMFILTERS_RANGE_FILTER_H
-#define ATOMFILTERS_RANGE_FILTER_H
+#ifndef ATOMFILTERS_RANGE_FILTER
+#define ATOMFILTERS_RANGE_FILTER
 
 
 #include "filters/filter.h"
@@ -91,4 +91,4 @@ class AtomFilters::RangeFilter : Filters::Filter
 };
 
 
-#endif // ATOMFILTERS_RANGE_FILTER_H
+#endif // ATOMFILTERS_RANGE_FILTER

@@ -5,8 +5,8 @@ stages:
   - deploy
 
 variables:
-  VAR_LATEST: $CI_REGISTRY_IMAGE/cpw_woodpecker_image:latest
-  VAR_TAG: $CI_REGISTRY_IMAGE/cpw_woodpecker_image:$CI_COMMIT_TAG
+  VAR_LATEST: $CI_REGISTRY_IMAGE/nebula_atom_image:latest
+  VAR_TAG: $CI_REGISTRY_IMAGE/nebula_atom_image:$CI_COMMIT_TAG
 
 build-application:
   stage: build

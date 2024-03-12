@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOMQUERY_DATABASE_MANAGER_H
-#define ATOMQUERY_DATABASE_MANAGER_H
+#ifndef ATOM_QUERY_DATABASE_MANAGER
+#define ATOM_QUERY_DATABASE_MANAGER
 
 
 #include <iostream>
@@ -61,4 +61,4 @@ class AtomQuery::DatabaseManager
 
 };
 
-#endif // ATOMQUERY_DATABASE_MANAGER_H
+#endif // ATOM_QUERY_DATABASE_MANAGER

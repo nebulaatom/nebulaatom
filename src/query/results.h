@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOMQUERY_RESULTS_H
-#define ATOMQUERY_RESULTS_H
+#ifndef ATOM_QUERY_RESULTS
+#define ATOM_QUERY_RESULTS
 
 
 #include <vector>
@@ -108,4 +108,4 @@ class AtomQuery::Results
         std::vector<Row> rows_;
 };
 
-#endif // ATOMQUERY_RESULTS_H
+#endif // ATOM_QUERY_RESULTS

@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMHTTP_HTTPMETHODS_H
-#define ATOMHTTP_HTTPMETHODS_H
+#ifndef ATOMTTPTTPMETHODS
+#define ATOMTTPTTPMETHODS
 
 
 namespace Atom
@@ -43,4 +43,4 @@ class AtomHTTP::HTTPMethods
 
 };
 
-#endif // ATOMHTTP_HTTPMETHODS_H
+#endif // ATOMTTPTTPMETHODS

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOMEXTRAS_SESSION_H
-#define ATOMEXTRAS_SESSION_H
+#ifndef ATOM_EXTRAS_SESSION
+#define ATOM_EXTRAS_SESSION
 
 
 #include <string>
@@ -95,4 +95,4 @@ class AtomExtras::Session
 };
 
 
-#endif // ATOMEXTRAS_SESSION_H
+#endif // ATOM_EXTRAS_SESSION

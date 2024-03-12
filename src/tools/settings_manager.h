@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOMTOOLS_SETTINGS_MANAGER_H
-#define ATOMTOOLS_SETTINGS_MANAGER_H
+#ifndef ATOM_TOOLS_SETTINGS_MANAGER
+#define ATOM_TOOLS_SETTINGS_MANAGER
 
 
 #include <iostream>
@@ -81,4 +81,4 @@ class AtomTools::SettingsManager
         static BasicProperties basic_properties_;
 };
 
-#endif // ATOMTOOLS_SETTINGS_MANAGER_H
+#endif // ATOM_TOOLS_SETTINGS_MANAGER

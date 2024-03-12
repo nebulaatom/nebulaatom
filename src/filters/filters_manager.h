@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMFILTERS_FILTERS_MANAGER_H
-#define ATOMFILTERS_FILTERS_MANAGER_H
+#ifndef ATOMFILTERS_FILTERS_MANAGER
+#define ATOMFILTERS_FILTERS_MANAGER
 
 
 #include <string>
@@ -139,4 +139,4 @@ class AtomFilters::FiltersManager
 };
 
 
-#endif // ATOMFILTERS_FILTERS_MANAGER_H
+#endif // ATOMFILTERS_FILTERS_MANAGER

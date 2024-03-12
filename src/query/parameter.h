@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOMQUERY_PARAMETER_H
-#define ATOMQUERY_PARAMETER_H
+#ifndef ATOM_QUERY_PARAMETER
+#define ATOM_QUERY_PARAMETER
 
 
 #include <string>
@@ -78,4 +78,4 @@ class AtomQuery::Parameter
         std::string conditional_field_action_;
 };
 
-#endif // ATOMQUERY_PARAMETER_H
+#endif // ATOM_QUERY_PARAMETER

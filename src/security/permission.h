@@ -17,8 +17,8 @@
 */
 
 
-#ifndef PERMISSION_H
-#define PERMISSION_H
+#ifndef PERMISSION
+#define PERMISSION
 
 
 #include <string>
@@ -74,4 +74,4 @@ class AtomSecurity::Permission
 };
 
 
-#endif // PERMISSION_H
+#endif // PERMISSION

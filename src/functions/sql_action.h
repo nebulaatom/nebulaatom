@@ -1,6 +1,6 @@
 
-#ifndef FUNCTIONS_SQL_ACTION_H
-#define FUNCTIONS_SQL_ACTION_H
+#ifndef FUNCTIONS_SQL_ACTION
+#define FUNCTIONS_SQL_ACTION
 
 
 #include <istream>
@@ -97,4 +97,4 @@ class AtomFunctions::SQLAction :
         std::shared_ptr<Data::Statement> query_;
 };
 
-#endif // FUNCTIONS_SQL_ACTION_H
+#endif // FUNCTIONS_SQL_ACTION

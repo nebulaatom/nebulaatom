@@ -1,5 +1,5 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef CONFIG
+#define CONFIG
 
 /* Name of package */
 #define PROJECT_NAME "${PROJECT_NAME}"
@@ -14,4 +14,4 @@
 /* Base data directory */
 #define DATADIR "${${PROJECT_NAME}_DATADIR}"
 
-#endif /* CONFIG_H */ 
+#endif /* CONFIG */ 

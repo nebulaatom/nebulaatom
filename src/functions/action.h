@@ -1,6 +1,6 @@
 
-#ifndef FUNCTIONS_ACTION_H
-#define FUNCTIONS_ACTION_H
+#ifndef FUNCTIONS_ACTION
+#define FUNCTIONS_ACTION
 
 
 #include <string>
@@ -104,4 +104,4 @@ class AtomFunctions::Action :
         std::vector<ActionPtr> actions_;
 };
 
-#endif // FUNCTIONS_ACTION_H
+#endif // FUNCTIONS_ACTION

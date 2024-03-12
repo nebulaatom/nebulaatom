@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMTOOLS_REQUESTSMANAGER_H
-#define ATOMTOOLS_REQUESTSMANAGER_H
+#ifndef ATOM_TOOLS_REQUESTSMANAGER
+#define ATOM_TOOLS_REQUESTSMANAGER
 
 
 #include <string>
@@ -72,4 +72,4 @@ class AtomTools::RequestsManager
         HTTP::HTTPMethods* http_methods_;
 };
 
-#endif // ATOMTOOLS_REQUESTSMANAGER_H
+#endif // ATOM_TOOLS_REQUESTSMANAGER

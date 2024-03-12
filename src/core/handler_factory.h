@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMCORE_HANDLER_FACTORY_H
-#define ATOMCORE_HANDLER_FACTORY_H
+#ifndef ATOM_COREANDLER_FACTORY
+#define ATOM_COREANDLER_FACTORY
 
 
 #include <map>
@@ -99,4 +99,4 @@ class AtomCore::HandlerFactory :
         Application& app_;
 };
 
-#endif // ATOMCORE_HANDLER_FACTORY_H
+#endif // ATOM_COREANDLER_FACTORY

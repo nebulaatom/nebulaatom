@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMHANDLERS_BACKENDHANDLER_H
-#define ATOMHANDLERS_BACKENDHANDLER_H
+#ifndef ATOMANDLERS_BACKENDHANDLER
+#define ATOMANDLERS_BACKENDHANDLER
 
 
 #include "handlers/root_handler.h"
@@ -53,4 +53,4 @@ class AtomHandlers::BackendHandler : public RootHandler
         VectorShrResults shared_results_;
 };
 
-#endif // ATOMHANDLERS_BACKENDHANDLER_H
+#endif // ATOMANDLERS_BACKENDHANDLER

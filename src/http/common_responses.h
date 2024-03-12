@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMHTTP_COMMONRESPONSES_H
-#define ATOMHTTP_COMMONRESPONSES_H
+#ifndef ATOMTTP_COMMONRESPONSES
+#define ATOMTTP_COMMONRESPONSES
 
 
 #include <string>
@@ -99,4 +99,4 @@ class AtomHTTP::CommonResponses
         std::map<HTTP::Status, Attributes> responses_;
 };
 
-#endif // ATOMHTTP_COMMONRESPONSES_H
+#endif // ATOMTTP_COMMONRESPONSES

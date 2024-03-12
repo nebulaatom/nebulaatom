@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMFILTERS_LIKE_FILTER_H
-#define ATOMFILTERS_LIKE_FILTER_H
+#ifndef ATOMFILTERS_LIKE_FILTER
+#define ATOMFILTERS_LIKE_FILTER
 
 
 #include "filters/filter.h"
@@ -93,4 +93,4 @@ class AtomFilters::LikeFilter : Filters::Filter
 };
 
 
-#endif // ATOMFILTERS_LIKE_FILTER_H
+#endif // ATOMFILTERS_LIKE_FILTER
