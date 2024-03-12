@@ -34,6 +34,7 @@
 #include "Poco/Net/SecureServerSocket.h"
 #include "Poco/Net/X509Certificate.h"
 #include "Poco/Net/SSLManager.h"
+#include "Poco/Net/SSLException.h"
 #include "Poco/Net/KeyConsoleHandler.h"
 #include "Poco/Net/AcceptCertificateHandler.h"
 
@@ -59,9 +60,10 @@ using namespace Poco::Util;
 class Atom::Core::NebulaAtom : public ServerApplication
 {
     public:
-        NebulaAtom();
+        NebulaAtom(bool use_ssl = false);
         virtual ~NebulaAtom();
 
+        bool get_use_ssl() const { return use_ssl_; }
         HTTPServerParams::Ptr get_server_params()
         {
             auto& var = server_params_;
@@ -88,6 +90,8 @@ class Atom::Core::NebulaAtom : public ServerApplication
             return var;
         }
 
+        void set_use_ssl(bool use_ssl) { use_ssl_ = use_ssl; }
+
         void CustomHandlerCreator_(HandlerFactory::FunctionHandlerCreator handler_creator);
         void AddHandler_(std::string route, HandlerFactory::FunctionHandler handler);
 
@@ -98,6 +102,7 @@ class Atom::Core::NebulaAtom : public ServerApplication
         int Init_();
 
     private:
+        bool use_ssl_;
         HTTPServerParams::Ptr server_params_;
         std::shared_ptr<ServerSocket> server_socket_;
         std::shared_ptr<SecureServerSocket> secure_server_socket_;

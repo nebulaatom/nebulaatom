@@ -16,26 +16,28 @@
 */
 
 #include "nebula_atom.h"
+#include <Poco/Net/AcceptCertificateHandler.h>
+#include <Poco/Net/NetSSL.h>
+#include <Poco/Net/SSLManager.h>
+#include <Poco/Util/Application.h>
 
 using namespace Atom::Core;
 
-NebulaAtom::NebulaAtom() :
-    server_params_(new HTTPServerParams())
+NebulaAtom::NebulaAtom(bool use_ssl) :
+    use_ssl_(use_ssl)
+    ,server_params_(new HTTPServerParams())
     ,handler_factory_(new HandlerFactory())
     ,app_(Application::instance())
 {
     Tools::SettingsManager::SetUpProperties_();
-    //Poco::Net::initializeSSL();
-    //Tools::SettingsManager::ReadBasicProperties_();
-    //Query::DatabaseManager::StartMySQL_();
-    //Tools::SettingsManager::ReadFunctions_();
-    //Tools::SessionsManager::ReadSessions_();
+    if(use_ssl_)
+        Net::initializeSSL();
 }
 
 NebulaAtom::~NebulaAtom()
 {
-    //Poco::Net::uninitializeSSL();
-    //Query::DatabaseManager::StopMySQL_();
+    if(use_ssl_)
+        Net::uninitializeSSL();
 }
 
 void NebulaAtom::CustomHandlerCreator_(HandlerFactory::FunctionHandlerCreator handler_creator)
@@ -71,10 +73,28 @@ int NebulaAtom::main(const std::vector<std::string>& args)
         server_params_->setMaxQueued(settings_manager_.get_basic_properties_().max_queued);
         server_params_->setMaxThreads(settings_manager_.get_basic_properties_().max_threads);
 
-        //server_socket_ = std::make_shared<SecureServerSocket>(settings_manager_.get_basic_properties_().port);
-        server_socket_ = std::make_shared<ServerSocket>(settings_manager_.get_basic_properties_().port);
-        server_ = std::make_unique<HTTPServer>(handler_factory_, *server_socket_.get(), server_params_);
-
+        if(use_ssl_)
+        {
+            Context::Ptr context = new Context
+            (
+                Context::SERVER_USE
+                ,settings_manager_.get_basic_properties_().key
+                ,settings_manager_.get_basic_properties_().certificate
+                ,settings_manager_.get_basic_properties_().rootcert
+                ,Context::VERIFY_RELAXED
+                ,9
+                ,false
+                ,"ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH"
+            );
+            secure_server_socket_ = std::make_shared<SecureServerSocket>(settings_manager_.get_basic_properties_().port, 64, context);
+            
+            server_ = std::make_unique<HTTPServer>(handler_factory_, *secure_server_socket_.get(), server_params_);
+        }
+        else
+        {
+            server_socket_ = std::make_shared<ServerSocket>(settings_manager_.get_basic_properties_().port);
+            server_ = std::make_unique<HTTPServer>(handler_factory_, *server_socket_.get(), server_params_);
+        }
         return Init_();
     }
     catch(MySQL::MySQLException& error)
@@ -93,6 +113,11 @@ int NebulaAtom::main(const std::vector<std::string>& args)
         return -1;
     }
     catch(Poco::SystemException& error)
+    {
+        app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
+        return -1;
+    }
+    catch(Net::SSLException& error)
     {
         app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
         return -1;
