@@ -1,7 +1,0 @@
-[requires]
-poco/1.11.1
-gtest/1.12.1
-yaml-cpp/0.8.0
-
-[generators]
-cmake_find_package
