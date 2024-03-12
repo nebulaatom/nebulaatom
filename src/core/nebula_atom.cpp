@@ -15,11 +15,11 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "woodpecker_server.h"
+#include "nebula_atom.h"
 
-using namespace AtomCore;
+using namespace Atom::Core;
 
-WoodpeckerServer::WoodpeckerServer() :
+NebulaAtom::NebulaAtom() :
     server_params_(new HTTPServerParams())
     ,handler_factory_(new HandlerFactory())
     ,app_(Application::instance())
@@ -32,18 +32,18 @@ WoodpeckerServer::WoodpeckerServer() :
     //Tools::SessionsManager::ReadSessions_();
 }
 
-WoodpeckerServer::~WoodpeckerServer()
+NebulaAtom::~NebulaAtom()
 {
     //Poco::Net::uninitializeSSL();
     //Query::DatabaseManager::StopMySQL_();
 }
 
-void WoodpeckerServer::CustomHandlerCreator_(HandlerFactory::FunctionHandlerCreator handler_creator)
+void NebulaAtom::CustomHandlerCreator_(HandlerFactory::FunctionHandlerCreator handler_creator)
 {
     handler_factory_->set_handler_creator(std::move(handler_creator));
 }
 
-void WoodpeckerServer::AddHandler_(std::string route, HandlerFactory::FunctionHandler handler)
+void NebulaAtom::AddHandler_(std::string route, HandlerFactory::FunctionHandler handler)
 {
     std::vector<std::string> segments;
     URI(route).getPathSegments(segments);
@@ -52,18 +52,18 @@ void WoodpeckerServer::AddHandler_(std::string route, HandlerFactory::FunctionHa
     handler_factory_->get_connections().insert({route, Tools::HandlerConnection{requested_route, handler}});
 }
 
-void WoodpeckerServer::initialize(Application& self)
+void NebulaAtom::initialize(Application& self)
 {
     loadConfiguration();
     ServerApplication::initialize(self);
 }
 
-void WoodpeckerServer::uninitialize()
+void NebulaAtom::uninitialize()
 {
     ServerApplication::uninitialize();
 }
 
-int WoodpeckerServer::main(const std::vector<std::string>& args)
+int NebulaAtom::main(const std::vector<std::string>& args)
 {
     try
     {
@@ -111,7 +111,7 @@ int WoodpeckerServer::main(const std::vector<std::string>& args)
     return -1;
 }
 
-int WoodpeckerServer::Init_()
+int NebulaAtom::Init_()
 {
     server_->start();
     app_.logger().information("- Server started at port " + format("%d", settings_manager_.get_basic_properties_().port));

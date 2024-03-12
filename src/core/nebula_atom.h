@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_CORE_ATOMLIB
-#define ATOM_CORE_ATOMLIB
+#ifndef ATOM_CORE_NEBULAATOM
+#define ATOM_CORE_NEBULAATOM
 
 
 #include <string>
@@ -47,7 +47,7 @@ namespace Atom
 {
     namespace Core
     {
-        class WoodpeckerServer;
+        class NebulaAtom;
     }
 }
 
@@ -56,11 +56,11 @@ using namespace Poco::Net;
 using namespace Poco::Util;
 
 
-class AtomCore::WoodpeckerServer : public ServerApplication
+class Atom::Core::NebulaAtom : public ServerApplication
 {
     public:
-        WoodpeckerServer();
-        virtual ~WoodpeckerServer();
+        NebulaAtom();
+        virtual ~NebulaAtom();
 
         HTTPServerParams::Ptr get_server_params()
         {
@@ -108,4 +108,4 @@ class AtomCore::WoodpeckerServer : public ServerApplication
         Tools::SettingsManager settings_manager_;
 };
 
-#endif // ATOM_CORE_ATOMLIB
+#endif // ATOM_CORE_NEBULAATOM
