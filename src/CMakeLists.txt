@@ -1,7 +1,11 @@
 
 # Find packages
 
-include(${PROJECT_SOURCE_DIR}/cmake/FindMySQL.cmake)
+find_package(MySQL REQUIRED)
+if(NOT MySQL_FOUND)
+    message(FATAL_ERROR "MySQL not found")
+endif()
+list(APPEND HEADER ${MySQL_INCLUDE_DIRS})
 
 find_package(Poco REQUIRED COMPONENTS Foundation Net NetSSL Util Data DataMySQL)
 if(NOT Poco_FOUND)
@@ -27,8 +31,3 @@ add_subdirectory(query)
 add_subdirectory(security)
 add_subdirectory(tools)
 add_subdirectory(examples)
-
-## Main executable
-#add_executable(${PROJECT_NAME} "main.cpp")
-#target_include_directories(${PROJECT_NAME} PUBLIC ${HEADER})
-#target_link_libraries(${PROJECT_NAME} PUBLIC nebulaatom)
