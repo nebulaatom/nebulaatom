@@ -18,7 +18,7 @@
 
 #include "extras/session.h"
 
-using namespace CPW::Extras;
+using namespace AtomExtras;
 
 Session::Session() :
     id_("")

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_HTTP_SESSIONS_MANAGER_H
-#define CPW_HTTP_SESSIONS_MANAGER_H
+#ifndef ATOMHTTP_SESSIONS_MANAGER_H
+#define ATOMHTTP_SESSIONS_MANAGER_H
 
 
 #include <string>
@@ -35,27 +35,27 @@ namespace CPW
 }
 
 
-class CPW::Tools::SessionsManager
+class AtomTools::SessionsManager
 {
     public:
         SessionsManager();
         ~SessionsManager();
 
-        static std::map<std::string, CPW::Extras::Session>& get_sessions()
+        static std::map<std::string, AtomExtras::Session>& get_sessions()
         {
             auto& var = sessions_;
             return var;
         }
 
         static void ReadSessions_();
-        static CPW::Extras::Session& CreateSession_(std::string user, std::string path, int max_age);
+        static AtomExtras::Session& CreateSession_(std::string user, std::string path, int max_age);
         static void DeleteSession_(std::string id);
 
     protected:
         static bool SessionExists_(std::string id);
 
     private:
-        static std::map<std::string, CPW::Extras::Session> sessions_;
+        static std::map<std::string, AtomExtras::Session> sessions_;
 };
 
-#endif // CPW_HTTP_SESSIONS_MANAGER_H
+#endif // ATOMHTTP_SESSIONS_MANAGER_H

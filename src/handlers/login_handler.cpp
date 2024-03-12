@@ -18,7 +18,7 @@
 
 #include "handlers/login_handler.h"
 
-using namespace CPW::Handlers;
+using namespace AtomHandlers;
 
 LoginHandler::~LoginHandler()
 {

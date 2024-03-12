@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_FILTERS_SORT_FILTER_H
-#define CPW_FILTERS_SORT_FILTER_H
+#ifndef ATOMFILTERS_SORT_FILTER_H
+#define ATOMFILTERS_SORT_FILTER_H
 
 
 #include "filters/filter.h"
@@ -33,7 +33,7 @@ namespace CPW
 }
 
 
-class CPW::Filters::SortFilterElement
+class AtomFilters::SortFilterElement
 {
     public:
         enum class Type
@@ -64,7 +64,7 @@ class CPW::Filters::SortFilterElement
         std::map<std::string, Type> types_;
 };
 
-class CPW::Filters::SortFilter : Filters::Filter
+class AtomFilters::SortFilter : Filters::Filter
 {
     public:
         SortFilter();
@@ -84,4 +84,4 @@ class CPW::Filters::SortFilter : Filters::Filter
 };
 
 
-#endif // CPW_FILTERS_SORT_FILTER_H
+#endif // ATOMFILTERS_SORT_FILTER_H

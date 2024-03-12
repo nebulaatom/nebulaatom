@@ -4,9 +4,9 @@
 
 #include "files/file.h"
 
-using namespace CPW::Files;
+using namespace AtomFiles;
 
-CPW::Files::File::File() :
+AtomFiles::File::File() :
     content_length_(0)
     ,content_type_("")
     ,name_("")
@@ -19,7 +19,7 @@ CPW::Files::File::File() :
 
 }
 
-CPW::Files::File::File(std::string name, std::string filename, std::string content_type, std::size_t content_length) :
+AtomFiles::File::File(std::string name, std::string filename, std::string content_type, std::size_t content_length) :
     content_length_(content_length)
     ,content_type_(content_type)
     ,name_(name)

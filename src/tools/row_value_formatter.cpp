@@ -19,7 +19,7 @@
 
 #include "tools/row_value_formatter.h"
 
-using namespace CPW::Tools;
+using namespace AtomTools;
 
 RowValueFormatter::RowValueFormatter() :
     row_value_type_(RowValueType::kEmpty)

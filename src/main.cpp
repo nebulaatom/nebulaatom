@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		CPW::Core::WoodpeckerServer app_main;
+		AtomCore::WoodpeckerServer app_main;
 		return app_main.run(argc, argv);
 	}
     catch(MySQL::MySQLException& error)

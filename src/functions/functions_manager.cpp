@@ -1,7 +1,7 @@
 
 #include "functions/functions_manager.h"
 
-using namespace CPW::Functions;
+using namespace AtomFunctions;
 
 FunctionsManager::FunctionsManager()
 {

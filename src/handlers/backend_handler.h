@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_HANDLERS_BACKENDHANDLER_H
-#define CPW_HANDLERS_BACKENDHANDLER_H
+#ifndef ATOMHANDLERS_BACKENDHANDLER_H
+#define ATOMHANDLERS_BACKENDHANDLER_H
 
 
 #include "handlers/root_handler.h"
@@ -32,7 +32,7 @@ namespace CPW
 }
 
 
-class CPW::Handlers::BackendHandler : public RootHandler
+class AtomHandlers::BackendHandler : public RootHandler
 {
     public:
         using VectorShrResults = std::vector<std::shared_ptr<Query::Results>>;
@@ -54,4 +54,4 @@ class CPW::Handlers::BackendHandler : public RootHandler
         VectorShrResults shared_results_;
 };
 
-#endif // CPW_HANDLERS_BACKENDHANDLER_H
+#endif // ATOMHANDLERS_BACKENDHANDLER_H

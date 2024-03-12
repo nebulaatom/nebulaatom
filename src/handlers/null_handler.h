@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_HANDLERS_NULLHANDLER_H
-#define CPW_HANDLERS_NULLHANDLER_H
+#ifndef ATOMHANDLERS_NULLHANDLER_H
+#define ATOMHANDLERS_NULLHANDLER_H
 
 
 #include "handlers/root_handler.h"
@@ -32,7 +32,7 @@ namespace CPW
 }
 
 
-class CPW::Handlers::NullHandler :
+class AtomHandlers::NullHandler :
     public RootHandler
 {
     public:
@@ -51,4 +51,4 @@ class CPW::Handlers::NullHandler :
         void NullResponse_();
 };
 
-#endif // CPW_HANDLERS_NULLHANDLER_H
+#endif // ATOMHANDLERS_NULLHANDLER_H

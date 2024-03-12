@@ -18,7 +18,7 @@
 
 #include "security/security_verification.h"
 
-using namespace CPW::Extras;
+using namespace AtomExtras;
 
 SecurityVerification::SecurityVerification()
 {

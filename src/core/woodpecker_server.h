@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_CORE_WOODPECKERSERVER_H
-#define CPW_CORE_WOODPECKERSERVER_H
+#ifndef ATOMCORE_WOODPECKERSERVER_H
+#define ATOMCORE_WOODPECKERSERVER_H
 
 
 #include <string>
@@ -57,7 +57,7 @@ using namespace Poco::Net;
 using namespace Poco::Util;
 
 
-class CPW::Core::WoodpeckerServer : public ServerApplication
+class AtomCore::WoodpeckerServer : public ServerApplication
 {
     public:
         WoodpeckerServer();
@@ -109,4 +109,4 @@ class CPW::Core::WoodpeckerServer : public ServerApplication
         Tools::SettingsManager settings_manager_;
 };
 
-#endif // CPW_CORE_WOODPECKERSERVER_H
+#endif // ATOMCORE_WOODPECKERSERVER_H

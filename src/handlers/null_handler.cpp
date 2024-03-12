@@ -18,7 +18,7 @@
 
 #include "handlers/null_handler.h"
 
-using namespace CPW::Handlers;
+using namespace AtomHandlers;
 
 NullHandler::~NullHandler()
 {

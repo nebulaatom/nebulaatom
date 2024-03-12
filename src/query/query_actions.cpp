@@ -18,7 +18,7 @@
 
 #include "query/query_actions.h"
 
-using namespace CPW::Query;
+using namespace AtomQuery;
 
 QueryActions::QueryActions()
 {

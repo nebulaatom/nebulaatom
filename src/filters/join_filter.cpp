@@ -18,7 +18,7 @@
 
 #include "filters/join_filter.h"
 
-using namespace CPW::Filters;
+using namespace AtomFilters;
 
 JoinFilterElement::JoinFilterElement(std::string table, std::string as, std::list<OnElement> on, std::string type) :
     table_(table)

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_QUERY_RESULTS_H
-#define CPW_QUERY_RESULTS_H
+#ifndef ATOMQUERY_RESULTS_H
+#define ATOMQUERY_RESULTS_H
 
 
 #include <vector>
@@ -37,7 +37,7 @@ namespace CPW
 }
 
 
-class CPW::Query::ConditionalField
+class AtomQuery::ConditionalField
 {
     public:
         ConditionalField(std::size_t row, std::size_t column) : row_(row), column_(column) {}
@@ -53,7 +53,7 @@ class CPW::Query::ConditionalField
         std::size_t column_;
 };
 
-class CPW::Query::Field
+class AtomQuery::Field
 {
     public:
         Field(std::string column_name, Tools::RowValueFormatter value);
@@ -74,7 +74,7 @@ class CPW::Query::Field
         Tools::RowValueFormatter value_;
 };
 
-class CPW::Query::Row
+class AtomQuery::Row
 {
     public:
         Row();
@@ -91,7 +91,7 @@ class CPW::Query::Row
         std::vector<Field> fields_;
 };
 
-class CPW::Query::Results
+class AtomQuery::Results
 {
     public:
         Results();
@@ -108,4 +108,4 @@ class CPW::Query::Results
         std::vector<Row> rows_;
 };
 
-#endif // CPW_QUERY_RESULTS_H
+#endif // ATOMQUERY_RESULTS_H

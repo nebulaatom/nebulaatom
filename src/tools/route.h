@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_ROUTE_H
-#define CPW_ROUTE_H
+#ifndef ATOMROUTE_H
+#define ATOMROUTE_H
 
 
 #include <string>
@@ -39,14 +39,14 @@ namespace CPW
 using namespace Poco;
 
 
-enum class CPW::Tools::RouteType
+enum class AtomTools::RouteType
 {
     kEntrypoint
     ,kEndpoint
 };
 
 
-class CPW::Tools::Route
+class AtomTools::Route
 {
     public:
         Route();
@@ -71,4 +71,4 @@ class CPW::Tools::Route
         std::vector<std::string> segments_;
 };
 
-#endif // CPW_ROUTE_H
+#endif // ATOMROUTE_H

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_QUERY_PARAMETER_H
-#define CPW_QUERY_PARAMETER_H
+#ifndef ATOMQUERY_PARAMETER_H
+#define ATOMQUERY_PARAMETER_H
 
 
 #include <string>
@@ -36,13 +36,13 @@ namespace CPW
 }
 
 
-enum class CPW::Query::ParameterType
+enum class AtomQuery::ParameterType
 {
     kField
     ,kConditional
 };
 
-class CPW::Query::Parameter
+class AtomQuery::Parameter
 {
     public:
         Parameter(std::string name, Tools::RowValueFormatter value, bool editable);
@@ -78,4 +78,4 @@ class CPW::Query::Parameter
         std::string conditional_field_action_;
 };
 
-#endif // CPW_QUERY_PARAMETER_H
+#endif // ATOMQUERY_PARAMETER_H

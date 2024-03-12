@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_FILES_FILEPROPERTIES_H
-#define CPW_FILES_FILEPROPERTIES_H
+#ifndef ATOMFILES_FILEPROPERTIES_H
+#define ATOMFILES_FILEPROPERTIES_H
 
 
 #include <string>
@@ -33,7 +33,7 @@ namespace CPW
 }
 
 
-class CPW::Files::FileProperties
+class AtomFiles::FileProperties
 {
 	public:
 		FileProperties(std::string content_type, bool binary, std::vector<std::string> other_extensions);
@@ -61,4 +61,4 @@ class CPW::Files::FileProperties
 		std::vector<std::string> other_extensions_;
 };
 
-#endif // CPW_FILES_FILEPROPERTIES_H
+#endif // ATOMFILES_FILEPROPERTIES_H

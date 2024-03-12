@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_TOOLS_SETTINGS_MANAGER_H
-#define CPW_TOOLS_SETTINGS_MANAGER_H
+#ifndef ATOMTOOLS_SETTINGS_MANAGER_H
+#define ATOMTOOLS_SETTINGS_MANAGER_H
 
 
 #include <iostream>
@@ -49,7 +49,7 @@ using namespace Poco::Util;
 
 
 class SQLAction;
-class CPW::Tools::SettingsManager
+class AtomTools::SettingsManager
 {
     public:
         struct BasicProperties
@@ -81,4 +81,4 @@ class CPW::Tools::SettingsManager
         static BasicProperties basic_properties_;
 };
 
-#endif // CPW_TOOLS_SETTINGS_MANAGER_H
+#endif // ATOMTOOLS_SETTINGS_MANAGER_H

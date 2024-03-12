@@ -55,8 +55,8 @@ using namespace Poco::Data::Keywords;
 class DatabaseManager;
 class SettingsManager;
 
-class CPW::Functions::SQLAction :
-    public CPW::Functions::Action
+class AtomFunctions::SQLAction :
+    public AtomFunctions::Action
     ,public HTTP::CommonResponses
 {
     public:

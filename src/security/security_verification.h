@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_SECURITY_SECURITY_VERIFICATION_H
-#define CPW_SECURITY_SECURITY_VERIFICATION_H
+#ifndef ATOMSECURITY_SECURITY_VERIFICATION_H
+#define ATOMSECURITY_SECURITY_VERIFICATION_H
 
 
 #include <string>
@@ -43,13 +43,13 @@ namespace CPW
 using namespace Poco;
 
 
-enum class CPW::Extras::SecurityType
+enum class AtomExtras::SecurityType
 {
     kDisableAll
     ,kEnableAll
 };
 
-class CPW::Extras::SecurityVerification
+class AtomExtras::SecurityVerification
 {
     public:
         SecurityVerification();
@@ -83,4 +83,4 @@ class CPW::Extras::SecurityVerification
 };
 
 
-#endif // CPW_SECURITY_SECURITY_VERIFICATION_H
+#endif // ATOMSECURITY_SECURITY_VERIFICATION_H

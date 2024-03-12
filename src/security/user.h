@@ -33,7 +33,7 @@ namespace CPW
 }
 
 
-class CPW::Security::User
+class AtomSecurity::User
 {
     public:
         User();

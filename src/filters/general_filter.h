@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_FILTERS_GENERAL_FILTER_H
-#define CPW_FILTERS_GENERAL_FILTER_H
+#ifndef ATOMFILTERS_GENERAL_FILTER_H
+#define ATOMFILTERS_GENERAL_FILTER_H
 
 
 #include "filters/filter.h"
@@ -33,7 +33,7 @@ namespace CPW
 }
 
 
-class CPW::Filters::GeneralFilterElement
+class AtomFilters::GeneralFilterElement
 {
     public:
         enum class Type
@@ -62,7 +62,7 @@ class CPW::Filters::GeneralFilterElement
         bool editable_;
 };
 
-class CPW::Filters::GeneralFilter : Filters::Filter
+class AtomFilters::GeneralFilter : Filters::Filter
 {
     public:
         GeneralFilter();
@@ -86,4 +86,4 @@ class CPW::Filters::GeneralFilter : Filters::Filter
 };
 
 
-#endif // CPW_FILTERS_GENERAL_FILTER_H
+#endif // ATOMFILTERS_GENERAL_FILTER_H

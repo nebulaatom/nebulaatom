@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_EXTRAS_SESSION_H
-#define CPW_EXTRAS_SESSION_H
+#ifndef ATOMEXTRAS_SESSION_H
+#define ATOMEXTRAS_SESSION_H
 
 
 #include <string>
@@ -41,7 +41,7 @@ using namespace Poco;
 using namespace Poco::Net;
 
 
-class CPW::Extras::Session
+class AtomExtras::Session
 {
     public:
         Session();
@@ -95,4 +95,4 @@ class CPW::Extras::Session
 };
 
 
-#endif // CPW_EXTRAS_SESSION_H
+#endif // ATOMEXTRAS_SESSION_H

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_QUERY_CONDITION_H
-#define CPW_QUERY_CONDITION_H
+#ifndef ATOMQUERY_CONDITION_H
+#define ATOMQUERY_CONDITION_H
 
 
 #include "query/results.h"
@@ -34,7 +34,7 @@ namespace CPW
 }
 
 
-enum class CPW::Query::ConditionType
+enum class AtomQuery::ConditionType
 {
     kIqual
     ,kNoIqual
@@ -43,7 +43,7 @@ enum class CPW::Query::ConditionType
     ,kList
 };
 
-class CPW::Query::Condition
+class AtomQuery::Condition
 {
     public:
         Condition(ConditionType type, Tools::RowValueFormatter row_value, ConditionalField conditional_field);
@@ -78,4 +78,4 @@ class CPW::Query::Condition
         ConditionalField conditional_field_;
 };
 
-#endif // CPW_QUERY_CONDITION_H
+#endif // ATOMQUERY_CONDITION_H

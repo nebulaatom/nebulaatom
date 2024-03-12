@@ -18,7 +18,7 @@
 
 #include "filters/fields_filter.h"
 
-using namespace CPW::Filters;
+using namespace AtomFilters;
 
 FieldsFilterElement::FieldsFilterElement(std::string field) :
     field_(field)

@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_TOOLS_MANAGEJSON_H
-#define CPW_TOOLS_MANAGEJSON_H
+#ifndef ATOMTOOLS_MANAGEJSON_H
+#define ATOMTOOLS_MANAGEJSON_H
 
 
 #include <istream>
@@ -44,7 +44,7 @@ namespace CPW
 }
 
 
-class CPW::Tools::ManageJSON
+class AtomTools::ManageJSON
 {
     public:
         ManageJSON();
@@ -63,4 +63,4 @@ class CPW::Tools::ManageJSON
         std::string json_body_string_;
 };
 
-#endif // CPW_TOOLS_MANAGEJSON_H
+#endif // ATOMTOOLS_MANAGEJSON_H

@@ -18,7 +18,7 @@
 
 #include "filters/range_filter.h"
 
-using namespace CPW::Filters;
+using namespace AtomFilters;
 
 RangeFilterElement::RangeFilterElement(std::string col, Tools::RowValueFormatter value, std::string type) :
     col_(col)

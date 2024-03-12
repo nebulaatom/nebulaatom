@@ -2,8 +2,8 @@
 // SPDX-FileCopyrightText: 2022 <copyright holder> <email>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef CPW_TOOLS_HANDLERCONNECTION_H
-#define CPW_TOOLS_HANDLERCONNECTION_H
+#ifndef ATOMTOOLS_HANDLERCONNECTION_H
+#define ATOMTOOLS_HANDLERCONNECTION_H
 
 
 #include <functional>
@@ -22,17 +22,17 @@ namespace CPW
     }
 }
 
-class CPW::Tools::HandlerConnection
+class AtomTools::HandlerConnection
 {
     public:
-        using HandlerFunctor = std::function<CPW::Handlers::RootHandler*()>;
+        using HandlerFunctor = std::function<AtomHandlers::RootHandler*()>;
 
-        HandlerConnection(CPW::Tools::Route route, HandlerFunctor handler);
+        HandlerConnection(AtomTools::Route route, HandlerFunctor handler);
         ~HandlerConnection();
 
-        CPW::Tools::Route current_route_;
+        AtomTools::Route current_route_;
         HandlerFunctor return_handler_;
 };
 
 
-#endif // CPW_TOOLS_HANDLERCONNECTION_H
+#endif // ATOMTOOLS_HANDLERCONNECTION_H

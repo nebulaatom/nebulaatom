@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_FILTERS_JOIN_FILTER_H
-#define CPW_FILTERS_JOIN_FILTER_H
+#ifndef ATOMFILTERS_JOIN_FILTER_H
+#define ATOMFILTERS_JOIN_FILTER_H
 
 
 #include "filters/filter.h"
@@ -33,7 +33,7 @@ namespace CPW
 }
 
 
-class CPW::Filters::JoinFilterElement
+class AtomFilters::JoinFilterElement
 {
     public:
         enum class Type
@@ -82,7 +82,7 @@ class CPW::Filters::JoinFilterElement
         std::map<std::string, Type> types_;
 };
 
-class CPW::Filters::JoinFilter : Filters::Filter
+class AtomFilters::JoinFilter : Filters::Filter
 {
     public:
         JoinFilter();
@@ -102,4 +102,4 @@ class CPW::Filters::JoinFilter : Filters::Filter
 };
 
 
-#endif // CPW_FILTERS_JOIN_FILTER_H
+#endif // ATOMFILTERS_JOIN_FILTER_H

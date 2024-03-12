@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_FILTERS_IQUALS_FILTER_H
-#define CPW_FILTERS_IQUALS_FILTER_H
+#ifndef ATOMFILTERS_IQUALS_FILTER_H
+#define ATOMFILTERS_IQUALS_FILTER_H
 
 
 #include "filters/filter.h"
@@ -33,7 +33,7 @@ namespace CPW
 }
 
 
-class CPW::Filters::IqualsFilterElement
+class AtomFilters::IqualsFilterElement
 {
     public:
         enum class Type
@@ -64,7 +64,7 @@ class CPW::Filters::IqualsFilterElement
         bool editable_;
 };
 
-class CPW::Filters::IqualsFilter : Filters::Filter
+class AtomFilters::IqualsFilter : Filters::Filter
 {
     public:
         IqualsFilter();
@@ -87,4 +87,4 @@ class CPW::Filters::IqualsFilter : Filters::Filter
 };
 
 
-#endif // CPW_FILTERS_IQUALS_FILTER_H
+#endif // ATOMFILTERS_IQUALS_FILTER_H

@@ -18,7 +18,7 @@
 
 #include "handlers/backend_handler.h"
 
-using namespace CPW::Handlers;
+using namespace AtomHandlers;
 
 BackendHandler::~BackendHandler()
 {

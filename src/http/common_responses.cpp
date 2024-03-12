@@ -18,7 +18,7 @@
 
 #include "http/common_responses.h"
 
-using namespace CPW::HTTP;
+using namespace AtomHTTP;
 
 CommonResponses::CommonResponses()
 {

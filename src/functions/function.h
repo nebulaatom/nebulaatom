@@ -1,6 +1,6 @@
 
-#ifndef CPW_FUNCTIONS_FUNCTION_H
-#define CPW_FUNCTIONS_FUNCTION_H
+#ifndef ATOMFUNCTIONS_FUNCTION_H
+#define ATOMFUNCTIONS_FUNCTION_H
 
 
 #include <string>
@@ -21,7 +21,7 @@ namespace CPW
 }
 
 
-class CPW::Functions::Function
+class AtomFunctions::Function
 {
     public:
         using ActionPtr = std::shared_ptr<Action>;
@@ -67,4 +67,4 @@ class CPW::Functions::Function
 };
 
 
-#endif // CPW_FUNCTIONS_FUNCTION_H
+#endif // ATOMFUNCTIONS_FUNCTION_H

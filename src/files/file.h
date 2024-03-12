@@ -2,8 +2,8 @@
 // SPDX-FileCopyrightText: 2022 <copyright holder> <email>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef CPW_FILES_FILE_H
-#define CPW_FILES_FILE_H
+#ifndef ATOMFILES_FILE_H
+#define ATOMFILES_FILE_H
 
 
 #include <string>
@@ -27,14 +27,14 @@ namespace CPW
 using namespace Poco;
 
 
-enum class CPW::Files::FileType
+enum class AtomFiles::FileType
 {
     kBinary
     ,kTextPlain
 };
 
 
-class CPW::Files::File
+class AtomFiles::File
 {
     public:
         File();
@@ -84,4 +84,4 @@ class CPW::Files::File
         std::shared_ptr<Poco::File> tmp_file_;
 };
 
-#endif // CPW_FILES_FILE_H
+#endif // ATOMFILES_FILE_H

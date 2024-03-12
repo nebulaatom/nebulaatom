@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_HANDLERS_LOGINHANDLER_H
-#define CPW_HANDLERS_LOGINHANDLER_H
+#ifndef ATOMHANDLERS_LOGINHANDLER_H
+#define ATOMHANDLERS_LOGINHANDLER_H
 
 
 #include "handlers/root_handler.h"
@@ -32,7 +32,7 @@ namespace CPW
 }
 
 
-class CPW::Handlers::LoginHandler :
+class AtomHandlers::LoginHandler :
     public RootHandler
 {
     public:
@@ -53,4 +53,4 @@ class CPW::Handlers::LoginHandler :
     private:
 };
 
-#endif // CPW_HANDLERS_LOGINHANDLER_H
+#endif // ATOMHANDLERS_LOGINHANDLER_H

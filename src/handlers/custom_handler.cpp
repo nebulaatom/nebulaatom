@@ -19,7 +19,7 @@
 #include "handlers/custom_handler.h"
 #include "handlers/root_handler.h"
 
-using namespace CPW::Handlers;
+using namespace AtomHandlers;
 
 CustomHandler::CustomHandler(std::function<void(CustomHandler&)> process_function) :  
     RootHandler()

@@ -18,7 +18,7 @@
 
 #include "filters/values_filter.h"
 
-using namespace CPW::Filters;
+using namespace AtomFilters;
 
 ValuesFilterElement::ValuesFilterElement(Tools::RowValueFormatter value) :
     value_(value)

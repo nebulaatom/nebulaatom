@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_FILTERS_FILTERS_MANAGER_H
-#define CPW_FILTERS_FILTERS_MANAGER_H
+#ifndef ATOMFILTERS_FILTERS_MANAGER_H
+#define ATOMFILTERS_FILTERS_MANAGER_H
 
 
 #include <string>
@@ -47,10 +47,10 @@ namespace CPW
 }
 
 
-using namespace CPW::Extras;
+using namespace AtomExtras;
 
 
-class CPW::Filters::FiltersManager
+class AtomFilters::FiltersManager
 {
     public:
         using ValuesPropertiesVector = std::vector<ValuesProperties>;
@@ -139,4 +139,4 @@ class CPW::Filters::FiltersManager
 };
 
 
-#endif // CPW_FILTERS_FILTERS_MANAGER_H
+#endif // ATOMFILTERS_FILTERS_MANAGER_H

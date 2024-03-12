@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_HANDLERS_CUSTOM_HANDLER_H
-#define CPW_HANDLERS_CUSTOM_HANDLER_H
+#ifndef ATOMHANDLERS_CUSTOM_HANDLER_H
+#define ATOMHANDLERS_CUSTOM_HANDLER_H
 
 
 #include "handlers/root_handler.h"
@@ -32,7 +32,7 @@ namespace CPW
 }
 
 
-class CPW::Handlers::CustomHandler :
+class AtomHandlers::CustomHandler :
     public RootHandler
 {
     public:
@@ -57,4 +57,4 @@ class CPW::Handlers::CustomHandler :
         std::function<void(CustomHandler&)> process_function_;
 };
 
-#endif // CPW_HANDLERS_CUSTOM_HANDLER_H
+#endif // ATOMHANDLERS_CUSTOM_HANDLER_H

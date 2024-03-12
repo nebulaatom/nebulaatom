@@ -18,7 +18,7 @@
 
 #include "woodpecker_server.h"
 
-using namespace CPW::Core;
+using namespace AtomCore;
 
 WoodpeckerServer::WoodpeckerServer() :
     server_params_(new HTTPServerParams())

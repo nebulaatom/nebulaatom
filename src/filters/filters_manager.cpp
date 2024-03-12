@@ -18,7 +18,7 @@
 
 #include "filters/filters_manager.h"
 
-using namespace CPW::Filters;
+using namespace AtomFilters;
 
 FiltersManager::FiltersManager()
 {

@@ -18,7 +18,7 @@
 
 #include "extras/values_properties.h"
 
-using namespace CPW::Extras;
+using namespace AtomExtras;
 
 ValuesProperties::ValuesProperties() :
     value_("")

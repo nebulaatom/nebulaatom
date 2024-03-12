@@ -18,7 +18,7 @@
 
 #include "filters/like_filter.h"
 
-using namespace CPW::Filters;
+using namespace AtomFilters;
 
 LikeFilterElement::LikeFilterElement(std::string col, Tools::RowValueFormatter value, std::string type) :
     col_(col)

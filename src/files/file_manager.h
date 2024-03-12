@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_FILES_FILEMANAGER_H
-#define CPW_FILES_FILEMANAGER_H
+#ifndef ATOMFILES_FILEMANAGER_H
+#define ATOMFILES_FILEMANAGER_H
 
 
 #include <string>
@@ -61,7 +61,7 @@ using namespace Poco;
 using namespace Poco::Net;
 
 
-enum class CPW::Files::OperationType
+enum class AtomFiles::OperationType
 {
     kDownload
     ,kUpload
@@ -69,7 +69,7 @@ enum class CPW::Files::OperationType
 };
 
 
-class CPW::Files::FileManager: public Net::PartHandler
+class AtomFiles::FileManager: public Net::PartHandler
 {
     public:
         FileManager();
@@ -122,4 +122,4 @@ class CPW::Files::FileManager: public Net::PartHandler
         Tools::SettingsManager settings_manager_;
 };
 
-#endif // CPW_FILES_FILEMANAGER_H
+#endif // ATOMFILES_FILEMANAGER_H

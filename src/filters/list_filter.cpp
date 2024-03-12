@@ -18,7 +18,7 @@
 
 #include "filters/list_filter.h"
 
-using namespace CPW::Filters;
+using namespace AtomFilters;
 
 ListFilterElement::ListFilterElement(std::string col, std::list<Tools::RowValueFormatter> values, std::string type) :
     col_(col)

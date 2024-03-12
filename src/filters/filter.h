@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_FILTERS_FILTER_H
-#define CPW_FILTERS_FILTER_H
+#ifndef ATOMFILTERS_FILTER_H
+#define ATOMFILTERS_FILTER_H
 
 
 #include <string>
@@ -57,10 +57,10 @@ namespace CPW
 
 using namespace Poco;
 
-using namespace CPW::Extras;
+using namespace AtomExtras;
 
 
-enum class CPW::Filters::FilterType
+enum class AtomFilters::FilterType
 {
     kUnknown
     ,kFields
@@ -77,7 +77,7 @@ enum class CPW::Filters::FilterType
 };
 
 
-class CPW::Filters::Filter
+class AtomFilters::Filter
 {
     public:
         using RowValueFormatterList = std::list<Tools::RowValueFormatter>;
@@ -111,4 +111,4 @@ class CPW::Filters::Filter
 };
 
 
-#endif // CPW_FILTERS_FILTER_H
+#endif // ATOMFILTERS_FILTER_H

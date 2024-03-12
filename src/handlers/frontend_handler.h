@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_HANDLERS_FRONTENDHANDLER_H
-#define CPW_HANDLERS_FRONTENDHANDLER_H
+#ifndef ATOMHANDLERS_FRONTENDHANDLER_H
+#define ATOMHANDLERS_FRONTENDHANDLER_H
 
 #include <string>
 #include <map>
@@ -36,7 +36,7 @@ namespace CPW
 }
 
 
-class CPW::Handlers::FrontendHandler :
+class AtomHandlers::FrontendHandler :
     public RootHandler
 {
     public:
@@ -55,4 +55,4 @@ class CPW::Handlers::FrontendHandler :
         Files::FileManager file_manager_;
 };
 
-#endif // CPW_HANDLERS_FRONTENDHANDLER_H
+#endif // ATOMHANDLERS_FRONTENDHANDLER_H

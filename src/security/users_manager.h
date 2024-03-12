@@ -38,7 +38,7 @@ namespace CPW
 }
 
 
-class CPW::Security::UsersManager
+class AtomSecurity::UsersManager
 {
     public:
         UsersManager();

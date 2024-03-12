@@ -18,7 +18,7 @@
 
 #include "security/users_manager.h"
 
-using namespace CPW::Security;
+using namespace AtomSecurity;
 
 UsersManager::UsersManager()
 {

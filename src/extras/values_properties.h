@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_EXTRAS_VALUESPROPERTIES_H
-#define CPW_EXTRAS_VALUESPROPERTIES_H
+#ifndef ATOMEXTRAS_VALUESPROPERTIES_H
+#define ATOMEXTRAS_VALUESPROPERTIES_H
 
 
 #include <string>
@@ -32,7 +32,7 @@ namespace CPW
     }
 }
 
-class CPW::Extras::ValuesProperties
+class AtomExtras::ValuesProperties
 {
     public:
         ValuesProperties();
@@ -89,4 +89,4 @@ class CPW::Extras::ValuesProperties
         bool quotes_;
 };
 
-#endif // CPW_EXTRAS_VALUESPROPERTIES_H
+#endif // ATOMEXTRAS_VALUESPROPERTIES_H

@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_QUERY_QUERYACTIONS_H
-#define CPW_QUERY_QUERYACTIONS_H
+#ifndef ATOMQUERY_QUERYACTIONS_H
+#define ATOMQUERY_QUERYACTIONS_H
 
 
 #include <istream>
@@ -60,7 +60,7 @@ namespace CPW
 }
 
 
-class CPW::Query::QueryActions
+class AtomQuery::QueryActions
 {
     public:
         QueryActions();
@@ -68,4 +68,4 @@ class CPW::Query::QueryActions
 };
 
 
-#endif // CPW_QUERY_QUERYACTIONS_H
+#endif // ATOMQUERY_QUERYACTIONS_H

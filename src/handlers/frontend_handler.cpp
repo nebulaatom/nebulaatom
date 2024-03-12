@@ -18,7 +18,7 @@
 
 #include "handlers/frontend_handler.h"
 
-using namespace CPW::Handlers;
+using namespace AtomHandlers;
 
 FrontendHandler::FrontendHandler() :
     RootHandler()

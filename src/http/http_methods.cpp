@@ -18,7 +18,7 @@
 
 #include "http/http_methods.h"
 
-using namespace CPW::HTTP;
+using namespace AtomHTTP;
 
 HTTPMethods::HTTPMethods()
 {

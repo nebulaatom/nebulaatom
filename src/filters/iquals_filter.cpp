@@ -18,7 +18,7 @@
 
 #include "filters/iquals_filter.h"
 
-using namespace CPW::Filters;
+using namespace AtomFilters;
 
 IqualsFilterElement::IqualsFilterElement(std::string col, Tools::RowValueFormatter value, Type type) :
     col_(col)

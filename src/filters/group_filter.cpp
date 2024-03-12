@@ -18,7 +18,7 @@
 
 #include "filters/group_filter.h"
 
-using namespace CPW::Filters;
+using namespace AtomFilters;
 
 GroupFilterElement::GroupFilterElement(std::string col, std::string type) :
     col_(col)

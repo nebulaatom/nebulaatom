@@ -17,8 +17,8 @@
  */
 
 
-#ifndef CPW_TOOLS_ROWVALUEFORMATTER_H
-#define CPW_TOOLS_ROWVALUEFORMATTER_H
+#ifndef ATOMTOOLS_ROWVALUEFORMATTER_H
+#define ATOMTOOLS_ROWVALUEFORMATTER_H
 
 
 #include <string>
@@ -43,7 +43,7 @@ namespace CPW
 using namespace Poco;
 
 
-enum class CPW::Tools::RowValueType
+enum class AtomTools::RowValueType
 {
     kEmpty
     ,kString
@@ -52,7 +52,7 @@ enum class CPW::Tools::RowValueType
     ,kBoolean
 };
 
-class CPW::Tools::RowValueFormatter
+class AtomTools::RowValueFormatter
 {
     public:
         RowValueFormatter();
@@ -106,4 +106,4 @@ class CPW::Tools::RowValueFormatter
 };
 
 
-#endif // CPW_TOOLS_ROWVALUEFORMATTER_H
+#endif // ATOMTOOLS_ROWVALUEFORMATTER_H

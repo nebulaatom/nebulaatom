@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_HANDLERS_ROOTHANDLER_H
-#define CPW_HANDLERS_ROOTHANDLER_H
+#ifndef ATOMHANDLERS_ROOTHANDLER_H
+#define ATOMHANDLERS_ROOTHANDLER_H
 
 
 #include <istream>
@@ -89,7 +89,7 @@ using Poco::Data::Session;
 using Poco::Data::Statement;
 
 
-class CPW::Handlers::RootHandler :
+class AtomHandlers::RootHandler :
     public HTTPRequestHandler
     ,public HTTP::CommonResponses
     ,public HTTP::HTTPMethods
@@ -118,7 +118,7 @@ class CPW::Handlers::RootHandler :
             auto& var = routes_list_;
             return var;
         }
-        std::shared_ptr<CPW::Tools::Route>& get_requested_route()
+        std::shared_ptr<AtomTools::Route>& get_requested_route()
         {
             auto& var = requested_route_;
             return var;
@@ -165,9 +165,9 @@ class CPW::Handlers::RootHandler :
         HTTPServerRequest* request_;
         HTTPServerResponse* response_;
         std::list<Tools::Route> routes_list_;
-        std::shared_ptr<CPW::Tools::Route> requested_route_;
+        std::shared_ptr<AtomTools::Route> requested_route_;
         Functions::FunctionsManager functions_manager_;
         Functions::Function current_function_;
 };
 
-#endif // CPW_HANDLERS_ROOTHANDLER_H
+#endif // ATOMHANDLERS_ROOTHANDLER_H

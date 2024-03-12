@@ -1,6 +1,6 @@
 
-#ifndef CPW_FUNCTIONS_FUNCTIONS_MANAGER_H
-#define CPW_FUNCTIONS_FUNCTIONS_MANAGER_H
+#ifndef ATOMFUNCTIONS_FUNCTIONS_MANAGER_H
+#define ATOMFUNCTIONS_FUNCTIONS_MANAGER_H
 
 
 #include <string>
@@ -18,7 +18,7 @@ namespace CPW
 }
 
 
-class CPW::Functions::FunctionsManager
+class AtomFunctions::FunctionsManager
 {
     public:
         FunctionsManager();
@@ -33,4 +33,4 @@ class CPW::Functions::FunctionsManager
         std::map<std::string, Functions::Function> functions_;
 };
 
-#endif // CPW_FUNCTIONS_FUNCTIONS_MANAGER_H
+#endif // ATOMFUNCTIONS_FUNCTIONS_MANAGER_H

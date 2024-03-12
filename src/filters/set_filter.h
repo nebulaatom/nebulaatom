@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_FILTERS_SET_FILTER_H
-#define CPW_FILTERS_SET_FILTER_H
+#ifndef ATOMFILTERS_SET_FILTER_H
+#define ATOMFILTERS_SET_FILTER_H
 
 
 #include "filters/filter.h"
@@ -33,7 +33,7 @@ namespace CPW
 }
 
 
-class CPW::Filters::SetFilterElement
+class AtomFilters::SetFilterElement
 {
     public:
         SetFilterElement(std::string col, Tools::RowValueFormatter);
@@ -52,7 +52,7 @@ class CPW::Filters::SetFilterElement
         Tools::RowValueFormatter value_;
 };
 
-class CPW::Filters::SetFilter : Filters::Filter
+class AtomFilters::SetFilter : Filters::Filter
 {
     public:
         SetFilter();
@@ -72,4 +72,4 @@ class CPW::Filters::SetFilter : Filters::Filter
 };
 
 
-#endif // CPW_FILTERS_SET_FILTER_H
+#endif // ATOMFILTERS_SET_FILTER_H

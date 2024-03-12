@@ -18,8 +18,8 @@
 
 #include "filters/filter.h"
 
-using namespace CPW::Filters;
-using namespace CPW::Extras;
+using namespace AtomFilters;
+using namespace AtomExtras;
 
 Filter::Filter() :
     current_filter_type_(FilterType::kUnknown)
@@ -52,7 +52,7 @@ bool Filter::FindAND_(VectorString& tmp_query)
     return true;
 }
 
-CPW::Extras::ValuesProperties Filter::GetValueProperties_(Dynamic::Var& var)
+AtomExtras::ValuesProperties Filter::GetValueProperties_(Dynamic::Var& var)
 {
     Tools::RowValueFormatter row(var);
     row.Format_();

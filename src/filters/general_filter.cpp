@@ -18,7 +18,7 @@
 
 #include "filters/general_filter.h"
 
-using namespace CPW::Filters;
+using namespace AtomFilters;
 
 GeneralFilterElement::GeneralFilterElement(Tools::RowValueFormatter value, Type type) :
     value_(value)

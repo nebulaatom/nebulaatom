@@ -3,7 +3,7 @@
 #include "Poco/JSON/Object.h"
 #include "Poco/Util/Application.h"
 
-using namespace CPW::Functions;
+using namespace AtomFunctions;
 
 Action::Action(std::string identifier) :
     app_(Application::instance())

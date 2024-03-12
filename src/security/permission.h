@@ -38,7 +38,7 @@ namespace CPW
 }
 
 
-enum class CPW::Security::ActionType
+enum class AtomSecurity::ActionType
 {
     kCreate
     ,kRead
@@ -46,7 +46,7 @@ enum class CPW::Security::ActionType
     ,kDelete
 };
 
-class CPW::Security::Permission
+class AtomSecurity::Permission
 {
     public:
         Permission();

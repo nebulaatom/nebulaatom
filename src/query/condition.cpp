@@ -2,7 +2,7 @@
 #include "query/condition.h"
 #include "tools/row_value_formatter.h"
 
-using namespace CPW::Query;
+using namespace AtomQuery;
 
 Condition::Condition(ConditionType type, Tools::RowValueFormatter row_value, ConditionalField conditional_field) :
     type_(type)

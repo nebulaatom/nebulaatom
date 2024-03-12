@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_HTTP_COMMONRESPONSES_H
-#define CPW_HTTP_COMMONRESPONSES_H
+#ifndef ATOMHTTP_COMMONRESPONSES_H
+#define ATOMHTTP_COMMONRESPONSES_H
 
 
 #include <string>
@@ -44,7 +44,7 @@ using namespace Poco;
 using namespace Poco::Net;
 
 
-enum class CPW::HTTP::ResponseType
+enum class AtomHTTP::ResponseType
 {
     kError
     ,kWarning
@@ -52,7 +52,7 @@ enum class CPW::HTTP::ResponseType
     ,kSuccess
 };
 
-enum class CPW::HTTP::Status
+enum class AtomHTTP::Status
 {
     kOK = 200
     ,kHTTP_BAD_REQUEST = 400
@@ -64,7 +64,7 @@ enum class CPW::HTTP::Status
     ,kHTTP_SERVICE_UNAVAILABLE = 503
 };
 
-class CPW::HTTP::CommonResponses
+class AtomHTTP::CommonResponses
 {
     public:
         struct Attributes
@@ -100,4 +100,4 @@ class CPW::HTTP::CommonResponses
         std::map<HTTP::Status, Attributes> responses_;
 };
 
-#endif // CPW_HTTP_COMMONRESPONSES_H
+#endif // ATOMHTTP_COMMONRESPONSES_H

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_QUERY_DATABASE_MANAGER_H
-#define CPW_QUERY_DATABASE_MANAGER_H
+#ifndef ATOMQUERY_DATABASE_MANAGER_H
+#define ATOMQUERY_DATABASE_MANAGER_H
 
 
 #include <iostream>
@@ -46,7 +46,7 @@ using namespace Poco::Data;
 using namespace Poco::Data::Keywords;
 
 class SettingsManager;
-class CPW::Query::DatabaseManager
+class AtomQuery::DatabaseManager
 {
     public:
         DatabaseManager();
@@ -61,4 +61,4 @@ class CPW::Query::DatabaseManager
 
 };
 
-#endif // CPW_QUERY_DATABASE_MANAGER_H
+#endif // ATOMQUERY_DATABASE_MANAGER_H

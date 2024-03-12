@@ -18,7 +18,7 @@
 
 #include "filters/sort_filter.h"
 
-using namespace CPW::Filters;
+using namespace AtomFilters;
 
 SortFilterElement::SortFilterElement(std::string col, std::string type) :
     col_(col)

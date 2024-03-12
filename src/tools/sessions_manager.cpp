@@ -21,9 +21,9 @@
 #include "query/parameter.h"
 #include "tools/row_value_formatter.h"
 
-using namespace CPW::Tools;
+using namespace AtomTools;
 
-std::map<std::string, CPW::Extras::Session> SessionsManager::sessions_ = {};
+std::map<std::string, AtomExtras::Session> SessionsManager::sessions_ = {};
 
 SessionsManager::SessionsManager()
 {
@@ -87,7 +87,7 @@ void SessionsManager::ReadSessions_()
     }
 }
 
-CPW::Extras::Session& SessionsManager::CreateSession_(std::string user, std::string path, int max_age)
+AtomExtras::Session& SessionsManager::CreateSession_(std::string user, std::string path, int max_age)
 {
     Extras::Session new_session;
     new_session.set_user(user);

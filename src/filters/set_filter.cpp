@@ -18,7 +18,7 @@
 
 #include "filters/set_filter.h"
 
-using namespace CPW::Filters;
+using namespace AtomFilters;
 
 SetFilterElement::SetFilterElement(std::string col, Tools::RowValueFormatter value) :
     col_(col)

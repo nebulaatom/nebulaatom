@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_HTTP_HTTPMETHODS_H
-#define CPW_HTTP_HTTPMETHODS_H
+#ifndef ATOMHTTP_HTTPMETHODS_H
+#define ATOMHTTP_HTTPMETHODS_H
 
 
 namespace CPW
@@ -29,7 +29,7 @@ namespace CPW
 }
 
 
-class CPW::HTTP::HTTPMethods
+class AtomHTTP::HTTPMethods
 {
     public:
         HTTPMethods();
@@ -43,4 +43,4 @@ class CPW::HTTP::HTTPMethods
 
 };
 
-#endif // CPW_HTTP_HTTPMETHODS_H
+#endif // ATOMHTTP_HTTPMETHODS_H

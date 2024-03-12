@@ -42,7 +42,7 @@ namespace CPW
 using namespace Poco;
 
 
-class CPW::Security::PermissionsManager
+class AtomSecurity::PermissionsManager
 {
     public:
         using PermissionToLoad = Poco::Tuple<std::string, std::string, std::string, int, std::string, bool, bool>;

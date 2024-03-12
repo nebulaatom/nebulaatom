@@ -20,7 +20,7 @@
 #include "tools/settings_manager.h"
 
 using namespace CPW;
-using namespace CPW::Query;
+using namespace AtomQuery;
 
 bool DatabaseManager::initialized_ = false;
 

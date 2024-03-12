@@ -85,7 +85,7 @@ int main(int argc, char** argv)
             // Set route
             std::vector<std::string> segments;
             URI(request.getURI()).getPathSegments(segments);
-            CPW::Tools::Route requested_route(segments);
+            AtomTools::Route requested_route(segments);
 
             // Login/logout routes
             std::vector<std::string> login_route({"api", "system", "login"});

@@ -18,7 +18,7 @@
 
 #include "security/user.h"
 
-using namespace CPW::Security;
+using namespace AtomSecurity;
 
 User::User() :
     id_(-1)

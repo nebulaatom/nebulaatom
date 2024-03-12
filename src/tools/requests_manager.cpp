@@ -18,7 +18,7 @@
 
 #include "tools/requests_manager.h"
 
-using namespace CPW::Tools;
+using namespace AtomTools;
 
 RequestsManager::RequestsManager()
 {

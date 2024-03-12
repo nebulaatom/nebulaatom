@@ -19,7 +19,7 @@
 #include "security/permissions_manager.h"
 
 using namespace CPW;
-using namespace CPW::Security;
+using namespace AtomSecurity;
 
 std::list<Permission> PermissionsManager::permissions_ = {};
 std::map<std::string, ActionType> PermissionsManager::action_type_map_ = {};

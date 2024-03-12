@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_CORE_HANDLER_FACTORY_H
-#define CPW_CORE_HANDLER_FACTORY_H
+#ifndef ATOMCORE_HANDLER_FACTORY_H
+#define ATOMCORE_HANDLER_FACTORY_H
 
 
 #include <map>
@@ -67,13 +67,13 @@ namespace CPW
     }
 }
 
-class CPW::Core::HandlerFactory :
+class AtomCore::HandlerFactory :
     public HTTPRequestHandlerFactory
-    ,public CPW::HTTP::CommonResponses
+    ,public AtomHTTP::CommonResponses
 {
     public:
-        using FunctionHandler = std::function<CPW::Handlers::RootHandler*()>;
-        using FunctionHandlerCreator = std::function<CPW::Handlers::RootHandler*(const HTTPServerRequest& request)>;
+        using FunctionHandler = std::function<AtomHandlers::RootHandler*()>;
+        using FunctionHandlerCreator = std::function<AtomHandlers::RootHandler*(const HTTPServerRequest& request)>;
         using Connections = std::map<std::string, Tools::HandlerConnection>;
 
         HandlerFactory();
@@ -100,4 +100,4 @@ class CPW::Core::HandlerFactory :
         Application& app_;
 };
 
-#endif // CPW_CORE_HANDLER_FACTORY_H
+#endif // ATOMCORE_HANDLER_FACTORY_H
