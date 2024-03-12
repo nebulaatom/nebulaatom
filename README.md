@@ -9,7 +9,7 @@
 
 ## Introduction
 
-Developed, designed and made by the **Software Developers Team** of CPW Online | [CPW Online website](https://cpwonline.org)
+Developed, designed and made by the **Software Developers Team** of NebulaCSF | [NebulaCSF website](https://cpwonline.org)
 
 Hello! Thank you for using this software, developed with a lot of effort and affection for the Free Software community.
 
@@ -74,14 +74,14 @@ sudo make install
 If you want to help us financially we accept your donations using
 Paypal and performing the following steps:
 
-1. Access the following URL from your browser: [PayPal - CPW Online](https://paypal.me/cpwonline)
+1. Access the following URL from your browser: [PayPal - NebulaCSF](https://paypal.me/cpwonline)
 2. Let yourself go ;)
 
 ## Contact
 
 - **GitHub**: [@cpwonline](https://www.github.com/cpwonline)
-- **Web**: [CPW Online](https://www.cpwonline.org)
-- **Email**: [CPW Online](mailto:support@cpwonline.org)
+- **Web**: [NebulaCSF](https://www.cpwonline.org)
+- **Email**: [NebulaCSF](mailto:support@cpwonline.org)
 
 ## License
 
