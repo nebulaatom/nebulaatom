@@ -18,7 +18,7 @@
 
 #include "extras/session.h"
 
-using namespace AtomExtras;
+using namespace Atom::Extras;
 
 Session::Session() :
     id_("")

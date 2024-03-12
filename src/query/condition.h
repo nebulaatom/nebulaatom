@@ -34,7 +34,7 @@ namespace Atom
 }
 
 
-enum class AtomQuery::ConditionType
+enum class Atom::Query::ConditionType
 {
     kIqual
     ,kNoIqual
@@ -43,7 +43,7 @@ enum class AtomQuery::ConditionType
     ,kList
 };
 
-class AtomQuery::Condition
+class Atom::Query::Condition
 {
     public:
         Condition(ConditionType type, Tools::RowValueFormatter row_value, ConditionalField conditional_field);

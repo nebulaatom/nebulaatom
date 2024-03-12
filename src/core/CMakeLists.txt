@@ -10,13 +10,12 @@ set_target_properties(handlerfactory PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
 ## Shared and statics libraries
 
-### woodpeckerserver
-add_library(woodpeckerserver STATIC "woodpecker_server.cpp")
-target_include_directories(woodpeckerserver PUBLIC ${HEADER})
+### nebulaatom
+add_library(nebulaatom STATIC "nebula_atom.cpp")
+target_include_directories(nebulaatom PUBLIC ${HEADER})
 target_link_libraries(
-    woodpeckerserver
+    nebulaatom
     handlerfactory
-    queryactions
     httpmethods
     securityverification
     roothandler
@@ -26,7 +25,6 @@ target_link_libraries(
     frontendhandler
     route
     commonresponses
-    #filtersmanager
     managejson
     requestsmanager
     handlerconnection
@@ -58,4 +56,4 @@ target_link_libraries(
     yaml-cpp::yaml-cpp
 )
 
-target_include_directories(woodpeckerserver PUBLIC ${HEADER})
+target_include_directories(nebulaatom PUBLIC ${HEADER})

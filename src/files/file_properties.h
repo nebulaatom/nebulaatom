@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOMFILES_FILEPROPERTIES
-#define ATOMFILES_FILEPROPERTIES
+#ifndef ATOM_FILES_FILEPROPERTIES
+#define ATOM_FILES_FILEPROPERTIES
 
 
 #include <string>
@@ -32,7 +32,7 @@ namespace Atom
 }
 
 
-class AtomFiles::FileProperties
+class Atom::Files::FileProperties
 {
 	public:
 		FileProperties(std::string content_type, bool binary, std::vector<std::string> other_extensions);
@@ -60,4 +60,4 @@ class AtomFiles::FileProperties
 		std::vector<std::string> other_extensions_;
 };
 
-#endif // ATOMFILES_FILEPROPERTIES
+#endif // ATOM_FILES_FILEPROPERTIES

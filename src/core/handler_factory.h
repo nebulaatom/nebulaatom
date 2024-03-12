@@ -66,13 +66,13 @@ namespace Atom
     }
 }
 
-class AtomCore::HandlerFactory :
+class Atom::Core::HandlerFactory :
     public HTTPRequestHandlerFactory
-    ,public AtomHTTP::CommonResponses
+    ,public Atom::HTTP::CommonResponses
 {
     public:
-        using FunctionHandler = std::function<AtomHandlers::RootHandler*()>;
-        using FunctionHandlerCreator = std::function<AtomHandlers::RootHandler*(const HTTPServerRequest& request)>;
+        using FunctionHandler = std::function<Atom::Handlers::RootHandler*()>;
+        using FunctionHandlerCreator = std::function<Atom::Handlers::RootHandler*(const HTTPServerRequest& request)>;
         using Connections = std::map<std::string, Tools::HandlerConnection>;
 
         HandlerFactory();

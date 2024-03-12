@@ -2,7 +2,7 @@
 #include "query/parameter.h"
 #include "query/results.h"
 
-using namespace AtomQuery;
+using namespace Atom::Query;
 
 Parameter::Parameter(std::string name, Tools::RowValueFormatter value, bool editable) :
     parameter_type_(ParameterType::kField)

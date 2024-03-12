@@ -17,7 +17,7 @@
 
 #include "handlers/null_handler.h"
 
-using namespace AtomHandlers;
+using namespace Atom::Handlers;
 
 NullHandler::~NullHandler()
 {

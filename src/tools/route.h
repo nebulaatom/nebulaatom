@@ -38,14 +38,14 @@ namespace Atom
 using namespace Poco;
 
 
-enum class AtomTools::RouteType
+enum class Atom::Tools::RouteType
 {
     kEntrypoint
     ,kEndpoint
 };
 
 
-class AtomTools::Route
+class Atom::Tools::Route
 {
     public:
         Route();

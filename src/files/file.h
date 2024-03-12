@@ -2,8 +2,8 @@
 // SPDX-FileCopyrightText: 2022 <copyright holder> <email>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef ATOMFILES_FILE
-#define ATOMFILES_FILE
+#ifndef ATOM_FILES_FILE
+#define ATOM_FILES_FILE
 
 
 #include <string>
@@ -27,14 +27,14 @@ namespace Atom
 using namespace Poco;
 
 
-enum class AtomFiles::FileType
+enum class Atom::Files::FileType
 {
     kBinary
     ,kTextPlain
 };
 
 
-class AtomFiles::File
+class Atom::Files::File
 {
     public:
         File();
@@ -84,4 +84,4 @@ class AtomFiles::File
         std::shared_ptr<Poco::File> tmp_file_;
 };
 
-#endif // ATOMFILES_FILE
+#endif // ATOM_FILES_FILE

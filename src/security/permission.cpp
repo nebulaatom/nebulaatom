@@ -18,7 +18,7 @@
 
 #include "security/permission.h"
 
-using namespace AtomSecurity;
+using namespace Atom::Security;
 
 Permission::Permission() :
     route_()

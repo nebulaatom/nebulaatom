@@ -1,7 +1,7 @@
 
 #include "functions/email_action.h"
 
-using namespace AtomFunctions;
+using namespace Atom::Functions;
 
 EmailAction::EmailAction(std::string identifier) :
     Action(identifier)

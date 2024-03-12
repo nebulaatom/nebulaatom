@@ -29,7 +29,7 @@ namespace Atom
 }
 
 
-class AtomHTTP::HTTPMethods
+class Atom::HTTP::HTTPMethods
 {
     public:
         HTTPMethods();

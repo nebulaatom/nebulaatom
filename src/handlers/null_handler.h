@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMANDLERS_NULLHANDLER
-#define ATOMANDLERS_NULLHANDLER
+#ifndef ATOM_HANDLERS_NULLHANDLER
+#define ATOM_HANDLERS_NULLHANDLER
 
 
 #include "handlers/root_handler.h"
@@ -31,7 +31,7 @@ namespace Atom
 }
 
 
-class AtomHandlers::NullHandler :
+class Atom::Handlers::NullHandler :
     public RootHandler
 {
     public:
@@ -50,4 +50,4 @@ class AtomHandlers::NullHandler :
         void NullResponse_();
 };
 
-#endif // ATOMANDLERS_NULLHANDLER
+#endif // ATOM_HANDLERS_NULLHANDLER

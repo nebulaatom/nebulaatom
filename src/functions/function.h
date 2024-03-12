@@ -21,7 +21,7 @@ namespace Atom
 }
 
 
-class AtomFunctions::Function
+class Atom::Functions::Function
 {
     public:
         using ActionPtr = std::shared_ptr<Action>;

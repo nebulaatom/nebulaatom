@@ -18,7 +18,7 @@
 
 #include "tools/row_value_formatter.h"
 
-using namespace AtomTools;
+using namespace Atom::Tools;
 
 RowValueFormatter::RowValueFormatter() :
     row_value_type_(RowValueType::kEmpty)

@@ -29,7 +29,6 @@
 #include <Poco/Data/RecordSet.h>
 
 #include "functions/action.h"
-#include "filters/filters_manager.h"
 #include "http/common_responses.h"
 #include "tools/row_value_formatter.h"
 #include "query/results.h"
@@ -55,8 +54,8 @@ using namespace Poco::Data::Keywords;
 class DatabaseManager;
 class SettingsManager;
 
-class AtomFunctions::SQLAction :
-    public AtomFunctions::Action
+class Atom::Functions::SQLAction :
+    public Atom::Functions::Action
     ,public HTTP::CommonResponses
 {
     public:

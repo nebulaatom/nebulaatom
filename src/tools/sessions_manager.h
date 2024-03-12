@@ -35,27 +35,27 @@ namespace Atom
 }
 
 
-class AtomTools::SessionsManager
+class Atom::Tools::SessionsManager
 {
     public:
         SessionsManager();
         ~SessionsManager();
 
-        static std::map<std::string, AtomExtras::Session>& get_sessions()
+        static std::map<std::string, Atom::Extras::Session>& get_sessions()
         {
             auto& var = sessions_;
             return var;
         }
 
         static void ReadSessions_();
-        static AtomExtras::Session& CreateSession_(std::string user, std::string path, int max_age);
+        static Atom::Extras::Session& CreateSession_(std::string user, std::string path, int max_age);
         static void DeleteSession_(std::string id);
 
     protected:
         static bool SessionExists_(std::string id);
 
     private:
-        static std::map<std::string, AtomExtras::Session> sessions_;
+        static std::map<std::string, Atom::Extras::Session> sessions_;
 };
 
 #endif // ATOMTTP_SESSIONS_MANAGER

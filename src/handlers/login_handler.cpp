@@ -17,7 +17,7 @@
 
 #include "handlers/login_handler.h"
 
-using namespace AtomHandlers;
+using namespace Atom::Handlers;
 
 LoginHandler::~LoginHandler()
 {

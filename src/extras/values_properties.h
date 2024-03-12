@@ -32,7 +32,7 @@ namespace Atom
     }
 }
 
-class AtomExtras::ValuesProperties
+class Atom::Extras::ValuesProperties
 {
     public:
         ValuesProperties();

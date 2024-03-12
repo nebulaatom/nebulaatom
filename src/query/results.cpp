@@ -2,7 +2,7 @@
 #include "results.h"
 #include "tools/row_value_formatter.h"
 
-using namespace AtomQuery;
+using namespace Atom::Query;
 
 Field::Field(std::string column_name, Tools::RowValueFormatter value) :
     column_name_(column_name)

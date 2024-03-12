@@ -4,9 +4,9 @@
 
 #include "files/file.h"
 
-using namespace AtomFiles;
+using namespace Atom::Files;
 
-AtomFiles::File::File() :
+Atom::Files::File::File() :
     content_length_(0)
     ,content_type_("")
     ,name_("")
@@ -19,7 +19,7 @@ AtomFiles::File::File() :
 
 }
 
-AtomFiles::File::File(std::string name, std::string filename, std::string content_type, std::size_t content_length) :
+Atom::Files::File::File(std::string name, std::string filename, std::string content_type, std::size_t content_length) :
     content_length_(content_length)
     ,content_type_(content_type)
     ,name_(name)

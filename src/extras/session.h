@@ -41,7 +41,7 @@ using namespace Poco;
 using namespace Poco::Net;
 
 
-class AtomExtras::Session
+class Atom::Extras::Session
 {
     public:
         Session();

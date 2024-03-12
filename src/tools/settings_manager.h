@@ -49,7 +49,7 @@ using namespace Poco::Util;
 
 
 class SQLAction;
-class AtomTools::SettingsManager
+class Atom::Tools::SettingsManager
 {
     public:
         struct BasicProperties

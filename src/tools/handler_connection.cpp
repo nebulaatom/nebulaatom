@@ -4,7 +4,7 @@
 
 #include "tools/handler_connection.h"
 
-using namespace AtomTools;
+using namespace Atom::Tools;
 
 HandlerConnection::HandlerConnection(Tools::Route route, HandlerFunctor handler) :
     current_route_(route)

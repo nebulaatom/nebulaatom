@@ -38,7 +38,7 @@ namespace Atom
 }
 
 
-class AtomSecurity::UsersManager
+class Atom::Security::UsersManager
 {
     public:
         UsersManager();

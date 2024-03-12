@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMTTP_COMMONRESPONSES
-#define ATOMTTP_COMMONRESPONSES
+#ifndef ATOM_HTTP_COMMONRESPONSES
+#define ATOM_HTTP_COMMONRESPONSES
 
 
 #include <string>
@@ -43,7 +43,7 @@ using namespace Poco;
 using namespace Poco::Net;
 
 
-enum class AtomHTTP::ResponseType
+enum class Atom::HTTP::ResponseType
 {
     kError
     ,kWarning
@@ -51,7 +51,7 @@ enum class AtomHTTP::ResponseType
     ,kSuccess
 };
 
-enum class AtomHTTP::Status
+enum class Atom::HTTP::Status
 {
     kOK = 200
     ,kHTTP_BAD_REQUEST = 400
@@ -63,7 +63,7 @@ enum class AtomHTTP::Status
     ,kHTTP_SERVICE_UNAVAILABLE = 503
 };
 
-class AtomHTTP::CommonResponses
+class Atom::HTTP::CommonResponses
 {
     public:
         struct Attributes
@@ -99,4 +99,4 @@ class AtomHTTP::CommonResponses
         std::map<HTTP::Status, Attributes> responses_;
 };
 
-#endif // ATOMTTP_COMMONRESPONSES
+#endif // ATOM_HTTP_COMMONRESPONSES

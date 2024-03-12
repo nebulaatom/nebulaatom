@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMANDLERS_CUSTOMANDLER
-#define ATOMANDLERS_CUSTOMANDLER
+#ifndef ATOM_HANDLERS_CUSTOMANDLER
+#define ATOM_HANDLERS_CUSTOMANDLER
 
 
 #include "handlers/root_handler.h"
@@ -31,7 +31,7 @@ namespace Atom
 }
 
 
-class AtomHandlers::CustomHandler :
+class Atom::Handlers::CustomHandler :
     public RootHandler
 {
     public:
@@ -56,4 +56,4 @@ class AtomHandlers::CustomHandler :
         std::function<void(CustomHandler&)> process_function_;
 };
 
-#endif // ATOMANDLERS_CUSTOMANDLER
+#endif // ATOM_HANDLERS_CUSTOMANDLER

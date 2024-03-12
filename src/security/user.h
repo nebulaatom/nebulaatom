@@ -33,7 +33,7 @@ namespace Atom
 }
 
 
-class AtomSecurity::User
+class Atom::Security::User
 {
     public:
         User();

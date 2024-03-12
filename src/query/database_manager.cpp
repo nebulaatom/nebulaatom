@@ -20,7 +20,7 @@
 #include "tools/settings_manager.h"
 
 using namespace Atom;
-using namespace AtomQuery;
+using namespace Atom::Query;
 
 bool DatabaseManager::initialized_ = false;
 

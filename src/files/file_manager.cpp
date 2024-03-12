@@ -17,7 +17,7 @@
 
 #include "files/file_manager.h"
 
-using namespace AtomFiles;
+using namespace Atom::Files;
 
 FileManager::FileManager() :
     operation_type_(OperationType::kDownload)

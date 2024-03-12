@@ -44,7 +44,7 @@ namespace Atom
 }
 
 
-class AtomTools::ManageJSON
+class Atom::Tools::ManageJSON
 {
     public:
         ManageJSON();

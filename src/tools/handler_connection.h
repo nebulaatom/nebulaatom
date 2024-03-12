@@ -22,15 +22,15 @@ namespace Atom
     }
 }
 
-class AtomTools::HandlerConnection
+class Atom::Tools::HandlerConnection
 {
     public:
-        using HandlerFunctor = std::function<AtomHandlers::RootHandler*()>;
+        using HandlerFunctor = std::function<Atom::Handlers::RootHandler*()>;
 
-        HandlerConnection(AtomTools::Route route, HandlerFunctor handler);
+        HandlerConnection(Atom::Tools::Route route, HandlerFunctor handler);
         ~HandlerConnection();
 
-        AtomTools::Route current_route_;
+        Atom::Tools::Route current_route_;
         HandlerFunctor return_handler_;
 };
 

@@ -18,7 +18,7 @@
 
 #include "tools/requests_manager.h"
 
-using namespace AtomTools;
+using namespace Atom::Tools;
 
 RequestsManager::RequestsManager()
 {

@@ -35,7 +35,7 @@ using namespace Poco::Util;
 
 
 
-class AtomFunctions::SSLInitializer
+class Atom::Functions::SSLInitializer
 {
     public:
         SSLInitializer()
@@ -49,7 +49,7 @@ class AtomFunctions::SSLInitializer
         }
 };
 
-class AtomFunctions::EmailAction : public AtomFunctions::Action
+class Atom::Functions::EmailAction : public Atom::Functions::Action
 {
     public:
         EmailAction(std::string identifier);

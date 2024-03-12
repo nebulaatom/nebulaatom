@@ -21,7 +21,7 @@
 #include "http/common_responses.h"
 #include "tools/handler_connection.h"
 
-using namespace AtomCore;
+using namespace Atom::Core;
 
 HandlerFactory::HandlerFactory() :
     app_(Application::instance())
@@ -34,7 +34,7 @@ HandlerFactory::HandlerFactory() :
         if(found != connections_.end())
             f = found->second.return_handler_;
         else
-            f = [&](){return new AtomHandlers::NullHandler();};
+            f = [&](){return new Atom::Handlers::NullHandler();};
 
         return f();
     };
@@ -57,11 +57,11 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 
         URI(request.getURI()).getPathSegments(segments);
 
-        AtomTools::Route requested_route(segments);
+        Atom::Tools::Route requested_route(segments);
 
         switch(requested_route.get_current_route_type())
         {
-            case AtomTools::RouteType::kEndpoint:
+            case Atom::Tools::RouteType::kEndpoint:
             {
                 std::vector<std::string> login_route({"api", api_version_, "system", "login"});
                 std::vector<std::string> logout_route({"api", api_version_, "system", "logout"});
@@ -77,7 +77,7 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 
                 break;
             }
-            case AtomTools::RouteType::kEntrypoint:
+            case Atom::Tools::RouteType::kEntrypoint:
             {
                 return handlers_[HandlerType::kFrontend]->return_handler_();
                 break;
@@ -110,5 +110,5 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
         JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
 
-    return new AtomHandlers::NullHandler();
+    return new Atom::Handlers::NullHandler();
 }

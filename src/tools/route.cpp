@@ -17,7 +17,7 @@
 
 #include "route.h"
 
-using namespace AtomTools;
+using namespace Atom::Tools;
 
 Route::Route() :
     current_route_type_(RouteType::kEntrypoint)

@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMANDLERS_FRONTENDHANDLER
-#define ATOMANDLERS_FRONTENDHANDLER
+#ifndef ATOM_HANDLERS_FRONTENDHANDLER
+#define ATOM_HANDLERS_FRONTENDHANDLER
 
 #include <string>
 #include <map>
@@ -35,7 +35,7 @@ namespace Atom
 }
 
 
-class AtomHandlers::FrontendHandler :
+class Atom::Handlers::FrontendHandler :
     public RootHandler
 {
     public:
@@ -54,4 +54,4 @@ class AtomHandlers::FrontendHandler :
         Files::FileManager file_manager_;
 };
 
-#endif // ATOMANDLERS_FRONTENDHANDLER
+#endif // ATOM_HANDLERS_FRONTENDHANDLER

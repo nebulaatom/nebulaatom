@@ -45,7 +45,7 @@ using namespace Poco;
 using namespace Poco::Net;
 
 
-class AtomTools::RequestsManager
+class Atom::Tools::RequestsManager
 {
     public:
         using MainFunctor = std::function<void()>;

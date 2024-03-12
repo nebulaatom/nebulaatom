@@ -37,7 +37,7 @@ namespace Atom
 }
 
 
-class AtomQuery::ConditionalField
+class Atom::Query::ConditionalField
 {
     public:
         ConditionalField(std::size_t row, std::size_t column) : row_(row), column_(column) {}
@@ -53,7 +53,7 @@ class AtomQuery::ConditionalField
         std::size_t column_;
 };
 
-class AtomQuery::Field
+class Atom::Query::Field
 {
     public:
         Field(std::string column_name, Tools::RowValueFormatter value);
@@ -74,7 +74,7 @@ class AtomQuery::Field
         Tools::RowValueFormatter value_;
 };
 
-class AtomQuery::Row
+class Atom::Query::Row
 {
     public:
         Row();
@@ -91,7 +91,7 @@ class AtomQuery::Row
         std::vector<Field> fields_;
 };
 
-class AtomQuery::Results
+class Atom::Query::Results
 {
     public:
         Results();

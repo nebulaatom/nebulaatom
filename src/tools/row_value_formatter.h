@@ -42,7 +42,7 @@ namespace Atom
 using namespace Poco;
 
 
-enum class AtomTools::RowValueType
+enum class Atom::Tools::RowValueType
 {
     kEmpty
     ,kString
@@ -51,7 +51,7 @@ enum class AtomTools::RowValueType
     ,kBoolean
 };
 
-class AtomTools::RowValueFormatter
+class Atom::Tools::RowValueFormatter
 {
     public:
         RowValueFormatter();

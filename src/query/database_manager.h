@@ -46,7 +46,7 @@ using namespace Poco::Data;
 using namespace Poco::Data::Keywords;
 
 class SettingsManager;
-class AtomQuery::DatabaseManager
+class Atom::Query::DatabaseManager
 {
     public:
         DatabaseManager();

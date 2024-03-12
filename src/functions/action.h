@@ -29,13 +29,13 @@ using namespace Poco;
 using namespace Poco::Util;
 
 
-enum class AtomFunctions::ActionType
+enum class Atom::Functions::ActionType
 {
     kSQL
     ,kEmail
 };
 
-class AtomFunctions::Action :
+class Atom::Functions::Action :
     public Tools::ManageJSON
 {
     public:

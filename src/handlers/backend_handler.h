@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMANDLERS_BACKENDHANDLER
-#define ATOMANDLERS_BACKENDHANDLER
+#ifndef ATOM_HANDLERS_BACKENDHANDLER
+#define ATOM_HANDLERS_BACKENDHANDLER
 
 
 #include "handlers/root_handler.h"
@@ -31,7 +31,7 @@ namespace Atom
 }
 
 
-class AtomHandlers::BackendHandler : public RootHandler
+class Atom::Handlers::BackendHandler : public RootHandler
 {
     public:
         using VectorShrResults = std::vector<std::shared_ptr<Query::Results>>;
@@ -53,4 +53,4 @@ class AtomHandlers::BackendHandler : public RootHandler
         VectorShrResults shared_results_;
 };
 
-#endif // ATOMANDLERS_BACKENDHANDLER
+#endif // ATOM_HANDLERS_BACKENDHANDLER

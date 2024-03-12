@@ -17,7 +17,7 @@
 
 #include "http/common_responses.h"
 
-using namespace AtomHTTP;
+using namespace Atom::HTTP;
 
 CommonResponses::CommonResponses()
 {

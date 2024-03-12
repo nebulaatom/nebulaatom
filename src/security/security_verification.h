@@ -26,7 +26,6 @@
 
 #include <Poco/Tuple.h>
 
-#include "query/query_actions.h"
 #include "security/users_manager.h"
 #include "security/permissions_manager.h"
 
@@ -43,13 +42,13 @@ namespace Atom
 using namespace Poco;
 
 
-enum class AtomExtras::SecurityType
+enum class Atom::Extras::SecurityType
 {
     kDisableAll
     ,kEnableAll
 };
 
-class AtomExtras::SecurityVerification
+class Atom::Extras::SecurityVerification
 {
     public:
         SecurityVerification();
@@ -65,12 +64,7 @@ class AtomExtras::SecurityVerification
             return var;
         }
         Extras::SecurityType get_security_type() const { return security_type_; }
-        Query::QueryActions& get_query_manager()
-        {
-            auto& var = query_manager_;
-            return var;
-        }
-
+        
         void set_security_type(Extras::SecurityType security_type) { security_type_ = security_type; }
 
         bool VerifyRoutesPermissions_(Tools::Route& route, std::string action_type);
@@ -79,7 +73,6 @@ class AtomExtras::SecurityVerification
         Security::PermissionsManager permissions_manager_;
         Security::UsersManager users_manager_;
         Extras::SecurityType security_type_;
-        Query::QueryActions query_manager_;
 };
 
 

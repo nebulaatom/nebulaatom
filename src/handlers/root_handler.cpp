@@ -18,7 +18,7 @@
 #include "handlers/root_handler.h"
 #include "http/common_responses.h"
 
-using namespace AtomHandlers;
+using namespace Atom::Handlers;
 
 RootHandler::RootHandler() :
     app_(Application::instance())
@@ -143,7 +143,7 @@ bool RootHandler::ProcessRoute_()
     // Manage the route type
         switch(requested_route_->get_current_route_type())
         {
-            case AtomTools::RouteType::kEndpoint:
+            case Atom::Tools::RouteType::kEndpoint:
             {
                 current_security_.set_security_type(Extras::SecurityType::kDisableAll);
 
@@ -182,7 +182,7 @@ bool RootHandler::ProcessRoute_()
 
                 break;
             }
-            case AtomTools::RouteType::kEntrypoint:
+            case Atom::Tools::RouteType::kEntrypoint:
             {
                 current_security_.set_security_type(Extras::SecurityType::kEnableAll);
 

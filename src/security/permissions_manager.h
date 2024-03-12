@@ -42,7 +42,7 @@ namespace Atom
 using namespace Poco;
 
 
-class AtomSecurity::PermissionsManager
+class Atom::Security::PermissionsManager
 {
     public:
         using PermissionToLoad = Poco::Tuple<std::string, std::string, std::string, int, std::string, bool, bool>;

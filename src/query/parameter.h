@@ -36,13 +36,13 @@ namespace Atom
 }
 
 
-enum class AtomQuery::ParameterType
+enum class Atom::Query::ParameterType
 {
     kField
     ,kConditional
 };
 
-class AtomQuery::Parameter
+class Atom::Query::Parameter
 {
     public:
         Parameter(std::string name, Tools::RowValueFormatter value, bool editable);

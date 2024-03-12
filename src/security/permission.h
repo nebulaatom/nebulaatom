@@ -38,7 +38,7 @@ namespace Atom
 }
 
 
-enum class AtomSecurity::ActionType
+enum class Atom::Security::ActionType
 {
     kCreate
     ,kRead
@@ -46,7 +46,7 @@ enum class AtomSecurity::ActionType
     ,kDelete
 };
 
-class AtomSecurity::Permission
+class Atom::Security::Permission
 {
     public:
         Permission();

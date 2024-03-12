@@ -18,7 +18,7 @@
 
 #include "security/security_verification.h"
 
-using namespace AtomExtras;
+using namespace Atom::Extras;
 
 SecurityVerification::SecurityVerification()
 {

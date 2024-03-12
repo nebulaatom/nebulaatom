@@ -1,5 +1,5 @@
 
-#include "core/woodpecker_server.h"
+#include "core/nebula_atom.h"
 #include "handlers/backend_handler.h"
 #include "handlers/login_handler.h"
 #include "tools/route.h"
@@ -69,7 +69,7 @@ class MainHandler : public Handlers::BackendHandler
 
 int main(int argc, char** argv)
 {
-    Core::WoodpeckerServer app;
+    Core::NebulaAtom app;
 
     // Setup
         Query::DatabaseManager::StartMySQL_();
@@ -85,7 +85,7 @@ int main(int argc, char** argv)
             // Set route
             std::vector<std::string> segments;
             URI(request.getURI()).getPathSegments(segments);
-            AtomTools::Route requested_route(segments);
+            Atom::Tools::Route requested_route(segments);
 
             // Login/logout routes
             std::vector<std::string> login_route({"api", "system", "login"});

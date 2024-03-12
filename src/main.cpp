@@ -20,7 +20,7 @@
 #include "Poco/Format.h"
 #include "Poco/Exception.h"
 
-#include "core/woodpecker_server.h"
+#include "core/nebula_atom.h"
 
 using namespace Poco;
 using namespace Poco::Util;
@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		AtomCore::WoodpeckerServer app_main;
+		Atom::Core::NebulaAtom app_main;
 		return app_main.run(argc, argv);
 	}
     catch(MySQL::MySQLException& error)

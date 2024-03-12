@@ -1,7 +1,7 @@
 
 #include "functions/functions_manager.h"
 
-using namespace AtomFunctions;
+using namespace Atom::Functions;
 
 FunctionsManager::FunctionsManager()
 {

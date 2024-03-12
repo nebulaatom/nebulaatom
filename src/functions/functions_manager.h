@@ -18,7 +18,7 @@ namespace Atom
 }
 
 
-class AtomFunctions::FunctionsManager
+class Atom::Functions::FunctionsManager
 {
     public:
         FunctionsManager();

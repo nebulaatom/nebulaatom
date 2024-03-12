@@ -12,11 +12,6 @@ add_library(results OBJECT "results.cpp")
 target_include_directories(results PUBLIC ${HEADER})
 set_target_properties(results PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
-### queryactions
-add_library(queryactions OBJECT "query_actions.cpp")
-target_include_directories(queryactions PUBLIC ${HEADER})
-set_target_properties(queryactions PROPERTIES POSITION_INDEPENDENT_CODE 1)
-
 ### condition
 add_library(condition OBJECT "condition.cpp")
 target_include_directories(condition PUBLIC ${HEADER})

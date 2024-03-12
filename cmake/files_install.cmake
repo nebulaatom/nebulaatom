@@ -10,7 +10,7 @@
 install(
 	FILES 
 		${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h 
-		${PROJECT_SOURCE_DIR}/src/core/woodpecker_server.h
+		${PROJECT_SOURCE_DIR}/src/core/nebula_atom.h
 	DESTINATION 
 		${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
 )
@@ -18,7 +18,7 @@ install(
 ## Libraries
 install(
 	TARGETS 
-		woodpeckerserver
+		nebulaatom
 	DESTINATION 
 		${CMAKE_INSTALL_LIBDIR}
 )

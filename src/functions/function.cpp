@@ -2,7 +2,7 @@
 #include "functions/function.h"
 
 using namespace Atom;
-using namespace AtomFunctions;
+using namespace Atom::Functions;
 
 Function::Function() :
     endpoint_("")

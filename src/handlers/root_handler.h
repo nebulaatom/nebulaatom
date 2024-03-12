@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMANDLERS_ROOTHANDLER
-#define ATOMANDLERS_ROOTHANDLER
+#ifndef ATOM_HANDLERS_ROOTHANDLER
+#define ATOM_HANDLERS_ROOTHANDLER
 
 
 #include <istream>
@@ -57,10 +57,9 @@
 
 #include "tools/sessions_manager.h"
 #include "query/database_manager.h"
-#include "query/query_actions.h"
 #include "tools/route.h"
 #include "http/common_responses.h"
-#include "security/security_verification.h"
+#include "security/security_verification.h" 
 #include "http/http_methods.h"
 #include "tools/requests_manager.h"
 #include "tools/manage_json.h"
@@ -88,7 +87,7 @@ using Poco::Data::Session;
 using Poco::Data::Statement;
 
 
-class AtomHandlers::RootHandler :
+class Atom::Handlers::RootHandler :
     public HTTPRequestHandler
     ,public HTTP::CommonResponses
     ,public HTTP::HTTPMethods
@@ -117,7 +116,7 @@ class AtomHandlers::RootHandler :
             auto& var = routes_list_;
             return var;
         }
-        std::shared_ptr<AtomTools::Route>& get_requested_route()
+        std::shared_ptr<Atom::Tools::Route>& get_requested_route()
         {
             auto& var = requested_route_;
             return var;
@@ -164,9 +163,9 @@ class AtomHandlers::RootHandler :
         HTTPServerRequest* request_;
         HTTPServerResponse* response_;
         std::list<Tools::Route> routes_list_;
-        std::shared_ptr<AtomTools::Route> requested_route_;
+        std::shared_ptr<Atom::Tools::Route> requested_route_;
         Functions::FunctionsManager functions_manager_;
         Functions::Function current_function_;
 };
 
-#endif // ATOMANDLERS_ROOTHANDLER
+#endif // ATOM_HANDLERS_ROOTHANDLER
