@@ -36,13 +36,16 @@ void Tools::SettingsManager::SetUpProperties_()
     basic_properties_.max_threads = 16;
     basic_properties_.db_host = "127.0.0.1";
     basic_properties_.db_port = "3306";
-    basic_properties_.db_name = "dbname";
-    basic_properties_.db_user = "dbuser";
-    basic_properties_.db_password = "dbpassword";
+    basic_properties_.db_name = "";
+    basic_properties_.db_user = "";
+    basic_properties_.db_password = "";
     basic_properties_.session_max_age = 3600;
     basic_properties_.directory_base = "/var/www";
     basic_properties_.directory_for_uploaded_files = "/var/www";
     basic_properties_.directory_for_temp_files = "/tmp";
+    basic_properties_.certificate = "";
+    basic_properties_.key = "";
+    basic_properties_.rootcert = "";
 }
 
 void Tools::SettingsManager::ReadFunctions_()
@@ -571,6 +574,33 @@ void Tools::SettingsManager::ReadBasicProperties_()
             return;
         }
         basic_properties_.db_password = db_password.as<std::string>();
+        
+        // certificate
+        auto certificate = config["certificate"];
+        if (!VerifyYAMLScalarNode_(certificate))
+        {
+            PrintError_("ReadBasicProperties_", "certificate");
+            return;
+        }
+        basic_properties_.certificate = certificate.as<std::string>();
+        
+        // key
+        auto key = config["key"];
+        if (!VerifyYAMLScalarNode_(key))
+        {
+            PrintError_("ReadBasicProperties_", "key");
+            return;
+        }
+        basic_properties_.key = key.as<std::string>();
+        
+        // rootcert
+        auto rootcert = config["rootcert"];
+        if (!VerifyYAMLScalarNode_(rootcert))
+        {
+            PrintError_("ReadBasicProperties_", "rootcert");
+            return;
+        }
+        basic_properties_.rootcert = rootcert.as<std::string>();
         
     }
     catch(std::exception& e)

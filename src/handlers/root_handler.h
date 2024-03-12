@@ -133,6 +133,7 @@ class Atom::Handlers::RootHandler :
         }
 
         virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
+        bool SetupSSL_();
 
     protected:
         HTTPServerRequest* get_request() { return request_; }
@@ -141,7 +142,6 @@ class Atom::Handlers::RootHandler :
         virtual void AddFunctions_();
         virtual void Process_();
         void CallHTTPMethod_();
-        bool ProcessRoute_();
         bool VerifySession_();
         bool VerifyPermissions_();
         bool IdentifyRoute_();
