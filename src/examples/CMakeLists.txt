@@ -18,3 +18,13 @@ target_link_libraries(backendapi PUBLIC nebulaatom)
 add_executable(webserver "webserver.cpp")
 target_include_directories(webserver PUBLIC ${HEADER})
 target_link_libraries(webserver PUBLIC nebulaatom)
+
+## sslserver
+add_executable(sslserver "ssl_server.cpp")
+target_include_directories(sslserver PUBLIC ${HEADER})
+target_link_libraries(sslserver PUBLIC nebulaatom)
+
+## sendemail
+add_executable(sendemail "send_email.cpp")
+target_include_directories(sendemail PUBLIC ${HEADER})
+target_link_libraries(sendemail PUBLIC nebulaatom)
