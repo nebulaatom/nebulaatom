@@ -23,7 +23,7 @@
 #include "filters/filter.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Filters
     {

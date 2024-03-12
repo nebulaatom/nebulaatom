@@ -19,7 +19,7 @@
 #include "tools/settings_manager.h"
 #include "functions/sql_action.h"
 
-using namespace CPW;
+using namespace Atom;
 using namespace Tools;
 
 Tools::SettingsManager::BasicProperties Tools::SettingsManager::basic_properties_ = {};

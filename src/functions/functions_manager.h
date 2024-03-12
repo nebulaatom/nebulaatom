@@ -9,7 +9,7 @@
 #include "functions/function.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Functions
     {

@@ -15,7 +15,7 @@
 #include "files/file_properties.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Files
     {

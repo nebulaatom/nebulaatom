@@ -31,7 +31,7 @@
 #include "security/permission.h"
 #include "tools/route.h"
 
-namespace CPW
+namespace Atom
 {
     namespace Security
     {

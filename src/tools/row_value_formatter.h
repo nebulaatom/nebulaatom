@@ -31,7 +31,7 @@
 #include "Poco/Timestamp.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Tools
     {

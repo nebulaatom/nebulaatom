@@ -24,7 +24,7 @@
 #include "tools/row_value_formatter.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Query
     {

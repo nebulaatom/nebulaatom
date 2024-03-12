@@ -18,7 +18,7 @@
 
 #include "security/permissions_manager.h"
 
-using namespace CPW;
+using namespace Atom;
 using namespace AtomSecurity;
 
 std::list<Permission> PermissionsManager::permissions_ = {};

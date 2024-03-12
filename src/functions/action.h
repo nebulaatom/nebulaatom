@@ -16,7 +16,7 @@
 #include "tools/manage_json.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Functions
     {

@@ -1,7 +1,7 @@
 
 #include "functions/function.h"
 
-using namespace CPW;
+using namespace Atom;
 using namespace AtomFunctions;
 
 Function::Function() :

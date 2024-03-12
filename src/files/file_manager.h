@@ -47,7 +47,7 @@
 #include "tools/settings_manager.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Files
     {

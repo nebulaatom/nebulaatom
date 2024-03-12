@@ -35,7 +35,7 @@
 using namespace Poco;
 
 
-namespace CPW
+namespace Atom
 {
     namespace Tools
     {

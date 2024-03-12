@@ -23,7 +23,7 @@
 #include "handlers/root_handler.h"
 #include "query/results.h"
 
-namespace CPW
+namespace Atom
 {
     namespace Handlers
     {

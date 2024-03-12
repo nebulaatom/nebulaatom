@@ -12,7 +12,7 @@
 #include "query/parameter.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Functions
     {

@@ -3,7 +3,7 @@
 #include "query/database_manager.h"
 #include "tools/settings_manager.h"
 
-using namespace CPW;
+using namespace Atom;
 using namespace Functions;
 
 Functions::SQLAction::SQLAction(std::string identifier) :

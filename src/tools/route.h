@@ -27,7 +27,7 @@
 #include "Poco/URI.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Tools
     {

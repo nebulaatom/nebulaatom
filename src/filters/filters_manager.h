@@ -38,7 +38,7 @@
 #include "filters/values_filter.h"
 #include "filters/set_filter.h"
 
-namespace CPW
+namespace Atom
 {
     namespace Filters
     {

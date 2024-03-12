@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOMCORE_WOODPECKERSERVER_H
-#define ATOMCORE_WOODPECKERSERVER_H
+#ifndef ATOM_CORE_ATOMLIB
+#define ATOM_CORE_ATOMLIB
 
 
 #include <string>
@@ -44,7 +44,7 @@
 #include "tools/sessions_manager.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Core
     {
@@ -109,4 +109,4 @@ class AtomCore::WoodpeckerServer : public ServerApplication
         Tools::SettingsManager settings_manager_;
 };
 
-#endif // ATOMCORE_WOODPECKERSERVER_H
+#endif // ATOM_CORE_ATOMLIB

@@ -29,7 +29,7 @@
 #include "Poco/MD5Engine.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Extras
     {

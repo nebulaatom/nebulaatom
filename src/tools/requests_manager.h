@@ -33,7 +33,7 @@
 #include "http/http_methods.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Tools
     {

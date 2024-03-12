@@ -14,7 +14,7 @@
 #include "handlers/frontend_handler.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Tools
     {

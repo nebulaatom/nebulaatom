@@ -20,7 +20,7 @@
 #define ATOMHTTP_HTTPMETHODS_H
 
 
-namespace CPW
+namespace Atom
 {
     namespace HTTP
     {

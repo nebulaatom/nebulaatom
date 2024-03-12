@@ -24,7 +24,7 @@
 #include <string>
 
 
-namespace CPW
+namespace Atom
 {
     namespace Security
     {

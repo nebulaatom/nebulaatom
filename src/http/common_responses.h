@@ -30,7 +30,7 @@
 #include "cpw-woodpecker-serverConfig.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace HTTP
     {

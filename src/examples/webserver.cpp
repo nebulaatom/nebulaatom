@@ -2,7 +2,7 @@
 #include "core/woodpecker_server.h"
 #include "handlers/frontend_handler.h"
 
-using namespace CPW;
+using namespace Atom;
 
 int main(int argc, char** argv)
 {

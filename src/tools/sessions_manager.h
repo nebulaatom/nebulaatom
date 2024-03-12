@@ -26,7 +26,7 @@
 #include "extras/session.h"
 #include "functions/sql_action.h"
 
-namespace CPW
+namespace Atom
 {
     namespace Tools
     {

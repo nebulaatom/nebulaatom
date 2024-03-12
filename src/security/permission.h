@@ -28,7 +28,7 @@
 #include "security/user.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Security
     {

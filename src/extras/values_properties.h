@@ -24,7 +24,7 @@
 #include <map>
 #include <vector>
 
-namespace CPW
+namespace Atom
 {
     namespace Extras
     {

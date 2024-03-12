@@ -26,7 +26,7 @@
 #include "query/results.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Query
     {

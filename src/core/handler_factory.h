@@ -59,7 +59,7 @@ using namespace Poco::Net;
 using namespace Poco::JSON;
 using namespace Poco::Data::Keywords;
 
-namespace CPW
+namespace Atom
 {
     namespace Core
     {

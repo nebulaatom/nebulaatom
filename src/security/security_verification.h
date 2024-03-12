@@ -31,7 +31,7 @@
 #include "security/permissions_manager.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Extras
     {

@@ -4,7 +4,7 @@
 #include "handlers/login_handler.h"
 #include "tools/route.h"
 
-using namespace CPW;
+using namespace Atom;
 
 class MainHandler : public Handlers::BackendHandler
 {
