@@ -1,8 +1,6 @@
 
-#include "core/handler_factory.h"
 #include "core/woodpecker_server.h"
 #include "handlers/custom_handler.h"
-#include "http/common_responses.h"
 
 using namespace CPW;
 

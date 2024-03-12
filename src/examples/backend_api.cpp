@@ -1,11 +1,8 @@
 
-#include "core/handler_factory.h"
 #include "core/woodpecker_server.h"
 #include "handlers/backend_handler.h"
 #include "handlers/login_handler.h"
-#include "handlers/root_handler.h"
 #include "tools/route.h"
-#include "tools/settings_manager.h"
 
 using namespace CPW;
 
