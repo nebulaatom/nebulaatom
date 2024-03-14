@@ -50,5 +50,13 @@
             ,"args": []
             ,"cwd": "${workspaceFolder}/build"
         }
+        ,{
+            "type": "lldb"
+            ,"request": "launch"
+            ,"name": "AvancedQuery (Debug)"
+            ,"program": "${workspaceFolder}/build/Debug/src/examples/avancedquery"
+            ,"args": []
+            ,"cwd": "${workspaceFolder}/build"
+        }
     ]
 }

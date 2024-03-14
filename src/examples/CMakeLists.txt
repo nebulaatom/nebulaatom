@@ -28,3 +28,8 @@ target_link_libraries(sslserver PUBLIC nebulaatom)
 add_executable(sendemail "send_email.cpp")
 target_include_directories(sendemail PUBLIC ${HEADER})
 target_link_libraries(sendemail PUBLIC nebulaatom)
+
+## avancedquery
+add_executable(avancedquery "avanced_query.cpp")
+target_include_directories(avancedquery PUBLIC ${HEADER})
+target_link_libraries(avancedquery PUBLIC nebulaatom)
