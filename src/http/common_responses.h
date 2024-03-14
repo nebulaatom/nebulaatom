@@ -27,6 +27,7 @@
 #include <Poco/JSON/Object.h>
 
 #include "nebula-atomConfig.h"
+#include "files/file_manager.h"
 
 
 namespace Atom
@@ -89,6 +90,7 @@ class Atom::HTTP::CommonResponses
         void JSONResponse_(HTTP::Status status, std::string message);
         void HTMLResponse_(HTTP::Status status, std::string message);
         void CustomHTMLResponse_(HTTP::Status status, std::string html_message);
+        void FileResponse_(HTTP::Status status, std::string address);
 
     protected:
         void FillResponses_();

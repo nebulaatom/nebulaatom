@@ -16,6 +16,7 @@
 */
 
 #include "http/common_responses.h"
+#include "files/file_manager.h"
 
 using namespace Atom::HTTP;
 
@@ -103,6 +104,45 @@ void CommonResponses::CustomHTMLResponse_(HTTP::Status status, std::string html_
     std::ostream& out = response_->send();
     out << html_message;
     out.flush();
+}
+
+void CommonResponses::FileResponse_(HTTP::Status status, std::string address)
+{
+    // Manage the file
+        Files::FileManager file_manager;
+
+        auto tmp_file = Files::File("file", address, "", 0);
+        tmp_file.get_requested_path().reset(new Path(address, Path::PATH_NATIVE));
+        tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
+
+        file_manager.get_files().push_back(tmp_file);
+
+    // Basic operations
+        file_manager.set_operation_type(Files::OperationType::kDownload);
+        if(!file_manager.CheckFiles_())
+        {
+            HTMLResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Requested file bad check.");
+            return;
+        }
+        if(!file_manager.IsSupported_(file_manager.get_files().front()))
+        {
+            HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Requested file is not supported.");
+            return;
+        }
+
+        file_manager.ProcessFileType_();
+        file_manager.ProcessContentLength_(file_manager.get_files().front());
+
+    // Reponse
+        response_->setStatus(responses_.find(status)->second.http_status);
+        response_->setContentType(file_manager.get_files().front().get_content_type());
+        response_->setContentLength(file_manager.get_files().front().get_content_length());
+        std::ostream& out_reponse = response_->send();
+
+    // Download file
+        file_manager.DownloadFile_(out_reponse);
+
+    out_reponse.flush();
 }
 
 void CommonResponses::FillResponses_()
