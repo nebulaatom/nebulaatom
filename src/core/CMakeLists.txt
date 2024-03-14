@@ -23,6 +23,7 @@ target_link_libraries(
     backendhandler
     customhandler
     frontendhandler
+    websockethandler
     route
     commonresponses
     managejson

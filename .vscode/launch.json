@@ -74,5 +74,13 @@
             ,"args": []
             ,"cwd": "${workspaceFolder}/build"
         }
+        ,{
+            "type": "lldb"
+            ,"request": "launch"
+            ,"name": "Websocket (Debug)"
+            ,"program": "${workspaceFolder}/build/Debug/src/examples/websocket"
+            ,"args": []
+            ,"cwd": "${workspaceFolder}/build"
+        }
     ]
 }
