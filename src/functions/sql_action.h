@@ -29,11 +29,8 @@
 #include <Poco/Data/RecordSet.h>
 
 #include "functions/action.h"
-#include "http/common_responses.h"
 #include "tools/row_value_formatter.h"
 #include "query/results.h"
-//#include "query/database_manager.h"
-//#include "tools/settings_manager.h"
 
 
 namespace Atom
@@ -56,7 +53,6 @@ class SettingsManager;
 
 class Atom::Functions::SQLAction :
     public Atom::Functions::Action
-    ,public HTTP::CommonResponses
 {
     public:
         SQLAction(std::string identifier);
