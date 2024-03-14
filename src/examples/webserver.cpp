@@ -9,7 +9,7 @@ int main(int argc, char** argv)
     Core::NebulaAtom app;
 
     // Setting up handler
-        app.CustomHandlerCreator_([&](const HTTPServerRequest&)
+        app.CustomHandlerCreator_([&](const HTTPServerRequest&, Core::HandlerFactory&)
         {
             return new Handlers::FrontendHandler;
         });

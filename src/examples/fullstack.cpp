@@ -14,7 +14,7 @@ int main(int argc, char** argv)
     Query::DatabaseManager::StartMySQL_();
     Tools::SettingsManager::ReadBasicProperties_();
 
-    app.CustomHandlerCreator_([&](const HTTPServerRequest& request)
+    app.CustomHandlerCreator_([&](const HTTPServerRequest& request, Core::HandlerFactory&)
     {
         Handlers::RootHandler* handler;
 
