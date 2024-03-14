@@ -58,5 +58,13 @@
             ,"args": []
             ,"cwd": "${workspaceFolder}/build"
         }
+        ,{
+            "type": "lldb"
+            ,"request": "launch"
+            ,"name": "CustomError (Debug)"
+            ,"program": "${workspaceFolder}/build/Debug/src/examples/customerror"
+            ,"args": []
+            ,"cwd": "${workspaceFolder}/build"
+        }
     ]
 }

@@ -33,3 +33,8 @@ target_link_libraries(sendemail PUBLIC nebulaatom)
 add_executable(avancedquery "avanced_query.cpp")
 target_include_directories(avancedquery PUBLIC ${HEADER})
 target_link_libraries(avancedquery PUBLIC nebulaatom)
+
+## customerror
+add_executable(customerror "custom_error.cpp")
+target_include_directories(customerror PUBLIC ${HEADER})
+target_link_libraries(customerror PUBLIC nebulaatom)
