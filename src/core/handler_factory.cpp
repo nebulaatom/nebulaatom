@@ -26,7 +26,7 @@ using namespace Atom::Core;
 HandlerFactory::HandlerFactory() :
     app_(Application::instance())
 {
-    handler_creator_ = [&](const HTTPServerRequest& request)
+    handler_creator_ = [&](const HTTPServerRequest& request, HandlerFactory&)
     {
         // Find route and handler
         FunctionHandler f;
@@ -51,38 +51,7 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
     {
         HTTP::CommonResponses::set_response(&request.response());
 
-        return handler_creator_(request);
-        
-        /*std::vector<std::string> segments;
-
-        URI(request.getURI()).getPathSegments(segments);
-
-        Atom::Tools::Route requested_route(segments);
-
-        switch(requested_route.get_current_route_type())
-        {
-            case Atom::Tools::RouteType::kEndpoint:
-            {
-                std::vector<std::string> login_route({"api", api_version_, "system", "login"});
-                std::vector<std::string> logout_route({"api", api_version_, "system", "logout"});
-
-                if
-                (
-                    requested_route.get_segments() == login_route
-                    || requested_route.get_segments() == logout_route
-                )
-                    return handlers_[HandlerType::kLogin]->return_handler_();
-                else
-                    return handlers_[HandlerType::kBackend]->return_handler_();
-
-                break;
-            }
-            case Atom::Tools::RouteType::kEntrypoint:
-            {
-                return handlers_[HandlerType::kFrontend]->return_handler_();
-                break;
-            }
-        }*/
+        return handler_creator_(request, *this);
     }
     catch(MySQL::MySQLException& error)
     {

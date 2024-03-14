@@ -51,6 +51,7 @@
 #include "handlers/backend_handler.h"
 #include "handlers/frontend_handler.h"
 #include "handlers/login_handler.h"
+#include "handlers/websocket_handler.h"
 
 using namespace Poco;
 using namespace Poco::Util;
@@ -72,7 +73,7 @@ class Atom::Core::HandlerFactory :
 {
     public:
         using FunctionHandler = std::function<Atom::Handlers::RootHandler*()>;
-        using FunctionHandlerCreator = std::function<Atom::Handlers::RootHandler*(const HTTPServerRequest& request)>;
+        using FunctionHandlerCreator = std::function<Atom::Handlers::RootHandler*(const HTTPServerRequest& request, HandlerFactory& handler_factory)>;
         using Connections = std::map<std::string, Tools::HandlerConnection>;
 
         HandlerFactory();
@@ -88,6 +89,11 @@ class Atom::Core::HandlerFactory :
             auto& var = handler_creator_;
             return var;
         }
+        std::vector<Handlers::WebSocketHandler*>& get_connected_sockets()
+        {
+            auto& var = connected_sockets_;
+            return var;
+        }
 
         void set_handler_creator(FunctionHandlerCreator handler_creator){ handler_creator_ = handler_creator; }
 
@@ -96,6 +102,7 @@ class Atom::Core::HandlerFactory :
     private:
         FunctionHandlerCreator handler_creator_;
         Connections connections_;
+        std::vector<Handlers::WebSocketHandler*> connected_sockets_;
         Application& app_;
 };
 
