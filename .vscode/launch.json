@@ -66,5 +66,13 @@
             ,"args": []
             ,"cwd": "${workspaceFolder}/build"
         }
+        ,{
+            "type": "lldb"
+            ,"request": "launch"
+            ,"name": "Fullstack (Debug)"
+            ,"program": "${workspaceFolder}/build/Debug/src/examples/fullstack"
+            ,"args": []
+            ,"cwd": "${workspaceFolder}/build"
+        }
     ]
 }

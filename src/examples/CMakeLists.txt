@@ -38,3 +38,8 @@ target_link_libraries(avancedquery PUBLIC nebulaatom)
 add_executable(customerror "custom_error.cpp")
 target_include_directories(customerror PUBLIC ${HEADER})
 target_link_libraries(customerror PUBLIC nebulaatom)
+
+## fullstack
+add_executable(fullstack "fullstack.cpp")
+target_include_directories(fullstack PUBLIC ${HEADER})
+target_link_libraries(fullstack PUBLIC nebulaatom)
