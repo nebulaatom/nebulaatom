@@ -137,69 +137,6 @@ bool RootHandler::SetupSSL_()
     if (socket.havePeerCertificate())
         X509Certificate cert = socket.peerCertificate();
 
-    /*
-    // Prepare routes
-        AddFunctions_();
-
-        std::vector<std::string> segments;
-        URI(request_->getURI()).getPathSegments(segments);
-        requested_route_ = std::make_shared<Tools::Route>(segments);
-
-    // Manage the route type
-        switch(requested_route_->get_current_route_type())
-        {
-            case Atom::Tools::RouteType::kEndpoint:
-            {
-                current_security_.set_security_type(Extras::SecurityType::kDisableAll);
-
-                // Process the request body
-                    if(!ManageRequestBody_())
-                    {
-                        JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Something was wrong with the Request body.");
-                        return false;
-                    }
-
-                // Route identification and identification
-                    std::vector<std::string> login_route({"api", api_version_, "system", "login"});
-                    std::vector<std::string> logout_route({"api", api_version_, "system", "logout"});
-
-                    if(requested_route_->get_segments() != login_route && requested_route_->get_segments() != logout_route)
-                    {
-                        if(route_verification_)
-                        {
-                            if(!IdentifyRoute_())
-                            {
-                                JSONResponse_(HTTP::Status::kHTTP_NOT_FOUND, "The requested endpoint is not available.");
-                                return false;
-                            }
-                        }
-
-                        if(!VerifySession_())
-                        {
-                            JSONResponse_(HTTP::Status::kHTTP_UNAUTHORIZED, "Session not found.");
-                            return false;
-                        }
-
-                        if(!VerifyPermissions_())
-                            return false;
-
-                    }
-
-                break;
-            }
-            case Atom::Tools::RouteType::kEntrypoint:
-            {
-                current_security_.set_security_type(Extras::SecurityType::kEnableAll);
-
-                VerifySession_();
-
-                if(!VerifyPermissions_())
-                    return false;
-
-                break;
-            }
-        }
-*/
     return true;
 }
 
