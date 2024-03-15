@@ -46,6 +46,9 @@ class MainHandler : public Handlers::BackendHandler
             // Set security type
                 get_current_security().set_security_type(Extras::SecurityType::kDisableAll);
                 
+            // Process the request body
+                ManageRequestBody_();
+
             // Route identification
                 if(!IdentifyRoute_())
                 {
