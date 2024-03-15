@@ -109,30 +109,22 @@ void CommonResponses::CustomHTMLResponse_(HTTP::Status status, std::string html_
 void CommonResponses::FileResponse_(HTTP::Status status, std::string address)
 {
     // Manage the file
-        Files::FileManager file_manager;
+        Files::FileManager file_manager(Files::OperationType::kDownload);
+        file_manager.get_files().push_back(file_manager.CreateTempFile_(address));
+        auto tmp_file = file_manager.get_files().front();
 
-        auto tmp_file = Files::File("file", address, "", 0);
-        tmp_file.get_requested_path().reset(new Path(address, Path::PATH_NATIVE));
-        tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
-
-        file_manager.get_files().push_back(tmp_file);
-
-    // Basic operations
-        file_manager.set_operation_type(Files::OperationType::kDownload);
+    // Check file
         if(!file_manager.CheckFiles_())
         {
             HTMLResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Requested file bad check.");
             return;
         }
-        if(!file_manager.IsSupported_(file_manager.get_files().front()))
+        if(!file_manager.IsSupported_())
         {
             HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Requested file is not supported.");
             return;
         }
-
-        file_manager.ProcessFileType_();
-        file_manager.ProcessContentLength_(file_manager.get_files().front());
-
+        
     // Reponse
         response_->setStatus(responses_.find(status)->second.http_status);
         response_->setContentType(file_manager.get_files().front().get_content_type());
