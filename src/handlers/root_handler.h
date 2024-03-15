@@ -134,14 +134,14 @@ class Atom::Handlers::RootHandler :
             auto& var = current_function_;
             return var;
         }
+        HTTPServerRequestPtr get_request() { return request_; }
+        HTTPServerResponsePtr get_response() { return response_; }
+        
 
         virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
         bool SetupSSL_();
 
     protected:
-        HTTPServerRequest* get_request() { return request_; }
-        HTTPServerResponse* get_response() { return response_; }
-        
         virtual void AddFunctions_();
         virtual void Process_();
         void CallHTTPMethod_();
