@@ -13,7 +13,7 @@ class MainHandler : public Handlers::WebSocketHandler
         MainHandler(std::vector<const WebSocketHandler*>& connected_sockets) : connected_sockets_(connected_sockets){}
         virtual ~MainHandler(){}
 
-        void HandleNewConnection_(const WebSocketHandler& websocket_handler)
+        void HandleNewConnection_(HTTPServerRequestPtr, const WebSocketHandler& websocket_handler)
         {
             connected_sockets_.push_back(&websocket_handler);
             
@@ -45,7 +45,7 @@ int main(int argc, char** argv)
     Core::NebulaAtom app;
     
     std::vector<const Handlers::WebSocketHandler*> connected_sockets;
-    app.CustomHandlerCreator_([&](const HTTPServerRequest& request, Core::HandlerFactory& handler_factory)
+    app.CustomHandlerCreator_([&](const HTTPServerRequest& request)
     {
         Handlers::RootHandler* handler;
 

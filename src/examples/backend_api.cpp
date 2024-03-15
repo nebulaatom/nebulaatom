@@ -80,7 +80,7 @@ int main(int argc, char** argv)
         Tools::SessionsManager::ReadSessions_();
 
     // Setting up handler
-        app.CustomHandlerCreator_([&](const HTTPServerRequest& request, Core::HandlerFactory&)
+        app.CustomHandlerCreator_([&](const HTTPServerRequest& request)
         {
             // Set route
             std::vector<std::string> segments;

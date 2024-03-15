@@ -26,7 +26,7 @@ using namespace Atom::Core;
 HandlerFactory::HandlerFactory() :
     app_(Application::instance())
 {
-    handler_creator_ = [&](const HTTPServerRequest& request, HandlerFactory&)
+    handler_creator_ = [&](const HTTPServerRequest& request)
     {
         // Find route and handler
         FunctionHandler f;
@@ -51,7 +51,7 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
     {
         HTTP::CommonResponses::set_response(&request.response());
 
-        return handler_creator_(request, *this);
+        return handler_creator_(request);
     }
     catch(MySQL::MySQLException& error)
     {

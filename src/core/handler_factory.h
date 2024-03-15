@@ -73,7 +73,7 @@ class Atom::Core::HandlerFactory :
 {
     public:
         using FunctionHandler = std::function<Atom::Handlers::RootHandler*()>;
-        using FunctionHandlerCreator = std::function<Atom::Handlers::RootHandler*(const HTTPServerRequest& request, HandlerFactory& handler_factory)>;
+        using FunctionHandlerCreator = std::function<Atom::Handlers::RootHandler*(const HTTPServerRequest& request)>;
         using Connections = std::map<std::string, Tools::HandlerConnection>;
 
         HandlerFactory();

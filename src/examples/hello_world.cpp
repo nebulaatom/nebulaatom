@@ -8,7 +8,7 @@ int main(int argc, char** argv)
 {
     Core::NebulaAtom app;
 
-    app.CustomHandlerCreator_([&](const HTTPServerRequest&, Core::HandlerFactory&)
+    app.CustomHandlerCreator_([&](const HTTPServerRequest&)
     {
         return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
         {
