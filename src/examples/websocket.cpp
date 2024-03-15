@@ -1,22 +1,57 @@
 
 #include "core/nebula_atom.h"
-#include "handlers/null_handler.h"
 #include "handlers/custom_handler.h"
 #include "handlers/websocket_handler.h"
 
 using namespace Atom;
 
+
+
+class MainHandler : public Handlers::WebSocketHandler
+{
+    public:
+        MainHandler(std::vector<const WebSocketHandler*>& connected_sockets) : connected_sockets_(connected_sockets){}
+        virtual ~MainHandler(){}
+
+        void HandleNewConnection_(const WebSocketHandler& websocket_handler)
+        {
+            connected_sockets_.push_back(&websocket_handler);
+            
+        }
+        void HandleNewMessage_(const WebSocketHandler&, std::string message)
+        {
+            for(auto it : connected_sockets_)
+                it->Send_(message);
+        }
+        void HandleConnectionClosed_(const WebSocketHandler& websocket_handler)
+        {
+            for (auto it = connected_sockets_.begin() ; it != connected_sockets_.end(); ++it)
+            {
+                if (*it == &websocket_handler)
+                {
+                    connected_sockets_.erase(it);
+                    break;
+                }
+            }
+        }
+
+    private:
+        std::vector<const Handlers::WebSocketHandler*>& connected_sockets_;
+};
+
+
 int main(int argc, char** argv)
 {
     Core::NebulaAtom app;
-
+    
+    std::vector<const Handlers::WebSocketHandler*> connected_sockets;
     app.CustomHandlerCreator_([&](const HTTPServerRequest& request, Core::HandlerFactory& handler_factory)
     {
         Handlers::RootHandler* handler;
 
 		if(request.find("Upgrade") != request.end() && Poco::icompare(request["Upgrade"], "websocket") == 0)
         {
-            handler = new Handlers::WebSocketHandler(handler_factory.get_connected_sockets());
+            handler = new MainHandler(connected_sockets);
         }
 		else
         {

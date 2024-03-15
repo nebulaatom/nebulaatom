@@ -21,9 +21,7 @@
 
 using namespace Atom::Handlers;
 
-WebSocketHandler::WebSocketHandler(std::vector<WebSocketHandler*>& connected_sockets) :
-    RootHandler()
-    ,connected_sockets_(connected_sockets)
+WebSocketHandler::WebSocketHandler()
 {
 
 }
@@ -40,51 +38,20 @@ void WebSocketHandler::AddFunctions_()
 
 void WebSocketHandler::Process_()
 {
-    Application& app = Application::instance();
     try
     {
         websocket_ = std::make_unique<WebSocket>(*get_request(), *get_response());
-        connected_sockets_.push_back(this);
         websocket_->setReceiveTimeout(Poco::Timespan());
-        app.logger().information("-- WebSocket connection established.");
-        char buffer[1024];
-        int flags;
-        int n;
+        app_.logger().information("-- WebSocket connection established.");
 
-        do
-        {
-            n = websocket_->receiveFrame(buffer, sizeof(buffer), flags);
-            if(n > 0 && (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE)
-            {
-                if ((flags & WebSocket::FRAME_OP_BITMASK) == WebSocket::FRAME_OP_PING)
-                    websocket_->sendFrame(buffer, n, WebSocket::FRAME_OP_PONG);
-                else
-                {
-                    // Transfer
-                    for(auto it : connected_sockets_)
-                    {
-                        it->websocket_->sendFrame(buffer, n, flags);
-                    }
-                }
-            }
-        }
-        while (n > 0 && (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE);
-        app.logger().information("-- WebSocket connection closed.");
-
-        for (auto it = connected_sockets_.begin() ; it != connected_sockets_.end(); ++it)
-        {
-            if (*it == this)
-            {
-                connected_sockets_.erase(it);
-                app.logger().information("Connection closed %s", websocket_->peerAddress().toString());
-                break;
-            }
-        }
+        HandleNewConnection_(*this);
+        Transfer_();
+        HandleConnectionClosed_(*this);
     }
-    catch (WebSocketException& exc)
+    catch (WebSocketException& error)
     {
-        app.logger().log(exc);
-        switch (exc.code())
+        app_.logger().log(error);
+        switch (error.code())
         {
             case WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:
                 get_response()->set("Sec-WebSocket-Version", WebSocket::WEBSOCKET_VERSION);
@@ -99,7 +66,8 @@ void WebSocketHandler::Process_()
     }
     catch(std::exception& error)
     {
-        app.logger().information("Error: " + std::string(error.what()));
+        app_.logger().error("- Error on websocket_handler.cpp on Process_(): " + std::string(error.what()));
+        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
 }
 
@@ -121,4 +89,41 @@ void WebSocketHandler::HandlePUTMethod_()
 void WebSocketHandler::HandleDELMethod_()
 {
     
+}
+
+void WebSocketHandler::Transfer_()
+{
+    char buffer[1024];
+    int flags, n;
+
+    do
+    {
+        n = websocket_->receiveFrame(buffer, sizeof(buffer), flags);
+        if(n > 0 && (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE)
+        {
+            if ((flags & WebSocket::FRAME_OP_BITMASK) == WebSocket::FRAME_OP_PING)
+                websocket_->sendFrame(buffer, n, WebSocket::FRAME_OP_PONG);
+            else
+            {
+                std::string message(buffer, n);
+                HandleNewMessage_(*this, message);
+            }
+        }
+    }
+    while (n > 0 && (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE);
+
+    app_.logger().information("-- WebSocket connection closed.");
+
+}
+
+void WebSocketHandler::Send_(std::string message) const
+{
+    char buffer[1024];
+    int n = 0;
+    for(auto it : message)
+    {
+        buffer[n] = it;
+        n++;
+    }
+    websocket_->sendFrame(buffer, n);
 }

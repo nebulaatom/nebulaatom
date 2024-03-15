@@ -89,12 +89,6 @@ class Atom::Core::HandlerFactory :
             auto& var = handler_creator_;
             return var;
         }
-        std::vector<Handlers::WebSocketHandler*>& get_connected_sockets()
-        {
-            auto& var = connected_sockets_;
-            return var;
-        }
-
         void set_handler_creator(FunctionHandlerCreator handler_creator){ handler_creator_ = handler_creator; }
 
         virtual HTTPRequestHandler* createRequestHandler(const HTTPServerRequest& request);
@@ -102,7 +96,6 @@ class Atom::Core::HandlerFactory :
     private:
         FunctionHandlerCreator handler_creator_;
         Connections connections_;
-        std::vector<Handlers::WebSocketHandler*> connected_sockets_;
         Application& app_;
 };
 

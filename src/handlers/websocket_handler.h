@@ -38,9 +38,11 @@ class Atom::Handlers::WebSocketHandler :
     public RootHandler
 {
     public:
-        WebSocketHandler(std::vector<WebSocketHandler*>& connected_sockets);
+        WebSocketHandler();
         virtual ~WebSocketHandler();
 
+        void Send_(std::string message) const;
+        
     protected:
         virtual void AddFunctions_() override;
         virtual void Process_() override;
@@ -48,10 +50,13 @@ class Atom::Handlers::WebSocketHandler :
         virtual void HandlePOSTMethod_() override;
         virtual void HandlePUTMethod_() override;
         virtual void HandleDELMethod_() override;
+        void Transfer_();
+        virtual void HandleNewConnection_(const WebSocketHandler& websocket_handler) = 0;
+        virtual void HandleNewMessage_(const WebSocketHandler& websocket_handler, std::string message) = 0;
+        virtual void HandleConnectionClosed_(const WebSocketHandler& websocket_handler) = 0;
 
     private:
 		std::unique_ptr<WebSocket> websocket_;
-        std::vector<WebSocketHandler*>& connected_sockets_;
 };
 
 #endif // ATOM_HANDLERS_WEBSOCKETHANDLER
