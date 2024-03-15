@@ -45,6 +45,9 @@ void LoginHandler::HandleGETMethod_()
 
 void LoginHandler::HandlePOSTMethod_()
 {
+    // Process the request body
+    ManageRequestBody_();
+
     std::vector<std::string> login_route({"api", "system", "login"});
     std::vector<std::string> logout_route({"api", "system", "logout"});
 

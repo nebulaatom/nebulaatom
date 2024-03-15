@@ -61,9 +61,6 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
         // Add functions
             AddFunctions_();
 
-        // Process the request body
-            ManageRequestBody_();
-
         // Get the corresponding HTTP method
             method_ = request.getMethod();
 
