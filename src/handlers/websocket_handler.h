@@ -51,7 +51,7 @@ class Atom::Handlers::WebSocketHandler :
         virtual void HandlePUTMethod_() override;
         virtual void HandleDELMethod_() override;
         void Transfer_();
-        virtual void HandleNewConnection_(const WebSocketHandler& websocket_handler) = 0;
+        virtual void HandleNewConnection_(HTTPServerRequestPtr request, const WebSocketHandler& websocket_handler) = 0;
         virtual void HandleNewMessage_(const WebSocketHandler& websocket_handler, std::string message) = 0;
         virtual void HandleConnectionClosed_(const WebSocketHandler& websocket_handler) = 0;
 

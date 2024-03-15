@@ -44,7 +44,7 @@ void WebSocketHandler::Process_()
         websocket_->setReceiveTimeout(Poco::Timespan());
         app_.logger().information("-- WebSocket connection established.");
 
-        HandleNewConnection_(*this);
+        HandleNewConnection_(get_request(), *this);
         Transfer_();
         HandleConnectionClosed_(*this);
     }
