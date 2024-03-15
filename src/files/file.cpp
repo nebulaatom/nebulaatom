@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "files/file.h"
+#include "files/file_properties.h"
 
 using namespace Atom::Files;
 
@@ -12,6 +13,7 @@ Atom::Files::File::File() :
     ,name_("")
     ,filename_("")
     ,file_type_(FileType::kBinary)
+    ,file_properties_("", true, {})
     ,requested_path_(new Path())
     ,requested_file_(new Poco::File(*requested_path_))
     ,tmp_file_(new Poco::File())
@@ -25,6 +27,7 @@ Atom::Files::File::File(std::string name, std::string filename, std::string cont
     ,name_(name)
     ,filename_(filename)
     ,file_type_(FileType::kBinary)
+    ,file_properties_("", true, {})
     ,requested_path_(new Path())
     ,requested_file_(new Poco::File(*requested_path_))
     ,tmp_file_(new Poco::File())
