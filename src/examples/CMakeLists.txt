@@ -48,3 +48,8 @@ target_link_libraries(fullstack PUBLIC nebulaatom)
 add_executable(websocket "websocket.cpp")
 target_include_directories(websocket PUBLIC ${HEADER})
 target_link_libraries(websocket PUBLIC nebulaatom)
+
+## fileoperations
+add_executable(fileoperations "file_operations.cpp")
+target_include_directories(fileoperations PUBLIC ${HEADER})
+target_link_libraries(fileoperations PUBLIC nebulaatom)

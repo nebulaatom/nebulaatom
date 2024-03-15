@@ -82,5 +82,13 @@
             ,"args": []
             ,"cwd": "${workspaceFolder}/build"
         }
+        ,{
+            "type": "lldb"
+            ,"request": "launch"
+            ,"name": "FileOperations (Debug)"
+            ,"program": "${workspaceFolder}/build/Debug/src/examples/fileoperations"
+            ,"args": []
+            ,"cwd": "${workspaceFolder}/build"
+        }
     ]
 }
