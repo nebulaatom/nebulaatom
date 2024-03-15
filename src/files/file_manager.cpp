@@ -22,7 +22,15 @@ using namespace Atom::Files;
 FileManager::FileManager() :
     operation_type_(OperationType::kDownload)
 {
-    AddSupportedFiles_();
+    result_ = new JSON::Array();
+    directory_base_ = settings_manager_.get_basic_properties_().directory_base;
+    directory_for_uploaded_files_ = settings_manager_.get_basic_properties_().directory_for_uploaded_files;
+    directory_for_temp_files_ = settings_manager_.get_basic_properties_().directory_for_temp_files;
+}
+
+FileManager::FileManager(OperationType operation_type) :
+    operation_type_(operation_type)
+{
     result_ = new JSON::Array();
     directory_base_ = settings_manager_.get_basic_properties_().directory_base;
     directory_for_uploaded_files_ = settings_manager_.get_basic_properties_().directory_for_uploaded_files;
@@ -145,22 +153,27 @@ bool FileManager::CheckFiles_()
     return true;
 }
 
+bool FileManager::IsSupported_()
+{
+    for(auto& file_it : files_)
+    {
+        if(!IsSupported_(file_it))
+            return false;
+    }
+
+    return true;
+}
+
 bool FileManager::IsSupported_(Files::File& file)
 {
     if(file.get_requested_path() == nullptr)
         return false;
 
-    auto basic_operations = [&file](Files::FileProperties& properties)
-    {
-        file.set_file_properties(properties);
-        file.set_content_type(properties.get_content_type());
-    };
-
     std::string extension = file.get_requested_path()->getExtension();
     auto file_found = supported_files_.find(extension);
     if(file_found != supported_files_.end())
     {
-        basic_operations(file_found->second);
+        ProcessFiles_(file, file_found->second);
         return true;
     }
     else
@@ -171,7 +184,7 @@ bool FileManager::IsSupported_(Files::File& file)
             auto find_depth = std::find(extensions.begin(), extensions.end(), extension);
             if(find_depth != extensions.end())
             {
-                basic_operations(it.second);
+                ProcessFiles_(file, it.second);
                 return true;
             }
         }
@@ -179,15 +192,26 @@ bool FileManager::IsSupported_(Files::File& file)
     }
 }
 
-void FileManager::ProcessContentLength_(Files::File& file)
+void FileManager::ProcessFiles_(Files::File& file, Files::FileProperties properties)
 {
-    if(file.get_requested_file() == nullptr)
-    {
-        file.set_content_length(0);
-        return;
-    }
+    file.get_file_properties() = properties;
+    file.set_content_type(properties.get_content_type());
+    ProcessFileType_();
+    ProcessContentLength_();
+}
 
-    file.set_content_length(file.get_requested_file()->getSize());
+void FileManager::ProcessContentLength_()
+{
+    for(auto& file_it : files_)
+    {
+        if(file_it.get_requested_file() == nullptr)
+        {
+            file_it.set_content_length(0);
+            return;
+        }
+
+        file_it.set_content_length(file_it.get_requested_file()->getSize());
+    }
 }
 
 void FileManager::DownloadFile_(std::ostream& out_response)
@@ -320,42 +344,51 @@ void FileManager::ProcessFileType_()
 {
     for(auto& file_it : files_)
     {
-        if(IsSupported_(file_it))
-        {
-            bool file_is_binary = file_it.get_file_properties()->get_binary();
+        bool file_is_binary = file_it.get_file_properties().get_binary();
 
-            if(file_is_binary)
-                file_it.set_file_type(Files::FileType::kBinary);
-            else
-                file_it.set_file_type(Files::FileType::kTextPlain);
-        }
-        else
+        if(file_is_binary)
             file_it.set_file_type(Files::FileType::kBinary);
+        else
+            file_it.set_file_type(Files::FileType::kTextPlain);
     }
 }
 
-void FileManager::AddSupportedFiles_()
+void FileManager::AddSupportedFile_(std::string extension, Files::FileProperties file_properties)
+{
+    supported_files_.emplace(std::make_pair(extension, Files::FileProperties(file_properties)));
+}
+
+void FileManager::AddBasicSupportedFiles_()
 {
     supported_files_.emplace(std::make_pair("html", Files::FileProperties{"text/html", false, {"htm", "html5"}}));
     supported_files_.emplace(std::make_pair("js", Files::FileProperties{"application/javascript", false, {"js5"}}));
-    supported_files_.emplace(std::make_pair("css",Files::FileProperties{"text/css", false, {"css3"}}));
-    supported_files_.emplace(std::make_pair("jpeg",Files::FileProperties{"image/jpeg", false, {"jpeg", "jpg"}}));
-    supported_files_.emplace(std::make_pair("png",Files::FileProperties{"image/png", true, {""}}));
-    supported_files_.emplace(std::make_pair("webp",Files::FileProperties{"image/webp", true, {""}}));
-    supported_files_.emplace(std::make_pair("svg",Files::FileProperties{"image/svg+xml", true, {""}}));
-    supported_files_.emplace(std::make_pair("ttf",Files::FileProperties{"font/ttf", true, {""}}));
-    supported_files_.emplace(std::make_pair("woff",Files::FileProperties{"font/woff", true, {""}}));
-    supported_files_.emplace(std::make_pair("woff2",Files::FileProperties{"font/woff2", true, {""}}));
-    supported_files_.emplace(std::make_pair("xhtml",Files::FileProperties{"application/xhtml+xml", true, {""}}));
-    supported_files_.emplace(std::make_pair("webm",Files::FileProperties{"video/webm", true, {""}}));
-    supported_files_.emplace(std::make_pair("xml",Files::FileProperties{"application/xml", true, {""}}));
-    supported_files_.emplace(std::make_pair("zip",Files::FileProperties{"application/zip", true, {""}}));
-    supported_files_.emplace(std::make_pair("wav",Files::FileProperties{"audio/x-wav", true, {""}}));
-    supported_files_.emplace(std::make_pair("pdf",Files::FileProperties{"application/pdf", true, {""}}));
-    supported_files_.emplace(std::make_pair("mpeg",Files::FileProperties{"video/mpeg", true, {""}}));
-    supported_files_.emplace(std::make_pair("json",Files::FileProperties{"application/json", true, {""}}));
-    supported_files_.emplace(std::make_pair("ico",Files::FileProperties{"image/x-icon", true, {""}}));
-    supported_files_.emplace(std::make_pair("gif",Files::FileProperties{"image/gif", true, {""}}));
-    supported_files_.emplace(std::make_pair("avi",Files::FileProperties{"video/x-msvideo", true, {""}}));
-    supported_files_.emplace(std::make_pair("txt",Files::FileProperties{"text/plain", true, {""}}));
+    supported_files_.emplace(std::make_pair("css", Files::FileProperties{"text/css", false, {"css3"}}));
+    supported_files_.emplace(std::make_pair("jpeg", Files::FileProperties{"image/jpeg", false, {"jpeg", "jpg"}}));
+    supported_files_.emplace(std::make_pair("png", Files::FileProperties{"image/png", true, {""}}));
+    supported_files_.emplace(std::make_pair("webp", Files::FileProperties{"image/webp", true, {""}}));
+    supported_files_.emplace(std::make_pair("svg", Files::FileProperties{"image/svg+xml", true, {""}}));
+    supported_files_.emplace(std::make_pair("ttf", Files::FileProperties{"font/ttf", true, {""}}));
+    supported_files_.emplace(std::make_pair("woff", Files::FileProperties{"font/woff", true, {""}}));
+    supported_files_.emplace(std::make_pair("woff2", Files::FileProperties{"font/woff2", true, {""}}));
+    supported_files_.emplace(std::make_pair("xhtml", Files::FileProperties{"application/xhtml+xml", true, {""}}));
+    supported_files_.emplace(std::make_pair("webm", Files::FileProperties{"video/webm", true, {""}}));
+    supported_files_.emplace(std::make_pair("xml", Files::FileProperties{"application/xml", true, {""}}));
+    supported_files_.emplace(std::make_pair("zip", Files::FileProperties{"application/zip", true, {""}}));
+    supported_files_.emplace(std::make_pair("wav", Files::FileProperties{"audio/x-wav", true, {""}}));
+    supported_files_.emplace(std::make_pair("pdf", Files::FileProperties{"application/pdf", true, {""}}));
+    supported_files_.emplace(std::make_pair("mpeg", Files::FileProperties{"video/mpeg", true, {""}}));
+    supported_files_.emplace(std::make_pair("json", Files::FileProperties{"application/json", true, {""}}));
+    supported_files_.emplace(std::make_pair("ico", Files::FileProperties{"image/x-icon", true, {""}}));
+    supported_files_.emplace(std::make_pair("gif", Files::FileProperties{"image/gif", true, {""}}));
+    supported_files_.emplace(std::make_pair("avi", Files::FileProperties{"video/x-msvideo", true, {""}}));
+    supported_files_.emplace(std::make_pair("txt", Files::FileProperties{"text/plain", true, {""}}));
+}
+
+Atom::Files::File FileManager::CreateTempFile_(std::string uri)
+{
+    auto tmp_uri = URI(uri);
+    auto tmp_file = Files::File("file", Path(tmp_uri.getPath()).getFileName(), "", 0);
+    tmp_file.get_requested_path().reset(new Path(directory_base_ + tmp_uri.getPath(), Path::PATH_NATIVE));
+    tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
+    return tmp_file;
 }

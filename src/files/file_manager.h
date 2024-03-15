@@ -29,6 +29,7 @@
 
 #include "Poco/Path.h"
 #include "Poco/File.h"
+#include "Poco/URI.h"
 #include "Poco/DateTime.h"
 #include "Poco/Random.h"
 #include "Poco/StreamCopier.h"
@@ -72,6 +73,7 @@ class Atom::Files::FileManager: public Net::PartHandler
 {
     public:
         FileManager();
+        FileManager(OperationType operation_type);
         ~FileManager();
 
         std::map<std::string, Files::FileProperties>& get_supported_files()
@@ -91,26 +93,33 @@ class Atom::Files::FileManager: public Net::PartHandler
         }
 
         void set_operation_type(OperationType operation_type){operation_type_ = operation_type;}
+        void set_directory_base(std::string directory_base) { directory_base_ = directory_base;}
+        void set_directory_for_uploaded_files(std::string directory_for_uploaded_files) { directory_for_uploaded_files_ = directory_for_uploaded_files;}
+        void set_directory_for_temp_files(std::string directory_for_temp_files) { directory_for_temp_files_ = directory_for_temp_files;}
 
         void handlePart(const MessageHeader& header, std::istream& stream) override;
         std::string GenerateName_(std::string name);
         bool CheckFile_(Files::File& current_file);
         bool CheckFiles_();
+        bool IsSupported_();
         bool IsSupported_(Files::File& file);
-        void ProcessContentLength_(Files::File& file);
-        void ProcessFileType_();
         void DownloadFile_(std::ostream& out_response);
         void UploadFile_();
         void RemoveFile_();
+        void AddSupportedFile_(std::string extension, Files::FileProperties file_properties);
+        void AddBasicSupportedFiles_();
+        Files::File CreateTempFile_(std::string uri);
+
 
     protected:
+        void ProcessFiles_(Files::File& file, Files::FileProperties properties);
+        void ProcessContentLength_();
+        void ProcessFileType_();
         std::string SplitHeaderValue_(const MessageHeader& header, std::string header_name, std::string parameter);
         void CheckTargetFilename_(Files::File& file, std::string directory);
         std::size_t ReplaceText_(std::string& inout, std::string_view what, std::string_view with);
 
     private:
-        void AddSupportedFiles_();
-
         std::map<std::string, Files::FileProperties> supported_files_;
         OperationType operation_type_;
         std::string directory_base_;
