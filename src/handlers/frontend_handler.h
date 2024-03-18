@@ -42,6 +42,12 @@ class Atom::Handlers::FrontendHandler :
         FrontendHandler();
         ~FrontendHandler();
 
+        Files::FileManager& get_file_manager()
+        {
+            auto& var = file_manager_;
+            return var;
+        }
+
     protected:
         virtual void AddFunctions_() override;
         virtual void Process_() override;
