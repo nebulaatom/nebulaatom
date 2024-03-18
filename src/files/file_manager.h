@@ -85,7 +85,11 @@ class Atom::Files::FileManager: public Net::PartHandler
         std::string get_directory_base() const{return directory_base_;}
         std::string get_directory_for_uploaded_files() const{return directory_for_uploaded_files_;}
         std::string get_directory_for_temp_files() const{return directory_for_temp_files_;}
-        JSON::Array::Ptr get_result() const {return result_;}
+        JSON::Object::Ptr& get_result()
+        {
+            auto& var = result_;
+            return var;
+        }
         std::vector<Files::File>& get_files()
         {
             auto& var = files_;
@@ -109,11 +113,11 @@ class Atom::Files::FileManager: public Net::PartHandler
         void AddSupportedFile_(std::string extension, Files::FileProperties file_properties);
         void AddBasicSupportedFiles_();
         Files::File CreateTempFile_(std::string uri);
+        void ProcessContentLength_();
 
 
     protected:
         void ProcessFiles_(Files::File& file, Files::FileProperties properties);
-        void ProcessContentLength_();
         void ProcessFileType_();
         std::string SplitHeaderValue_(const MessageHeader& header, std::string header_name, std::string parameter);
         void CheckTargetFilename_(Files::File& file, std::string directory);
@@ -125,7 +129,7 @@ class Atom::Files::FileManager: public Net::PartHandler
         std::string directory_base_;
         std::string directory_for_uploaded_files_;
         std::string directory_for_temp_files_;
-        JSON::Array::Ptr result_;
+        JSON::Object::Ptr result_;
         std::vector<Files::File> files_;
         Tools::SettingsManager settings_manager_;
 };

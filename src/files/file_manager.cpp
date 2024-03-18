@@ -22,7 +22,7 @@ using namespace Atom::Files;
 FileManager::FileManager() :
     operation_type_(OperationType::kDownload)
 {
-    result_ = new JSON::Array();
+    result_ = new JSON::Object();
     directory_base_ = settings_manager_.get_basic_properties_().directory_base;
     directory_for_uploaded_files_ = settings_manager_.get_basic_properties_().directory_for_uploaded_files;
     directory_for_temp_files_ = settings_manager_.get_basic_properties_().directory_for_temp_files;
@@ -31,7 +31,7 @@ FileManager::FileManager() :
 FileManager::FileManager(OperationType operation_type) :
     operation_type_(operation_type)
 {
-    result_ = new JSON::Array();
+    result_ = new JSON::Object();
     directory_base_ = settings_manager_.get_basic_properties_().directory_base;
     directory_for_uploaded_files_ = settings_manager_.get_basic_properties_().directory_for_uploaded_files;
     directory_for_temp_files_ = settings_manager_.get_basic_properties_().directory_for_temp_files;
@@ -197,7 +197,6 @@ void FileManager::ProcessFiles_(Files::File& file, Files::FileProperties propert
     file.get_file_properties() = properties;
     file.set_content_type(properties.get_content_type());
     ProcessFileType_();
-    ProcessContentLength_();
 }
 
 void FileManager::ProcessContentLength_()
@@ -258,10 +257,10 @@ void FileManager::DownloadFile_(std::ostream& out_response)
 
 void FileManager::UploadFile_()
 {
+    JSON::Array::Ptr array = new JSON::Array();
     for(auto& file_it : files_)
     {
         JSON::Object::Ptr object = new JSON::Object();
-
         if (!file_it.get_name().empty())
         {
             std::string target = file_it.get_tmp_file()->path();
@@ -269,27 +268,22 @@ void FileManager::UploadFile_()
 
             auto tmp_file = Poco::File(Path(target));
             tmp_file.moveTo(destiny);
+            ProcessContentLength_();
 
             object->set("name", file_it.get_name());
             object->set("filename", file_it.get_requested_path()->getFileName());
             object->set("type", file_it.get_content_type());
             object->set("size", file_it.get_content_length());
-
-            result_->set(result_->size(), object);
         }
+        array->set(array->size(), object);
     }
+    result_->set("data", array);
 }
 
 void FileManager::RemoveFile_()
 {
     for(auto& file_it : files_)
-    {
         file_it.get_requested_file()->remove();
-
-        JSON::Object::Ptr object = new JSON::Object();
-        object->set("file", file_it.get_filename());
-        result_->set(result_->size(), object);
-    }
 }
 
 std::string FileManager::SplitHeaderValue_(const MessageHeader& header, std::string header_name, std::string parameter)
