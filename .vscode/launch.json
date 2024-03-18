@@ -85,8 +85,8 @@
         ,{
             "type": "lldb"
             ,"request": "launch"
-            ,"name": "FileOperations (Debug)"
-            ,"program": "${workspaceFolder}/build/Debug/src/examples/fileoperations"
+            ,"name": "UploadFile (Debug)"
+            ,"program": "${workspaceFolder}/build/Debug/src/examples/uploadfile"
             ,"args": []
             ,"cwd": "${workspaceFolder}/build"
         }

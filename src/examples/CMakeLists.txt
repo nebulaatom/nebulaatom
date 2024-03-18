@@ -49,7 +49,7 @@ add_executable(websocket "websocket.cpp")
 target_include_directories(websocket PUBLIC ${HEADER})
 target_link_libraries(websocket PUBLIC nebulaatom)
 
-## fileoperations
-add_executable(fileoperations "file_operations.cpp")
-target_include_directories(fileoperations PUBLIC ${HEADER})
-target_link_libraries(fileoperations PUBLIC nebulaatom)
+## uploadfile
+add_executable(uploadfile "upload_file.cpp")
+target_include_directories(uploadfile PUBLIC ${HEADER})
+target_link_libraries(uploadfile PUBLIC nebulaatom)
