@@ -1,8 +1,23 @@
 
 #include "core/nebula_atom.h"
-#include "handlers/custom_handler.h"
+#include "files/file_manager.h"
+#include "handlers/frontend_handler.h"
 
 using namespace Atom;
+
+class UploadFile : public Handlers::FrontendHandler
+{
+    public:
+        UploadFile(){}
+        virtual ~UploadFile(){}
+
+        void Process_()
+        {
+            get_file_manager().set_directory_base("/var/www");
+            get_file_manager().AddBasicSupportedFiles_();
+            HandleGETMethod_();
+        }
+};
 
 int main(int argc, char** argv)
 {
@@ -11,39 +26,7 @@ int main(int argc, char** argv)
     // Setting up handler
         app.CustomHandlerCreator_([&](const HTTPServerRequest&)
         {
-            return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
-            {
-                // Manage the file
-                    Files::FileManager file_manager(Files::OperationType::kDownload);
-                    file_manager.get_files().push_back(file_manager.CreateTempFile_(self.get_request()->getURI()));
-                    auto& tmp_file = file_manager.get_files().front();
-
-                // Check file
-                    if(!file_manager.CheckFiles_())
-                    {
-                        self.HTMLResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Requested file bad check.");
-                        return;
-                    }
-
-                // Is supported
-                    file_manager.AddBasicSupportedFiles_();
-                    if(!file_manager.IsSupported_())
-                    {
-                        self.HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Requested file is not supported.");
-                        return;
-                    }
-
-                // Reponse
-                    self.get_response()->setStatus(HTTPResponse::HTTP_OK);
-                    self.get_response()->setContentType(tmp_file.get_content_type());
-                    self.get_response()->setContentLength(tmp_file.get_content_length());
-                    std::ostream& out_reponse = self.get_response()->send();
-
-                // Download file
-                    file_manager.DownloadFile_(out_reponse);
-                    out_reponse.flush();
-
-            });
+            return new UploadFile;
         });
 
         return app.run(argc, argv);
