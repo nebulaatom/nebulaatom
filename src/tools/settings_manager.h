@@ -30,10 +30,6 @@
 #include "Poco/Exception.h"
 #include "Poco/Util/ServerApplication.h"
 
-#include "functions/functions_manager.h"
-//#include "functions/sql_action.h"
-#include "functions/email_action.h"
-#include "functions/action.h"
 
 
 namespace Atom
@@ -48,7 +44,6 @@ using namespace Poco;
 using namespace Poco::Util;
 
 
-class SQLAction;
 class Atom::Tools::SettingsManager
 {
     public:
@@ -69,12 +64,9 @@ class Atom::Tools::SettingsManager
         }
 
         static void SetUpProperties_();
-        static void ReadFunctions_();
         static void ReadBasicProperties_();
 
     protected:
-        static void ReadFunctionsParameters_(Functions::Function& function, Functions::Function::ActionPtr action, YAML::Node& parameters);
-        static void ReadFunctionsConditions_(std::shared_ptr<Functions::Action> action, YAML::Node& conditions);
         static bool VerifyYAMLScalarNode_(YAML::Node& node);
         static bool VerifyYAMLMapNode_(YAML::Node& node);
         static void PrintError_(std::string function, std::string variable);
