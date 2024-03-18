@@ -40,6 +40,17 @@ void CommonResponses::CompoundResponse_(HTTP::Status status, JSON::Object::Ptr r
     result_json->stringify(out);
     out.flush();
 }
+void CommonResponses::CompoundFillResponse_(HTTP::Status status, JSON::Object::Ptr result_json, std::string message)
+{
+    response_->setStatus(responses_.find(status)->second.http_status);
+    response_->setContentType("application/json");
+    response_->setChunkedTransferEncoding(true);
+
+    FillStatusMessage_(result_json, status, message);
+    std::ostream& out = response_->send();
+    result_json->stringify(out);
+    out.flush();
+}
 
 void CommonResponses::JSONResponse_(HTTP::Status status, std::string message)
 {

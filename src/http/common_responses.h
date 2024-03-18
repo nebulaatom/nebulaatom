@@ -87,6 +87,7 @@ class Atom::HTTP::CommonResponses
         void set_response(HTTPServerResponse* response) { response_ = response; }
 
         void CompoundResponse_(HTTP::Status status, JSON::Object::Ptr result_json);
+        void CompoundFillResponse_(HTTP::Status status, JSON::Object::Ptr result_json, std::string message);
         void JSONResponse_(HTTP::Status status, std::string message);
         void HTMLResponse_(HTTP::Status status, std::string message);
         void CustomHTMLResponse_(HTTP::Status status, std::string html_message);
