@@ -15,6 +15,7 @@ build-application:
       make
       binutils
       g++
+      git
       cmake
       libssl-dev
       libpoco-dev
