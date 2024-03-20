@@ -1,44 +1,37 @@
-image: alpine:3.15
+image: debian:11
 
 stages:
   - build
-  - deploy
+#  - release
 
-variables:
-  VAR_LATEST: $CI_REGISTRY_IMAGE/nebula_atom_image:latest
-  VAR_TAG: $CI_REGISTRY_IMAGE/nebula_atom_image:$CI_COMMIT_TAG
+#variables:
+#  VAR_LATEST: $CI_REGISTRY_IMAGE/nebula_atom_image:latest
+#  VAR_TAG: $CI_REGISTRY_IMAGE/nebula_atom_image:$CI_COMMIT_TAG
 
 build-application:
   stage: build
   before_script:
-    - apk --no-cache add
+    - apt-get install -y
       make
       binutils
       g++
       cmake
-      poco-dev
-      mariadb-dev
-      gtest
-      gtest-dev
-      yaml-cpp
-      yaml-cpp-dev
+      libpoco-dev
+      libmariadb-dev
+      libyaml-cpp-dev
   script:
-    - mkdir ./build-app
-    - cd ./build-app
-    - cmake ../ -DCMAKE_INSTALL_PREFIX=/usr/local -Dnebula-atom_TESTING=ON
+    - mkdir ./build && cd ./build
+    - cmake ../ -DCMAKE_INSTALL_PREFIX=/usr/local
     - cmake --build ./
     - cmake --build ./ --target install
-    - ./src/tests/test_gen
 
-deploy-container:
-  image: docker:latest
-  stage: deploy
-  services:
-    - docker:dind
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^v(?:\d+.){2}(?:\d+)-(alfa|beta|rc}rtm)$/
-  script:
-    - docker build -t $VAR_TAG -t $VAR_LATEST .
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker push $VAR_TAG
-    - docker push $VAR_LATEST
+#release:
+#  image: registry.gitlab.com/gitlab-org/release-cli:latest
+#  stage: release
+#  rules:
+#    - if: $CI_COMMIT_TAG =~ /^v(?:\d+.){2}(?:\d+)-(alfa|beta|rc}rtm)$/
+#  script:
+#    - release-cli create --name "Release $CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
+#        --assets-link "{\"name\":\"${DARWIN_AMD64_BINARY}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${DARWIN_AMD64_BINARY}\"}" \
+#        --assets-link "{\"name\":\"${LINUX_AMD64_BINARY}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${LINUX_AMD64_BINARY}\"}"
+
