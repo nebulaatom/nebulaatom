@@ -23,7 +23,7 @@ find_path(MARIADB_INCLUDE_DIRS
 		$ENV{SystemDrive}/MySQL/*/include
 )
 
-find_path(MYSQL_INCLUDE_DIRS
+find_path(MySQL_INCLUDE_DIRS
 	NAMES mysql.h
 	PATH_SUFFIXES mysql
 	PATHS /usr/include/mysql
@@ -46,13 +46,13 @@ find_path(MYSQL_INCLUDE_DIRS
 
 # Set include dirs
 if(EXISTS "${MARIADB_INCLUDE_DIRS}/mysql.h")
-	set(MYSQL_INCLUDE_DIRS ${MARIADB_INCLUDE_DIRS})
-elseif(EXISTS "${MYSQL_INCLUDE_DIRS}/mysql/mysql.h")
-	set(MYSQL_INCLUDE_DIRS ${MYSQL_INCLUDE_DIRS}/mysql)
+	set(MySQL_INCLUDE_DIRS ${MARIADB_INCLUDE_DIRS})
+elseif(EXISTS "${MySQL_INCLUDE_DIRS}/mysql/mysql.h")
+	set(MySQL_INCLUDE_DIRS ${MySQL_INCLUDE_DIRS}/mysql)
 endif()
 
 # Find library dirs
-find_library(MYSQL_LIBRARIES
+find_library(MySQL_LIBRARIES
 	NAMES mysqlclient_r mariadbclient mariadb
 	PATHS /usr/lib/mysql
 			/usr/lib/mariadb
@@ -68,30 +68,30 @@ find_library(MYSQL_LIBRARIES
 )
 
 # Verify if exists directories
-if(MYSQL_INCLUDE_DIRS AND MYSQL_LIBRARIES)
-	message(STATUS "MySQL Include dir: ${MYSQL_INCLUDE_DIRS}")
-	message(STATUS "MySQL client libraries: ${MYSQL_LIBRARIES}")
+if(MySQL_INCLUDE_DIRS AND MySQL_LIBRARIES)
+	message(STATUS "MySQL Include dir: ${MySQL_INCLUDE_DIRS}")
+	message(STATUS "MySQL client libraries: ${MySQL_LIBRARIES}")
 elseif(MySQL_FIND_REQUIRED)
-	message(FATAL_ERROR "Cannot find MySQL. Include dir: ${MYSQL_INCLUDE_DIRS}  library dir: ${MYSQL_LIBRARIES_DIR}")
+	message(FATAL_ERROR "Cannot find MySQL. Include dir: ${MySQL_INCLUDE_DIRS}  library dir: ${MySQL_LIBRARIES_DIR}")
 endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(MySQL
 	DEFAULT_MSG
-	MYSQL_LIBRARIES
-	MYSQL_INCLUDE_DIRS
+	MySQL_LIBRARIES
+	MySQL_INCLUDE_DIRS
 )
 
 # Copy the results to the output variables.
 if(MySQL_FOUND)
-	add_library(MySQL_lib INTERFACE IMPORTED)
-	set_target_properties(MySQL_lib
-		PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${MYSQL_INCLUDE_DIRS}"
-		INTERFACE_LINK_LIBRARIES "${MYSQL_LIBRARIES}"
+	add_library(MySQL_LIBS INTERFACE IMPORTED)
+	set_target_properties(MySQL_LIBS
+		PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${MySQL_INCLUDE_DIRS}"
+		INTERFACE_LINK_LIBRARIES "${MySQL_LIBRARIES}"
 	)
 else()
-	set(MYSQL_LIBRARIES)
-	set(MYSQL_INCLUDE_DIRS)
+	set(MySQL_LIBRARIES)
+	set(MySQL_INCLUDE_DIRS)
 endif()
 
-mark_as_advanced(MYSQL_INCLUDE_DIRS MYSQL_LIBRARIES)
+mark_as_advanced(MySQL_INCLUDE_DIRS MySQL_LIBRARIES)
