@@ -1,0 +1,9 @@
+
+[requires]
+poco/1.11.1
+yaml-cpp/0.8.0
+
+[generators]
+CMakeToolchain
+CMakeDeps
+cmake_find_package
