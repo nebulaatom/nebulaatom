@@ -10,17 +10,6 @@ if(NOT MySQL_FOUND)
 endif()
 list(APPEND HEADER ${MySQL_INCLUDE_DIRS})
 
-# Find Poco
-find_package(Poco COMPONENTS Foundation Net NetSSL Util Data DataMySQL)
-if(NOT Poco_FOUND)
-    include(${PROJECT_SOURCE_DIR}/cmake/modules/FindPoco.cmake)
-
-    if(NOT Poco_FOUND)
-        message(FATAL_ERROR "Poco not found")
-    endif()
-endif()
-list(APPEND HEADER ${Poco_INCLUDE_DIRS})
-
 # Find yaml-cpp
 find_package(yaml-cpp)
 if(NOT yaml-cpp_FOUND)
@@ -31,6 +20,17 @@ if(NOT yaml-cpp_FOUND)
     endif()
 endif()
 list(APPEND HEADER ${yaml-cpp_INCLUDE_DIRS})
+
+# Find Poco
+find_package(Poco COMPONENTS Foundation Net NetSSL Util Data DataMySQL)
+if(NOT Poco_FOUND)
+    include(${PROJECT_SOURCE_DIR}/cmake/modules/FindPoco.cmake)
+
+    if(NOT Poco_FOUND)
+        message(FATAL_ERROR "Poco not found")
+    endif()
+endif()
+list(APPEND HEADER ${Poco_INCLUDE_DIRS})
 
 # Sources
 set(NEBULAATOM_SOURCES
