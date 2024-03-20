@@ -1,6 +1,6 @@
 
 # Find MySQL
-find_package(MySQL)
+find_package(MySQL QUIET)
 if(NOT MySQL_FOUND)
     include(${PROJECT_SOURCE_DIR}/cmake/modules/FindMySQL.cmake)
 
@@ -11,7 +11,7 @@ endif()
 list(APPEND HEADER ${MySQL_INCLUDE_DIRS})
 
 # Find yaml-cpp
-find_package(yaml-cpp)
+find_package(yaml-cpp REQUIRED)
 if(NOT yaml-cpp_FOUND)
     include(${PROJECT_SOURCE_DIR}/cmake/modules/Findyaml-cpp.cmake)
 
@@ -22,7 +22,7 @@ endif()
 list(APPEND HEADER ${yaml-cpp_INCLUDE_DIRS})
 
 # Find Poco
-find_package(Poco COMPONENTS Foundation Net NetSSL Util Data DataMySQL)
+find_package(Poco REQUIRED COMPONENTS Foundation Net NetSSL Util Data DataMySQL)
 if(NOT Poco_FOUND)
     include(${PROJECT_SOURCE_DIR}/cmake/modules/FindPoco.cmake)
 
