@@ -1,11 +1,9 @@
 # General options
 
-option(${PROJECT_NAME}_TESTING "Enable testing with Google Test" OFF)
 option(${PROJECT_NAME}_CCACHE "Enable ccache to speed up the build time" OFF)
 option(${PROJECT_NAME}_CPPCHECK "Enable cppcheck to verify the sources syntax" OFF)
 option(${PROJECT_NAME}_DOXYGEN "Enable Doxygen documentation" OFF)
-option(${PROJECT_NAME}_VOID_PREFIX "Void prefix to install the project on /tmp" OFF)
-option(${PROJECT_NAME}_APPIMAGE "Settings to create an AppImage" OFF)
+option(${PROJECT_NAME}_EXAMPLES "Enable examples generation" ON)
 
 # Handling options
 
@@ -64,22 +62,4 @@ if(${PROJECT_NAME}_DOXYGEN)
 	else()
 		message(FATAL_ERROR "Doxygen not found.")
 	endif()
-endif()
-
-# Void Prefix
-
-if(${PROJECT_NAME}_VOID_PREFIX)
-	set(CMAKE_INSTALL_PREFIX "/tmp/${PROJECT_NAME}" CACHE PATH "..." FORCE)
-else()
-	if(NOT CMAKE_INSTALL_PREFIX)
-		set(CMAKE_INSTALL_PREFIX "/usr/local" CACHE PATH "..." FORCE)
-	endif()
-endif()
-
-# appimage
-
-if(${PROJECT_NAME}_APPIMAGE)
-	set(${PROJECT_NAME}_DATADIR ././usr/share/${PROJECT_NAME}/)
-else()
-	set(${PROJECT_NAME}_DATADIR ../share/${PROJECT_NAME}/)
 endif()
