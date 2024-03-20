@@ -20,10 +20,7 @@ build-application:
       libmariadb-dev
       libyaml-cpp-dev
   script:
-    - mkdir ./build && cd ./build
-    - cmake ../ -DCMAKE_INSTALL_PREFIX=/usr/local
-    - cmake --build ./
-    - cmake --build ./ --target install
+    - ./build.sh
 
 #release:
 #  image: registry.gitlab.com/gitlab-org/release-cli:latest
