@@ -23,4 +23,4 @@ add_subdirectory(src)
 
 # Add other CMake files
 include(cmake/print_informations.cmake)
-include(${PROJECT_SOURCE_DIR}/cmake/cpack.cmake)
+#include(${PROJECT_SOURCE_DIR}/cmake/cpack.cmake)
