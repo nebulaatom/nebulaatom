@@ -16,6 +16,7 @@ build-application:
       binutils
       g++
       cmake
+      libssl-dev
       libpoco-dev
       libmariadb-dev
       libyaml-cpp-dev
