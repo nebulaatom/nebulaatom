@@ -42,7 +42,7 @@ find_package_handle_standard_args(yaml-cpp
 )
 
 # Copy the results to the output variables.
-if(yaml-cpp_FOUND)
+if(NOT TARGET yaml-cpp::yaml-cpp)
 	add_library(yaml-cpp::yaml-cpp INTERFACE IMPORTED)
 	set_target_properties(yaml-cpp::yaml-cpp PROPERTIES 
 		INTERFACE_INCLUDE_DIRECTORIES "${yaml-cpp_INCLUDE_DIRS}"

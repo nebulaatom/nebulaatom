@@ -83,9 +83,9 @@ find_package_handle_standard_args(MySQL
 )
 
 # Copy the results to the output variables.
-if(MySQL_FOUND)
-	add_library(MySQL_LIBS INTERFACE IMPORTED)
-	set_target_properties(MySQL_LIBS PROPERTIES
+if(NOT TARGET MySQL::MySQL)
+	add_library(MySQL::MySQL INTERFACE IMPORTED)
+	set_target_properties(MySQL::MySQL PROPERTIES
 		INTERFACE_INCLUDE_DIRECTORIES "${MySQL_INCLUDE_DIRS}"
 		INTERFACE_LINK_LIBRARIES "${MySQL_LIBRARIES}"
 	)
