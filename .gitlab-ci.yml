@@ -11,7 +11,7 @@ stages:
 build-application:
   stage: build
   before_script:
-    - apt-get install -y
+    - apt-get update && apt-get install -y
       make
       binutils
       g++
