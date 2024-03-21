@@ -194,7 +194,7 @@ foreach( component ${components} )
 			INTERFACE_INCLUDE_DIRECTORIES "${Poco_${component}_INCLUDE_DIRS}")
 		set_target_properties(Poco::${component} PROPERTIES 
 			INTERFACE_LINK_DIRECTORIES "${Poco_${component}_LIBRARY}")
-		set_target_properties(Poco::Util PROPERTIES 
+		set_target_properties(Poco::${component} PROPERTIES 
 			INTERFACE_LINK_LIBRARIES "${Poco_${component}_LIBRARY}")
 	endif()
 endforeach()
