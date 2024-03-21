@@ -17,7 +17,7 @@ add_subdirectory(src)
 # Add other CMake files
 include(cmake/print_informations.cmake)
 include(cmake/version.cmake) 
-#include(${PROJECT_SOURCE_DIR}/cmake/cpack.cmake)
+include(${PROJECT_SOURCE_DIR}/cmake/cpack.cmake)
 
 # Config file
 configure_file(${PROJECT_SOURCE_DIR}/cmake/project_config.h.cmake ${PROJECT_NAME}Config.h)
