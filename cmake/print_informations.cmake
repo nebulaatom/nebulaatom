@@ -13,10 +13,11 @@ message(STATUS "PROJECT_BINARY_DIR:           ${PROJECT_BINARY_DIR}")
 ## Options info
 message(STATUS "")
 message(STATUS "Options info.")
-message(STATUS "EXAMPLES:                      ${${PROJECT_NAME}_EXAMPLES}")
+message(STATUS "EXAMPLES:                     ${${PROJECT_NAME}_EXAMPLES}")
 message(STATUS "DOXYGEN:                      ${${PROJECT_NAME}_DOXYGEN}")
 message(STATUS "CCACHE:                       ${${PROJECT_NAME}_CCACHE}")
 message(STATUS "CPPCHECK:                     ${${PROJECT_NAME}_CPPCHECK}")
+message(STATUS "BUILD_SHARED:                 ${${PROJECT_NAME}_BUILD_SHARED}")
 
 ## cmake info
 message(STATUS "")
