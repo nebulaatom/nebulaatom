@@ -8,7 +8,7 @@ stages:
 #  VAR_LATEST: $CI_REGISTRY_IMAGE/nebula_atom_image:latest
 #  VAR_TAG: $CI_REGISTRY_IMAGE/nebula_atom_image:$CI_COMMIT_TAG
 
-build-application:
+build:
   stage: build
   before_script:
     - apt-get update && apt-get install -y
@@ -22,15 +22,7 @@ build-application:
       libmariadb-dev
       libyaml-cpp-dev
   script:
-    - ./build.sh
-
-#release:
-#  image: registry.gitlab.com/gitlab-org/release-cli:latest
-#  stage: release
-#  rules:
-#    - if: $CI_COMMIT_TAG =~ /^v(?:\d+.){2}(?:\d+)-(alfa|beta|rc}rtm)$/
-#  script:
-#    - release-cli create --name "Release $CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
-#        --assets-link "{\"name\":\"${DARWIN_AMD64_BINARY}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${DARWIN_AMD64_BINARY}\"}" \
-#        --assets-link "{\"name\":\"${LINUX_AMD64_BINARY}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${LINUX_AMD64_BINARY}\"}"
+    - mkdir build && cd build
+    - cmake ../ -DCMAKE_BUILD_TYPE=release && cmake --build .
+    - cmake --build . --target install
 
