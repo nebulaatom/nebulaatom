@@ -30,8 +30,7 @@ build:
     - cpack --config CPackSourceConfig.cmake && cpack --config CPackConfig.cmake
   artifacts:
     paths:
-      - build/cpack
-
+      - build/cpack/${LINUX_DEB_FILE}
 
 upload:
   stage: upload
