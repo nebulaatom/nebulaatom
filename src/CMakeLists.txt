@@ -131,8 +131,13 @@ set_target_properties(nebulaatom PROPERTIES POSITION_INDEPENDENT_CODE 1)
 # Libraries
 add_library(nebulaatom_static STATIC $<TARGET_OBJECTS:nebulaatom>)
 target_link_libraries(nebulaatom_static ${LIB_DEPENDECIES})
-add_library(nebulaatom_shared SHARED $<TARGET_OBJECTS:nebulaatom>)
-target_link_libraries(nebulaatom_shared ${LIB_DEPENDECIES})
+set_target_properties(nebulaatom_static PROPERTIES OUTPUT_NAME nebulaatom)
+
+if(${PROJECT_NAME}_BUILD_SHARED)
+    add_library(nebulaatom_shared SHARED $<TARGET_OBJECTS:nebulaatom>)
+    target_link_libraries(nebulaatom_shared ${LIB_DEPENDECIES})
+    set_target_properties(nebulaatom_shared PROPERTIES OUTPUT_NAME nebulaatom)
+endif()
 
 # Add examples
 if(${PROJECT_NAME}_EXAMPLES)

@@ -4,6 +4,7 @@ option(${PROJECT_NAME}_CCACHE "Enable ccache to speed up the build time" OFF)
 option(${PROJECT_NAME}_CPPCHECK "Enable cppcheck to verify the sources syntax" OFF)
 option(${PROJECT_NAME}_DOXYGEN "Enable Doxygen documentation" OFF)
 option(${PROJECT_NAME}_EXAMPLES "Enable examples generation" ON)
+option(${PROJECT_NAME}_BUILD_SHARED "Enable build shared library" ON)
 
 # Handling options
 

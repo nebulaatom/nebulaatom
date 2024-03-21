@@ -36,23 +36,15 @@ install(
 
 ## Libraries
 install(
-	TARGETS 
-		nebulaatom_static
-		nebulaatom_shared
-	DESTINATION 
-		${CMAKE_INSTALL_LIBDIR}
+	TARGETS nebulaatom_static
+	DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
-
-## CMake
-install(
-	FILES 
-		${PROJECT_SOURCE_DIR}/cmake/FindMySQL.cmake
-		${PROJECT_SOURCE_DIR}/cmake/FindPoco.cmake
-		${PROJECT_SOURCE_DIR}/cmake/Findyaml-cpp.cmake
-		${PROJECT_SOURCE_DIR}/cmake/FindSQLite3.cmake
-	DESTINATION 
-		${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
-)
+if(${PROJECT_NAME}_BUILD_SHARED)
+	install(
+		TARGETS nebulaatom_shared
+		DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	)
+endif()
 
 # Examples
 if(${PROJECT_NAME}_EXAMPLES)
