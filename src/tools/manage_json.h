@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_TOOLS_MANAGEJSON_H
-#define CPW_TOOLS_MANAGEJSON_H
+#ifndef ATOM_TOOLS_MANAGEJSON
+#define ATOM_TOOLS_MANAGEJSON
 
 
 #include <istream>
@@ -35,7 +35,7 @@
 using namespace Poco;
 
 
-namespace CPW
+namespace Atom
 {
     namespace Tools
     {
@@ -44,24 +44,23 @@ namespace CPW
 }
 
 
-class CPW::Tools::ManageJSON
+class Atom::Tools::ManageJSON
 {
     public:
         ManageJSON();
         ~ManageJSON();
 
-        JSON::Object::Ptr& get_json_body(){return json_body_;}
+        JSON::Array::Ptr& get_json_body(){return json_body_;}
+        std::string get_json_body_string() const { return json_body_string_; }
 
         std::string ReadBody_(std::istream& stream);
         bool Parse_(std::string string_to_parse);
         JSON::Object::Ptr ExtractObject_(Dynamic::Var& object);
         JSON::Array::Ptr ExtractArray_(Dynamic::Var object);
 
-    protected:
-        bool VerifyJSON_();
-
     private:
-        JSON::Object::Ptr json_body_;
+        JSON::Array::Ptr json_body_;
+        std::string json_body_string_;
 };
 
-#endif // CPW_TOOLS_MANAGEJSON_H
+#endif // ATOM_TOOLS_MANAGEJSON

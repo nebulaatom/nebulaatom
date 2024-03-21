@@ -1,7 +1,6 @@
 /*
-* CPW Woodpecker Server
-* Copyright (C) 2021 CPW Online support@cpwonline.org
-*
+* Nebula Atom
+
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
@@ -16,14 +15,14 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_HANDLERS_NULLHANDLER_H
-#define CPW_HANDLERS_NULLHANDLER_H
+#ifndef ATOM_HANDLERS_NULLHANDLER
+#define ATOM_HANDLERS_NULLHANDLER
 
 
 #include "handlers/root_handler.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Handlers
     {
@@ -32,21 +31,23 @@ namespace CPW
 }
 
 
-class CPW::Handlers::NullHandler : public RootHandler
+class Atom::Handlers::NullHandler :
+    public RootHandler
 {
     public:
         using RootHandler::RootHandler;
         virtual ~NullHandler();
 
     protected:
+        virtual void AddFunctions_() override;
+        virtual void Process_() override;
         virtual void HandleGETMethod_() override;
         virtual void HandlePOSTMethod_() override;
         virtual void HandlePUTMethod_() override;
         virtual void HandleDELMethod_() override;
-        virtual void AddRoutes_() override;
 
     private:
         void NullResponse_();
 };
 
-#endif // CPW_HANDLERS_NULLHANDLER_H
+#endif // ATOM_HANDLERS_NULLHANDLER

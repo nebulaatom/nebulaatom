@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_TOOLS_REQUESTSMANAGER_H
-#define CPW_TOOLS_REQUESTSMANAGER_H
+#ifndef ATOM_TOOLS_REQUESTSMANAGER
+#define ATOM_TOOLS_REQUESTSMANAGER
 
 
 #include <string>
@@ -33,7 +33,7 @@
 #include "http/http_methods.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Tools
     {
@@ -45,7 +45,7 @@ using namespace Poco;
 using namespace Poco::Net;
 
 
-class CPW::Tools::RequestsManager
+class Atom::Tools::RequestsManager
 {
     public:
         using MainFunctor = std::function<void()>;
@@ -72,4 +72,4 @@ class CPW::Tools::RequestsManager
         HTTP::HTTPMethods* http_methods_;
 };
 
-#endif // CPW_TOOLS_REQUESTSMANAGER_H
+#endif // ATOM_TOOLS_REQUESTSMANAGER

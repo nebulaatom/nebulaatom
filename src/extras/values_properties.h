@@ -16,15 +16,15 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_EXTRAS_VALUESPROPERTIES_H
-#define CPW_EXTRAS_VALUESPROPERTIES_H
+#ifndef ATOM_EXTRAS_VALUESPROPERTIES
+#define ATOM_EXTRAS_VALUESPROPERTIES
 
 
 #include <string>
 #include <map>
 #include <vector>
 
-namespace CPW
+namespace Atom
 {
     namespace Extras
     {
@@ -32,7 +32,7 @@ namespace CPW
     }
 }
 
-class CPW::Extras::ValuesProperties
+class Atom::Extras::ValuesProperties
 {
     public:
         ValuesProperties();
@@ -70,6 +70,11 @@ class CPW::Extras::ValuesProperties
                 return false;
         }
 
+        std::string& get_value()
+        {
+            auto& var = value_;
+            return var;
+        }
         std::string get_value() const {return value_;}
         bool get_quotes() const {return quotes_;}
 
@@ -84,4 +89,4 @@ class CPW::Extras::ValuesProperties
         bool quotes_;
 };
 
-#endif // CPW_EXTRAS_VALUESPROPERTIES_H
+#endif // ATOM_EXTRAS_VALUESPROPERTIES

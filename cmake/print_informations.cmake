@@ -13,12 +13,11 @@ message(STATUS "PROJECT_BINARY_DIR:           ${PROJECT_BINARY_DIR}")
 ## Options info
 message(STATUS "")
 message(STATUS "Options info.")
-message(STATUS "TESTING:                      ${${PROJECT_NAME}_TESTING}")
-message(STATUS "CONAN:                        ${${PROJECT_NAME}_CONAN}")
+message(STATUS "EXAMPLES:                     ${${PROJECT_NAME}_EXAMPLES}")
 message(STATUS "DOXYGEN:                      ${${PROJECT_NAME}_DOXYGEN}")
 message(STATUS "CCACHE:                       ${${PROJECT_NAME}_CCACHE}")
 message(STATUS "CPPCHECK:                     ${${PROJECT_NAME}_CPPCHECK}")
-message(STATUS "VOID_PREFIX:                  ${${PROJECT_NAME}_VOID_PREFIX}")
+message(STATUS "BUILD_SHARED:                 ${${PROJECT_NAME}_BUILD_SHARED}")
 
 ## cmake info
 message(STATUS "")
