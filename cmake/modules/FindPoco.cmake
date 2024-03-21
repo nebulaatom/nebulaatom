@@ -116,9 +116,9 @@ foreach( component ${components} )
 	# include directory for the component
 	if(NOT Poco_${component}_INCLUDE_DIR)
 		if(component STREQUAL "NetSSL")
-			set(component_INCLUDE_NAMES
-				"Poco/Net/NetSSL.h"
-			)
+			set(component_INCLUDE_NAMES "Poco/Net/NetSSL.h")
+		elseif(component STREQUAL "DataMySQL")
+			set(component_INCLUDE_NAMES "Poco/Data/MySQL/MySQL.h")
 		else()
 			set(component_INCLUDE_NAMES
 				"Poco/${component}.h" # e.g. Foundation.h
