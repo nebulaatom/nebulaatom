@@ -110,10 +110,8 @@ set(HEADER
     ${NEBULAATOM_headers_tools}
 )
 
-# nebulaatom OBJECT
-add_library(nebulaatom OBJECT ${NEBULAATOM_SOURCES})
-target_include_directories(nebulaatom PUBLIC ${HEADER})
-target_link_libraries(nebulaatom
+# Dependencies
+set(LIB_DEPENDECIES
     Poco::Foundation
     Poco::Net
     Poco::NetSSL
@@ -124,9 +122,17 @@ target_link_libraries(nebulaatom
     yaml-cpp::yaml-cpp
 )
 
+# nebulaatom OBJECT
+add_library(nebulaatom OBJECT ${NEBULAATOM_SOURCES})
+target_include_directories(nebulaatom PUBLIC ${HEADER})
+target_link_libraries(nebulaatom ${LIB_DEPENDECIES})
+set_target_properties(nebulaatom PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
 # Libraries
 add_library(nebulaatom_static STATIC $<TARGET_OBJECTS:nebulaatom>)
+target_link_libraries(nebulaatom_static ${LIB_DEPENDECIES})
 add_library(nebulaatom_shared SHARED $<TARGET_OBJECTS:nebulaatom>)
+target_link_libraries(nebulaatom_shared ${LIB_DEPENDECIES})
 
 # Add examples
 if(${PROJECT_NAME}_EXAMPLES)
