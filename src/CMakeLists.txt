@@ -17,7 +17,7 @@ endif()
 list(APPEND HEADER ${yaml-cpp_INCLUDE_DIRS})
 
 # Find Poco
-find_package(Poco REQUIRED COMPONENTS Foundation Net NetSSL Util Data DataMySQL)
+find_package(Poco REQUIRED COMPONENTS Foundation Net NetSSL Util Data DataMySQL JSON)
 if(NOT Poco_FOUND)
     message(FATAL_ERROR "Poco not found")
 endif()
