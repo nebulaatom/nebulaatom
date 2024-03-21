@@ -185,6 +185,18 @@ foreach( component ${components} )
 	elseif(NOT Poco_FIND_QUIETLY)
 		message(FATAL_ERROR "Could not find Poco component ${component}!")
 	endif()
+
+
+	# Target approach
+	if(NOT TARGET Poco::${component})
+		add_library(Poco::${component} INTERFACE IMPORTED)
+		set_target_properties(Poco::${component} PROPERTIES 
+			INTERFACE_INCLUDE_DIRECTORIES "${Poco_${component}_INCLUDE_DIRS}")
+		set_target_properties(Poco::${component} PROPERTIES 
+			INTERFACE_LINK_DIRECTORIES "${Poco_${component}_LIBRARY}")
+		set_target_properties(Poco::Util PROPERTIES 
+			INTERFACE_LINK_LIBRARIES "${Poco_${component}_LIBRARY}")
+	endif()
 endforeach()
 
 if(DEFINED Poco_LIBRARIES)
