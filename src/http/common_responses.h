@@ -1,7 +1,6 @@
 /*
-* CPW Woodpecker Server
-* Copyright (C) 2021 CPW Online support@cpwonline.org
-*
+* Nebula Atom
+
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
@@ -16,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_HTTP_COMMONRESPONSES_H
-#define CPW_HTTP_COMMONRESPONSES_H
+#ifndef ATOM_HTTP_COMMONRESPONSES
+#define ATOM_HTTP_COMMONRESPONSES
 
 
 #include <string>
@@ -27,14 +26,16 @@
 #include <Poco/JSON/JSON.h>
 #include <Poco/JSON/Object.h>
 
-#include "cpw-woodpecker-serverConfig.h"
+#include "nebula-atomConfig.h"
+#include "files/file_manager.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace HTTP
     {
         enum class ResponseType;
+        enum class Status;
         class CommonResponses;
     }
 }
@@ -43,7 +44,7 @@ using namespace Poco;
 using namespace Poco::Net;
 
 
-enum class CPW::HTTP::ResponseType
+enum class Atom::HTTP::ResponseType
 {
     kError
     ,kWarning
@@ -51,26 +52,54 @@ enum class CPW::HTTP::ResponseType
     ,kSuccess
 };
 
-class CPW::HTTP::CommonResponses
+enum class Atom::HTTP::Status
+{
+    kOK = 200
+    ,kHTTP_BAD_REQUEST = 400
+    ,kHTTP_UNAUTHORIZED = 401
+    ,kHTTP_FORBIDDEN = 403
+    ,kHTTP_NOT_FOUND = 404
+    ,kHTTP_INTERNAL_SERVER_ERROR = 500
+    ,kHTTP_BAD_GATEWAY = 502
+    ,kHTTP_SERVICE_UNAVAILABLE = 503
+};
+
+class Atom::HTTP::CommonResponses
 {
     public:
+        struct Attributes
+        {
+            HTTPResponse::HTTPStatus http_status;
+            int status_int;
+            ResponseType response_type;
+            std::string message;
+        };
+
         CommonResponses();
         ~CommonResponses();
 
-        std::map<HTTPResponse::HTTPStatus, std::pair<ResponseType, std::string>>& get_responses_()
+        std::map<HTTP::Status, Attributes>& get_responses_()
         {
             auto& var = responses_;
             return var;
         }
 
-        void GenericResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message);
-        void HTMLResponse_(HTTPServerResponse& response, HTTPResponse::HTTPStatus status, std::string message);
+        void set_response(HTTPServerResponse* response) { response_ = response; }
+
+        void CompoundResponse_(HTTP::Status status, JSON::Object::Ptr result_json);
+        void CompoundFillResponse_(HTTP::Status status, JSON::Object::Ptr result_json, std::string message);
+        void JSONResponse_(HTTP::Status status, std::string message);
+        void HTMLResponse_(HTTP::Status status, std::string message);
+        void CustomHTMLResponse_(HTTP::Status status, std::string html_message);
+        void FileResponse_(HTTP::Status status, std::string address);
 
     protected:
         void FillResponses_();
+        void FillStatusMessage_(JSON::Object::Ptr json_object, HTTP::Status status, std::string message);
 
     private:
-        std::map<HTTPResponse::HTTPStatus, std::pair<ResponseType, std::string>> responses_;
+        HTTPServerResponse* response_;
+        std::map<HTTP::Status, Attributes> responses_;
 };
 
-#endif // CPW_HTTP_COMMONRESPONSES_H
+#endif // ATOM_HTTP_COMMONRESPONSES

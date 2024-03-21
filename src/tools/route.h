@@ -1,7 +1,6 @@
 /*
-* CPW Woodpecker Server
-* Copyright (C) 2021 CPW Online support@cpwonline.org
-*
+* Nebula Atom
+
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
@@ -16,16 +15,18 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_ROUTE_H
-#define CPW_ROUTE_H
+#ifndef ATOM_ROUTE
+#define ATOM_ROUTE
 
 
 #include <string>
 #include <vector>
 #include <functional>
 
+#include "Poco/URI.h"
 
-namespace CPW
+
+namespace Atom
 {
     namespace Tools
     {
@@ -34,36 +35,39 @@ namespace CPW
     }
 }
 
-enum class CPW::Tools::RouteType
+using namespace Poco;
+
+
+enum class Atom::Tools::RouteType
 {
     kEntrypoint
     ,kEndpoint
 };
 
 
-class CPW::Tools::Route
+class Atom::Tools::Route
 {
     public:
-        Route(std::string target, std::vector<std::string> segments);
+        Route();
+        Route(std::string route);
+        Route(std::vector<std::string> segments);
         ~Route();
 
         RouteType get_current_route_type() const {return current_route_type_;}
-        std::string get_target() const {return target_;}
         std::vector<std::string> get_segments() const {return segments_;}
 
         void set_current_route_type(RouteType current_route_type) {current_route_type_ = current_route_type;}
-        void set_target(std::string target) {target_ = target;}
         void set_segments(std::vector<std::string> segments) {segments_ = segments;}
 
         std::string SegmentsToString_();
 
     protected:
+        void StringToSegment(std::string route);
         void IdentifyRouteType_();
 
     private:
         RouteType current_route_type_;
-        std::string target_;
         std::vector<std::string> segments_;
 };
 
-#endif // CPW_ROUTE_H
+#endif // ATOM_ROUTE

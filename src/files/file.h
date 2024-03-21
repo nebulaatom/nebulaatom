@@ -2,8 +2,8 @@
 // SPDX-FileCopyrightText: 2022 <copyright holder> <email>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef CPW_FILES_FILE_H
-#define CPW_FILES_FILE_H
+#ifndef ATOM_FILES_FILE
+#define ATOM_FILES_FILE
 
 
 #include <string>
@@ -15,7 +15,7 @@
 #include "files/file_properties.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Files
     {
@@ -27,14 +27,14 @@ namespace CPW
 using namespace Poco;
 
 
-enum class CPW::Files::FileType
+enum class Atom::Files::FileType
 {
     kBinary
     ,kTextPlain
 };
 
 
-class CPW::Files::File
+class Atom::Files::File
 {
     public:
         File();
@@ -46,7 +46,11 @@ class CPW::Files::File
         std::string get_name() const {return name_;}
         std::string get_filename() const {return filename_;}
 
-		Files::FileProperties* get_file_properties(){return file_properties_;};
+		Files::FileProperties& get_file_properties()
+        {
+            auto& var = file_properties_;
+            return var;
+        }
 		std::shared_ptr<Path>& get_requested_path()
         {
             auto& var = requested_path_;
@@ -70,7 +74,6 @@ class CPW::Files::File
         void set_content_type(std::string content_type) {content_type_ = content_type;}
         void set_name(std::string name) {name_ = name;}
         void set_filename(std::string filename) {filename_ = filename;}
-        void set_file_properties(Files::FileProperties& file_properties){file_properties_ = &file_properties;}
 
     private:
         std::size_t content_length_;
@@ -78,10 +81,10 @@ class CPW::Files::File
         std::string name_;
         std::string filename_;
         FileType file_type_;
-        Files::FileProperties* file_properties_;
+        Files::FileProperties file_properties_;
         std::shared_ptr<Path> requested_path_;
         std::shared_ptr<Poco::File> requested_file_;
         std::shared_ptr<Poco::File> tmp_file_;
 };
 
-#endif // CPW_FILES_FILE_H
+#endif // ATOM_FILES_FILE

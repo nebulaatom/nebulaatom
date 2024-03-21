@@ -1,7 +1,6 @@
 /*
- * CPW Woodpecker Server
- * Copyright (C) 2021 CPW Online support@cpwonline.org
- *
+ * Nebula Atom
+
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -17,8 +16,8 @@
  */
 
 
-#ifndef CPW_TOOLS_ROWVALUEFORMATTER_H
-#define CPW_TOOLS_ROWVALUEFORMATTER_H
+#ifndef ATOM_TOOLS_ROWVALUEFORMATTER
+#define ATOM_TOOLS_ROWVALUEFORMATTER
 
 
 #include <string>
@@ -31,7 +30,7 @@
 #include "Poco/Timestamp.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Tools
     {
@@ -43,35 +42,67 @@ namespace CPW
 using namespace Poco;
 
 
-enum class CPW::Tools::RowValueType
+enum class Atom::Tools::RowValueType
 {
     kEmpty
     ,kString
     ,kInteger
     ,kFloat
+    ,kBoolean
 };
 
-class CPW::Tools::RowValueFormatter
+class Atom::Tools::RowValueFormatter
 {
     public:
+        RowValueFormatter();
         RowValueFormatter(Poco::Dynamic::Var& value);
+        RowValueFormatter(std::string value_string);
+        RowValueFormatter(int value_int);
+        RowValueFormatter(float value_float);
+        RowValueFormatter(bool value_bool);
         ~RowValueFormatter();
 
-        RowValueType get_row_value_type() const{return row_value_type_;}
-        std::string get_value_string() const{return value_string_;}
-        int get_value_int() const{return value_int_;}
-        float get_value_float() const{return value_float_;}
+        RowValueType& get_row_value_type()
+        {
+            auto& var = row_value_type_;
+            return var;
+        }
+        Poco::Dynamic::Var* get_value() const { return value_; }
+        std::string& get_value_string()
+        {
+            auto& var = value_string_;
+            return var;
+        }
+        int& get_value_int()
+        {
+            auto& var = value_int_;
+            return var;
+        }
+        float& get_value_float()
+        {
+            auto& var = value_float_;
+            return var;
+        }
+        bool& get_value_bool()
+        {
+            auto& var = value_bool_;
+            return var;
+        }
+
+        void set_value(Poco::Dynamic::Var* value) { value_ = value; }
 
         void Format_();
 
     private:
         RowValueType row_value_type_;
         Poco::Dynamic::Var* value_;
+
         std::string value_string_;
         int value_int_;
         float value_float_;
+        bool value_bool_;
 
 };
 
 
-#endif // CPW_TOOLS_ROWVALUEFORMATTER_H
+#endif // ATOM_TOOLS_ROWVALUEFORMATTER

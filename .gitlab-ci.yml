@@ -1,39 +1,51 @@
-image: alpine:3.15
+image: debian:12
 
 stages:
   - build
-  - deploy
+#  - upload
+#  - release
 
-variables:
-  VAR_LATEST: $CI_REGISTRY_IMAGE/cpw_woodpecker_image:latest
-  VAR_TAG: $CI_REGISTRY_IMAGE/cpw_woodpecker_image:$CI_COMMIT_TAG
+#variables:
+#  VAR_LATEST: $CI_REGISTRY_IMAGE/nebula_atom_image:latest
+#  VAR_TAG: $CI_REGISTRY_IMAGE/nebula_atom_image:$CI_COMMIT_TAG
 
-build-application:
+build:
   stage: build
   before_script:
-    - apk --no-cache add
+    - apt-get update && apt-get install -y
       make
       binutils
       g++
+      git
       cmake
-      poco-dev
-      mariadb-dev
+      libssl-dev
+      libpoco-dev
+      libmariadb-dev
+      libyaml-cpp-dev
   script:
-    - mkdir ./build-app
-    - cd ./build-app
-    - cmake ../ -DCMAKE_INSTALL_PREFIX=/usr/local
-    - cmake --build ./
-    - cmake --build ./ --target install
+    - mkdir build && cd build
+    - cmake ../ -DCMAKE_BUILD_TYPE=release && cmake --build .
+    - cmake --build . --target install
 
-deploy-container:
-  image: docker:latest
-  stage: deploy
-  services:
-    - docker:dind
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^v(?:\d+.){2}(?:\d+)-(alfa|beta|rc}rtm)$/
-  script:
-    - docker build -t $VAR_TAG -t $VAR_LATEST .
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker push $VAR_TAG
-    - docker push $VAR_LATEST
+#upload:
+#  stage: upload
+#  image: curlimages/curl:latest
+#  rules:
+#    - if: $CI_COMMIT_TAG
+#  script:
+#    - |
+#      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file bin/${DARWIN_AMD64_BINARY} ${PACKAGE_REGISTRY_URL}/${DARWIN_AMD64_BINARY}
+#    - |
+#      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file bin/${LINUX_AMD64_BINARY} ${PACKAGE_REGISTRY_URL}/${LINUX_AMD64_BINARY}
+
+
+#release:
+#  image: registry.gitlab.com/gitlab-org/release-cli:latest
+#  stage: release
+#  rules:
+#    - if: $CI_COMMIT_TAG =~ /^v(?:\d+.){2}(?:\d+)-(alfa|beta|rc}rtm)$/
+#  script:
+#    - release-cli create --name "Release $CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
+#        --assets-link "{\"name\":\"${DARWIN_AMD64_BINARY}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${DARWIN_AMD64_BINARY}\"}" \
+#        --assets-link "{\"name\":\"${LINUX_AMD64_BINARY}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${LINUX_AMD64_BINARY}\"}"
+

@@ -1,7 +1,6 @@
 /*
- * CPW Woodpecker Server
- * Copyright (C) 2021 CPW Online support@cpwonline.org
- *
+ * Nebula Atom
+
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -16,15 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CPW_FILES_FILEPROPERTIES_H
-#define CPW_FILES_FILEPROPERTIES_H
+#ifndef ATOM_FILES_FILEPROPERTIES
+#define ATOM_FILES_FILEPROPERTIES
 
 
 #include <string>
 #include <vector>
 
 
-namespace CPW
+namespace Atom
 {
 	namespace Files
 	{
@@ -33,7 +32,7 @@ namespace CPW
 }
 
 
-class CPW::Files::FileProperties
+class Atom::Files::FileProperties
 {
 	public:
 		FileProperties(std::string content_type, bool binary, std::vector<std::string> other_extensions);
@@ -61,4 +60,4 @@ class CPW::Files::FileProperties
 		std::vector<std::string> other_extensions_;
 };
 
-#endif // CPW_FILES_FILEPROPERTIES_H
+#endif // ATOM_FILES_FILEPROPERTIES

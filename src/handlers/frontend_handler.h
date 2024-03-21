@@ -1,7 +1,6 @@
 /*
-* CPW Woodpecker Server
-* Copyright (C) 2021 CPW Online support@cpwonline.org
-*
+* Nebula Atom
+
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
@@ -16,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPW_HANDLERS_FRONTENDHANDLER_H
-#define CPW_HANDLERS_FRONTENDHANDLER_H
+#ifndef ATOM_HANDLERS_FRONTENDHANDLER
+#define ATOM_HANDLERS_FRONTENDHANDLER
 
 #include <string>
 #include <map>
@@ -27,7 +26,7 @@
 #include "files/file_manager.h"
 
 
-namespace CPW
+namespace Atom
 {
     namespace Handlers
     {
@@ -36,21 +35,29 @@ namespace CPW
 }
 
 
-class CPW::Handlers::FrontendHandler : public RootHandler
+class Atom::Handlers::FrontendHandler :
+    public RootHandler
 {
     public:
-        FrontendHandler(std::string api_version);
+        FrontendHandler();
         ~FrontendHandler();
 
+        Files::FileManager& get_file_manager()
+        {
+            auto& var = file_manager_;
+            return var;
+        }
+
     protected:
+        virtual void AddFunctions_() override;
+        virtual void Process_() override;
         virtual void HandleGETMethod_() override;
         virtual void HandlePOSTMethod_() override;
         virtual void HandlePUTMethod_() override;
         virtual void HandleDELMethod_() override;
-        virtual void AddRoutes_() override;
 
     private:
         Files::FileManager file_manager_;
 };
 
-#endif // CPW_HANDLERS_FRONTENDHANDLER_H
+#endif // ATOM_HANDLERS_FRONTENDHANDLER
