@@ -1,28 +1,4 @@
 
-# Add CMake modules
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
-
-# Find MySQL
-find_package(MySQL REQUIRED)
-if(NOT MySQL_FOUND)
-    message(FATAL_ERROR "MySQL not found")
-endif()
-list(APPEND HEADER ${MySQL_INCLUDE_DIRS})
-
-# Find yaml-cpp
-find_package(yaml-cpp REQUIRED)
-if(NOT yaml-cpp_FOUND)
-    message(FATAL_ERROR "yaml-cpp not found")
-endif()
-list(APPEND HEADER ${yaml-cpp_INCLUDE_DIRS})
-
-# Find Poco
-find_package(Poco REQUIRED COMPONENTS Foundation Net NetSSL Util Data DataMySQL JSON)
-if(NOT Poco_FOUND)
-    message(FATAL_ERROR "Poco not found")
-endif()
-list(APPEND HEADER ${Poco_INCLUDE_DIRS})
-
 # Sources
 set(NEBULAATOM_SOURCES
     ${PROJECT_SOURCE_DIR}/src/core/nebula_atom.cpp
@@ -134,16 +110,10 @@ set(HEADER
     ${NEBULAATOM_headers_tools}
 )
 
-# Library
-add_library(nebulaatom_static STATIC ${NEBULAATOM_SOURCES})
-add_library(nebulaatom_shared SHARED ${NEBULAATOM_SOURCES})
-
-# Include directories
-target_include_directories(nebulaatom_shared PUBLIC ${HEADER})
-target_include_directories(nebulaatom_static PUBLIC ${HEADER})
-
-# Link libraries
-target_link_libraries(nebulaatom_static
+# nebulaatom OBJECT
+add_library(nebulaatom OBJECT ${NEBULAATOM_SOURCES})
+target_include_directories(nebulaatom PUBLIC ${HEADER})
+target_link_libraries(nebulaatom
     Poco::Foundation
     Poco::Net
     Poco::NetSSL
@@ -153,16 +123,10 @@ target_link_libraries(nebulaatom_static
     Poco::JSON
     yaml-cpp::yaml-cpp
 )
-target_link_libraries(nebulaatom_shared
-    Poco::Foundation
-    Poco::Net
-    Poco::NetSSL
-    Poco::Util
-    Poco::Data
-    Poco::DataMySQL
-    Poco::JSON
-    yaml-cpp::yaml-cpp
-)
+
+# Libraries
+add_library(nebulaatom_static STATIC $<TARGET_OBJECTS:nebulaatom>)
+add_library(nebulaatom_shared SHARED $<TARGET_OBJECTS:nebulaatom>)
 
 # Add examples
 if(${PROJECT_NAME}_EXAMPLES)
