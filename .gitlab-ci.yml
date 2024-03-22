@@ -29,7 +29,7 @@ build:
     - cpack --config CPackSourceConfig.cmake && cpack --config CPackConfig.cmake
   artifacts:
     paths:
-      - /build/cpack/nebula-atom-*-Linux.deb
+      - build/cpack/nebula-atom-*-Linux.deb
 
 upload:
   stage: upload
