@@ -2,6 +2,10 @@
 
 ## Header files
 install(
+	FILES ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
+)
+install(
 	FILES ${NEBULAATOM_headers_core}
 	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/core
 )
@@ -24,6 +28,10 @@ install(
 install(
 	FILES ${NEBULAATOM_headers_http}
 	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/http
+)
+install(
+	FILES ${NEBULAATOM_headers_query}
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/query
 )
 install(
 	FILES ${NEBULAATOM_headers_security}
