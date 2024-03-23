@@ -44,7 +44,6 @@ set(NEBULAATOM_SOURCES
 set(NEBULAATOM_headers_core
     ${PROJECT_SOURCE_DIR}/src/core/nebula_atom.h
     ${PROJECT_SOURCE_DIR}/src/core/handler_factory.h
-    ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h
 )
 set(NEBULAATOM_headers_extras
     ${PROJECT_SOURCE_DIR}/src/extras/session.h
@@ -99,6 +98,7 @@ set(NEBULAATOM_headers_tools
 )
 set(HEADER
     ${HEADER}
+    ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h
     ${NEBULAATOM_headers_core}
     ${NEBULAATOM_headers_extras}
     ${NEBULAATOM_headers_files}
