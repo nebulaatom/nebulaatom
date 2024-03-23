@@ -121,7 +121,7 @@ class Atom::Files::FileManager: public Net::PartHandler
         void ProcessFileType_();
         std::string SplitHeaderValue_(const MessageHeader& header, std::string header_name, std::string parameter);
         void CheckTargetFilename_(Files::File& file, std::string directory);
-        std::size_t ReplaceText_(std::string& inout, std::string_view what, std::string_view with);
+        std::size_t ReplaceText_(std::string& inout, std::string what, std::string with);
 
     private:
         std::map<std::string, Files::FileProperties> supported_files_;

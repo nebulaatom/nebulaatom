@@ -318,7 +318,7 @@ void FileManager::CheckTargetFilename_(Files::File& file, std::string directory)
 
 }
 
-std::size_t FileManager::ReplaceText_(std::string& inout, std::string_view what, std::string_view with)
+std::size_t FileManager::ReplaceText_(std::string& inout, std::string what, std::string with)
 {
     std::size_t count{};
 
