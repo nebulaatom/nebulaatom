@@ -4,6 +4,7 @@ stages:
   - build
   - upload
   - release
+  - create-container
 
 variables:
   ARTIFACT_URL: "/builds/${CI_PROJECT_PATH}"
@@ -63,7 +64,7 @@ release:
       release-cli create --name "Release $CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
         --assets-link "{\"name\":\"${LINUX_DEB_FILE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/$VERSION/$LINUX_DEB_FILE\"}"
 
-deploy-container:
+create-container:
   image: docker:latest
   stage: deploy
   services:
