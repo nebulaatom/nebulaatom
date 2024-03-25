@@ -82,3 +82,14 @@ install(
 	DESTINATION
 		${CMAKE_INSTALL_DOCDIR}
 )
+
+## Docs files
+install(
+	FILES 
+		${PROJECT_SOURCE_DIR}/cmake/modules/FindMySQL.cmake
+		${PROJECT_SOURCE_DIR}/cmake/modules/FindPoco.cmake
+		${PROJECT_SOURCE_DIR}/cmake/modules/FindSQLite3.cmake
+		${PROJECT_SOURCE_DIR}/cmake/modules/Findyaml-cpp.cmake
+	DESTINATION
+		${CMAKE_INSTALL_LIBDIR}/cmake_modules
+)
