@@ -44,6 +44,10 @@ upload:
     - |
       echo ${PACKAGE_REGISTRY_URL}
     - |
+      echo ${ARTIFACT_URL}/$LINUX_DEB_FILE
+    - |
+      echo ${PACKAGE_REGISTRY_URL}/$LINUX_DEB_FILE
+    - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file ${ARTIFACT_URL}/$LINUX_DEB_FILE ${PACKAGE_REGISTRY_URL}/$LINUX_DEB_FILE
 
 release:
