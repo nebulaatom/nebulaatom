@@ -8,6 +8,8 @@ stages:
 variables:
   ARTIFACT_URL: "/builds/${CI_PROJECT_PATH}"
   PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/nebula-atom"
+  DOCKER_LATEST: $CI_REGISTRY_IMAGE/nebulaatom:latest
+  DOCKER_TAG: $CI_REGISTRY_IMAGE/nebulaatom:$CI_COMMIT_TAG
 
 build:
   stage: build
@@ -61,3 +63,15 @@ release:
       release-cli create --name "Release $CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
         --assets-link "{\"name\":\"${LINUX_DEB_FILE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/$VERSION/$LINUX_DEB_FILE\"}"
 
+deploy-container:
+  image: docker:latest
+  stage: deploy
+  services:
+    - docker:dind
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - docker build -t $DOCKER_TAG -t $DOCKER_LATEST .
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker push $DOCKER_TAG
+    - docker push $DOCKER_LATEST
