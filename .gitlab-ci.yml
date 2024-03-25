@@ -7,7 +7,7 @@ stages:
 
 variables:
   ARTIFACT_URL: "/builds/${CI_PROJECT_PATH}/build/cpack"
-  PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/nebula-atom/${CI_COMMIT_TAG}"
+  PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/nebula-atom/all"
 
 build:
   stage: build
