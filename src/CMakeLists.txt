@@ -98,16 +98,16 @@ set(NEBULAATOM_headers_tools
 )
 set(HEADER
     ${HEADER}
-    ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h
-    ${NEBULAATOM_headers_core}
-    ${NEBULAATOM_headers_extras}
-    ${NEBULAATOM_headers_files}
-    ${NEBULAATOM_headers_functions}
-    ${NEBULAATOM_headers_handlers}
-    ${NEBULAATOM_headers_http}
-    ${NEBULAATOM_headers_query}
-    ${NEBULAATOM_headers_security}
-    ${NEBULAATOM_headers_tools}
+    ${PROJECT_BINARY_DIR}
+    ${PROJECT_SOURCE_DIR}/core
+    ${PROJECT_SOURCE_DIR}/extras
+    ${PROJECT_SOURCE_DIR}/files
+    ${PROJECT_SOURCE_DIR}/functions
+    ${PROJECT_SOURCE_DIR}/handlers
+    ${PROJECT_SOURCE_DIR}/http
+    ${PROJECT_SOURCE_DIR}/query
+    ${PROJECT_SOURCE_DIR}/security
+    ${PROJECT_SOURCE_DIR}/tools
 )
 
 # Dependencies
