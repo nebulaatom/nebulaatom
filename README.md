@@ -1,7 +1,5 @@
 [![banner](docs/images/banner.svg)][homepage]
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/nebulacsf/modern-cxx-project)](https://github.com/nebulacsf/modern-cxx-project/releases)
 [![C++17](docs/images/badge-C++17.svg)][compilers_versions]
-[![C++20](docs/images/badge-C++20.svg)][compilers_versions]
 [![GPLv3 license](docs/images/badge-license-GPLv3.svg)](LICENSE)
 ====
 
@@ -15,77 +13,66 @@ Hello! Thank you for using this software, developed with a lot of effort and aff
 
 ## About this software
 
-Modern C++ Project is a project template for modern C++ projects.
+Nebula Atom is a C++ Web Framework for building high-performance APIs, supporting scalable architecture and modern web technologies.
 
 ## Features
 
 Support for
 - CMake
-- C++17 C++11
+- C++17
 - Docker
-- Clang
 - CppCheck
 - Conan
-- GoogleTest
-- AppImage for Linux
 - Doxygen
 - ccache
+- cpack
 
 ## Requeriments
 
-- CMake
-- C++17 C++11
-- Conan
-- GoogleTest
-- Git
+On Debian (11 and 12):
+
+```shell
+apt-get update && apt-get install -y \
+      make \
+      binutils \
+      g++ \
+      git \
+      cmake \
+      libssl-dev \
+      libpoco-dev \
+      libmariadb-dev \
+      libyaml-cpp-dev
+```
 
 ## Installation
 
 - Download the source code
 
 ```shell
-git clone https://github.com/nebulacsf/modern-cxx-project.git
+git clone https://gitlab.com/nebulacsf/software/main/nebula-atom.git
 ```
 
 - Build and install
 
 ```shell
-cd modern-cxx-project
 mkdir build && cd build
-cmake .. -Dproject-name_CONAN=ON
-make
-sudo make install
-```
-
-## How to use this software
-
-- Open the binary executable
-
-```shell
-./src/project-name
+cmake ../ -DCMAKE_BUILD_TYPE=release && cmake --build .
+cmake --build . --target install
 ```
 
 ## Documentation
 
 **Work in progress!**
 
-## Donations
-
-If you want to help us financially we accept your donations using
-Paypal and performing the following steps:
-
-1. Access the following URL from your browser: [PayPal - NebulaCSF](https://paypal.me/nebulacsf)
-2. Let yourself go ;)
-
 ## Contact
 
-- **GitHub**: [@nebulacsf](https://www.github.com/nebulacsf)
+- **Gitlab**: [@nebulacsf](https://gitlab.com/nebulacsf/software/main/nebula-atom)
 - **Web**: [NebulaCSF](https://www.nebulacsf.com)
 - **Email**: [NebulaCSF](mailto:support@nebulacsf.com)
 
 ## License
 
-This project is under licence [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0-standalone.html) - see file [LICENSE](LICENSE) for more details
+This project is under licence [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0) - see file [LICENSE](LICENSE) for more details
 
-[homepage]: https://hub.nebulacsf.com/modern-cxx-project/
+[homepage]: https://gitlab.com/nebulacsf/software/main/nebula-atom
 [compilers_versions]: https://en.cppreference.com/w/cpp/compiler_support
