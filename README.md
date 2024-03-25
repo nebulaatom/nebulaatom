@@ -3,7 +3,7 @@
 [![GPLv3 license](docs/images/badge-license-GPLv3.svg)](LICENSE)
 ====
 
-# Modern C++ Project
+# Nebula Atom
 
 ## Introduction
 
