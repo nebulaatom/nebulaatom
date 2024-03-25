@@ -40,6 +40,10 @@ upload:
     - |
       cd ${ARTIFACT_URL} && export LINUX_DEB_FILE=libnebulaatom-*-Linux.deb && echo $LINUX_DEB_FILE
     - |
+      echo ${ARTIFACT_URL}
+    - |
+      echo ${PACKAGE_REGISTRY_URL}
+    - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file ${ARTIFACT_URL}/$LINUX_DEB_FILE ${PACKAGE_REGISTRY_URL}/$LINUX_DEB_FILE
 
 release:
