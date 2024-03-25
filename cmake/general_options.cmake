@@ -5,7 +5,6 @@ option(${PROJECT_NAME}_CPPCHECK "Enable cppcheck to verify the sources syntax" O
 option(${PROJECT_NAME}_DOXYGEN "Enable Doxygen documentation" OFF)
 option(${PROJECT_NAME}_EXAMPLES "Enable examples generation" ON)
 option(${PROJECT_NAME}_BUILD_SHARED "Enable build shared library" ON)
-option(${PROJECT_NAME}_UPDATE_VERSION "Enable scripts to update library version" OFF)
 
 # Handling options
 

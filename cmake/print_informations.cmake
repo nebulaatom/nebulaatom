@@ -18,7 +18,6 @@ message(STATUS "DOXYGEN:                      ${${PROJECT_NAME}_DOXYGEN}")
 message(STATUS "CCACHE:                       ${${PROJECT_NAME}_CCACHE}")
 message(STATUS "CPPCHECK:                     ${${PROJECT_NAME}_CPPCHECK}")
 message(STATUS "BUILD_SHARED:                 ${${PROJECT_NAME}_BUILD_SHARED}")
-message(STATUS "UPDATE_VERSION:               ${${PROJECT_NAME}_UPDATE_VERSION}")
 
 ## cmake info
 message(STATUS "")
