@@ -86,7 +86,7 @@ int main(int argc, char** argv)
                 html += "</body>";
                 html += "</html>";
 
-                self.CustomHTMLResponse_(HTTP::Status::kOK, html);
+                self.CustomHTMLResponse_(HTTP::Status::kHTTP_OK, html);
             });
         }
 

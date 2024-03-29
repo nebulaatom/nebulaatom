@@ -27,7 +27,7 @@ int main(int argc, char** argv)
             a1.get_json_result()->set("status", a1.get_status());
             a1.get_json_result()->set("message", a1.get_message());
 
-            self.CompoundResponse_(HTTP::Status::kOK, a1.get_json_result());
+            self.CompoundResponse_(HTTP::Status::kHTTP_OK, a1.get_json_result());
         });
     });
 

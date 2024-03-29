@@ -15,7 +15,7 @@ int main(int argc, char** argv)
         return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
         {
             self.SetupSSL_();
-            self.CustomHTMLResponse_(HTTP::Status::kOK, "SSL Hello.");
+            self.CustomHTMLResponse_(HTTP::Status::kHTTP_OK, "SSL Hello.");
         });
     });
 

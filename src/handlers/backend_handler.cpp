@@ -122,5 +122,5 @@ void BackendHandler::ProcessActions_()
         }
 
     // Send results
-        CompoundResponse_(HTTP::Status::kOK, json_result);
+        CompoundResponse_(HTTP::Status::kHTTP_OK, json_result);
 }

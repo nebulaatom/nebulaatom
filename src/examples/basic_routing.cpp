@@ -12,14 +12,14 @@ int main(int argc, char** argv)
     {
         return new Handlers::CustomHandler([&](Handlers::CustomHandler& handler)
         {
-            handler.JSONResponse_(HTTP::Status::kOK, "Hello!");
+            handler.JSONResponse_(HTTP::Status::kHTTP_OK, "Hello!");
         });
     });
     app.AddHandler_("/html", [&]()
     {
         return new Handlers::CustomHandler([&](Handlers::CustomHandler& handler)
         {
-            handler.HTMLResponse_(HTTP::Status::kOK, "Hello!");
+            handler.HTMLResponse_(HTTP::Status::kHTTP_OK, "Hello!");
         });
     });
 

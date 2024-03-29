@@ -14,7 +14,7 @@ int main(int argc, char** argv)
         return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
         {
             if(request.getURI() == "/hello")
-                self.CustomHTMLResponse_(HTTP::Status::kOK, "Hello! Custom error");
+                self.CustomHTMLResponse_(HTTP::Status::kHTTP_OK, "Hello! Custom error");
             else
                 self.FileResponse_(HTTP::Status::kHTTP_NOT_FOUND, "/var/www/404.html");
         });

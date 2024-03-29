@@ -12,7 +12,7 @@ int main(int argc, char** argv)
     {
         return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
         {
-            self.CustomHTMLResponse_(HTTP::Status::kOK, "Hello!");
+            self.CustomHTMLResponse_(HTTP::Status::kHTTP_OK, "Hello!");
         });
     });
 

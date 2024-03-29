@@ -53,6 +53,10 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
                 return;
             }
 
+        // Keep alive
+            request.setKeepAlive(true);
+            response.setKeepAlive(true);
+
         // Set requested route
             std::vector<std::string> segments;
             URI(request_->getURI()).getPathSegments(segments);

@@ -25,7 +25,7 @@ int main(int argc, char** argv)
             a.set_email_password("password");
             a.set_email_message("Hello!");
             a.Work_();
-            self.CustomHTMLResponse_(HTTP::Status::kOK, "Email sended.");
+            self.CustomHTMLResponse_(HTTP::Status::kHTTP_OK, "Email sended.");
         });
     });
 

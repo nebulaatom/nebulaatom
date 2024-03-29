@@ -28,7 +28,7 @@ int main(int argc, char** argv)
     {
         return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
         {
-            self.CustomHTMLResponse_(HTTP::Status::kOK, std::string(" \
+            self.CustomHTMLResponse_(HTTP::Status::kHTTP_OK, std::string(" \
                 <html><head><title>Upload file example</title></head> \
                 <body><input type=\"file\" id=\"image-file\"><button onclick=\"upload()\">Upload</button><script> \
                     function upload(){ \

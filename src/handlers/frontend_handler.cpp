@@ -70,7 +70,6 @@ void FrontendHandler::HandleGETMethod_()
 
     // Download file
         file_manager_.DownloadFile_(out_reponse);
-        out_reponse.flush();
 }
 
 void FrontendHandler::HandlePOSTMethod_()
@@ -90,7 +89,7 @@ void FrontendHandler::HandlePOSTMethod_()
         file_manager_.UploadFile_();
 
     // Response
-        CompoundFillResponse_(HTTP::Status::kOK, file_manager_.get_result(), "Ok.");
+        CompoundFillResponse_(HTTP::Status::kHTTP_OK, file_manager_.get_result(), "Ok.");
 }
 
 void FrontendHandler::HandlePUTMethod_()
@@ -125,7 +124,7 @@ void FrontendHandler::HandlePUTMethod_()
         file_manager_.UploadFile_();
 
     // Response
-        CompoundFillResponse_(HTTP::Status::kOK, file_manager_.get_result(), "Ok.");
+        CompoundFillResponse_(HTTP::Status::kHTTP_OK, file_manager_.get_result(), "Ok.");
 }
 
 void FrontendHandler::HandleDELMethod_()
@@ -145,5 +144,5 @@ void FrontendHandler::HandleDELMethod_()
         file_manager_.RemoveFile_();
         
     // Response
-        JSONResponse_(HTTP::Status::kOK, "Ok.");
+        JSONResponse_(HTTP::Status::kHTTP_OK, "Ok.");
 }

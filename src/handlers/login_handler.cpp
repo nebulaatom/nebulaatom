@@ -79,7 +79,7 @@ void LoginHandler::StartSession_()
         auto session_id = SessionExists_();
         if(session_id != "")
         {
-            JSONResponse_(HTTP::Status::kOK, "The client has already logged in.");
+            JSONResponse_(HTTP::Status::kHTTP_OK, "The client has already logged in.");
             return;
         }
 
@@ -117,7 +117,7 @@ void LoginHandler::StartSession_()
 
         get_response()->addCookie(cookie);
 
-        JSONResponse_(HTTP::Status::kOK, "Client logged in.");
+        JSONResponse_(HTTP::Status::kHTTP_OK, "Client logged in.");
 }
 
 void LoginHandler::EndSession_()
@@ -135,7 +135,7 @@ void LoginHandler::EndSession_()
         cookie.setMaxAge(-1);
         get_response()->addCookie(cookie);
 
-        JSONResponse_(HTTP::Status::kOK, "Client logout.");
+        JSONResponse_(HTTP::Status::kHTTP_OK, "Client logout.");
 }
 
 std::string LoginHandler::SessionExists_()
