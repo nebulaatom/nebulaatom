@@ -49,7 +49,7 @@ class Atom::Tools::SettingsManager
     public:
         struct BasicProperties
         {
-            int port, max_queued, max_threads, session_max_age;
+            int port, max_queued, max_threads, timeout, session_max_age;
             std::string db_host, db_port, db_name, db_user, db_password;
             std::string directory_base, directory_for_uploaded_files, directory_for_temp_files;
             std::string certificate, key, rootcert;
