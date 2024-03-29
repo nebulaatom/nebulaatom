@@ -16,7 +16,9 @@
 */
 
 #include "nebula_atom.h"
+#include <Poco/Crypto/RSAKey.h>
 #include <Poco/Net/AcceptCertificateHandler.h>
+#include <Poco/Net/Context.h>
 #include <Poco/Net/NetSSL.h>
 #include <Poco/Net/SSLManager.h>
 #include <Poco/Util/Application.h>
@@ -30,14 +32,11 @@ NebulaAtom::NebulaAtom(bool use_ssl) :
     ,app_(Application::instance())
 {
     Tools::SettingsManager::SetUpProperties_();
-    if(use_ssl_)
-        Net::initializeSSL();
 }
 
 NebulaAtom::~NebulaAtom()
 {
-    if(use_ssl_)
-        Net::uninitializeSSL();
+    
 }
 
 void NebulaAtom::CustomHandlerCreator_(HandlerFactory::FunctionHandlerCreator handler_creator)
@@ -72,22 +71,21 @@ int NebulaAtom::main(const std::vector<std::string>& args)
         arguments_ = &args;
         server_params_->setMaxQueued(settings_manager_.get_basic_properties_().max_queued);
         server_params_->setMaxThreads(settings_manager_.get_basic_properties_().max_threads);
+        server_params_->setTimeout(settings_manager_.get_basic_properties_().timeout);
 
         if(use_ssl_)
         {
-            Context::Ptr context = new Context
-            (
-                Context::SERVER_USE
-                ,settings_manager_.get_basic_properties_().key
-                ,settings_manager_.get_basic_properties_().certificate
-                ,settings_manager_.get_basic_properties_().rootcert
-                ,Context::VERIFY_RELAXED
-                ,9
-                ,false
-                ,"ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH"
-            );
-            secure_server_socket_ = std::make_shared<SecureServerSocket>(settings_manager_.get_basic_properties_().port, 64, context);
-            
+            if (settings_manager_.get_basic_properties_().key.empty() && settings_manager_.get_basic_properties_().certificate.empty())
+                throw SSLException("Configuration error: no certificate file has been specified");
+
+            // Setup certificate
+            app_.config().setString("openSSL.server.privateKeyFile", settings_manager_.get_basic_properties_().key);
+            app_.config().setString("openSSL.server.certificateFile", settings_manager_.get_basic_properties_().certificate);
+            app_.config().setString("openSSL.server.caConfig", settings_manager_.get_basic_properties_().rootcert);
+            ssl_initializer_ = std::make_shared<Core::SSLInitializer>();
+
+            // SSL Server
+            secure_server_socket_ = std::make_shared<SecureServerSocket>(settings_manager_.get_basic_properties_().port);
             server_ = std::make_unique<HTTPServer>(handler_factory_, *secure_server_socket_.get(), server_params_);
         }
         else
@@ -99,37 +97,37 @@ int NebulaAtom::main(const std::vector<std::string>& args)
     }
     catch(MySQL::MySQLException& error)
     {
-        app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
+        app_.logger().error("- Error on nebula_atom.cpp on main(): " + error.displayText());
         return -1;
     }
     catch(JSON::JSONException& error)
     {
-        app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
+        app_.logger().error("- Error on nebula_atom.cpp on main(): " + error.displayText());
         return -1;
     }
     catch(Poco::NullPointerException& error)
     {
-        app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
+        app_.logger().error("- Error on nebula_atom.cpp on main(): " + error.displayText());
         return -1;
     }
     catch(Poco::SystemException& error)
     {
-        app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
+        app_.logger().error("- Error on nebula_atom.cpp on main(): " + error.displayText());
         return -1;
     }
     catch(Net::SSLException& error)
     {
-        app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
+        app_.logger().error("- Error on nebula_atom.cpp on main(): " + error.displayText());
         return -1;
     }
     catch(std::runtime_error& error)
     {
-        app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + std::string(error.what()));
+        app_.logger().error("- Error on nebula_atom.cpp on main(): " + std::string(error.what()));
         return -1;
     }
     catch(std::exception& error)
     {
-        app_.logger().error("- Error on handler_factory.cc on createRequestHandler(): " + std::string(error.what()));
+        app_.logger().error("- Error on nebula_atom.cpp on main(): " + std::string(error.what()));
         return -1;
     }
 

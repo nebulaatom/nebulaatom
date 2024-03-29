@@ -28,6 +28,7 @@
 #include <Poco/Util/ServerApplication.h>
 #include <Poco/Net/ServerSocket.h>
 #include <Poco/Net/HTTPServer.h>
+#include <Poco/Net/NetSSL.h>
 #include "Poco/Format.h"
 #include "Poco/Exception.h"
 #include "Poco/Net/SecureStreamSocket.h"
@@ -37,6 +38,7 @@
 #include "Poco/Net/SSLException.h"
 #include "Poco/Net/KeyConsoleHandler.h"
 #include "Poco/Net/AcceptCertificateHandler.h"
+#include "Poco/Net/ConsoleCertificateHandler.h"
 
 #include "core/handler_factory.h"
 #include "query/database_manager.h"
@@ -48,6 +50,7 @@ namespace Atom
 {
     namespace Core
     {
+        struct SSLInitializer;
         class NebulaAtom;
     }
 }
@@ -57,6 +60,17 @@ using namespace Poco::Net;
 using namespace Poco::Util;
 
 
+struct Atom::Core::SSLInitializer
+{
+    SSLInitializer()
+    {
+        Net::initializeSSL();
+    }
+    ~SSLInitializer()
+    {
+        Net::uninitializeSSL();
+    }
+};
 class Atom::Core::NebulaAtom : public ServerApplication
 {
     public:
@@ -111,6 +125,7 @@ class Atom::Core::NebulaAtom : public ServerApplication
         Application& app_;
         const std::vector<std::string>* arguments_;
         Tools::SettingsManager settings_manager_;
+        std::shared_ptr<Core::SSLInitializer> ssl_initializer_;
 };
 
 #endif // ATOM_CORE_NEBULAATOM
