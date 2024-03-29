@@ -38,7 +38,6 @@ void CommonResponses::CompoundResponse_(HTTP::Status status, JSON::Object::Ptr r
 
     std::ostream& out = response_->send();
     result_json->stringify(out);
-    out.flush();
 }
 void CommonResponses::CompoundFillResponse_(HTTP::Status status, JSON::Object::Ptr result_json, std::string message)
 {
@@ -49,7 +48,6 @@ void CommonResponses::CompoundFillResponse_(HTTP::Status status, JSON::Object::P
     FillStatusMessage_(result_json, status, message);
     std::ostream& out = response_->send();
     result_json->stringify(out);
-    out.flush();
 }
 
 void CommonResponses::JSONResponse_(HTTP::Status status, std::string message)
@@ -64,7 +62,6 @@ void CommonResponses::JSONResponse_(HTTP::Status status, std::string message)
 
     std::ostream& out = response_->send();
     object_json->stringify(out);
-    out.flush();
 }
 
 void CommonResponses::HTMLResponse_(HTTP::Status status, std::string message)
@@ -78,43 +75,36 @@ void CommonResponses::HTMLResponse_(HTTP::Status status, std::string message)
     auto found = responses_.find(status);
     if(found != responses_.end())
     {
-        out <<
-            "<html>"
-                "<head><title>" << responses_.find(status)->second.status_int << " " << responses_.find(status)->second.message << " | Nebula Atom</title></head>"
-                "<body>"
-                    "<center><h1>Status: " << responses_.find(status)->second.status_int << " " << responses_.find(status)->second.message << "</h1></center>"
-                    "<center><h3>Message: " << message << "</h3></center>"
-                    "<center><hr>Nebula Atom/" << PACKAGE_VERSION_COMPLETE << "</center>"
-                "</body>"
-            "</html>"
-        ;
+        out << "<html>";
+        out << "<head><title>" << responses_.find(status)->second.status_int << " " << responses_.find(status)->second.message << " | Nebula Atom</title></head>";
+        out << "<body>";
+        out << "<center><h1>Status: " << responses_.find(status)->second.status_int << " " << responses_.find(status)->second.message << "</h1></center>";
+        out << "<center><h3>Message: " << message << "</h3></center>";
+        out << "<center><hr>Nebula Atom/" << PACKAGE_VERSION_COMPLETE << "</center>";
+        out << "</body>";
+        out << "</html>";
     }
     else
     {
-        out <<
-            "<html>"
-                "<head><title>" << responses_.find(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR)->second.message << " | Nebula Atom</title></head>"
-                "<body>"
-                    "<center><h1>Status: 500 " << responses_.find(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR)->second.message << "</h1></center>"
-                    "<center><h3>Message: " << "Error in HTTPStatus." << "</h3></center>"
-                    "<center>Nebula Atom/" << PACKAGE_VERSION_COMPLETE << "</center>"
-                "</body>"
-            "</html>"
-        ;
+        out << "<html>";
+        out << "<head><title>" << responses_.find(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR)->second.message << " | Nebula Atom</title></head>";
+        out << "<body>";
+        out << "<center><h1>Status: 500 " << responses_.find(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR)->second.message << "</h1></center>";
+        out << "<center><h3>Message: " << "Error in HTTPStatus." << "</h3></center>";
+        out << "<center>Nebula Atom/" << PACKAGE_VERSION_COMPLETE << "</center>";
+        out << "</body>";
+        out << "</html>";
     }
-
-    out.flush();
 }
 
 void CommonResponses::CustomHTMLResponse_(HTTP::Status status, std::string html_message)
 {
     response_->setStatus(responses_.find(status)->second.http_status);
     response_->setContentType("text/html");
-    response_->setChunkedTransferEncoding(true);
+    response_->setContentLength(html_message.length());
 
     std::ostream& out = response_->send();
     out << html_message;
-    out.flush();
 }
 
 void CommonResponses::FileResponse_(HTTP::Status status, std::string address)
@@ -139,18 +129,16 @@ void CommonResponses::FileResponse_(HTTP::Status status, std::string address)
     // Reponse
         response_->setStatus(responses_.find(status)->second.http_status);
         response_->setContentType(file_manager.get_files().front().get_content_type());
-        response_->setContentLength(file_manager.get_files().front().get_content_length());
+        response_->setChunkedTransferEncoding(true);
         std::ostream& out_reponse = response_->send();
 
     // Download file
         file_manager.DownloadFile_(out_reponse);
-
-    out_reponse.flush();
 }
 
 void CommonResponses::FillResponses_()
 {
-    responses_.emplace(std::make_pair(Status::kOK, Attributes{HTTPResponse::HTTP_OK, 200,ResponseType::kSuccess, "Ok"}));
+    responses_.emplace(std::make_pair(Status::kHTTP_OK, Attributes{HTTPResponse::HTTP_OK, 200,ResponseType::kSuccess, "Ok"}));
     responses_.emplace(std::make_pair(Status::kHTTP_BAD_REQUEST, Attributes{HTTPResponse::HTTP_BAD_REQUEST, 400, ResponseType::kWarning, "Client-side input fails validation"}));
     responses_.emplace(std::make_pair(Status::kHTTP_UNAUTHORIZED, Attributes{HTTPResponse::HTTP_UNAUTHORIZED, 401, ResponseType::kWarning, "The user isn’t not authorized to access to this resource"}));
     responses_.emplace(std::make_pair(Status::kHTTP_FORBIDDEN, Attributes{HTTPResponse::HTTP_FORBIDDEN, 403, ResponseType::kWarning, "The user is not allowed to access to this resource"}));

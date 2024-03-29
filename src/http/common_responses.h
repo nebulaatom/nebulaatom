@@ -54,7 +54,7 @@ enum class Atom::HTTP::ResponseType
 
 enum class Atom::HTTP::Status
 {
-    kOK = 200
+    kHTTP_OK = 200
     ,kHTTP_BAD_REQUEST = 400
     ,kHTTP_UNAUTHORIZED = 401
     ,kHTTP_FORBIDDEN = 403
