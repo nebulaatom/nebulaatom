@@ -221,38 +221,17 @@ void FileManager::DownloadFile_(std::ostream& out_response)
         return;
     }
 
-    switch(files_.front().get_file_type())
+    std::ifstream requested_file(files_.front().get_requested_file()->path(), std::ios::binary | std::ios::ate);
+
+    std::size_t content_length = requested_file.tellg();
+    std::string text_line(content_length, '\0');
+    requested_file.seekg(0);
+
+    if(requested_file.read(&text_line[0], content_length))
     {
-        case Files::FileType::kBinary:
-        {
-            std::ifstream requested_file(files_.front().get_requested_file()->path(), std::ios::binary | std::ios::ate);
-
-            std::size_t content_length = requested_file.tellg();
-            std::string text_line(content_length, '\0');
-            requested_file.seekg(0);
-
-            if(requested_file.read(&text_line[0], content_length))
-            {
-                out_response << text_line;
-            }
-            requested_file.close();
-
-            break;
-        }
-        case Files::FileType::kTextPlain:
-        {
-            std::string text_line;
-            std::ifstream requested_file(files_.front().get_requested_file()->path());
-
-            while (getline (requested_file, text_line))
-            {
-                out_response << text_line << "\n";
-            }
-            requested_file.close();
-
-            break;
-        }
+        out_response << text_line;
     }
+    requested_file.close();
 }
 
 void FileManager::UploadFile_()
