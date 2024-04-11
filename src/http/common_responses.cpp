@@ -17,10 +17,12 @@
 
 #include "http/common_responses.h"
 #include "files/file_manager.h"
+#include "http/request.h"
 
 using namespace Atom::HTTP;
 
-CommonResponses::CommonResponses()
+CommonResponses::CommonResponses() :
+    HTTP::Request(HTTP::RequestType::kRequest)
 {
     FillResponses_();
 }
@@ -32,45 +34,45 @@ CommonResponses::~CommonResponses()
 
 void CommonResponses::CompoundResponse_(HTTP::Status status, JSON::Object::Ptr result_json)
 {
-    response_->setStatus(responses_.find(status)->second.http_status);
-    response_->setContentType("application/json");
-    response_->setChunkedTransferEncoding(true);
+    get_http_server_response().value()->setStatus(responses_.find(status)->second.http_status);
+    get_http_server_response().value()->setContentType("application/json");
+    get_http_server_response().value()->setChunkedTransferEncoding(true);
 
-    std::ostream& out = response_->send();
+    std::ostream& out = get_http_server_response().value()->send();
     result_json->stringify(out);
 }
 void CommonResponses::CompoundFillResponse_(HTTP::Status status, JSON::Object::Ptr result_json, std::string message)
 {
-    response_->setStatus(responses_.find(status)->second.http_status);
-    response_->setContentType("application/json");
-    response_->setChunkedTransferEncoding(true);
+    get_http_server_response().value()->setStatus(responses_.find(status)->second.http_status);
+    get_http_server_response().value()->setContentType("application/json");
+    get_http_server_response().value()->setChunkedTransferEncoding(true);
 
     FillStatusMessage_(result_json, status, message);
-    std::ostream& out = response_->send();
+    std::ostream& out = get_http_server_response().value()->send();
     result_json->stringify(out);
 }
 
 void CommonResponses::JSONResponse_(HTTP::Status status, std::string message)
 {
-    response_->setStatus(responses_.find(status)->second.http_status);
-    response_->setContentType("application/json");
-    response_->setChunkedTransferEncoding(true);
+    get_http_server_response().value()->setStatus(responses_.find(status)->second.http_status);
+    get_http_server_response().value()->setContentType("application/json");
+    get_http_server_response().value()->setChunkedTransferEncoding(true);
 
     JSON::Object::Ptr object_json = new JSON::Object;
 
     FillStatusMessage_(object_json, status, message);
 
-    std::ostream& out = response_->send();
+    std::ostream& out = get_http_server_response().value()->send();
     object_json->stringify(out);
 }
 
 void CommonResponses::HTMLResponse_(HTTP::Status status, std::string message)
 {
-    response_->setStatus(responses_.find(status)->second.http_status);
-    response_->setContentType("text/html");
-    response_->setChunkedTransferEncoding(true);
+    get_http_server_response().value()->setStatus(responses_.find(status)->second.http_status);
+    get_http_server_response().value()->setContentType("text/html");
+    get_http_server_response().value()->setChunkedTransferEncoding(true);
 
-    std::ostream& out = response_->send();
+    std::ostream& out = get_http_server_response().value()->send();
 
     auto found = responses_.find(status);
     if(found != responses_.end())
@@ -99,11 +101,11 @@ void CommonResponses::HTMLResponse_(HTTP::Status status, std::string message)
 
 void CommonResponses::CustomHTMLResponse_(HTTP::Status status, std::string html_message)
 {
-    response_->setStatus(responses_.find(status)->second.http_status);
-    response_->setContentType("text/html");
-    response_->setContentLength(html_message.length());
+    get_http_server_response().value()->setStatus(responses_.find(status)->second.http_status);
+    get_http_server_response().value()->setContentType("text/html");
+    get_http_server_response().value()->setContentLength(html_message.length());
 
-    std::ostream& out = response_->send();
+    std::ostream& out = get_http_server_response().value()->send();
     out << html_message;
 }
 
@@ -127,10 +129,10 @@ void CommonResponses::FileResponse_(HTTP::Status status, std::string address)
         }
         
     // Reponse
-        response_->setStatus(responses_.find(status)->second.http_status);
-        response_->setContentType(file_manager.get_files().front().get_content_type());
-        response_->setChunkedTransferEncoding(true);
-        std::ostream& out_reponse = response_->send();
+        get_http_server_response().value()->setStatus(responses_.find(status)->second.http_status);
+        get_http_server_response().value()->setContentType(file_manager.get_files().front().get_content_type());
+        get_http_server_response().value()->setChunkedTransferEncoding(true);
+        std::ostream& out_reponse = get_http_server_response().value()->send();
 
     // Download file
         file_manager.DownloadFile_(out_reponse);

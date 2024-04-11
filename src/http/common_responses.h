@@ -28,6 +28,7 @@
 
 #include "nebula-atomConfig.h"
 #include "files/file_manager.h"
+#include "http/request.h"
 
 
 namespace Atom
@@ -64,7 +65,7 @@ enum class Atom::HTTP::Status
     ,kHTTP_SERVICE_UNAVAILABLE = 503
 };
 
-class Atom::HTTP::CommonResponses
+class Atom::HTTP::CommonResponses : public HTTP::Request
 {
     public:
         struct Attributes
@@ -84,8 +85,6 @@ class Atom::HTTP::CommonResponses
             return var;
         }
 
-        void set_response(HTTPServerResponse* response) { response_ = response; }
-
         void CompoundResponse_(HTTP::Status status, JSON::Object::Ptr result_json);
         void CompoundFillResponse_(HTTP::Status status, JSON::Object::Ptr result_json, std::string message);
         void JSONResponse_(HTTP::Status status, std::string message);
@@ -98,7 +97,6 @@ class Atom::HTTP::CommonResponses
         void FillStatusMessage_(JSON::Object::Ptr json_object, HTTP::Status status, std::string message);
 
     private:
-        HTTPServerResponse* response_;
         std::map<HTTP::Status, Attributes> responses_;
 };
 
