@@ -69,6 +69,7 @@ if(${PROJECT_NAME}_EXAMPLES)
 			fullstack
 			websocket
 			uploadfile
+			setupheaders
 		DESTINATION 
 			${CMAKE_INSTALL_LIBDIR}/nebulaatom-examples
 	)
