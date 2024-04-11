@@ -26,11 +26,19 @@ using namespace Atom::Core;
 HandlerFactory::HandlerFactory() :
     app_(Application::instance())
 {
-    handler_creator_ = [&](const HTTPServerRequest& request)
+    set_request_type(HTTP::RequestType::kConstRequest);
+    handler_creator_ = [&](HTTP::Request& request)
     {
         // Find route and handler
         FunctionHandler f;
-        auto found = connections_.find(request.getURI());
+
+        if(!request.get_http_server_request().has_value())
+        {
+            f = [&](){return new Atom::Handlers::NullHandler();};
+            return f();
+        }
+        
+        auto found = connections_.find(request.get_http_server_request().value()->getURI());
         if(found != connections_.end())
             f = found->second.return_handler_;
         else
@@ -49,9 +57,12 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 {
     try
     {
-        HTTP::CommonResponses::set_response(&request.response());
+        // Set request and response
+            SetupConstRequest_(request);
+            SetupResponse_(request.response());
 
-        return handler_creator_(request);
+        // Return handler
+            return handler_creator_(*this);
     }
     catch(MySQL::MySQLException& error)
     {

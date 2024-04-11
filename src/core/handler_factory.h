@@ -46,6 +46,7 @@
 #include "query/database_manager.h"
 #include "tools/route.h"
 #include "http/common_responses.h"
+#include "http/request.h"
 #include "handlers/root_handler.h"
 #include "handlers/null_handler.h"
 #include "handlers/backend_handler.h"
@@ -73,7 +74,7 @@ class Atom::Core::HandlerFactory :
 {
     public:
         using FunctionHandler = std::function<Atom::Handlers::RootHandler*()>;
-        using FunctionHandlerCreator = std::function<Atom::Handlers::RootHandler*(const HTTPServerRequest& request)>;
+        using FunctionHandlerCreator = std::function<Atom::Handlers::RootHandler*(HTTP::Request& request)>;
         using Connections = std::map<std::string, Tools::HandlerConnection>;
 
         HandlerFactory();
