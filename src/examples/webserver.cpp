@@ -2,6 +2,7 @@
 #include "core/nebula_atom.h"
 #include "files/file_manager.h"
 #include "handlers/frontend_handler.h"
+#include "http/request.h"
 
 using namespace Atom;
 
@@ -24,7 +25,7 @@ int main(int argc, char** argv)
     Core::NebulaAtom app;
 
     // Setting up handler
-        app.CustomHandlerCreator_([&](const HTTPServerRequest&)
+        app.CustomHandlerCreator_([&](HTTP::Request&)
         {
             return new UploadFile;
         });

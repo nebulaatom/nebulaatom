@@ -1,6 +1,7 @@
 
 #include "core/nebula_atom.h"
 #include "handlers/custom_handler.h"
+#include "http/request.h"
 
 using namespace Atom;
 
@@ -8,7 +9,7 @@ int main(int argc, char** argv)
 {
     Core::NebulaAtom app;
 
-    app.CustomHandlerCreator_([&](const HTTPServerRequest&)
+    app.CustomHandlerCreator_([&](HTTP::Request&)
     {
         return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
         {

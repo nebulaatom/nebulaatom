@@ -2,6 +2,7 @@
 #include "core/nebula_atom.h"
 #include "functions/sql_action.h"
 #include "handlers/custom_handler.h"
+#include "http/request.h"
 
 using namespace Atom;
 
@@ -12,7 +13,7 @@ int main(int argc, char** argv)
     Query::DatabaseManager::StartMySQL_();
     Tools::SettingsManager::ReadBasicProperties_();
 
-    app.CustomHandlerCreator_([&](const HTTPServerRequest&)
+    app.CustomHandlerCreator_([&](HTTP::Request&)
     {
         return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
         {

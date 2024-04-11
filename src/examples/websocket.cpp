@@ -13,17 +13,16 @@ class MainHandler : public Handlers::WebSocketHandler
         MainHandler(std::vector<const WebSocketHandler*>& connected_sockets) : connected_sockets_(connected_sockets){}
         virtual ~MainHandler(){}
 
-        void HandleNewConnection_(HTTPServerRequestPtr, const WebSocketHandler& websocket_handler)
+        void HandleNewConnection_(HTTP::Request&, const WebSocketHandler& websocket_handler) override
         {
             connected_sockets_.push_back(&websocket_handler);
-            
         }
-        void HandleNewMessage_(const WebSocketHandler&, std::string message)
+        void HandleNewMessage_(const WebSocketHandler&, std::string message) override
         {
             for(auto it : connected_sockets_)
                 it->Send_(message);
         }
-        void HandleConnectionClosed_(const WebSocketHandler& websocket_handler)
+        void HandleConnectionClosed_(const WebSocketHandler& websocket_handler) override
         {
             for (auto it = connected_sockets_.begin() ; it != connected_sockets_.end(); ++it)
             {
@@ -45,11 +44,12 @@ int main(int argc, char** argv)
     Core::NebulaAtom app;
     
     std::vector<const Handlers::WebSocketHandler*> connected_sockets;
-    app.CustomHandlerCreator_([&](const HTTPServerRequest& request)
+    app.CustomHandlerCreator_([&](HTTP::Request& request)
     {
         Handlers::RootHandler* handler;
+        auto& http_request = *request.get_http_server_request().value();
 
-		if(request.find("Upgrade") != request.end() && Poco::icompare(request["Upgrade"], "websocket") == 0)
+		if(http_request.find("Upgrade") != http_request.end() && Poco::icompare(http_request["Upgrade"], "websocket") == 0)
         {
             handler = new MainHandler(connected_sockets);
         }
@@ -64,7 +64,7 @@ int main(int argc, char** argv)
                 html += "<button id=\"send\">Send message</button>";
                 html += "<ul id=\"messageList\"></ul>";
                 html += "<script type=\"text/javascript\">";
-                html += "   const socket = new WebSocket('ws://" + request.serverAddress().toString() + "/ws');";
+                html += "   const socket = new WebSocket('ws://" + request.get_http_server_request().value()->serverAddress().toString() + "/ws');";
                 html += "   socket.onmessage = function(event)";
                 html += "   { ";
                 html += "      const message = event.data;";

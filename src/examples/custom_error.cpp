@@ -9,11 +9,11 @@ int main(int argc, char** argv)
 {
     Core::NebulaAtom app;
 
-    app.CustomHandlerCreator_([&](const HTTPServerRequest& request)
+    app.CustomHandlerCreator_([&](HTTP::Request& request)
     {
         return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
         {
-            if(request.getURI() == "/hello")
+            if(request.get_uri() == "/hello")
                 self.CustomHTMLResponse_(HTTP::Status::kHTTP_OK, "Hello! Custom error");
             else
                 self.FileResponse_(HTTP::Status::kHTTP_NOT_FOUND, "/var/www/404.html");
