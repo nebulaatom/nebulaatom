@@ -19,6 +19,7 @@
 #include <Poco/Crypto/RSAKey.h>
 #include <Poco/Net/AcceptCertificateHandler.h>
 #include <Poco/Net/Context.h>
+#include <Poco/Net/NetException.h>
 #include <Poco/Net/NetSSL.h>
 #include <Poco/Net/SSLManager.h>
 #include <Poco/Util/Application.h>
@@ -100,6 +101,16 @@ int NebulaAtom::main(const std::vector<std::string>& args)
         app_.logger().error("- Error on nebula_atom.cpp on main(): " + error.displayText());
         return -1;
     }
+    catch(Net::SSLException& error)
+    {
+        app_.logger().error("- Error on nebula_atom.cpp on main(): " + error.displayText());
+        return -1;
+    }
+    catch(NetException& error)
+    {
+        app_.logger().error("- Error on nebula_atom.cpp on main(): " + error.displayText());
+        return -1;
+    }
     catch(JSON::JSONException& error)
     {
         app_.logger().error("- Error on nebula_atom.cpp on main(): " + error.displayText());
@@ -111,11 +122,6 @@ int NebulaAtom::main(const std::vector<std::string>& args)
         return -1;
     }
     catch(Poco::SystemException& error)
-    {
-        app_.logger().error("- Error on nebula_atom.cpp on main(): " + error.displayText());
-        return -1;
-    }
-    catch(Net::SSLException& error)
     {
         app_.logger().error("- Error on nebula_atom.cpp on main(): " + error.displayText());
         return -1;
