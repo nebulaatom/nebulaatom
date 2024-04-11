@@ -81,9 +81,14 @@ class Atom::HTTP::Request
             auto& var = http_server_response_;
             return var;
         }
-        std::vector<Request::Header>& get_headers()
+        std::vector<Request::Header>& get_request_headers()
         {
-            auto& var = headers_;
+            auto& var = request_headers_;
+            return var;
+        }
+        std::vector<Request::Header>& get_response_headers()
+        {
+            auto& var = response_headers_;
             return var;
         }
         std::string get_uri() const { return uri_; }
@@ -106,7 +111,8 @@ class Atom::HTTP::Request
         HTTPServerConstRequestPtr http_server_const_request_;
         HTTPServerRequestPtr http_server_request_;
         HTTPServerResponsePtr http_server_response_;
-        std::vector<Request::Header> headers_;
+        std::vector<Request::Header> request_headers_;
+        std::vector<Request::Header> response_headers_;
         std::string uri_;
         std::string method_;
 
