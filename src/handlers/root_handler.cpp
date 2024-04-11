@@ -17,6 +17,7 @@
 
 #include "handlers/root_handler.h"
 #include "http/common_responses.h"
+#include "http/request.h"
 
 using namespace Atom::Handlers;
 
@@ -25,10 +26,9 @@ RootHandler::RootHandler() :
     ,user_("null")
     ,method_("GET")
     ,route_verification_(true)
-    ,request_(nullptr)
-    ,response_(nullptr)
     ,current_function_()
 {
+    set_request_type(HTTP::RequestType::kRequest);
     requested_route_ = std::make_shared<Tools::Route>(std::vector<std::string>{""});
     current_security_.set_security_type(Extras::SecurityType::kDisableAll);
 }
@@ -43,30 +43,27 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
     try
     {
         // Set request and response
-            request_ = &request;
-            response_ = &response;
-            HTTP::CommonResponses::set_response(response_);
+            SetupRequest_(request);
+            SetupResponse_(response);
             
-            if(request_ == nullptr || response_ == nullptr)
+            if(!get_http_server_request().has_value())
             {
-                JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Request or response is Null Pointer.");
+                JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "HTTP Request is Null.");
+                return;
+            }
+            if(!get_http_server_response().has_value())
+            {
+                JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "HTTP Response is Null.");
                 return;
             }
 
-        // Keep alive
-            request.setKeepAlive(true);
-            response.setKeepAlive(true);
-
         // Set requested route
             std::vector<std::string> segments;
-            URI(request_->getURI()).getPathSegments(segments);
+            URI(request.getURI()).getPathSegments(segments);
             requested_route_ = std::make_shared<Tools::Route>(segments);
 
         // Add functions
             AddFunctions_();
-
-        // Get the corresponding HTTP method
-            method_ = request.getMethod();
 
         // Handler Process
             Process_();
@@ -134,7 +131,8 @@ void RootHandler::CallHTTPMethod_()
 
 bool RootHandler::SetupSSL_()
 {
-    SecureStreamSocket socket = static_cast<Net::HTTPServerRequestImpl&>(*request_).socket();
+    auto request = get_http_server_request().value();
+    SecureStreamSocket socket = static_cast<Net::HTTPServerRequestImpl&>(*request).socket();
     if (socket.havePeerCertificate())
         X509Certificate cert = socket.peerCertificate();
 
@@ -144,9 +142,10 @@ bool RootHandler::SetupSSL_()
 bool RootHandler::VerifySession_()
 {
     // Extract session ID
+        auto request = get_http_server_request().value();
         std::string session_id;
         Poco::Net::NameValueCollection cookies;
-        request_->getCookies(cookies);
+        request->getCookies(cookies);
         auto cookie_session = cookies.find("nebula-atom-sid");
         auto sessions = Tools::SessionsManager::get_sessions();
 
@@ -220,11 +219,12 @@ bool RootHandler::IdentifyRoute_()
 
 void RootHandler::ManageRequestBody_()
 {
-    std::string request_body = ReadBody_(request_->stream());
+    auto request = get_http_server_request().value();
+    std::string request_body = ReadBody_(request->stream());
 
     if(request_body.empty())
     {
-        URI tmp_uri(request_->getURI());
+        URI tmp_uri(request->getURI());
         if(!(tmp_uri.getQueryParameters().size() > 0))
             return;
         if(tmp_uri.getQueryParameters()[0].first != "json")

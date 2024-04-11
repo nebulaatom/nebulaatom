@@ -94,9 +94,6 @@ class Atom::Handlers::RootHandler :
     ,public Tools::ManageJSON
 {
     public:
-        using HTTPServerRequestPtr = HTTPServerRequest*;
-        using HTTPServerResponsePtr = HTTPServerResponse*;
-
         RootHandler();
         virtual ~RootHandler();
 
@@ -134,9 +131,6 @@ class Atom::Handlers::RootHandler :
             auto& var = current_function_;
             return var;
         }
-        HTTPServerRequestPtr get_request() { return request_; }
-        HTTPServerResponsePtr get_response() { return response_; }
-        
 
         virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
         bool SetupSSL_();
@@ -163,8 +157,6 @@ class Atom::Handlers::RootHandler :
         Tools::SettingsManager settings_manager_;
         Extras::SecurityVerification current_security_;
         std::list<std::string> targets_;
-        HTTPServerRequestPtr request_;
-        HTTPServerResponsePtr response_;
         std::list<Tools::Route> routes_list_;
         std::shared_ptr<Atom::Tools::Route> requested_route_;
         Functions::FunctionsManager functions_manager_;
