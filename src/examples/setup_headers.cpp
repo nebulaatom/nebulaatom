@@ -15,6 +15,9 @@ int main(int argc, char** argv)
         {
             request.AddHeader_("cookie-example", "cookie-value");
             request.SetupResponseHeaders_();
+
+            for(auto& header : request.get_request_headers())
+                std::cout << header.name << ": " << header.value << std::endl;
             
             self.CustomHTMLResponse_(HTTP::Status::kHTTP_OK, "Hello!");
         });
