@@ -115,7 +115,8 @@ void LoginHandler::StartSession_()
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
 
-        get_response()->addCookie(cookie);
+        auto& response = get_http_server_response().value();
+        response->addCookie(cookie);
 
         JSONResponse_(HTTP::Status::kHTTP_OK, "Client logged in.");
 }
@@ -133,7 +134,9 @@ void LoginHandler::EndSession_()
         Poco::Net::HTTPCookie cookie("nebula-atom-sid", "");
         cookie.setPath("/");
         cookie.setMaxAge(-1);
-        get_response()->addCookie(cookie);
+
+        auto& response = get_http_server_response().value();
+        response->addCookie(cookie);
 
         JSONResponse_(HTTP::Status::kHTTP_OK, "Client logout.");
 }
@@ -143,7 +146,7 @@ std::string LoginHandler::SessionExists_()
     // Extract session ID
         std::string session_id;
         Poco::Net::NameValueCollection cookies;
-        get_request()->getCookies(cookies);
+        get_http_server_request().value()->getCookies(cookies);
         auto cookie_session = cookies.find("nebula-atom-sid");
         auto sessions = Tools::SessionsManager::get_sessions();
 

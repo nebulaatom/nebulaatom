@@ -43,8 +43,10 @@ void FrontendHandler::Process_()
 void FrontendHandler::HandleGETMethod_()
 {
     // Manage the file
+
+        auto& request = get_http_server_request().value();
         file_manager_.set_operation_type(Files::OperationType::kDownload);
-        file_manager_.get_files().push_back(file_manager_.CreateTempFile_(get_request()->getURI()));
+        file_manager_.get_files().push_back(file_manager_.CreateTempFile_(request->getURI()));
         auto& tmp_file = file_manager_.get_files().front();
 
     // Check file
@@ -63,10 +65,12 @@ void FrontendHandler::HandleGETMethod_()
         file_manager_.ProcessContentLength_();
 
     // Reponse
-        get_response()->setStatus(HTTPResponse::HTTP_OK);
-        get_response()->setContentType(tmp_file.get_content_type());
-        get_response()->setContentLength(tmp_file.get_content_length());
-        std::ostream& out_reponse = get_response()->send();
+        auto& response = get_http_server_response().value();
+        response->setStatus(HTTPResponse::HTTP_OK);
+        response->setContentType(tmp_file.get_content_type());
+        response->setContentLength(tmp_file.get_content_length());
+        
+        std::ostream& out_reponse = response->send();
 
     // Download file
         file_manager_.DownloadFile_(out_reponse);
@@ -75,8 +79,9 @@ void FrontendHandler::HandleGETMethod_()
 void FrontendHandler::HandlePOSTMethod_()
 {
     // Manage the files
+        auto& request = get_http_server_request().value();
         file_manager_.set_operation_type(Files::OperationType::kUpload);
-        HTMLForm form(*get_request(), get_request()->stream(), file_manager_);
+        HTMLForm form(*request, request->stream(), file_manager_);
 
     // Verify supported files
         if(!file_manager_.IsSupported_())
@@ -95,8 +100,9 @@ void FrontendHandler::HandlePOSTMethod_()
 void FrontendHandler::HandlePUTMethod_()
 {
     // Manage the file
+        auto& request = get_http_server_request().value();
         file_manager_.set_operation_type(Files::OperationType::kDelete);
-        file_manager_.get_files().push_back(file_manager_.CreateTempFile_(get_request()->getURI()));
+        file_manager_.get_files().push_back(file_manager_.CreateTempFile_(request->getURI()));
 
     // Check file
         if(!file_manager_.CheckFiles_())
@@ -112,7 +118,7 @@ void FrontendHandler::HandlePUTMethod_()
 
     // Process new file to upload
         file_manager_.set_operation_type(Files::OperationType::kUpload);
-        HTMLForm form(*get_request(), get_request()->stream(), file_manager_);
+        HTMLForm form(*request, request->stream(), file_manager_);
 
         if(!file_manager_.IsSupported_())
         {
@@ -130,8 +136,9 @@ void FrontendHandler::HandlePUTMethod_()
 void FrontendHandler::HandleDELMethod_()
 {
     // Manage file
+        auto& request = get_http_server_request().value();
         file_manager_.set_operation_type(Files::OperationType::kDelete);
-        file_manager_.get_files().push_back(file_manager_.CreateTempFile_(get_request()->getURI()));
+        file_manager_.get_files().push_back(file_manager_.CreateTempFile_(request->getURI()));
 
     // Basic operations
         if(!file_manager_.CheckFiles_())

@@ -38,13 +38,16 @@ void WebSocketHandler::AddFunctions_()
 
 void WebSocketHandler::Process_()
 {
+    auto& request = get_http_server_request().value();
+    auto& response = get_http_server_response().value();
+
     try
     {
-        websocket_ = std::make_unique<WebSocket>(*get_request(), *get_response());
+        websocket_ = std::make_unique<WebSocket>(*request, *response);
         websocket_->setReceiveTimeout(Poco::Timespan());
         app_.logger().information("-- WebSocket connection established.");
 
-        HandleNewConnection_(get_request(), *this);
+        HandleNewConnection_(*this, *this);
         Transfer_();
         HandleConnectionClosed_(*this);
     }
@@ -54,13 +57,13 @@ void WebSocketHandler::Process_()
         switch (error.code())
         {
             case WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:
-                get_response()->set("Sec-WebSocket-Version", WebSocket::WEBSOCKET_VERSION);
+                response->set("Sec-WebSocket-Version", WebSocket::WEBSOCKET_VERSION);
             case WebSocket::WS_ERR_NO_HANDSHAKE:
             case WebSocket::WS_ERR_HANDSHAKE_NO_VERSION:
             case WebSocket::WS_ERR_HANDSHAKE_NO_KEY:
-                get_response()->setStatusAndReason(HTTPResponse::HTTP_BAD_REQUEST);
-                get_response()->setContentLength(0);
-                get_response()->send();
+                response->setStatusAndReason(HTTPResponse::HTTP_BAD_REQUEST);
+                response->setContentLength(0);
+                response->send();
                 break;
         }
     }
