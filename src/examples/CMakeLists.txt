@@ -53,3 +53,8 @@ target_link_libraries(websocket PUBLIC nebulaatom_static)
 add_executable(uploadfile "upload_file.cpp")
 target_include_directories(uploadfile PUBLIC ${HEADER})
 target_link_libraries(uploadfile PUBLIC nebulaatom_static)
+
+## setupheaders
+add_executable(setupheaders "setup_headers.cpp")
+target_include_directories(setupheaders PUBLIC ${HEADER})
+target_link_libraries(setupheaders PUBLIC nebulaatom_static)
