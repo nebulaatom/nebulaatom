@@ -8,6 +8,7 @@ using namespace Atom;
 int main(int argc, char** argv)
 {
     Core::NebulaAtom app(true);
+    Tools::SettingsManager::set_properties_file_address("properties.yaml");
     Tools::SettingsManager::ReadBasicProperties_();
 
     app.CustomHandlerCreator_([&](HTTP::Request&)
