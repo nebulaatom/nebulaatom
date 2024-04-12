@@ -37,6 +37,7 @@ void FrontendHandler::AddFunctions_()
 
 void FrontendHandler::Process_()
 {
+    file_manager_.AddBasicSupportedFiles_();
     CallHTTPMethod_();
 }
 
