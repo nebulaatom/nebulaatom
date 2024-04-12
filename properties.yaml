@@ -1,0 +1,16 @@
+port: 8080
+max_queued : 100
+max_threads : 16
+timeout : 20
+db_host : "127.0.0.1"
+db_port : "3306"
+db_name : "test_woodpecker"
+db_user : "root"
+db_password : "0UHC72zNvywZ"
+session_max_age : 3600
+directory_base : "/srv/www"
+directory_for_uploaded_files : "/srv/www"
+directory_for_temp_files : "/tmp"
+certificate: "cert.pem"
+key: "key.pem"
+rootcert: ""

@@ -8,7 +8,7 @@
             ,"name": "HelloWorld (Debug)"
             ,"program": "${workspaceFolder}/build/Debug/src/examples/helloworld"
             ,"args": []
-            ,"cwd": "${workspaceFolder}/build"
+            ,"cwd": "${workspaceFolder}/build/Debug"
         }
         ,{
             "type": "lldb"
@@ -16,7 +16,7 @@
             ,"name": "BasicRouting (Debug)"
             ,"program": "${workspaceFolder}/build/Debug/src/examples/basicrouting"
             ,"args": []
-            ,"cwd": "${workspaceFolder}/build"
+            ,"cwd": "${workspaceFolder}/build/Debug"
         }
         ,{
             "type": "lldb"
@@ -24,7 +24,7 @@
             ,"name": "BackendApi (Debug)"
             ,"program": "${workspaceFolder}/build/Debug/src/examples/backendapi"
             ,"args": []
-            ,"cwd": "${workspaceFolder}/build"
+            ,"cwd": "${workspaceFolder}/build/Debug"
         }
         ,{
             "type": "lldb"
@@ -32,7 +32,7 @@
             ,"name": "WebServer (Debug)"
             ,"program": "${workspaceFolder}/build/Debug/src/examples/webserver"
             ,"args": []
-            ,"cwd": "${workspaceFolder}/build"
+            ,"cwd": "${workspaceFolder}/build/Debug"
         }
         ,{
             "type": "lldb"
@@ -40,7 +40,7 @@
             ,"name": "SSLServer (Debug)"
             ,"program": "${workspaceFolder}/build/Debug/src/examples/sslserver"
             ,"args": []
-            ,"cwd": "${workspaceFolder}/build"
+            ,"cwd": "${workspaceFolder}/build/Debug"
         }
         ,{
             "type": "lldb"
@@ -48,7 +48,7 @@
             ,"name": "SendEmail (Debug)"
             ,"program": "${workspaceFolder}/build/Debug/src/examples/sendemail"
             ,"args": []
-            ,"cwd": "${workspaceFolder}/build"
+            ,"cwd": "${workspaceFolder}/build/Debug"
         }
         ,{
             "type": "lldb"
@@ -56,7 +56,7 @@
             ,"name": "AvancedQuery (Debug)"
             ,"program": "${workspaceFolder}/build/Debug/src/examples/avancedquery"
             ,"args": []
-            ,"cwd": "${workspaceFolder}/build"
+            ,"cwd": "${workspaceFolder}/build/Debug"
         }
         ,{
             "type": "lldb"
@@ -64,7 +64,7 @@
             ,"name": "CustomError (Debug)"
             ,"program": "${workspaceFolder}/build/Debug/src/examples/customerror"
             ,"args": []
-            ,"cwd": "${workspaceFolder}/build"
+            ,"cwd": "${workspaceFolder}/build/Debug"
         }
         ,{
             "type": "lldb"
@@ -72,7 +72,7 @@
             ,"name": "Fullstack (Debug)"
             ,"program": "${workspaceFolder}/build/Debug/src/examples/fullstack"
             ,"args": []
-            ,"cwd": "${workspaceFolder}/build"
+            ,"cwd": "${workspaceFolder}/build/Debug"
         }
         ,{
             "type": "lldb"
@@ -80,7 +80,7 @@
             ,"name": "Websocket (Debug)"
             ,"program": "${workspaceFolder}/build/Debug/src/examples/websocket"
             ,"args": []
-            ,"cwd": "${workspaceFolder}/build"
+            ,"cwd": "${workspaceFolder}/build/Debug"
         }
         ,{
             "type": "lldb"
@@ -88,7 +88,7 @@
             ,"name": "UploadFile (Debug)"
             ,"program": "${workspaceFolder}/build/Debug/src/examples/uploadfile"
             ,"args": []
-            ,"cwd": "${workspaceFolder}/build"
+            ,"cwd": "${workspaceFolder}/build/Debug"
         }
         ,{
             "type": "lldb"
@@ -96,7 +96,7 @@
             ,"name": "SetupHeaders (Debug)"
             ,"program": "${workspaceFolder}/build/Debug/src/examples/setupheaders"
             ,"args": []
-            ,"cwd": "${workspaceFolder}/build"
+            ,"cwd": "${workspaceFolder}/build/Debug"
         }
     ]
 }

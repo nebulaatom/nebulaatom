@@ -84,7 +84,7 @@ install(
 		${CMAKE_INSTALL_DOCDIR}
 )
 
-## Docs files
+## CMake files
 install(
 	FILES 
 		${PROJECT_SOURCE_DIR}/cmake/modules/FindMySQL.cmake
@@ -93,4 +93,10 @@ install(
 		${PROJECT_SOURCE_DIR}/cmake/modules/Findyaml-cpp.cmake
 	DESTINATION
 		${CMAKE_INSTALL_LIBDIR}/cmake_modules
+)
+
+## Text files
+install(
+	FILES ${PROJECT_SOURCE_DIR}/properties.yaml
+	DESTINATION ${CMAKE_INSTALL_LIBDIR}/nebulaatom-examples
 )
