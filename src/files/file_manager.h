@@ -113,6 +113,7 @@ class Atom::Files::FileManager: public Net::PartHandler
         void AddSupportedFile_(std::string extension, Files::FileProperties file_properties);
         void AddBasicSupportedFiles_();
         Files::File CreateTempFile_(std::string uri);
+        Files::File CreateTempFileFromAddress_(std::string address);
         void ProcessContentLength_();
 
 

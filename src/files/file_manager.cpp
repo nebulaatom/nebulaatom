@@ -365,3 +365,12 @@ Atom::Files::File FileManager::CreateTempFile_(std::string uri)
     tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
     return tmp_file;
 }
+
+Atom::Files::File FileManager::CreateTempFileFromAddress_(std::string address)
+{
+    auto tmp_uri = URI(address);
+    auto tmp_file = Files::File("file", Path(tmp_uri.getPath()).getFileName(), "", 0);
+    tmp_file.get_requested_path().reset(new Path(address, Path::PATH_NATIVE));
+    tmp_file.get_requested_file().reset(new Poco::File(*tmp_file.get_requested_path()));
+    return tmp_file;
+}
