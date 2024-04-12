@@ -57,11 +57,14 @@ class Atom::Tools::SettingsManager
 
         SettingsManager();
 
-        BasicProperties& get_basic_properties_()
+        static BasicProperties& get_basic_properties_()
         {
             auto& var = basic_properties_;
             return var;
         }
+        static std::string get_properties_file_address() { return properties_file_address_; }
+
+        static void set_properties_file_address(std::string properties_file_address) { properties_file_address_ = properties_file_address; }
 
         static void SetUpProperties_();
         static void ReadBasicProperties_();
@@ -73,6 +76,7 @@ class Atom::Tools::SettingsManager
 
     private:
         static BasicProperties basic_properties_;
+        static std::string properties_file_address_;
 };
 
 #endif // ATOM_TOOLS_SETTINGS_MANAGER

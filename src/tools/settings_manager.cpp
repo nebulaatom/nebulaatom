@@ -22,6 +22,7 @@ using namespace Atom;
 using namespace Tools;
 
 Tools::SettingsManager::BasicProperties Tools::SettingsManager::basic_properties_ = {};
+std::string Tools::SettingsManager::properties_file_address_ = "properties.yaml";
 
 Tools::SettingsManager::SettingsManager()
 {
@@ -53,7 +54,7 @@ void Tools::SettingsManager::ReadBasicProperties_()
     try
     {
         // Read YAML functions file
-        YAML::Node config = YAML::LoadFile("properties.yaml");
+        YAML::Node config = YAML::LoadFile(properties_file_address_);
 
         // port
         auto port = config["port"];
