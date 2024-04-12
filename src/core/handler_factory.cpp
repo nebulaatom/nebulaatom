@@ -32,13 +32,13 @@ HandlerFactory::HandlerFactory() :
         // Find route and handler
         FunctionHandler f;
 
-        if(!request.get_http_server_request().has_value())
+        if(!request.get_http_server_const_request().has_value())
         {
             f = [&](){return new Atom::Handlers::NullHandler();};
             return f();
         }
         
-        auto found = connections_.find(request.get_http_server_request().value()->getURI());
+        auto found = connections_.find(request.get_http_server_const_request().value()->getURI());
         if(found != connections_.end())
             f = found->second.return_handler_;
         else
