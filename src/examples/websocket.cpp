@@ -47,7 +47,7 @@ int main(int argc, char** argv)
     app.CustomHandlerCreator_([&](HTTP::Request& request)
     {
         Handlers::RootHandler* handler;
-        auto& http_request = *request.get_http_server_request().value();
+        auto& http_request = *request.get_http_server_const_request().value();
 
 		if(http_request.find("Upgrade") != http_request.end() && Poco::icompare(http_request["Upgrade"], "websocket") == 0)
         {
@@ -64,7 +64,7 @@ int main(int argc, char** argv)
                 html += "<button id=\"send\">Send message</button>";
                 html += "<ul id=\"messageList\"></ul>";
                 html += "<script type=\"text/javascript\">";
-                html += "   const socket = new WebSocket('ws://" + request.get_http_server_request().value()->serverAddress().toString() + "/ws');";
+                html += "   const socket = new WebSocket('ws://" + http_request.serverAddress().toString() + "/ws');";
                 html += "   socket.onmessage = function(event)";
                 html += "   { ";
                 html += "      const message = event.data;";
