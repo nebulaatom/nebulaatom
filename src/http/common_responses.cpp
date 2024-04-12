@@ -113,7 +113,7 @@ void CommonResponses::FileResponse_(HTTP::Status status, std::string address)
 {
     // Manage the file
         Files::FileManager file_manager(Files::OperationType::kDownload);
-        file_manager.get_files().push_back(file_manager.CreateTempFile_(address));
+        file_manager.get_files().push_back(file_manager.CreateTempFileFromAddress_(address));
         auto tmp_file = file_manager.get_files().front();
 
     // Check file
@@ -122,6 +122,7 @@ void CommonResponses::FileResponse_(HTTP::Status status, std::string address)
             HTMLResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Requested file bad check.");
             return;
         }
+        file_manager.AddBasicSupportedFiles_();
         if(!file_manager.IsSupported_())
         {
             HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Requested file is not supported.");
