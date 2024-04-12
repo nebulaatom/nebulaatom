@@ -16,19 +16,11 @@
 */
 
 #include "nebula_atom.h"
-#include <Poco/Crypto/RSAKey.h>
-#include <Poco/Net/AcceptCertificateHandler.h>
-#include <Poco/Net/Context.h>
-#include <Poco/Net/NetException.h>
-#include <Poco/Net/NetSSL.h>
-#include <Poco/Net/SSLManager.h>
-#include <Poco/Util/Application.h>
 
 using namespace Atom::Core;
 
 NebulaAtom::NebulaAtom(bool use_ssl) :
     use_ssl_(use_ssl)
-    ,server_params_(new HTTPServerParams())
     ,handler_factory_(new HandlerFactory())
     ,app_(Application::instance())
 {
@@ -70,29 +62,35 @@ int NebulaAtom::main(const std::vector<std::string>& args)
     try
     {
         arguments_ = &args;
-        server_params_->setMaxQueued(settings_manager_.get_basic_properties_().max_queued);
-        server_params_->setMaxThreads(settings_manager_.get_basic_properties_().max_threads);
-        server_params_->setTimeout(settings_manager_.get_basic_properties_().timeout);
-
+        
         if(use_ssl_)
         {
             if (settings_manager_.get_basic_properties_().key.empty() && settings_manager_.get_basic_properties_().certificate.empty())
                 throw SSLException("Configuration error: no certificate file has been specified");
 
-            // Setup certificate
-            app_.config().setString("openSSL.server.privateKeyFile", settings_manager_.get_basic_properties_().key);
-            app_.config().setString("openSSL.server.certificateFile", settings_manager_.get_basic_properties_().certificate);
-            app_.config().setString("openSSL.server.caConfig", settings_manager_.get_basic_properties_().rootcert);
-            ssl_initializer_ = std::make_shared<Core::SSLInitializer>();
+            // Setup SSL
+            Net::initializeSSL();
+            Net::Context::Ptr context = new Net::Context
+            (
+                Net::Context::TLS_SERVER_USE
+                ,settings_manager_.get_basic_properties_().key
+                ,settings_manager_.get_basic_properties_().certificate
+                ,settings_manager_.get_basic_properties_().rootcert
+                ,Net::Context::VERIFY_RELAXED
+            );
+            SharedPtr<Net::InvalidCertificateHandler> cert_handler = new Net::AcceptCertificateHandler(true);
+            SharedPtr<Net::PrivateKeyPassphraseHandler> keyhandler = new Net::KeyConsoleHandler(true);
+
+            Net::SSLManager::instance().initializeServer(keyhandler, cert_handler, context);
 
             // SSL Server
-            secure_server_socket_ = std::make_shared<SecureServerSocket>(settings_manager_.get_basic_properties_().port);
-            server_ = std::make_unique<HTTPServer>(handler_factory_, *secure_server_socket_.get(), server_params_);
+            SecureServerSocket secure_server_socket(settings_manager_.get_basic_properties_().port);
+            server_ = std::make_unique<HTTPServer>(handler_factory_, secure_server_socket, new HTTPServerParams);
         }
         else
         {
-            server_socket_ = std::make_shared<ServerSocket>(settings_manager_.get_basic_properties_().port);
-            server_ = std::make_unique<HTTPServer>(handler_factory_, *server_socket_.get(), server_params_);
+            ServerSocket server_socket(settings_manager_.get_basic_properties_().port);
+            server_ = std::make_unique<HTTPServer>(handler_factory_, server_socket, new HTTPServerParams);
         }
         return Init_();
     }

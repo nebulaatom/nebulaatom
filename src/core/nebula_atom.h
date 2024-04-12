@@ -28,6 +28,7 @@
 #include <Poco/Util/ServerApplication.h>
 #include <Poco/Net/ServerSocket.h>
 #include <Poco/Net/HTTPServer.h>
+#include <Poco/Net/HTTPServerParams.h>
 #include <Poco/Net/NetSSL.h>
 #include "Poco/Format.h"
 #include "Poco/Exception.h"
@@ -39,6 +40,13 @@
 #include "Poco/Net/KeyConsoleHandler.h"
 #include "Poco/Net/AcceptCertificateHandler.h"
 #include "Poco/Net/ConsoleCertificateHandler.h"
+#include <Poco/Crypto/RSAKey.h>
+#include <Poco/Net/AcceptCertificateHandler.h>
+#include <Poco/Net/Context.h>
+#include <Poco/Net/NetException.h>
+#include <Poco/Net/NetSSL.h>
+#include <Poco/Net/SSLManager.h>
+#include <Poco/Util/Application.h>
 
 #include "core/handler_factory.h"
 #include "query/database_manager.h"
@@ -59,18 +67,6 @@ using namespace Poco;
 using namespace Poco::Net;
 using namespace Poco::Util;
 
-
-struct Atom::Core::SSLInitializer
-{
-    SSLInitializer()
-    {
-        Net::initializeSSL();
-    }
-    ~SSLInitializer()
-    {
-        Net::uninitializeSSL();
-    }
-};
 class Atom::Core::NebulaAtom : public ServerApplication
 {
     public:
@@ -78,21 +74,6 @@ class Atom::Core::NebulaAtom : public ServerApplication
         virtual ~NebulaAtom();
 
         bool get_use_ssl() const { return use_ssl_; }
-        HTTPServerParams::Ptr get_server_params()
-        {
-            auto& var = server_params_;
-            return var;
-        }
-        ServerSocket* get_server_socket()
-        {
-            auto var = server_socket_.get();
-            return var;
-        }
-        SecureServerSocket* get_secure_server_socket()
-        {
-            auto var = secure_server_socket_.get();
-            return var;
-        }
         HTTPServer* get_server()
         {
             auto var = server_.get();
@@ -117,15 +98,11 @@ class Atom::Core::NebulaAtom : public ServerApplication
 
     private:
         bool use_ssl_;
-        HTTPServerParams::Ptr server_params_;
-        std::shared_ptr<ServerSocket> server_socket_;
-        std::shared_ptr<SecureServerSocket> secure_server_socket_;
         std::unique_ptr<HTTPServer> server_;
         HandlerFactory* handler_factory_;
         Application& app_;
         const std::vector<std::string>* arguments_;
         Tools::SettingsManager settings_manager_;
-        std::shared_ptr<Core::SSLInitializer> ssl_initializer_;
 };
 
 #endif // ATOM_CORE_NEBULAATOM
