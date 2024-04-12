@@ -54,7 +54,7 @@ void Request::SetupConstRequest_(const Net::HTTPServerRequest& request)
     method_ = request.getMethod();
 
     // Add headers
-    for(auto i = request.begin(); i != request.end(); ++i)
+    for(auto i = request.begin(); i != request.end(); i++)
         request_headers_.push_back({i->first, i->second});
 }
 
