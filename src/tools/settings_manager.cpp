@@ -47,6 +47,7 @@ void Tools::SettingsManager::SetUpProperties_()
     basic_properties_.certificate = "";
     basic_properties_.key = "";
     basic_properties_.rootcert = "";
+    basic_properties_.logger_output_file_ = "nebulaatom.log";
 }
 
 void Tools::SettingsManager::ReadBasicProperties_()
@@ -59,146 +60,119 @@ void Tools::SettingsManager::ReadBasicProperties_()
         // port
         auto port = config["port"];
         if (!VerifyYAMLScalarNode_(port))
-        {
             PrintError_("ReadBasicProperties_", "port");
-            return;
-        }
+
         basic_properties_.port = port.as<int>();
         
         // max_queued
         auto max_queued = config["max_queued"];
         if (!VerifyYAMLScalarNode_(max_queued))
-        {
             PrintError_("ReadBasicProperties_", "max_queued");
-            return;
-        }
+            
         basic_properties_.max_queued = max_queued.as<int>();
         
         // max_threads
         auto max_threads = config["max_threads"];
         if (!VerifyYAMLScalarNode_(max_threads))
-        {
             PrintError_("ReadBasicProperties_", "max_threads");
-            return;
-        }
+            
         basic_properties_.max_threads = max_threads.as<int>();
         
         // timeout
         auto timeout = config["timeout"];
         if (!VerifyYAMLScalarNode_(timeout))
-        {
             PrintError_("ReadBasicProperties_", "timeout");
-            return;
-        }
+            
         basic_properties_.timeout = timeout.as<int>();
         
         // session_max_age
         auto session_max_age = config["session_max_age"];
         if (!VerifyYAMLScalarNode_(session_max_age))
-        {
             PrintError_("ReadBasicProperties_", "session_max_age");
-            return;
-        }
+            
         basic_properties_.session_max_age = session_max_age.as<int>();
         
         // directory_base
         auto directory_base = config["directory_base"];
         if (!VerifyYAMLScalarNode_(directory_base))
-        {
             PrintError_("ReadBasicProperties_", "directory_base");
-            return;
-        }
+
         basic_properties_.directory_base = directory_base.as<std::string>();
         
         // directory_for_uploaded_files
         auto directory_for_uploaded_files = config["directory_for_uploaded_files"];
         if (!VerifyYAMLScalarNode_(directory_for_uploaded_files))
-        {
             PrintError_("ReadBasicProperties_", "directory_for_uploaded_files");
-            return;
-        }
+            
         basic_properties_.directory_for_uploaded_files = directory_for_uploaded_files.as<std::string>();
         
         // directory_for_temp_files
         auto directory_for_temp_files = config["directory_for_temp_files"];
         if (!VerifyYAMLScalarNode_(directory_for_temp_files))
-        {
             PrintError_("ReadBasicProperties_", "directory_for_temp_files");
-            return;
-        }
+            
         basic_properties_.directory_for_temp_files = directory_for_temp_files.as<std::string>();
         
         // db_host
         auto db_host = config["db_host"];
         if (!VerifyYAMLScalarNode_(db_host))
-        {
             PrintError_("ReadBasicProperties_", "db_host");
-            return;
-        }
+
         basic_properties_.db_host = db_host.as<std::string>();
         
         // db_port
         auto db_port = config["db_port"];
         if (!VerifyYAMLScalarNode_(db_port))
-        {
             PrintError_("ReadBasicProperties_", "db_port");
-            return;
-        }
+            
         basic_properties_.db_port = db_port.as<std::string>();
         
         // db_name
         auto db_name = config["db_name"];
         if (!VerifyYAMLScalarNode_(db_name))
-        {
             PrintError_("ReadBasicProperties_", "db_name");
-            return;
-        }
+            
         basic_properties_.db_name = db_name.as<std::string>();
         
         // db_user
         auto db_user = config["db_user"];
         if (!VerifyYAMLScalarNode_(db_user))
-        {
             PrintError_("ReadBasicProperties_", "db_user");
-            return;
-        }
+            
         basic_properties_.db_user = db_user.as<std::string>();
         
         // db_password
         auto db_password = config["db_password"];
         if (!VerifyYAMLScalarNode_(db_password))
-        {
             PrintError_("ReadBasicProperties_", "db_password");
-            return;
-        }
+            
         basic_properties_.db_password = db_password.as<std::string>();
         
         // certificate
         auto certificate = config["certificate"];
         if (!VerifyYAMLScalarNode_(certificate))
-        {
             PrintError_("ReadBasicProperties_", "certificate");
-            return;
-        }
+            
         basic_properties_.certificate = certificate.as<std::string>();
         
         // key
         auto key = config["key"];
         if (!VerifyYAMLScalarNode_(key))
-        {
             PrintError_("ReadBasicProperties_", "key");
-            return;
-        }
+            
         basic_properties_.key = key.as<std::string>();
         
         // rootcert
         auto rootcert = config["rootcert"];
         if (!VerifyYAMLScalarNode_(rootcert))
-        {
             PrintError_("ReadBasicProperties_", "rootcert");
-            return;
-        }
+            
         basic_properties_.rootcert = rootcert.as<std::string>();
+        
+        // logger_output_file_
+        auto logger_output_file_ = config["logger_output_file_"];
+        if (VerifyYAMLScalarNode_(logger_output_file_))
+            basic_properties_.logger_output_file_ = logger_output_file_.as<std::string>();
         
     }
     catch(std::exception& e)
@@ -218,7 +192,7 @@ bool Tools::SettingsManager::VerifyYAMLScalarNode_(YAML::Node& node)
 
 void Tools::SettingsManager::PrintError_(std::string function, std::string variable)
 {
-    std::cout << "- Error on settings_manager.cpp on " << function << "(): The yaml file is malformed. ERRYML" << function << "(" << variable << ")" << std::endl;
+    std::cerr << "- Error on settings_manager.cpp on " << function << "(): The yaml file is malformed. ERRYML" << function << "(" << variable << ")" << std::endl;
 }
 
 bool Tools::SettingsManager::VerifyYAMLMapNode_(YAML::Node& node)
