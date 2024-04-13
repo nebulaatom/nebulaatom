@@ -16,20 +16,22 @@
 */
 
 #include "nebula_atom.h"
+#include "tools/output_logger.h"
+#include <string>
+
+#if defined(POCO_OS_FAMILY_WINDOWS)
+	NamedEvent terminator(ProcessImpl::terminationEventName(Process::id()));
+#else
+	Poco::Event terminator;
+#endif
 
 using namespace Atom::Core;
 
 NebulaAtom::NebulaAtom(bool use_ssl) :
     use_ssl_(use_ssl)
     ,handler_factory_(new HandlerFactory())
-    ,app_(Application::instance())
 {
     Tools::SettingsManager::SetUpProperties_();
-}
-
-NebulaAtom::~NebulaAtom()
-{
-    
 }
 
 void NebulaAtom::CustomHandlerCreator_(HandlerFactory::FunctionHandlerCreator handler_creator)
@@ -46,23 +48,29 @@ void NebulaAtom::AddHandler_(std::string route, HandlerFactory::FunctionHandler 
     handler_factory_->get_connections().insert({route, Tools::HandlerConnection{requested_route, handler}});
 }
 
-void NebulaAtom::initialize(Application& self)
+int NebulaAtom::Init_(int argc, char** argv)
 {
-    loadConfiguration();
-    ServerApplication::initialize(self);
+    // Setting up console parameters
+    console_parameters_ = std::vector<std::string>(argv, argv + argc);
+
+    if(!SettingUpServer_())
+        return -1;
+
+    server_->start();
+    Tools::OutputLogger::instance_.Log_("- Server started at port " + std::to_string(settings_manager_.get_basic_properties_().port));
+
+    terminator.wait();
+
+    Tools::OutputLogger::instance_.Log_("- Shutting down server... ");
+    server_->stop();
+
+    return 0;
 }
 
-void NebulaAtom::uninitialize()
-{
-    ServerApplication::uninitialize();
-}
-
-int NebulaAtom::main(const std::vector<std::string>& args)
+int NebulaAtom::SettingUpServer_()
 {
     try
     {
-        arguments_ = &args;
-        
         if(use_ssl_)
         {
             if (settings_manager_.get_basic_properties_().key.empty() && settings_manager_.get_basic_properties_().certificate.empty())
@@ -92,61 +100,39 @@ int NebulaAtom::main(const std::vector<std::string>& args)
             ServerSocket server_socket(settings_manager_.get_basic_properties_().port);
             server_ = std::make_unique<HTTPServer>(handler_factory_, server_socket, new HTTPServerParams);
         }
-        return Init_();
-    }
-    catch(MySQL::MySQLException& error)
-    {
-        app_.logger().error("- Error on nebula_atom.cpp on main(): " + error.displayText());
-        return -1;
+
+        return true;
     }
     catch(Net::SSLException& error)
     {
-        app_.logger().error("- Error on nebula_atom.cpp on main(): " + error.displayText());
-        return -1;
-    }
-    catch(NetException& error)
-    {
-        app_.logger().error("- Error on nebula_atom.cpp on main(): " + error.displayText());
-        return -1;
-    }
-    catch(JSON::JSONException& error)
-    {
-        app_.logger().error("- Error on nebula_atom.cpp on main(): " + error.displayText());
-        return -1;
+        Tools::OutputLogger::instance_.Log_("- Error on nebula_atom.cpp on main(): " + error.displayText());
+        return false;
     }
     catch(Poco::NullPointerException& error)
     {
-        app_.logger().error("- Error on nebula_atom.cpp on main(): " + error.displayText());
-        return -1;
+        Tools::OutputLogger::instance_.Log_("- Error on nebula_atom.cpp on main(): " + error.displayText());
+        return false;
     }
     catch(Poco::SystemException& error)
     {
-        app_.logger().error("- Error on nebula_atom.cpp on main(): " + error.displayText());
-        return -1;
+        Tools::OutputLogger::instance_.Log_("- Error on nebula_atom.cpp on main(): " + error.displayText());
+        return false;
     }
     catch(std::runtime_error& error)
     {
-        app_.logger().error("- Error on nebula_atom.cpp on main(): " + std::string(error.what()));
-        return -1;
+        Tools::OutputLogger::instance_.Log_("- Error on nebula_atom.cpp on main(): " + std::string(error.what()));
+        return false;
     }
     catch(std::exception& error)
     {
-        app_.logger().error("- Error on nebula_atom.cpp on main(): " + std::string(error.what()));
-        return -1;
+        Tools::OutputLogger::instance_.Log_("- Error on nebula_atom.cpp on main(): " + std::string(error.what()));
+        return false;
+    }
+    catch(...)
+    {
+        Tools::OutputLogger::instance_.Log_("- Error on nebula_atom.cpp on main(): Unhandled");
+        return false;
     }
 
-    return -1;
-}
-
-int NebulaAtom::Init_()
-{
-    server_->start();
-    app_.logger().information("- Server started at port " + format("%d", settings_manager_.get_basic_properties_().port));
-
-    waitForTerminationRequest();
-
-    app_.logger().information("- Shutting down server... ");
-    server_->stop();
-
-    return Application::EXIT_OK;
+    return false;
 }
