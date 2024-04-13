@@ -33,7 +33,7 @@ int main(int argc, char** argv)
     });
 
     // Run
-        auto code = app.run(argc, argv);
+        auto code = app.Init_(argc, argv);
 
     // End
         Query::DatabaseManager::StopMySQL_();

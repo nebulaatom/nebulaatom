@@ -93,5 +93,5 @@ int main(int argc, char** argv)
         return handler;
     });
 
-    return app.run(argc, argv);
+    return app.Init_(argc, argv);
 }

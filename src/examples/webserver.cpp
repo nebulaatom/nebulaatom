@@ -30,6 +30,6 @@ int main(int argc, char** argv)
             return new UploadFile;
         });
 
-        return app.run(argc, argv);
+        return app.Init_(argc, argv);
 
 }
