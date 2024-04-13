@@ -27,10 +27,10 @@
 #include <algorithm>
 #include <functional>
 #include <stdexcept>
+#include <memory>
 
 #include "yaml-cpp/yaml.h"
 #include "Poco/Exception.h"
-#include "Poco/Util/ServerApplication.h"
 #include <Poco/Net/HTTPRequestHandler.h>
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPResponse.h>
@@ -67,6 +67,7 @@
 #include "functions/functions_manager.h"
 #include "query/condition.h"
 #include "tools/settings_manager.h"
+#include "tools/output_logger.h"
 
 
 namespace Atom
@@ -79,7 +80,6 @@ namespace Atom
 }
 
 using namespace Poco;
-using namespace Poco::Util;
 using namespace Poco::Net;
 using namespace Poco::Data::Keywords;
 
@@ -100,7 +100,6 @@ class Atom::Handlers::RootHandler :
         std::string get_user() const { return user_; }
         std::string get_method() const { return method_; }
         bool get_route_verification() const { return route_verification_; }
-        Application& get_app() const {return app_;}
         Tools::SettingsManager& get_settings_manager()
         {
             auto& var = settings_manager_;
@@ -147,8 +146,6 @@ class Atom::Handlers::RootHandler :
         virtual void HandleGETMethod_();
         virtual void HandlePUTMethod_();
         virtual void HandleDELMethod_();
-
-        Application& app_;
 
     private:
         std::string user_;

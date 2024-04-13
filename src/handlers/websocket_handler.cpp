@@ -16,8 +16,6 @@
 */
 
 #include "handlers/websocket_handler.h"
-#include "handlers/root_handler.h"
-#include <memory>
 
 using namespace Atom::Handlers;
 
@@ -45,7 +43,7 @@ void WebSocketHandler::Process_()
     {
         websocket_ = std::make_unique<WebSocket>(*request, *response);
         websocket_->setReceiveTimeout(Poco::Timespan());
-        app_.logger().information("-- WebSocket connection established.");
+        Tools::OutputLogger::instance_.Log_("-- WebSocket connection established.");
 
         HandleNewConnection_(*this, *this);
         Transfer_();
@@ -53,7 +51,7 @@ void WebSocketHandler::Process_()
     }
     catch (WebSocketException& error)
     {
-        app_.logger().log(error);
+        Tools::OutputLogger::instance_.Log_(error.displayText());
         switch (error.code())
         {
             case WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:
@@ -69,7 +67,7 @@ void WebSocketHandler::Process_()
     }
     catch(std::exception& error)
     {
-        app_.logger().error("- Error on websocket_handler.cpp on Process_(): " + std::string(error.what()));
+        Tools::OutputLogger::instance_.Log_("- Error on websocket_handler.cpp on Process_(): " + std::string(error.what()));
         JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
 }
@@ -115,7 +113,7 @@ void WebSocketHandler::Transfer_()
     }
     while (n > 0 && (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE);
 
-    app_.logger().information("-- WebSocket connection closed.");
+    Tools::OutputLogger::instance_.Log_("-- WebSocket connection closed.");
 
 }
 

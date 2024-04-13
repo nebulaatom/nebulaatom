@@ -74,11 +74,11 @@ void BackendHandler::ProcessActions_()
         }
 
     // Process actions of the function
-        std::cout << "Function: " << get_current_function().get_endpoint() << std::endl;
+        Tools::OutputLogger::instance_.Log_("Function: " + get_current_function().get_endpoint());
         JSON::Object::Ptr json_result = new JSON::Object();
         for(auto& action : get_current_function().get_actions())
         {
-            std::cout << "Action: " << action->get_identifier() << ", Final: " << action->get_final() << std::endl;
+            Tools::OutputLogger::instance_.Log_("Action: " + action->get_identifier() + ", Final: " + std::to_string(action->get_final()));
 
             // Set JSNO body
             action->get_json_body().reset(get_json_body());

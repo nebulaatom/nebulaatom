@@ -22,8 +22,7 @@
 using namespace Atom::Handlers;
 
 RootHandler::RootHandler() :
-    app_(Application::instance())
-    ,user_("null")
+    user_("null")
     ,method_("GET")
     ,route_verification_(true)
     ,current_function_()
@@ -70,37 +69,37 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
     }
     catch(MySQL::MySQLException& error)
     {
-        app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
+        Tools::OutputLogger::instance_.Log_("- Error on root_handler.cc on handleRequest(): " + error.displayText());
         JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Error with the database or query. " + error.displayText());
     }
     catch(RuntimeException& error)
     {
-        app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
+        Tools::OutputLogger::instance_.Log_("- Error on root_handler.cc on handleRequest(): " + error.displayText());
         JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
     }
     catch(JSON::JSONException& error)
     {
-        app_.logger().error("- Error on root_handler.cc on handleRequest(): " + error.displayText());
+        Tools::OutputLogger::instance_.Log_("- Error on root_handler.cc on handleRequest(): " + error.displayText());
         JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
     }
     catch(std::out_of_range& error)
     {
-        app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
+        Tools::OutputLogger::instance_.Log_("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
         JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
     catch(std::runtime_error& error)
     {
-        app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
+        Tools::OutputLogger::instance_.Log_("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
         JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
     catch(std::exception& error)
     {
-        app_.logger().error("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
+        Tools::OutputLogger::instance_.Log_("- Error on root_handler.cc on handleRequest(): " + std::string(error.what()));
         JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
     catch(...)
     {
-        app_.logger().error("- Error on root_handler.cc on handleRequest(): No handled exception.");
+        Tools::OutputLogger::instance_.Log_("- Error on root_handler.cc on handleRequest(): No handled exception.");
         JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. No handled exception." );
     }
 }
