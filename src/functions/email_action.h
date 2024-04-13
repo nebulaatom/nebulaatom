@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 
-#include "Poco/Util/Application.h"
 #include "Poco/Net/MailMessage.h"
 #include "Poco/Net/MailRecipient.h"
 #include "Poco/Net/SecureSMTPClientSession.h"
@@ -77,7 +76,6 @@ class Atom::Functions::EmailAction : public Atom::Functions::Action
         void UpdateMessageParameters_();
 
     private:
-        Application& app_;
         std::string mail_host_;
         std::string sender_;
         std::string recipient_;

@@ -11,7 +11,6 @@
 #include <vector>
 
 
-#include "Poco/Util/Application.h"
 #include <Poco/Net/HTTPServerRequest.h>
 #include "Poco/Data/Session.h"
 #include "Poco/Data/MySQL/Connector.h"
@@ -42,7 +41,6 @@ namespace Atom
 }
 
 using namespace Poco;
-using namespace Poco::Util;
 using namespace Poco::Net;
 using namespace Poco::Data;
 using namespace Poco::Data::Keywords;
@@ -84,7 +82,6 @@ class Atom::Functions::SQLAction :
     private:
         bool InitializeQuery_();
 
-        Application& app_;
         std::string sql_code_;
         std::string final_query_;
         int affected_rows_;

@@ -5,7 +5,6 @@ using namespace Atom::Functions;
 
 EmailAction::EmailAction(std::string identifier) :
     Action(identifier)
-    ,app_(Application::instance())
     ,mail_host_("")
     ,sender_("")
     ,recipient_("")
@@ -58,7 +57,7 @@ bool EmailAction::Work_()
     catch(std::runtime_error& error)
     {
         std::string string_error = "- Error on query_actions.cc on ComposeQuery_(): " + std::string(error.what());
-        app_.logger().error(string_error);
+        Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
         return false;
@@ -66,7 +65,7 @@ bool EmailAction::Work_()
     catch(std::exception& error)
     {
         std::string string_error = "- Error on query_actions.cc on ComposeQuery_(): " + std::string(error.what());
-        app_.logger().error(string_error);
+        Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
         return false;

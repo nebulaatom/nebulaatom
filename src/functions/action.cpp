@@ -1,13 +1,11 @@
 
 #include "functions/action.h"
 #include "Poco/JSON/Object.h"
-#include "Poco/Util/Application.h"
 
 using namespace Atom::Functions;
 
 Action::Action(std::string identifier) :
-    app_(Application::instance())
-    ,action_type_(ActionType::kSQL)
+    action_type_(ActionType::kSQL)
     ,identifier_(identifier)
     ,status_("OK.")
     ,message_("OK.")
@@ -36,7 +34,7 @@ void Action::IdentifyParameters_()
             // Get the action object
                 if(data_array->get(a).isEmpty())
                 {
-                    app_.logger().error("Data array haves an empty action.");
+                    Tools::OutputLogger::instance_.Log_("Data array haves an empty action.");
                     continue;
                 }
 
@@ -45,7 +43,7 @@ void Action::IdentifyParameters_()
             // Get the action identifier
                 if(action_object->get("action_id").isEmpty() || !action_object->get("action_id").isString())
                 {
-                    app_.logger().error("The action object does not have an action_id String Object.");
+                    Tools::OutputLogger::instance_.Log_("The action object does not have an action_id String Object.");
                     continue;
                 }
 
@@ -58,7 +56,7 @@ void Action::IdentifyParameters_()
             // Get the parameters object
                 if(action_object->get("parameters").isEmpty() || !action_object->get("parameters").isArray())
                 {
-                    app_.logger().error("The action object does not have a parameters array.");
+                    Tools::OutputLogger::instance_.Log_("The action object does not have a parameters array.");
                     continue;
                 }
 
@@ -70,7 +68,7 @@ void Action::IdentifyParameters_()
                     // Get parameter object
                     if(parameters_array->get(b).isEmpty())
                     {
-                        app_.logger().error("Parameters array haves an empty element.");
+                        Tools::OutputLogger::instance_.Log_("Parameters array haves an empty element.");
                         continue;
                     }
 
@@ -79,7 +77,7 @@ void Action::IdentifyParameters_()
                     // Get parameter name
                     if(parameter_object->get("name").isEmpty() || !parameter_object->get("name").isString())
                     {
-                        app_.logger().error("Parameter name is not a String Object.");
+                        Tools::OutputLogger::instance_.Log_("Parameter name is not a String Object.");
                         continue;
                     }
 
@@ -88,7 +86,7 @@ void Action::IdentifyParameters_()
                     // Get parameter value
                     if(parameter_object->get("value").isEmpty())
                     {
-                        app_.logger().error("Parameter value is empty.");
+                        Tools::OutputLogger::instance_.Log_("Parameter value is empty.");
                         continue;
                     }
 
@@ -121,14 +119,14 @@ void Action::IdentifyParameters_()
     catch(std::runtime_error& error)
     {
         std::string string_error = "- Error on query_actions.cc on IdentifyFilters_(): " + std::string(error.what());
-        app_.logger().error(string_error);
+        Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
     }
     catch(JSON::JSONException& error)
     {
         std::string string_error = "- Error on query_actions.cc on IdentifyFilters_(): " + std::string(error.what());
-        app_.logger().error(string_error);
+        Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
     }

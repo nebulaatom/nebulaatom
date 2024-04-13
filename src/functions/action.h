@@ -7,13 +7,13 @@
 #include <vector>
 #include <memory>
 
-#include "Poco/Util/Application.h"
 #include "Poco/JSON/Object.h"
 
 #include "query/results.h"
 #include "query/parameter.h"
 #include "query/condition.h"
 #include "tools/manage_json.h"
+#include "tools/output_logger.h"
 
 
 namespace Atom
@@ -26,7 +26,6 @@ namespace Atom
 }
 
 using namespace Poco;
-using namespace Poco::Util;
 
 
 enum class Atom::Functions::ActionType
@@ -89,7 +88,6 @@ class Atom::Functions::Action :
         virtual bool Work_() = 0;
 
     private:
-        Application& app_;
         ActionType action_type_;
         std::string identifier_;
         std::string status_;
