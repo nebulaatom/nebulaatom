@@ -39,6 +39,7 @@ set(NEBULAATOM_SOURCES
     ${PROJECT_SOURCE_DIR}/src/tools/row_value_formatter.cpp
     ${PROJECT_SOURCE_DIR}/src/tools/sessions_manager.cpp
     ${PROJECT_SOURCE_DIR}/src/tools/settings_manager.cpp
+    ${PROJECT_SOURCE_DIR}/src/tools/output_logger.cpp
 )
 
 # Headers
@@ -97,6 +98,7 @@ set(NEBULAATOM_headers_tools
     ${PROJECT_SOURCE_DIR}/src/tools/row_value_formatter.h
     ${PROJECT_SOURCE_DIR}/src/tools/sessions_manager.h
     ${PROJECT_SOURCE_DIR}/src/tools/settings_manager.h
+    ${PROJECT_SOURCE_DIR}/src/tools/output_logger.h
 )
 set(HEADER
     ${HEADER}
