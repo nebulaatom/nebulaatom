@@ -93,6 +93,7 @@ class Atom::Core::NebulaAtom
 
         void CustomHandlerCreator_(HandlerFactory::FunctionHandlerCreator handler_creator);
         void AddHandler_(std::string route, HandlerFactory::FunctionHandler handler);
+        int Init_();
         int Init_(int argc, char** argv);
         int SettingUpServer_();
 

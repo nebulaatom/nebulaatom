@@ -48,6 +48,22 @@ void NebulaAtom::AddHandler_(std::string route, HandlerFactory::FunctionHandler 
     handler_factory_->get_connections().insert({route, Tools::HandlerConnection{requested_route, handler}});
 }
 
+int NebulaAtom::Init_()
+{
+    if(!SettingUpServer_())
+        return -1;
+
+    server_->start();
+    Tools::OutputLogger::instance_.Log_("- Server started at port " + std::to_string(settings_manager_.get_basic_properties_().port));
+
+    terminator.wait();
+
+    Tools::OutputLogger::instance_.Log_("- Shutting down server... ");
+    server_->stop();
+
+    return 0;
+}
+
 int NebulaAtom::Init_(int argc, char** argv)
 {
     // Setting up console parameters
