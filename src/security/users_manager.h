@@ -27,6 +27,7 @@
 
 #include "functions/sql_action.h"
 #include "security/user.h"
+#include "tools/output_logger.h"
 
 
 namespace Atom

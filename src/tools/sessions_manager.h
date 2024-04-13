@@ -25,6 +25,7 @@
 
 #include "extras/session.h"
 #include "functions/sql_action.h"
+#include "tools/output_logger.h"
 
 namespace Atom
 {
