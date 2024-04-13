@@ -52,7 +52,7 @@ bool SecurityVerification::VerifyRoutesPermissions_(Tools::Route& route, std::st
     }
     catch(const std::exception& error)
     {
-        std::cerr << "- SecurityVerification::VerifyRoutesPermissions_(): " << std::string(error.what());
+        Tools::OutputLogger::instance_.Log_("- Error on security_verification.cpp on VerifyRoutesPermissions_(): " + std::string(error.what()));
         return false;
     }
     return true;

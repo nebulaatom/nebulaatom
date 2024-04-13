@@ -28,6 +28,7 @@
 
 #include "security/users_manager.h"
 #include "security/permissions_manager.h"
+#include "tools/output_logger.h"
 
 
 namespace Atom

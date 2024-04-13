@@ -25,11 +25,10 @@
 #include <list>
 #include <algorithm>
 
-#include <Poco/Util/ServerApplication.h>
-
 #include "functions/sql_action.h"
 #include "security/permission.h"
 #include "tools/route.h"
+#include "tools/output_logger.h"
 
 namespace Atom
 {
