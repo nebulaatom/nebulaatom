@@ -26,7 +26,6 @@
 #include <stdexcept>
 
 #include "Poco/Exception.h"
-#include "Poco/Util/Application.h"
 #include "Poco/Format.h"
 #include <Poco/Net/HTTPRequestHandlerFactory.h>
 #include <Poco/JSON/JSON.h>
@@ -53,9 +52,9 @@
 #include "handlers/frontend_handler.h"
 #include "handlers/login_handler.h"
 #include "handlers/websocket_handler.h"
+#include "tools/output_logger.h"
 
 using namespace Poco;
-using namespace Poco::Util;
 using namespace Poco::Net;
 using namespace Poco::JSON;
 using namespace Poco::Data::Keywords;
@@ -97,7 +96,6 @@ class Atom::Core::HandlerFactory :
     private:
         FunctionHandlerCreator handler_creator_;
         Connections connections_;
-        Application& app_;
 };
 
 #endif // ATOM_COREANDLER_FACTORY
