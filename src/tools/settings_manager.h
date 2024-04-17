@@ -23,6 +23,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <mutex>
 
 #include "yaml-cpp/node/detail/iterator_fwd.h"
 #include "yaml-cpp/node/node.h"
@@ -74,6 +75,7 @@ class Atom::Tools::SettingsManager
         static void PrintError_(std::string function, std::string variable);
 
     private:
+        static std::mutex mutex_;
         static BasicProperties basic_properties_;
         static std::string properties_file_address_;
 };

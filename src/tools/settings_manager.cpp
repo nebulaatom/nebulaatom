@@ -21,6 +21,7 @@
 using namespace Atom;
 using namespace Tools;
 
+std::mutex SettingsManager::mutex_;
 Tools::SettingsManager::BasicProperties Tools::SettingsManager::basic_properties_ = {};
 std::string Tools::SettingsManager::properties_file_address_ = "properties.yaml";
 
@@ -31,6 +32,7 @@ Tools::SettingsManager::SettingsManager()
 
 void Tools::SettingsManager::SetUpProperties_()
 {
+    mutex_.lock();
     basic_properties_.port = 8080;
     basic_properties_.max_queued = 100;
     basic_properties_.max_threads = 16;
@@ -48,12 +50,14 @@ void Tools::SettingsManager::SetUpProperties_()
     basic_properties_.key = "";
     basic_properties_.rootcert = "";
     basic_properties_.logger_output_file_ = "nebulaatom.log";
+    mutex_.unlock();
 }
 
 void Tools::SettingsManager::ReadBasicProperties_()
 {
     try
     {
+        mutex_.lock();
         // Read YAML functions file
         YAML::Node config = YAML::LoadFile(properties_file_address_);
 
@@ -174,6 +178,7 @@ void Tools::SettingsManager::ReadBasicProperties_()
         if (VerifyYAMLScalarNode_(logger_output_file_))
             basic_properties_.logger_output_file_ = logger_output_file_.as<std::string>();
         
+        mutex_.unlock();
     }
     catch(std::exception& e)
     {
@@ -192,7 +197,7 @@ bool Tools::SettingsManager::VerifyYAMLScalarNode_(YAML::Node& node)
 
 void Tools::SettingsManager::PrintError_(std::string function, std::string variable)
 {
-    std::cerr << "- Error on settings_manager.cpp on " << function << "(): The yaml file is malformed. ERRYML" << function << "(" << variable << ")" << std::endl;
+    std::cerr << "Error on settings_manager.cpp on " << function << "(): The yaml file is malformed. ERRYML" << function << "(" << variable << ")" << std::endl;
 }
 
 bool Tools::SettingsManager::VerifyYAMLMapNode_(YAML::Node& node)
