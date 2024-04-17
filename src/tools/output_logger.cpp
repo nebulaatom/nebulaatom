@@ -17,8 +17,6 @@
 */
 
 #include "tools/output_logger.h"
-#include <memory>
-#include <ostream>
 
 using namespace Atom::Tools;
 
@@ -34,17 +32,27 @@ OutputLogger::OutputLogger()
 
 void OutputLogger::Log_(const std::string& message)
 {
-    *output_stream_ << message << std::endl;
+    *output_stream_ << CurrentDateTime_() << " " << message << std::endl;
 
     if (log_to_file_)
     {
         std::ofstream file_stream(output_file_address_, std::ios_base::app);
         if (file_stream.is_open())
         {
-            file_stream << message << std::endl;
+            file_stream << CurrentDateTime_() << " " << message << std::endl;
             file_stream.close();
         }
         else
-            std::cerr << "- Error on output_logger.cpp on Log_(): Error write to log file" << std::endl;
+            std::cerr << CurrentDateTime_() << " Error on output_logger.cpp on Log_(): Error to write to log file" << std::endl;
     }
+}
+
+std::string OutputLogger::CurrentDateTime_()
+{
+    auto now = std::chrono::system_clock::now();
+    auto in_time_t = std::chrono::system_clock::to_time_t(now);
+
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
+    return ss.str();
 }

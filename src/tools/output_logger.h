@@ -24,6 +24,9 @@
 #include <fstream>
 #include <string>
 #include <memory>
+#include <ostream>
+#include <chrono>
+#include <iomanip>
 
 
 namespace Atom
@@ -49,6 +52,7 @@ class Atom::Tools::OutputLogger
         static void set_output_file_address(bool output_file_address) { output_file_address_ = output_file_address; }
 
         static void Log_(const std::string& message);
+        static std::string CurrentDateTime_();
 
         static OutputLogger instance_;
 
