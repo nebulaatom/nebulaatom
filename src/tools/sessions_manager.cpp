@@ -24,6 +24,7 @@
 using namespace Atom::Tools;
 
 std::map<std::string, Atom::Extras::Session> SessionsManager::sessions_ = {};
+std::mutex SessionsManager::mutex_;
 
 SessionsManager::SessionsManager()
 {
@@ -39,6 +40,7 @@ void SessionsManager::ReadSessions_()
 {
     try
     {
+        mutex_.lock();
         // Setting up the action
             Functions::SQLAction action{""};
             action.set_custom_error("Sessions not found.");
@@ -80,6 +82,7 @@ void SessionsManager::ReadSessions_()
                 sessions_.emplace(identifier, std::move(new_session));
 
             }
+        mutex_.unlock();
     }
     catch(MySQL::MySQLException& error)
     {

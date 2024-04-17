@@ -22,6 +22,7 @@
 
 #include <string>
 #include <map>
+#include <mutex>
 
 #include "extras/session.h"
 #include "functions/sql_action.h"
@@ -56,6 +57,7 @@ class Atom::Tools::SessionsManager
         static bool SessionExists_(std::string id);
 
     private:
+        static std::mutex mutex_;
         static std::map<std::string, Atom::Extras::Session> sessions_;
 };
 
