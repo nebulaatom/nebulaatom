@@ -118,14 +118,14 @@ void Action::IdentifyParameters_()
     }
     catch(std::runtime_error& error)
     {
-        std::string string_error = "- Error on query_actions.cc on IdentifyFilters_(): " + std::string(error.what());
+        std::string string_error = "Error on query_actions.cpp on IdentifyFilters_(): " + std::string(error.what());
         Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
     }
     catch(JSON::JSONException& error)
     {
-        std::string string_error = "- Error on query_actions.cc on IdentifyFilters_(): " + std::string(error.what());
+        std::string string_error = "Error on query_actions.cpp on IdentifyFilters_(): " + std::string(error.what());
         Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);

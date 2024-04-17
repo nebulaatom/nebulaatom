@@ -124,12 +124,12 @@ bool Functions::SQLAction::ComposeQuery_()
             }
 
         // Return
-            Tools::OutputLogger::instance_.Log_("- Final query: " + query_->toString());
+            Tools::OutputLogger::instance_.Log_("Final query: " + query_->toString());
             return true;
     }
     catch(MySQL::MySQLException& error)
     {
-        std::string string_error = "- Error on query_actions.cc on ComposeQuery_(): " + std::string(error.message());
+        std::string string_error = "Error on query_actions.cpp on ComposeQuery_(): " + std::string(error.message());
         Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
@@ -137,7 +137,7 @@ bool Functions::SQLAction::ComposeQuery_()
     }
     catch(std::runtime_error& error)
     {
-        std::string string_error = "- Error on query_actions.cc on ComposeQuery_(): " + std::string(error.what());
+        std::string string_error = "Error on query_actions.cpp on ComposeQuery_(): " + std::string(error.what());
         Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
@@ -145,7 +145,7 @@ bool Functions::SQLAction::ComposeQuery_()
     }
     catch(std::exception& error)
     {
-        std::string string_error = "- Error on query_actions.cc on ComposeQuery_(): " + std::string(error.what());
+        std::string string_error = "Error on query_actions.cpp on ComposeQuery_(): " + std::string(error.what());
         Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
@@ -162,7 +162,7 @@ void Functions::SQLAction::ExecuteQuery_()
     }
     catch(MySQL::MySQLException& error)
     {
-        std::string string_error = "- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.message());
+        std::string string_error = "Error on query_actions.cpp on ExecuteQuery_(): " + std::string(error.message());
         Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
@@ -170,7 +170,7 @@ void Functions::SQLAction::ExecuteQuery_()
     }
     catch(std::runtime_error& error)
     {
-        std::string string_error = "- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what());
+        std::string string_error = "Error on query_actions.cpp on ExecuteQuery_(): " + std::string(error.what());
         Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
@@ -178,7 +178,7 @@ void Functions::SQLAction::ExecuteQuery_()
     }
     catch(std::exception& error)
     {
-        std::string string_error = "- Error on query_actions.cc on ExecuteQuery_(): " + std::string(error.what());
+        std::string string_error = "Error on query_actions.cpp on ExecuteQuery_(): " + std::string(error.what());
         Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
@@ -219,7 +219,7 @@ void Functions::SQLAction::MakeResults_()
     }
     catch(JSON::JSONException& error)
     {
-        std::string string_error = "- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.message());
+        std::string string_error = "Error on query_actions.cpp on CreateJSONResult_(): " + std::string(error.message());
         Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
@@ -227,7 +227,7 @@ void Functions::SQLAction::MakeResults_()
     }
     catch(std::runtime_error& error)
     {
-        std::string string_error = "- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what());
+        std::string string_error = "Error on query_actions.cpp on CreateJSONResult_(): " + std::string(error.what());
         Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
@@ -235,7 +235,7 @@ void Functions::SQLAction::MakeResults_()
     }
     catch(std::exception& error)
     {
-        std::string string_error = "- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what());
+        std::string string_error = "Error on query_actions.cpp on CreateJSONResult_(): " + std::string(error.what());
         Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
@@ -299,17 +299,17 @@ JSON::Object::Ptr Functions::SQLAction::CreateJSONResult_()
     }
     catch(JSON::JSONException& error)
     {
-        Tools::OutputLogger::instance_.Log_("- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.message()));
+        Tools::OutputLogger::instance_.Log_("Error on query_actions.cpp on CreateJSONResult_(): " + std::string(error.message()));
         return JSON::Object::Ptr{};
     }
     catch(std::runtime_error& error)
     {
-        Tools::OutputLogger::instance_.Log_("- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what()));
+        Tools::OutputLogger::instance_.Log_("Error on query_actions.cpp on CreateJSONResult_(): " + std::string(error.what()));
         return JSON::Object::Ptr{};
     }
     catch(std::exception& error)
     {
-        Tools::OutputLogger::instance_.Log_("- Error on query_actions.cc on CreateJSONResult_(): " + std::string(error.what()));
+        Tools::OutputLogger::instance_.Log_("Error on query_actions.cpp on CreateJSONResult_(): " + std::string(error.what()));
         return JSON::Object::Ptr{};
     }
 }
@@ -330,7 +330,7 @@ bool Functions::SQLAction::InitializeQuery_()
     }
     catch(MySQL::MySQLException& error)
     {
-        std::string string_error = "- Error on query_actions.cc on InitializeQuery_(): " + std::string(error.message());
+        std::string string_error = "Error on query_actions.cpp on InitializeQuery_(): " + std::string(error.message());
         Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
@@ -338,7 +338,7 @@ bool Functions::SQLAction::InitializeQuery_()
     }
     catch(std::runtime_error& error)
     {
-        std::string string_error = "- Error on query_actions.cc on InitializeQuery_(): " + std::string(error.what());
+        std::string string_error = "Error on query_actions.cpp on InitializeQuery_(): " + std::string(error.what());
         Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
@@ -346,7 +346,7 @@ bool Functions::SQLAction::InitializeQuery_()
     }
     catch(std::exception& error)
     {
-        std::string string_error = "- Error on query_actions.cc on InitializeQuery_(): " + std::string(error.what());
+        std::string string_error = "Error on query_actions.cpp on InitializeQuery_(): " + std::string(error.what());
         Tools::OutputLogger::instance_.Log_(string_error);
         set_error(true);
         set_custom_error(string_error);

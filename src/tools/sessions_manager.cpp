@@ -48,19 +48,19 @@ void SessionsManager::ReadSessions_()
             action.ComposeQuery_();
             if(action.get_error())
             {
-                Tools::OutputLogger::instance_.Log_("- Error on sessions_manager.cpp on ReadSessions_(): " + action.get_custom_error());
+                Tools::OutputLogger::instance_.Log_("Error on sessions_manager.cpp on ReadSessions_(): " + action.get_custom_error());
                 return;
             }
             action.ExecuteQuery_();
             if(action.get_error())
             {
-                Tools::OutputLogger::instance_.Log_("- Error on sessions_manager.cpp on ReadSessions_(): " + action.get_custom_error());
+                Tools::OutputLogger::instance_.Log_("Error on sessions_manager.cpp on ReadSessions_(): " + action.get_custom_error());
                 return;
             }
             action.MakeResults_();
             if(action.get_error())
             {
-                Tools::OutputLogger::instance_.Log_("- Error on sessions_manager.cpp on ReadSessions_(): " + action.get_custom_error());
+                Tools::OutputLogger::instance_.Log_("Error on sessions_manager.cpp on ReadSessions_(): " + action.get_custom_error());
                 return;
             }
 
@@ -83,7 +83,7 @@ void SessionsManager::ReadSessions_()
     }
     catch(MySQL::MySQLException& error)
     {
-        Tools::OutputLogger::instance_.Log_("- Error on sessions_manager.cpp on ReadSessions_(): " + std::string(error.message()));
+        Tools::OutputLogger::instance_.Log_("Error on sessions_manager.cpp on ReadSessions_(): " + std::string(error.message()));
     }
 }
 
@@ -130,7 +130,7 @@ Atom::Extras::Session& SessionsManager::CreateSession_(std::string user, std::st
     }
     catch(MySQL::MySQLException& error)
     {
-        Tools::OutputLogger::instance_.Log_("- Error on sessions_manager.cpp on CreateSession_(): " + std::string(error.message()));
+        Tools::OutputLogger::instance_.Log_("Error on sessions_manager.cpp on CreateSession_(): " + std::string(error.message()));
     }
 
     return sessions_.at(id);
@@ -162,7 +162,7 @@ void SessionsManager::DeleteSession_(std::string id)
     }
     catch(MySQL::MySQLException& error)
     {
-        Tools::OutputLogger::instance_.Log_("- Error on sessions_manager.cpp on DeleteSession_(): " + std::string(error.message()));
+        Tools::OutputLogger::instance_.Log_("Error on sessions_manager.cpp on DeleteSession_(): " + std::string(error.message()));
     }
 }
 

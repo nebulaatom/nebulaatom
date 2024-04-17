@@ -67,7 +67,7 @@ void WebSocketHandler::Process_()
     }
     catch(std::exception& error)
     {
-        Tools::OutputLogger::instance_.Log_("- Error on websocket_handler.cpp on Process_(): " + std::string(error.what()));
+        Tools::OutputLogger::instance_.Log_("Error on websocket_handler.cpp on Process_(): " + std::string(error.what()));
         JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
 }

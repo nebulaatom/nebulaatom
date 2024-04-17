@@ -65,27 +65,27 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
     }
     catch(MySQL::MySQLException& error)
     {
-        Tools::OutputLogger::instance_.Log_("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
+        Tools::OutputLogger::instance_.Log_("Error on handler_factory.cpp on createRequestHandler(): " + error.displayText());
         JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Error with the database. " + error.displayText());
     }
     catch(JSON::JSONException& error)
     {
-        Tools::OutputLogger::instance_.Log_("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
+        Tools::OutputLogger::instance_.Log_("Error on handler_factory.cpp on createRequestHandler(): " + error.displayText());
         JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
     }
     catch(Poco::NullPointerException& error)
     {
-        Tools::OutputLogger::instance_.Log_("- Error on handler_factory.cc on createRequestHandler(): " + error.displayText());
+        Tools::OutputLogger::instance_.Log_("Error on handler_factory.cpp on createRequestHandler(): " + error.displayText());
         JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
     }
     catch(std::runtime_error& error)
     {
-        Tools::OutputLogger::instance_.Log_("- Error on handler_factory.cc on createRequestHandler(): " + std::string(error.what()));
+        Tools::OutputLogger::instance_.Log_("Error on handler_factory.cpp on createRequestHandler(): " + std::string(error.what()));
         JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
     catch(std::exception& error)
     {
-        Tools::OutputLogger::instance_.Log_("- Error on handler_factory.cc on createRequestHandler(): " + std::string(error.what()));
+        Tools::OutputLogger::instance_.Log_("Error on handler_factory.cpp on createRequestHandler(): " + std::string(error.what()));
         JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
 
