@@ -27,6 +27,7 @@
 #include <ostream>
 #include <chrono>
 #include <iomanip>
+#include <mutex>
 
 
 namespace Atom
@@ -44,7 +45,6 @@ class Atom::Tools::OutputLogger
         OutputLogger();
         ~OutputLogger(){}
 
-        static std::ostream* get_output_stream() { return output_stream_; }
         static bool get_log_to_file() { return log_to_file_; }
         static std::string get_output_file_address() { return output_file_address_; }
 
@@ -54,10 +54,8 @@ class Atom::Tools::OutputLogger
         static void Log_(const std::string& message);
         static std::string CurrentDateTime_();
 
-        static OutputLogger instance_;
-
     private:
-        static std::ostream* output_stream_;
+        static std::mutex mutex_;
         static bool log_to_file_;
         static std::string output_file_address_;
 };

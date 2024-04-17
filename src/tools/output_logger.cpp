@@ -20,19 +20,19 @@
 
 using namespace Atom::Tools;
 
-OutputLogger OutputLogger::instance_;
-std::ostream* OutputLogger::output_stream_ = nullptr;
+std::mutex OutputLogger::mutex_;
 bool OutputLogger::log_to_file_ = false;
 std::string OutputLogger::output_file_address_ = "nebulaatom.log";
 
 OutputLogger::OutputLogger()
 {
-    output_stream_ = &std::cout;
+    
 }
 
 void OutputLogger::Log_(const std::string& message)
 {
-    *output_stream_ << CurrentDateTime_() << " " << message << std::endl;
+    mutex_.lock();
+    std::cout << CurrentDateTime_() << " " << message << std::endl;
 
     if (log_to_file_)
     {
@@ -45,6 +45,7 @@ void OutputLogger::Log_(const std::string& message)
         else
             std::cerr << CurrentDateTime_() << " Error on output_logger.cpp on Log_(): Error to write to log file" << std::endl;
     }
+    mutex_.unlock();
 }
 
 std::string OutputLogger::CurrentDateTime_()
