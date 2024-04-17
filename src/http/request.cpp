@@ -31,7 +31,7 @@ Request::Request(HTTP::RequestType request_type) :
 
 void Request::AddHeader_(std::string name, std::string value)
 {
-    response_headers_.push_back(Request::Header(name, value));
+    response_headers_.push_back(Header(name, value));
 }
 
 void Request::SetupResponseHeaders_()
@@ -52,10 +52,6 @@ void Request::SetupConstRequest_(const Net::HTTPServerRequest& request)
     http_server_const_request_.emplace(&request);
     uri_ = request.getURI();
     method_ = request.getMethod();
-
-    // Add headers
-    for(auto i = request.begin(); i != request.end(); i++)
-        request_headers_.push_back({i->first, i->second});
 }
 
 void Request::SetupRequest_(Net::HTTPServerRequest& request)
@@ -63,10 +59,6 @@ void Request::SetupRequest_(Net::HTTPServerRequest& request)
     http_server_request_.emplace(&request);
     uri_ = request.getURI();
     method_ = request.getMethod();
-
-    // Add headers
-    for(auto i = request.begin(); i != request.end(); ++i)
-        request_headers_.push_back({i->first, i->second});
 }
 
 void Request::SetupResponse_(Net::HTTPServerResponse& response)
