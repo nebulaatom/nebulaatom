@@ -23,6 +23,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <mutex>
 
 #include "Poco/Exception.h"
 #include "Poco/Data/Session.h"
@@ -57,6 +58,7 @@ class Atom::Query::DatabaseManager
         static std::shared_ptr<Data::Session> StartSessionMySQL_();
 
     private:
+        static std::mutex mutex_;
         static bool initialized_;
 
 };
