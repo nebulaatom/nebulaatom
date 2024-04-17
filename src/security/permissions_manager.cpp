@@ -21,6 +21,7 @@
 using namespace Atom;
 using namespace Atom::Security;
 
+std::mutex PermissionsManager::mutex_;
 std::list<Permission> PermissionsManager::permissions_ = {};
 std::map<std::string, ActionType> PermissionsManager::action_type_map_ = {};
 
@@ -67,6 +68,7 @@ void PermissionsManager::LoadPermissions_()
 {
     try
     {
+        mutex_.lock();
         if(permissions_.size() > 0)
         {
             return;
@@ -110,6 +112,7 @@ void PermissionsManager::LoadPermissions_()
 
                 permissions_.push_back(std::move(p));
             }
+        mutex_.unlock();
     }
     catch(const std::exception& error)
     {

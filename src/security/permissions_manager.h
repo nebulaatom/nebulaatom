@@ -24,6 +24,7 @@
 #include <string>
 #include <list>
 #include <algorithm>
+#include <mutex>
 
 #include "functions/sql_action.h"
 #include "security/permission.h"
@@ -67,6 +68,7 @@ class Atom::Security::PermissionsManager
         static void FillActionTypeMap_();
 
     private:
+        static std::mutex mutex_;
         static std::list<Permission> permissions_;
         static std::map<std::string, ActionType> action_type_map_;
 };
