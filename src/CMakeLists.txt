@@ -20,6 +20,7 @@ set(NEBULAATOM_SOURCES
     ${PROJECT_SOURCE_DIR}/src/handlers/null_handler.cpp
     ${PROJECT_SOURCE_DIR}/src/handlers/custom_handler.cpp
     ${PROJECT_SOURCE_DIR}/src/handlers/websocket_handler.cpp
+    ${PROJECT_SOURCE_DIR}/src/http/client.cpp
     ${PROJECT_SOURCE_DIR}/src/http/common_responses.cpp
     ${PROJECT_SOURCE_DIR}/src/http/http_methods.cpp
     ${PROJECT_SOURCE_DIR}/src/http/request.cpp
@@ -73,6 +74,7 @@ set(NEBULAATOM_headers_handlers
     ${PROJECT_SOURCE_DIR}/src/handlers/websocket_handler.h
 )
 set(NEBULAATOM_headers_http
+    ${PROJECT_SOURCE_DIR}/src/http/client.h
     ${PROJECT_SOURCE_DIR}/src/http/common_responses.h
     ${PROJECT_SOURCE_DIR}/src/http/http_methods.h
     ${PROJECT_SOURCE_DIR}/src/http/request.h

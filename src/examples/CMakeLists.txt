@@ -58,3 +58,8 @@ target_link_libraries(uploadfile PUBLIC nebulaatom_static)
 add_executable(setupheaders "setup_headers.cpp")
 target_include_directories(setupheaders PUBLIC ${HEADER})
 target_link_libraries(setupheaders PUBLIC nebulaatom_static)
+
+## clientrequest
+add_executable(clientrequest "client_request.cpp")
+target_include_directories(clientrequest PUBLIC ${HEADER})
+target_link_libraries(clientrequest PUBLIC nebulaatom_static)

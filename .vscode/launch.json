@@ -98,5 +98,13 @@
             ,"args": []
             ,"cwd": "${workspaceFolder}/build/Debug"
         }
+        ,{
+            "type": "lldb"
+            ,"request": "launch"
+            ,"name": "ClientRequest (Debug)"
+            ,"program": "${workspaceFolder}/build/Debug/src/examples/clientrequest"
+            ,"args": []
+            ,"cwd": "${workspaceFolder}/build/Debug"
+        }
     ]
 }
