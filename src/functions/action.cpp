@@ -34,7 +34,7 @@ void Action::IdentifyParameters_()
             // Get the action object
                 if(data_array->get(a).isEmpty())
                 {
-                    Tools::OutputLogger::instance_.Log_("Data array haves an empty action.");
+                    Tools::OutputLogger::Log_("Data array haves an empty action.");
                     continue;
                 }
 
@@ -43,7 +43,7 @@ void Action::IdentifyParameters_()
             // Get the action identifier
                 if(action_object->get("action_id").isEmpty() || !action_object->get("action_id").isString())
                 {
-                    Tools::OutputLogger::instance_.Log_("The action object does not have an action_id String Object.");
+                    Tools::OutputLogger::Log_("The action object does not have an action_id String Object.");
                     continue;
                 }
 
@@ -56,7 +56,7 @@ void Action::IdentifyParameters_()
             // Get the parameters object
                 if(action_object->get("parameters").isEmpty() || !action_object->get("parameters").isArray())
                 {
-                    Tools::OutputLogger::instance_.Log_("The action object does not have a parameters array.");
+                    Tools::OutputLogger::Log_("The action object does not have a parameters array.");
                     continue;
                 }
 
@@ -68,7 +68,7 @@ void Action::IdentifyParameters_()
                     // Get parameter object
                     if(parameters_array->get(b).isEmpty())
                     {
-                        Tools::OutputLogger::instance_.Log_("Parameters array haves an empty element.");
+                        Tools::OutputLogger::Log_("Parameters array haves an empty element.");
                         continue;
                     }
 
@@ -77,7 +77,7 @@ void Action::IdentifyParameters_()
                     // Get parameter name
                     if(parameter_object->get("name").isEmpty() || !parameter_object->get("name").isString())
                     {
-                        Tools::OutputLogger::instance_.Log_("Parameter name is not a String Object.");
+                        Tools::OutputLogger::Log_("Parameter name is not a String Object.");
                         continue;
                     }
 
@@ -86,7 +86,7 @@ void Action::IdentifyParameters_()
                     // Get parameter value
                     if(parameter_object->get("value").isEmpty())
                     {
-                        Tools::OutputLogger::instance_.Log_("Parameter value is empty.");
+                        Tools::OutputLogger::Log_("Parameter value is empty.");
                         continue;
                     }
 
@@ -119,14 +119,14 @@ void Action::IdentifyParameters_()
     catch(std::runtime_error& error)
     {
         std::string string_error = "Error on query_actions.cpp on IdentifyFilters_(): " + std::string(error.what());
-        Tools::OutputLogger::instance_.Log_(string_error);
+        Tools::OutputLogger::Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
     }
     catch(JSON::JSONException& error)
     {
         std::string string_error = "Error on query_actions.cpp on IdentifyFilters_(): " + std::string(error.what());
-        Tools::OutputLogger::instance_.Log_(string_error);
+        Tools::OutputLogger::Log_(string_error);
         set_error(true);
         set_custom_error(string_error);
     }

@@ -23,18 +23,18 @@ FileManager::FileManager() :
     operation_type_(OperationType::kDownload)
 {
     result_ = new JSON::Object();
-    directory_base_ = settings_manager_.get_basic_properties_().directory_base;
-    directory_for_uploaded_files_ = settings_manager_.get_basic_properties_().directory_for_uploaded_files;
-    directory_for_temp_files_ = settings_manager_.get_basic_properties_().directory_for_temp_files;
+    directory_base_ = Tools::SettingsManager::get_basic_properties_().directory_base;
+    directory_for_uploaded_files_ = Tools::SettingsManager::get_basic_properties_().directory_for_uploaded_files;
+    directory_for_temp_files_ = Tools::SettingsManager::get_basic_properties_().directory_for_temp_files;
 }
 
 FileManager::FileManager(OperationType operation_type) :
     operation_type_(operation_type)
 {
     result_ = new JSON::Object();
-    directory_base_ = settings_manager_.get_basic_properties_().directory_base;
-    directory_for_uploaded_files_ = settings_manager_.get_basic_properties_().directory_for_uploaded_files;
-    directory_for_temp_files_ = settings_manager_.get_basic_properties_().directory_for_temp_files;
+    directory_base_ = Tools::SettingsManager::get_basic_properties_().directory_base;
+    directory_for_uploaded_files_ = Tools::SettingsManager::get_basic_properties_().directory_for_uploaded_files;
+    directory_for_temp_files_ = Tools::SettingsManager::get_basic_properties_().directory_for_temp_files;
 }
 
 FileManager::~FileManager()

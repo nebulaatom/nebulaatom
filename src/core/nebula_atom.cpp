@@ -16,8 +16,6 @@
 */
 
 #include "nebula_atom.h"
-#include "tools/output_logger.h"
-#include <string>
 
 #if defined(POCO_OS_FAMILY_WINDOWS)
 	NamedEvent terminator(ProcessImpl::terminationEventName(Process::id()));
@@ -54,11 +52,11 @@ int NebulaAtom::Init_()
         return -1;
 
     server_->start();
-    Tools::OutputLogger::instance_.Log_("Server started at port " + std::to_string(settings_manager_.get_basic_properties_().port));
+    Tools::OutputLogger::Log_("Server started at port " + std::to_string(Tools::SettingsManager::get_basic_properties_().port));
 
     terminator.wait();
 
-    Tools::OutputLogger::instance_.Log_("Shutting down server... ");
+    Tools::OutputLogger::Log_("Shutting down server... ");
     server_->stop();
 
     return 0;
@@ -73,11 +71,11 @@ int NebulaAtom::Init_(int argc, char** argv)
         return -1;
 
     server_->start();
-    Tools::OutputLogger::instance_.Log_("Server started at port " + std::to_string(settings_manager_.get_basic_properties_().port));
+    Tools::OutputLogger::Log_("Server started at port " + std::to_string(Tools::SettingsManager::get_basic_properties_().port));
 
     terminator.wait();
 
-    Tools::OutputLogger::instance_.Log_("Shutting down server... ");
+    Tools::OutputLogger::Log_("Shutting down server... ");
     server_->stop();
 
     return 0;
@@ -87,9 +85,14 @@ int NebulaAtom::SettingUpServer_()
 {
     try
     {
+        auto server_params = new HTTPServerParams;
+        server_params->setTimeout(Tools::SettingsManager::get_basic_properties_().timeout);
+        server_params->setMaxThreads(Tools::SettingsManager::get_basic_properties_().max_threads);
+        server_params->setMaxQueued(Tools::SettingsManager::get_basic_properties_().max_queued);
+
         if(use_ssl_)
         {
-            if (settings_manager_.get_basic_properties_().key.empty() && settings_manager_.get_basic_properties_().certificate.empty())
+            if (Tools::SettingsManager::get_basic_properties_().key.empty() && Tools::SettingsManager::get_basic_properties_().certificate.empty())
                 throw SSLException("Configuration error: no certificate file has been specified");
 
             // Setup SSL
@@ -97,9 +100,9 @@ int NebulaAtom::SettingUpServer_()
             Net::Context::Ptr context = new Net::Context
             (
                 Net::Context::TLS_SERVER_USE
-                ,settings_manager_.get_basic_properties_().key
-                ,settings_manager_.get_basic_properties_().certificate
-                ,settings_manager_.get_basic_properties_().rootcert
+                ,Tools::SettingsManager::get_basic_properties_().key
+                ,Tools::SettingsManager::get_basic_properties_().certificate
+                ,Tools::SettingsManager::get_basic_properties_().rootcert
                 ,Net::Context::VERIFY_RELAXED
             );
             SharedPtr<Net::InvalidCertificateHandler> cert_handler = new Net::AcceptCertificateHandler(true);
@@ -108,45 +111,45 @@ int NebulaAtom::SettingUpServer_()
             Net::SSLManager::instance().initializeServer(keyhandler, cert_handler, context);
 
             // SSL Server
-            SecureServerSocket secure_server_socket(settings_manager_.get_basic_properties_().port);
-            server_ = std::make_unique<HTTPServer>(handler_factory_, secure_server_socket, new HTTPServerParams);
+            SecureServerSocket secure_server_socket(Tools::SettingsManager::get_basic_properties_().port);
+            server_ = std::make_unique<HTTPServer>(handler_factory_, secure_server_socket, server_params);
         }
         else
         {
-            ServerSocket server_socket(settings_manager_.get_basic_properties_().port);
-            server_ = std::make_unique<HTTPServer>(handler_factory_, server_socket, new HTTPServerParams);
+            ServerSocket server_socket(Tools::SettingsManager::get_basic_properties_().port);
+            server_ = std::make_unique<HTTPServer>(handler_factory_, server_socket, server_params);
         }
 
         return true;
     }
     catch(Net::SSLException& error)
     {
-        Tools::OutputLogger::instance_.Log_("Error on nebula_atom.cpp on main(): " + error.displayText());
+        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on main(): " + error.displayText());
         return false;
     }
     catch(Poco::NullPointerException& error)
     {
-        Tools::OutputLogger::instance_.Log_("Error on nebula_atom.cpp on main(): " + error.displayText());
+        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on main(): " + error.displayText());
         return false;
     }
     catch(Poco::SystemException& error)
     {
-        Tools::OutputLogger::instance_.Log_("Error on nebula_atom.cpp on main(): " + error.displayText());
+        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on main(): " + error.displayText());
         return false;
     }
     catch(std::runtime_error& error)
     {
-        Tools::OutputLogger::instance_.Log_("Error on nebula_atom.cpp on main(): " + std::string(error.what()));
+        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on main(): " + std::string(error.what()));
         return false;
     }
     catch(std::exception& error)
     {
-        Tools::OutputLogger::instance_.Log_("Error on nebula_atom.cpp on main(): " + std::string(error.what()));
+        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on main(): " + std::string(error.what()));
         return false;
     }
     catch(...)
     {
-        Tools::OutputLogger::instance_.Log_("Error on nebula_atom.cpp on main(): Unhandled");
+        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on main(): Unhandled");
         return false;
     }
 

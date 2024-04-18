@@ -132,7 +132,6 @@ class Atom::Files::FileManager: public Net::PartHandler
         std::string directory_for_temp_files_;
         JSON::Object::Ptr result_;
         std::vector<Files::File> files_;
-        Tools::SettingsManager settings_manager_;
 };
 
 #endif // ATOM_FILES_FILEMANAGER

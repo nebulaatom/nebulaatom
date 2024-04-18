@@ -100,11 +100,6 @@ class Atom::Handlers::RootHandler :
         std::string get_user() const { return user_; }
         std::string get_method() const { return method_; }
         bool get_route_verification() const { return route_verification_; }
-        Tools::SettingsManager& get_settings_manager()
-        {
-            auto& var = settings_manager_;
-            return var;
-        }
         Extras::SecurityVerification& get_current_security()
         {
             auto& var = current_security_;
@@ -151,7 +146,6 @@ class Atom::Handlers::RootHandler :
         std::string user_;
         std::string method_;
         bool route_verification_;
-        Tools::SettingsManager settings_manager_;
         Extras::SecurityVerification current_security_;
         std::list<std::string> targets_;
         std::list<Tools::Route> routes_list_;

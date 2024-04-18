@@ -102,7 +102,6 @@ class Atom::Core::NebulaAtom
         std::unique_ptr<HTTPServer> server_;
         HandlerFactory* handler_factory_;
         std::vector<std::string> console_parameters_;
-        Tools::SettingsManager settings_manager_;
 };
 
 #endif // ATOM_CORE_NEBULAATOM
