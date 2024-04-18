@@ -1,7 +1,7 @@
 port: 8080
 max_queued : 100
-max_threads : 16
-timeout : 20
+max_threads : 4
+timeout : 60
 db_host : "127.0.0.1"
 db_port : "3306"
 db_name : "test_woodpecker"
