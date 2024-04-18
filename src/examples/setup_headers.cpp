@@ -13,11 +13,13 @@ int main(int argc, char** argv)
     {
         return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
         {
+            // Set header
             request.AddHeader_("cookie-example", "cookie-value");
             request.SetupResponseHeaders_();
 
-            for(auto& header : request.get_request_headers())
-                std::cout << header.name << ": " << header.value << std::endl;
+            // View headers
+            for(auto& header : *request.get_http_server_request().value())
+                std::cout << header.first << ": " << header.second << std::endl;
             
             self.CustomHTMLResponse_(HTTP::Status::kHTTP_OK, "Hello!");
         });
