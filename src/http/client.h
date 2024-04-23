@@ -24,16 +24,24 @@
 #include <vector>
 #include <optional>
 
+#include "Poco/Net/HTTPSClientSession.h"
 #include "Poco/Net/HTTPClientSession.h"
 #include "Poco/Net/HTTPRequest.h"
 #include "Poco/Net/HTTPResponse.h"
 #include "Poco/Net/HTTPCredentials.h"
+#include "Poco/Net/AcceptCertificateHandler.h"
+#include <Poco/Net/Context.h>
+#include <Poco/Net/NetException.h>
+#include <Poco/Net/NetSSL.h>
+#include <Poco/Net/SSLManager.h>
 #include "Poco/StreamCopier.h"
 #include "Poco/NullStream.h"
 #include "Poco/Path.h"
 #include "Poco/URI.h"
 #include "Poco/Exception.h"
+#include <Poco/JSON/Object.h>
 
+#include "http/http_methods.h"
 #include "tools/output_logger.h"
 
 
@@ -54,22 +62,44 @@ class Atom::HTTP::Client
     public:
         using ClientResponseFunction = std::function<void(std::stringstream& response, Net::HTTPRequest& http_request, Net::HTTPResponse& http_response)>;
 
-        Client(std::string uri);
-        Client(std::string uri, std::string username, std::string password);
+        Client(std::string uri, const std::string method);
 
+        bool get_use_ssl() const { return use_ssl_; }
+        std::string get_uri() const { return uri_; }
+        std::string get_method() const { return method_; }
+        std::string get_username() const { return username_; }
+        std::string get_password() const { return password_; }
+        bool get_use_credentials() const { return use_credentials_; }
         ClientResponseFunction get_response_handler() const { return response_handler_; }
 
+        void set_use_ssl(bool use_ssl) { use_ssl_ = use_ssl; }
+        void set_uri(std::string uri) { uri_ = uri; }
+        void set_method(std::string method) { method_ = method; }
+        void set_username(std::string username) { username_ = username; }
+        void set_password(std::string password) { password_ = password; }
+        void set_use_credentials(bool use_credentials) { use_credentials_ = use_credentials; }
         void set_response_handler(ClientResponseFunction response_handler) { response_handler_ = response_handler; }
 
+        void UseCredentials_(std::string username, std::string password);
+        void SetupSSL_(std::string key, std::string cert);
+        void SetupSSL_(std::string rootcert);
+        void AddHeader_(std::string name, std::string value);
+        void AddCookie_(std::string name, std::string value);
         void SendRequest_();
-        void SendRequest_(std::string username, std::string password);
+
+    protected:
+        void SendNormalRequest_();
+        void SendSSLRequest_();
 
     private:
+        bool use_ssl_;
         std::string uri_;
+        std::string method_;
         std::string username_;
         std::string password_;
         bool use_credentials_;
         ClientResponseFunction response_handler_;
+        Context::Ptr ssl_context_;
 };
 
 #endif // ATOM_HTTP_CLIENT
