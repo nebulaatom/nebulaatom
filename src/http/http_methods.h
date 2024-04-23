@@ -19,11 +19,20 @@
 #ifndef ATOM_HTTPMETHODS
 #define ATOM_HTTPMETHODS
 
+#include <map>
+#include <string>
+
 
 namespace Atom
 {
     namespace HTTP
     {
+        const std::string HTTP_GET = "GET";
+        const std::string HTTP_POST = "POST";
+        const std::string HTTP_PUT = "PUT";
+        const std::string HTTP_DEL = "DEL";
+        const std::string HTTP_OPTIONS = "OPTIONS";
+        const std::string HTTP_HEAD = "HEAD";
         class HTTPMethods;
     }
 }

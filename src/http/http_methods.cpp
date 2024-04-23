@@ -17,6 +17,7 @@
 */
 
 #include "http/http_methods.h"
+#include <utility>
 
 using namespace Atom::HTTP;
 
