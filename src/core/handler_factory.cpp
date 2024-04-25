@@ -40,7 +40,7 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
     {
         if(handler_creator_ == nullptr)
         {
-            handler_creator_ = [&](Core::BasicInfo& info)
+            handler_creator_ = [&](Core::HTTPRequestInfo& info)
             {
                 // Find route and handler
                 FunctionHandler f;
@@ -56,7 +56,7 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
         }
         else
         {
-            Core::BasicInfo info(request.getURI());
+            Core::HTTPRequestInfo info(request.getURI(), request.getMethod());
             return handler_creator_(info);
         }
     }

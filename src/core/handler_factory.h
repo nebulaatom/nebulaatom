@@ -63,24 +63,26 @@ namespace Atom
 {
     namespace Core
     {
-        struct BasicInfo;
+        struct HTTPRequestInfo;
         class HandlerFactory;
     }
 }
 
 
-struct Atom::Core::BasicInfo
+struct Atom::Core::HTTPRequestInfo
 {
-    BasicInfo(std::string uri) : uri(uri){}
+    HTTPRequestInfo(std::string uri, std::string method) : uri(uri), method(method){}
 
     std::string uri;
+    std::string method;
 };
+
 class Atom::Core::HandlerFactory :
     public HTTPRequestHandlerFactory
 {
     public:
         using FunctionHandler = std::function<Atom::Handlers::RootHandler*()>;
-        using FunctionHandlerCreator = std::function<Atom::Handlers::RootHandler*(Core::BasicInfo& info)>;
+        using FunctionHandlerCreator = std::function<Atom::Handlers::RootHandler*(Core::HTTPRequestInfo& info)>;
         using Connections = std::map<std::string, Tools::HandlerConnection>;
 
         HandlerFactory();
