@@ -17,8 +17,6 @@
 */
 
 #include "http/request.h"
-#include <optional>
-#include <stdexcept>
 
 using namespace Atom::HTTP;
 
@@ -31,27 +29,12 @@ Request::Request(HTTP::RequestType request_type) :
 
 void Request::AddHeader_(std::string name, std::string value)
 {
-    response_headers_.push_back(Header(name, value));
+    headers_.push_back(Header(name, value));
 }
 
-void Request::SetupResponseHeaders_()
+void Request::AddCookie_(std::string name, std::string value)
 {
-    for(auto header : response_headers_)
-    {
-        if(http_server_response_.has_value())
-        {
-            http_server_response_.value()->set(header.name, header.value);
-        }
-        else
-            throw std::runtime_error("HTTPServerRequest or HTTPServerResponse cannot be null");
-    }
-}
-
-void Request::SetupConstRequest_(const Net::HTTPServerRequest& request)
-{
-    http_server_const_request_.emplace(&request);
-    uri_ = request.getURI();
-    method_ = request.getMethod();
+    cookies_.push_back(Cookie(name, value));
 }
 
 void Request::SetupRequest_(Net::HTTPServerRequest& request)
@@ -64,4 +47,19 @@ void Request::SetupRequest_(Net::HTTPServerRequest& request)
 void Request::SetupResponse_(Net::HTTPServerResponse& response)
 {
     http_server_response_.emplace(&response);
+}
+
+void Request::SetupHeaders_()
+{
+    for(auto& header : headers_)
+        http_server_response_.value()->add(header.name, header.value);
+}
+
+void Request::SetupCookies_()
+{
+    for(auto& cookie : cookies_)
+    {
+        HTTPCookie poco_cookie(cookie.name, cookie.value);
+        http_server_response_.value()->addCookie(poco_cookie);
+    }
 }

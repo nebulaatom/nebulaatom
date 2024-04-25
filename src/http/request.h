@@ -25,6 +25,7 @@
 
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPServerResponse.h>
+#include <Poco/Net/HTTPCookie.h>
 
 
 namespace Atom
@@ -33,6 +34,7 @@ namespace Atom
     {
         enum class RequestType;
         class Header;
+        class Cookie;
         class Request;
     }
 }
@@ -50,31 +52,38 @@ enum class Atom::HTTP::RequestType
 class Atom::HTTP::Header
 {
     public:
-        Header(const std::string name, const std::string value) : 
+        Header(std::string name, std::string value) : 
             name(name)
             ,value(value)
         {}
         virtual ~Header(){}
 
-        const std::string name;
-        const std::string value;
+        std::string name;
+        std::string value;
+};
+
+class Atom::HTTP::Cookie
+{
+    public:
+        Cookie(std::string name, std::string value) : 
+            name(name)
+            ,value(value)
+        {}
+        virtual ~Cookie(){}
+
+        std::string name;
+        std::string value;
 };
 
 class Atom::HTTP::Request
 {
     public:
-        using HTTPServerConstRequestPtr = std::optional<const HTTPServerRequest*>;
         using HTTPServerRequestPtr = std::optional<HTTPServerRequest*>;
         using HTTPServerResponsePtr = std::optional<HTTPServerResponse*>;
 
         Request(RequestType request_type);
         
         RequestType get_request_type() const { return request_type_; }
-        HTTPServerConstRequestPtr& get_http_server_const_request()
-        {
-            auto& var = http_server_const_request_;
-            return var;
-        }
         HTTPServerRequestPtr& get_http_server_request()
         {
             auto& var = http_server_request_;
@@ -85,9 +94,14 @@ class Atom::HTTP::Request
             auto& var = http_server_response_;
             return var;
         }
-        std::vector<Header>& get_response_headers()
+        std::vector<HTTP::Header> get_headers()
         {
-            auto& var = response_headers_;
+            auto& var = headers_;
+            return var;
+        }
+        std::vector<HTTP::Cookie> get_cookies()
+        {
+            auto& var = cookies_;
             return var;
         }
         std::string get_uri() const { return uri_; }
@@ -98,19 +112,20 @@ class Atom::HTTP::Request
         void set_method(std::string method) { method_ = method; }
         
         void AddHeader_(std::string name, std::string value);
-        void SetupResponseHeaders_();
+        void AddCookie_(std::string name, std::string value);
 
     protected:
-        void SetupConstRequest_(const Net::HTTPServerRequest& request);
         void SetupRequest_(Net::HTTPServerRequest& request);
         void SetupResponse_(Net::HTTPServerResponse& response);
+        void SetupHeaders_();
+        void SetupCookies_();
 
     private:
         RequestType request_type_;
-        HTTPServerConstRequestPtr http_server_const_request_;
         HTTPServerRequestPtr http_server_request_;
         HTTPServerResponsePtr http_server_response_;
-        std::vector<Header> response_headers_;
+        std::vector<HTTP::Header> headers_;
+        std::vector<HTTP::Cookie> cookies_;
         std::string uri_;
         std::string method_;
 
