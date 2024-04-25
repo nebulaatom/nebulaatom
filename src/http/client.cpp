@@ -17,6 +17,8 @@
 */
 
 #include "http/client.h"
+#include "http/request.h"
+#include <Poco/Net/NameValueCollection.h>
 #include <Poco/Net/NetSSL.h>
 #include <Poco/Net/SSLException.h>
 
@@ -60,12 +62,12 @@ void Client::SetupSSL_(std::string rootcert)
 
 void Client::AddHeader_(std::string name, std::string value)
 {
-    
+    headers_.push_back(HTTP::Header{name, value});
 }
 
 void Client::AddCookie_(std::string name, std::string value)
 {
-    
+    cookies_.push_back(HTTP::Cookie{name, value});
 }
 
 void Client::SendRequest_()
@@ -84,6 +86,9 @@ void Client::SendNormalRequest_()
 
 		Net::HTTPClientSession session(uri.getHost(), uri.getPort());
 		Net::HTTPRequest http_request(method_, path, HTTPMessage::HTTP_1_1);
+        SetupHeaders_(http_request);
+        SetupCookies_(http_request);
+
 		Net::HTTPResponse http_response;
 
         if(use_credentials_)
@@ -116,6 +121,9 @@ void Client::SendSSLRequest_()
 
 		Net::HTTPSClientSession session(uri.getHost(), uri.getPort(), ssl_context_);
 		Net::HTTPRequest http_request(method_, path, HTTPMessage::HTTP_1_1);
+        SetupHeaders_(http_request);
+        SetupCookies_(http_request);
+        
 		Net::HTTPResponse http_response;
 
         if(use_credentials_)
@@ -142,4 +150,19 @@ void Client::SendSSLRequest_()
 		Tools::OutputLogger::Log_(exc.displayText());
 		return;
 	}
+}
+
+void Client::SetupHeaders_(Net::HTTPRequest& http_request)
+{
+    for(auto& header : headers_)
+        http_request.add(header.name, header.value);
+}
+
+void Client::SetupCookies_(Net::HTTPRequest& http_request)
+{
+    NameValueCollection poco_cookies;
+    for(auto& cookie : cookies_)
+        poco_cookies.add(cookie.name, cookie.value);
+
+    http_request.setCookies(http_request);
 }

@@ -42,6 +42,7 @@
 #include <Poco/JSON/Object.h>
 
 #include "http/http_methods.h"
+#include "http/request.h"
 #include "tools/output_logger.h"
 
 
@@ -70,6 +71,16 @@ class Atom::HTTP::Client
         std::string get_username() const { return username_; }
         std::string get_password() const { return password_; }
         bool get_use_credentials() const { return use_credentials_; }
+        std::vector<HTTP::Header>& get_headers()
+        {
+            auto& var = headers_;
+            return var;
+        }
+        std::vector<HTTP::Cookie>& get_cookies()
+        {
+            auto& var = cookies_;
+            return var;
+        }
         ClientResponseFunction get_response_handler() const { return response_handler_; }
 
         void set_use_ssl(bool use_ssl) { use_ssl_ = use_ssl; }
@@ -90,6 +101,8 @@ class Atom::HTTP::Client
     protected:
         void SendNormalRequest_();
         void SendSSLRequest_();
+        void SetupHeaders_(Net::HTTPRequest& http_request);
+        void SetupCookies_(Net::HTTPRequest& http_request);
 
     private:
         bool use_ssl_;
@@ -98,6 +111,8 @@ class Atom::HTTP::Client
         std::string username_;
         std::string password_;
         bool use_credentials_;
+        std::vector<HTTP::Header> headers_;
+        std::vector<HTTP::Cookie> cookies_;
         ClientResponseFunction response_handler_;
         Context::Ptr ssl_context_;
 };
