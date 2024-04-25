@@ -23,28 +23,10 @@
 
 using namespace Atom::Core;
 
-HandlerFactory::HandlerFactory()
+HandlerFactory::HandlerFactory() :
+    handler_creator_(nullptr)
 {
-    set_request_type(HTTP::RequestType::kConstRequest);
-    handler_creator_ = [&](HTTP::Request& request)
-    {
-        // Find route and handler
-        FunctionHandler f;
 
-        if(!request.get_http_server_const_request().has_value())
-        {
-            f = [&](){return new Atom::Handlers::NullHandler();};
-            return f();
-        }
-        
-        auto found = connections_.find(request.get_http_server_const_request().value()->getURI());
-        if(found != connections_.end())
-            f = found->second.return_handler_;
-        else
-            f = [&](){return new Atom::Handlers::NullHandler();};
-
-        return f();
-    };
 }
 
 HandlerFactory::~HandlerFactory()
@@ -56,38 +38,71 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
 {
     try
     {
-        // Set request and response
-            SetupConstRequest_(request);
-            SetupResponse_(request.response());
+        if(handler_creator_ == nullptr)
+        {
+            handler_creator_ = [&](Core::BasicInfo& info)
+            {
+                // Find route and handler
+                FunctionHandler f;
 
-        // Return handler
-            return handler_creator_(*this);
+                auto found = connections_.find(info.uri);
+                if(found != connections_.end())
+                    f = found->second.return_handler_;
+                else
+                    f = [&](){return new Atom::Handlers::NullHandler();};
+
+                return f();
+            };
+        }
+        else
+        {
+            Core::BasicInfo info(request.getURI());
+            return handler_creator_(info);
+        }
     }
     catch(MySQL::MySQLException& error)
     {
         Tools::OutputLogger::Log_("Error on handler_factory.cpp on createRequestHandler(): " + error.displayText());
-        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Error with the database. " + error.displayText());
+        ErrorResponse_(request, "Error with the database. " + error.displayText());
     }
     catch(JSON::JSONException& error)
     {
         Tools::OutputLogger::Log_("Error on handler_factory.cpp on createRequestHandler(): " + error.displayText());
-        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
+        ErrorResponse_(request, "Internal server error. " + error.displayText());
     }
     catch(Poco::NullPointerException& error)
     {
         Tools::OutputLogger::Log_("Error on handler_factory.cpp on createRequestHandler(): " + error.displayText());
-        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + error.displayText());
+        ErrorResponse_(request, "Internal server error. " + error.displayText());
     }
     catch(std::runtime_error& error)
     {
         Tools::OutputLogger::Log_("Error on handler_factory.cpp on createRequestHandler(): " + std::string(error.what()));
-        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
+        ErrorResponse_(request, "Internal server error. " + std::string(error.what()));
     }
     catch(std::exception& error)
     {
         Tools::OutputLogger::Log_("Error on handler_factory.cpp on createRequestHandler(): " + std::string(error.what()));
-        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
+        ErrorResponse_(request, "Internal server error. " +  std::string(error.what()));
     }
 
     return new Atom::Handlers::NullHandler();
+}
+
+void HandlerFactory::ErrorResponse_(const HTTPServerRequest& request, std::string error)
+{
+    request.response().setStatus(HTTPResponse::HTTP_INTERNAL_SERVER_ERROR);
+    request.response().setContentType("text/html");
+    request.response().setChunkedTransferEncoding(true);
+
+    std::ostream& out = request.response().send();
+
+    out << "<html>";
+    out << "<head><title> 500 HTTP_INTERNAL_SERVER_ERROR | Nebula Atom</title></head>";
+    out << "<body>";
+    out << "<center><h1>Status: 500 HTTP_INTERNAL_SERVER_ERROR </h1></center>";
+    out << "<center><h3>Message: " << error << "</h3></center>";
+    out << "<center><hr>Nebula Atom/" << PACKAGE_VERSION_COMPLETE << "</center>";
+    out << "</body>";
+    out << "</html>";
 }
