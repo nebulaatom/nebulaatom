@@ -10,7 +10,7 @@ int main(int argc, char** argv)
     Core::NebulaAtom app(true);
     Tools::SettingsManager::ReadBasicProperties_();
 
-    app.CustomHandlerCreator_([&](HTTP::Request&)
+    app.CustomHandlerCreator_([&](Core::HTTPRequestInfo&)
     {
         return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
         {

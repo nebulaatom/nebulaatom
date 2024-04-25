@@ -83,11 +83,11 @@ int main(int argc, char** argv)
         Tools::SessionsManager::ReadSessions_();
 
     // Setting up handler
-        app.CustomHandlerCreator_([&](HTTP::Request& request)
+        app.CustomHandlerCreator_([&](Core::HTTPRequestInfo& info)
         {
             // Set route
             std::vector<std::string> segments;
-            URI(request.get_uri()).getPathSegments(segments);
+            URI(info.uri).getPathSegments(segments);
             Atom::Tools::Route requested_route(segments);
 
             // Login/logout routes

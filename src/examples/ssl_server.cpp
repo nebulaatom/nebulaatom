@@ -11,7 +11,7 @@ int main(int argc, char** argv)
     Tools::SettingsManager::set_properties_file_address("properties.yaml");
     Tools::SettingsManager::ReadBasicProperties_();
 
-    app.CustomHandlerCreator_([&](HTTP::Request&)
+    app.CustomHandlerCreator_([&](Core::HTTPRequestInfo&)
     {
         return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
         {

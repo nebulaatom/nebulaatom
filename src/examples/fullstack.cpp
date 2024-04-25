@@ -14,13 +14,13 @@ int main(int argc, char** argv)
     Query::DatabaseManager::StartMySQL_();
     Tools::SettingsManager::ReadBasicProperties_();
 
-    app.CustomHandlerCreator_([&](HTTP::Request& request)
+    app.CustomHandlerCreator_([&](Core::HTTPRequestInfo& info)
     {
         Handlers::RootHandler* handler;
 
         // Manage the route type
         std::vector<std::string> segments;
-        URI(request.get_uri()).getPathSegments(segments);
+        URI(info.uri).getPathSegments(segments);
         auto route = std::make_shared<Tools::Route>(segments);
 
         switch(route->get_current_route_type())

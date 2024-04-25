@@ -25,7 +25,7 @@ int main(int argc, char** argv)
     Core::NebulaAtom app;
 
     // Setting up handler
-        app.CustomHandlerCreator_([&](HTTP::Request&)
+        app.CustomHandlerCreator_([&](Core::HTTPRequestInfo&)
         {
             return new UploadFile;
         });

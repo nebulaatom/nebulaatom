@@ -44,12 +44,11 @@ int main(int argc, char** argv)
     Core::NebulaAtom app;
     
     std::vector<const Handlers::WebSocketHandler*> connected_sockets;
-    app.CustomHandlerCreator_([&](HTTP::Request& request)
+    app.CustomHandlerCreator_([&](Core::HTTPRequestInfo& info)
     {
         Handlers::RootHandler* handler;
-        auto& http_request = *request.get_http_server_const_request().value();
 
-		if(http_request.find("Upgrade") != http_request.end() && Poco::icompare(http_request["Upgrade"], "websocket") == 0)
+		if(info.uri == "/ws")
         {
             handler = new MainHandler(connected_sockets);
         }
@@ -64,7 +63,7 @@ int main(int argc, char** argv)
                 html += "<button id=\"send\">Send message</button>";
                 html += "<ul id=\"messageList\"></ul>";
                 html += "<script type=\"text/javascript\">";
-                html += "   const socket = new WebSocket('ws://" + http_request.serverAddress().toString() + "/ws');";
+                html += "   const socket = new WebSocket('ws://" + self.get_http_server_request().value()->serverAddress().toString() + "/ws');";
                 html += "   socket.onmessage = function(event)";
                 html += "   { ";
                 html += "      const message = event.data;";
