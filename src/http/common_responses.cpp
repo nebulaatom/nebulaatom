@@ -34,6 +34,8 @@ CommonResponses::~CommonResponses()
 
 void CommonResponses::CompoundResponse_(HTTP::Status status, JSON::Object::Ptr result_json)
 {
+    SetupHeaders_();
+    SetupCookies_();
     get_http_server_response().value()->setStatus(responses_.find(status)->second.http_status);
     get_http_server_response().value()->setContentType("application/json");
     get_http_server_response().value()->setChunkedTransferEncoding(true);
@@ -43,6 +45,8 @@ void CommonResponses::CompoundResponse_(HTTP::Status status, JSON::Object::Ptr r
 }
 void CommonResponses::CompoundFillResponse_(HTTP::Status status, JSON::Object::Ptr result_json, std::string message)
 {
+    SetupHeaders_();
+    SetupCookies_();
     get_http_server_response().value()->setStatus(responses_.find(status)->second.http_status);
     get_http_server_response().value()->setContentType("application/json");
     get_http_server_response().value()->setChunkedTransferEncoding(true);
@@ -54,6 +58,8 @@ void CommonResponses::CompoundFillResponse_(HTTP::Status status, JSON::Object::P
 
 void CommonResponses::JSONResponse_(HTTP::Status status, std::string message)
 {
+    SetupHeaders_();
+    SetupCookies_();
     get_http_server_response().value()->setStatus(responses_.find(status)->second.http_status);
     get_http_server_response().value()->setContentType("application/json");
     get_http_server_response().value()->setChunkedTransferEncoding(true);
@@ -68,6 +74,8 @@ void CommonResponses::JSONResponse_(HTTP::Status status, std::string message)
 
 void CommonResponses::HTMLResponse_(HTTP::Status status, std::string message)
 {
+    SetupHeaders_();
+    SetupCookies_();
     get_http_server_response().value()->setStatus(responses_.find(status)->second.http_status);
     get_http_server_response().value()->setContentType("text/html");
     get_http_server_response().value()->setChunkedTransferEncoding(true);
@@ -101,6 +109,8 @@ void CommonResponses::HTMLResponse_(HTTP::Status status, std::string message)
 
 void CommonResponses::CustomHTMLResponse_(HTTP::Status status, std::string html_message)
 {
+    SetupHeaders_();
+    SetupCookies_();
     get_http_server_response().value()->setStatus(responses_.find(status)->second.http_status);
     get_http_server_response().value()->setContentType("text/html");
     get_http_server_response().value()->setContentLength(html_message.length());
@@ -111,6 +121,8 @@ void CommonResponses::CustomHTMLResponse_(HTTP::Status status, std::string html_
 
 void CommonResponses::FileResponse_(HTTP::Status status, std::string address)
 {
+    SetupHeaders_();
+    SetupCookies_();
     // Manage the file
         Files::FileManager file_manager(Files::OperationType::kDownload);
         file_manager.get_files().push_back(file_manager.CreateTempFileFromAddress_(address));
