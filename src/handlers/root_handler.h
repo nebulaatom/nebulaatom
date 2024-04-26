@@ -60,14 +60,13 @@
 #include "tools/route.h"
 #include "http/common_responses.h"
 #include "security/security_verification.h" 
-#include "http/http_methods.h"
-#include "tools/requests_manager.h"
 #include "tools/manage_json.h"
 #include "security/user.h"
 #include "functions/functions_manager.h"
 #include "query/condition.h"
 #include "tools/settings_manager.h"
 #include "tools/output_logger.h"
+#include "http/methods.h"
 
 
 namespace Atom
@@ -90,7 +89,7 @@ using Poco::Data::Statement;
 class Atom::Handlers::RootHandler :
     public HTTPRequestHandler
     ,public HTTP::CommonResponses
-    ,public HTTP::HTTPMethods
+    ,public HTTP::Methods
     ,public Tools::ManageJSON
 {
     public:
@@ -98,7 +97,6 @@ class Atom::Handlers::RootHandler :
         virtual ~RootHandler();
 
         std::string get_user() const { return user_; }
-        std::string get_method() const { return method_; }
         bool get_route_verification() const { return route_verification_; }
         Extras::SecurityVerification& get_current_security()
         {
@@ -131,20 +129,14 @@ class Atom::Handlers::RootHandler :
 
     protected:
         virtual void AddFunctions_();
-        virtual void Process_();
-        void CallHTTPMethod_();
+        virtual void Process_() = 0;
         bool VerifySession_();
         bool VerifyPermissions_();
         bool IdentifyRoute_();
         void ManageRequestBody_();
-        virtual void HandlePOSTMethod_();
-        virtual void HandleGETMethod_();
-        virtual void HandlePUTMethod_();
-        virtual void HandleDELMethod_();
 
     private:
         std::string user_;
-        std::string method_;
         bool route_verification_;
         Extras::SecurityVerification current_security_;
         std::list<std::string> targets_;

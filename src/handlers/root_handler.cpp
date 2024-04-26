@@ -16,18 +16,14 @@
 */
 
 #include "handlers/root_handler.h"
-#include "http/common_responses.h"
-#include "http/request.h"
 
 using namespace Atom::Handlers;
 
 RootHandler::RootHandler() :
     user_("null")
-    ,method_("GET")
     ,route_verification_(true)
     ,current_function_()
 {
-    set_request_type(HTTP::RequestType::kRequest);
     requested_route_ = std::make_shared<Tools::Route>(std::vector<std::string>{""});
     current_security_.set_security_type(Extras::SecurityType::kDisableAll);
 }
@@ -104,30 +100,6 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
     }
 }
 
-void RootHandler::CallHTTPMethod_()
-{
-    Functions::Function f1("", Functions::Function::Type::kGET);
-    auto found = f1.get_methods().find(get_method());
-    if(found == f1.get_methods().end())
-    {
-        JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Method not found.");
-        return;
-    }
-
-    switch(found->second)
-    {
-        case Functions::Function::Type::kPOST: HandlePOSTMethod_(); break;
-        case Functions::Function::Type::kGET: HandleGETMethod_(); break;
-        case Functions::Function::Type::kPUT: HandlePUTMethod_(); break;
-        case Functions::Function::Type::kDEL: HandleDELMethod_(); break;
-        default:
-        {
-            JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Method not found.");
-            return;
-        }
-    }
-}
-
 bool RootHandler::SetupSSL_()
 {
     auto request = get_http_server_request().value();
@@ -172,7 +144,7 @@ bool RootHandler::VerifyPermissions_()
         current_security_.get_users_manager().get_current_user().set_username(user_);
 
     // Verify permissions
-    if(!current_security_.VerifyRoutesPermissions_(*requested_route_, method_))
+    if(!current_security_.VerifyRoutesPermissions_(*requested_route_, get_method()))
     {
         JSONResponse_(HTTP::Status::kHTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
         return false;
@@ -194,12 +166,12 @@ bool RootHandler::IdentifyRoute_()
                 return false;
 
             // Validate type
-            auto found_type = found->second.get_methods().find(method_);
-            if(found_type == found->second.get_methods().end())
+            auto found_type = found->second.get_methods().GetMethod_(get_method());
+            if(found_type == HTTP::EnumMethods::kNULL)
                 return false;
 
             // Same type
-            if(found_type->second != found->second.get_type())
+            if(found_type != found->second.get_type())
                 continue;
 
             // Copy function and reset results
@@ -237,30 +209,6 @@ void RootHandler::ManageRequestBody_()
 }
 
 void RootHandler::AddFunctions_()
-{
-
-}
-
-void RootHandler::Process_()
-{
-}
-
-void RootHandler::HandleGETMethod_()
-{
-
-}
-
-void RootHandler::HandlePOSTMethod_()
-{
-
-}
-
-void RootHandler::HandlePUTMethod_()
-{
-
-}
-
-void RootHandler::HandleDELMethod_()
 {
 
 }
