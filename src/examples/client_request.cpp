@@ -1,6 +1,6 @@
 
 #include "http/client.h"
-#include "http/http_methods.h"
+#include "http/methods.h"
 
 using namespace Atom;
 

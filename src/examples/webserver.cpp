@@ -16,7 +16,7 @@ class UploadFile : public Handlers::FrontendHandler
         {
             get_file_manager().set_directory_base("/var/www");
             get_file_manager().AddBasicSupportedFiles_();
-            HandleGETMethod_();
+            DownloadProcess_();
         }
 };
 

@@ -2,6 +2,7 @@
 #include "core/nebula_atom.h"
 #include "handlers/backend_handler.h"
 #include "handlers/login_handler.h"
+#include "http/methods.h"
 #include "tools/route.h"
 
 using namespace Atom;
@@ -16,9 +17,9 @@ class MainHandler : public Handlers::BackendHandler
         {
             // Function /api/products
                 std::string endpoint = "/api/products";
-                Functions::Function f1{endpoint, Functions::Function::Type::kGET};
+                Functions::Function f1{endpoint, HTTP::EnumMethods::kHTTP_GET};
 
-                // Setting up the actions
+                // Action 1
                     auto a1 = std::make_shared<Functions::SQLAction>("a1");
                     a1->set_custom_error("No stores found with this name.");
                     a1->set_sql_code("SELECT id FROM stores WHERE name = ?");
@@ -26,7 +27,7 @@ class MainHandler : public Handlers::BackendHandler
                         a1->get_parameters().push_back(Query::Parameter{"storeName", Tools::RowValueFormatter{std::string("")}, true});
                     f1.get_actions().push_back(a1);
 
-                // Setting up the action
+                // Action 2
                     auto a2 = std::make_shared<Functions::SQLAction>("a2");
                     a2->set_custom_error("No products found.");
                     a2->set_sql_code("SELECT * FROM products WHERE id_store = ?");

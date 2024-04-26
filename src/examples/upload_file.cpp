@@ -16,7 +16,7 @@ class UploadFile : public Handlers::FrontendHandler
         {
             get_file_manager().set_directory_for_uploaded_files("/var/www/uploaded-files");
             get_file_manager().AddSupportedFile_("png", Files::FileProperties{"image/png", true, {""}});
-            HandlePOSTMethod_();
+            UploadProcess_();
         }
 };
 
