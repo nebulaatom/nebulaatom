@@ -1,5 +1,6 @@
 
 #include "functions/function.h"
+#include "http/methods.h"
 
 using namespace Atom;
 using namespace Atom::Functions;
@@ -8,22 +9,16 @@ Function::Function() :
     endpoint_("")
     ,endpoint2_("")
     ,target_("")
-    ,type_(Type::kGET)
+    ,type_(HTTP::EnumMethods::kHTTP_GET)
 {
-    methods_.insert({"POST", Type::kPOST});
-    methods_.insert({"GET", Type::kGET});
-    methods_.insert({"PUT", Type::kPUT});
-    methods_.insert({"DEL", Type::kDEL});
+    
 }
 
-Function::Function(std::string endpoint, Type type) :
+Function::Function(std::string endpoint, HTTP::EnumMethods type) :
     endpoint_(endpoint)
     ,endpoint2_("")
     ,target_("")
     ,type_(type)
 {
-    methods_.insert({"POST", Type::kPOST});
-    methods_.insert({"GET", Type::kGET});
-    methods_.insert({"PUT", Type::kPUT});
-    methods_.insert({"DEL", Type::kDEL});
+    
 }
