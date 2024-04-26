@@ -106,5 +106,13 @@
             ,"args": []
             ,"cwd": "${workspaceFolder}/build/Debug"
         }
+        ,{
+            "type": "lldb"
+            ,"request": "launch"
+            ,"name": "UsingMethods (Debug)"
+            ,"program": "${workspaceFolder}/build/Debug/src/examples/usingmethods"
+            ,"args": []
+            ,"cwd": "${workspaceFolder}/build/Debug"
+        }
     ]
 }

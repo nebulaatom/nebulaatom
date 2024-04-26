@@ -22,7 +22,7 @@ set(NEBULAATOM_SOURCES
     ${PROJECT_SOURCE_DIR}/src/handlers/websocket_handler.cpp
     ${PROJECT_SOURCE_DIR}/src/http/client.cpp
     ${PROJECT_SOURCE_DIR}/src/http/common_responses.cpp
-    ${PROJECT_SOURCE_DIR}/src/http/http_methods.cpp
+    ${PROJECT_SOURCE_DIR}/src/http/methods.cpp
     ${PROJECT_SOURCE_DIR}/src/http/request.cpp
     ${PROJECT_SOURCE_DIR}/src/query/database_manager.cpp
     ${PROJECT_SOURCE_DIR}/src/query/condition.cpp
@@ -35,7 +35,6 @@ set(NEBULAATOM_SOURCES
     ${PROJECT_SOURCE_DIR}/src/security/security_verification.cpp
     ${PROJECT_SOURCE_DIR}/src/tools/handler_connection.cpp
     ${PROJECT_SOURCE_DIR}/src/tools/manage_json.cpp
-    ${PROJECT_SOURCE_DIR}/src/tools/requests_manager.cpp
     ${PROJECT_SOURCE_DIR}/src/tools/route.cpp
     ${PROJECT_SOURCE_DIR}/src/tools/row_value_formatter.cpp
     ${PROJECT_SOURCE_DIR}/src/tools/sessions_manager.cpp
@@ -76,7 +75,7 @@ set(NEBULAATOM_headers_handlers
 set(NEBULAATOM_headers_http
     ${PROJECT_SOURCE_DIR}/src/http/client.h
     ${PROJECT_SOURCE_DIR}/src/http/common_responses.h
-    ${PROJECT_SOURCE_DIR}/src/http/http_methods.h
+    ${PROJECT_SOURCE_DIR}/src/http/methods.h
     ${PROJECT_SOURCE_DIR}/src/http/request.h
 )
 set(NEBULAATOM_headers_query
@@ -94,8 +93,7 @@ set(NEBULAATOM_headers_security
 )
 set(NEBULAATOM_headers_tools
     ${PROJECT_SOURCE_DIR}/src/tools/handler_connection.h
-    ${PROJECT_SOURCE_DIR}/src/tools/manage_json.h
-    ${PROJECT_SOURCE_DIR}/src/tools/requests_manager.h
+    ${PROJECT_SOURCE_DIR}/src/tools/manage_json.cmake_host_system_information()
     ${PROJECT_SOURCE_DIR}/src/tools/route.h
     ${PROJECT_SOURCE_DIR}/src/tools/row_value_formatter.h
     ${PROJECT_SOURCE_DIR}/src/tools/sessions_manager.h

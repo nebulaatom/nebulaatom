@@ -63,3 +63,8 @@ target_link_libraries(setupheaders PUBLIC nebulaatom_static)
 add_executable(clientrequest "client_request.cpp")
 target_include_directories(clientrequest PUBLIC ${HEADER})
 target_link_libraries(clientrequest PUBLIC nebulaatom_static)
+
+## usingmethods
+add_executable(usingmethods "using_methods.cpp")
+target_include_directories(usingmethods PUBLIC ${HEADER})
+target_link_libraries(usingmethods PUBLIC nebulaatom_static)
