@@ -20,8 +20,7 @@
 
 using namespace Atom::HTTP;
 
-Request::Request(HTTP::RequestType request_type) :
-    request_type_(request_type)
+Request::Request()
 {
     http_server_request_ = std::nullopt;
     http_server_response_ = std::nullopt;

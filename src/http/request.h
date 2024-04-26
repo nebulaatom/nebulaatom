@@ -32,7 +32,6 @@ namespace Atom
 {
     namespace HTTP
     {
-        enum class RequestType;
         class Header;
         class Cookie;
         class Request;
@@ -43,11 +42,6 @@ using namespace Poco;
 using namespace Poco::Net;
 
 
-enum class Atom::HTTP::RequestType
-{
-    kRequest
-    ,kConstRequest
-};
 
 class Atom::HTTP::Header
 {
@@ -81,9 +75,8 @@ class Atom::HTTP::Request
         using HTTPServerRequestPtr = std::optional<HTTPServerRequest*>;
         using HTTPServerResponsePtr = std::optional<HTTPServerResponse*>;
 
-        Request(RequestType request_type);
+        Request();
         
-        RequestType get_request_type() const { return request_type_; }
         HTTPServerRequestPtr& get_http_server_request()
         {
             auto& var = http_server_request_;
@@ -107,7 +100,6 @@ class Atom::HTTP::Request
         std::string get_uri() const { return uri_; }
         std::string get_method() const { return method_; }
 
-        void set_request_type(RequestType request_type) { request_type_ = request_type; }
         void set_uri(std::string uri) { uri_ = uri; }
         void set_method(std::string method) { method_ = method; }
         
@@ -121,7 +113,6 @@ class Atom::HTTP::Request
         void SetupCookies_();
 
     private:
-        RequestType request_type_;
         HTTPServerRequestPtr http_server_request_;
         HTTPServerResponsePtr http_server_response_;
         std::vector<HTTP::Header> headers_;
