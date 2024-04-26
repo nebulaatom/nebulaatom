@@ -37,26 +37,6 @@ void BackendHandler::Process_()
     ProcessActions_();
 }
 
-void BackendHandler::HandleGETMethod_()
-{
-
-}
-
-void BackendHandler::HandlePOSTMethod_()
-{
-
-}
-
-void BackendHandler::HandlePUTMethod_()
-{
-
-}
-
-void BackendHandler::HandleDELMethod_()
-{
-
-}
-
 void BackendHandler::ProcessActions_()
 {
     // Verify current function
