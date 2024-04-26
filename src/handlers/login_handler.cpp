@@ -35,15 +35,25 @@ void LoginHandler::AddFunctions_()
 
 void LoginHandler::Process_()
 {
-    CallHTTPMethod_();
+    auto method = GetMethod_(get_http_server_request().value()->getMethod());
+    switch(method)
+    {
+        case HTTP::EnumMethods::kHTTP_POST:
+            Login_();
+            break;
+        case HTTP::EnumMethods::kHTTP_GET:
+        case HTTP::EnumMethods::kHTTP_PUT:
+        case HTTP::EnumMethods::kHTTP_DEL:
+        case HTTP::EnumMethods::kHTTP_HEAD:
+        case HTTP::EnumMethods::kHTTP_OPTIONS:
+        case HTTP::EnumMethods::kHTTP_PATCH:
+        case HTTP::EnumMethods::kNULL:
+            JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
+            break;
+    }
 }
 
-void LoginHandler::HandleGETMethod_()
-{
-    JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
-}
-
-void LoginHandler::HandlePOSTMethod_()
+void LoginHandler::Login_()
 {
     // Process the request body
     ManageRequestBody_();
@@ -61,16 +71,6 @@ void LoginHandler::HandlePOSTMethod_()
     }
     else
         JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Login route not identified.");
-}
-
-void LoginHandler::HandlePUTMethod_()
-{
-    JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
-}
-
-void LoginHandler::HandleDELMethod_()
-{
-    JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
 }
 
 void LoginHandler::StartSession_()

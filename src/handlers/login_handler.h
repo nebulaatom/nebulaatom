@@ -41,10 +41,7 @@ class Atom::Handlers::LoginHandler :
     protected:
         virtual void AddFunctions_() override;
         virtual void Process_() override;
-        virtual void HandleGETMethod_() override;
-        virtual void HandlePOSTMethod_() override;
-        virtual void HandlePUTMethod_() override;
-        virtual void HandleDELMethod_() override;
+        virtual void Login_();
         void StartSession_();
         void EndSession_();
         std::string SessionExists_();
