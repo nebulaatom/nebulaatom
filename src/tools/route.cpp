@@ -20,21 +20,24 @@
 using namespace Atom::Tools;
 
 Route::Route() :
-    current_route_type_(RouteType::kEntrypoint)
+    route_("")
+    ,current_route_type_(RouteType::kEntrypoint)
     ,segments_({})
 {
 
 }
 Route::Route(std::string route) :
-    current_route_type_(RouteType::kEntrypoint)
+    route_(route)
+    ,current_route_type_(RouteType::kEntrypoint)
 {
-    StringToSegment(route);
+    StringToSegment_(route);
 }
 
 Route::Route(std::vector<std::string> segments) :
     current_route_type_(RouteType::kEntrypoint)
     ,segments_(segments)
 {
+    route_ = SegmentsToString_();
     IdentifyRouteType_();
 }
 
@@ -43,7 +46,7 @@ Route::~Route()
 
 }
 
-void Route::StringToSegment(std::string route)
+void Route::StringToSegment_(std::string& route)
 {
     URI(route).getPathSegments(segments_);
 }

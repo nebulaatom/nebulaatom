@@ -62,10 +62,11 @@ class Atom::Tools::Route
         std::string SegmentsToString_();
 
     protected:
-        void StringToSegment(std::string route);
+        void StringToSegment_(std::string& route);
         void IdentifyRouteType_();
 
     private:
+        std::string route_;
         RouteType current_route_type_;
         std::vector<std::string> segments_;
 };
