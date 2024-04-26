@@ -17,10 +17,6 @@
 */
 
 #include "http/client.h"
-#include "http/request.h"
-#include <Poco/Net/NameValueCollection.h>
-#include <Poco/Net/NetSSL.h>
-#include <Poco/Net/SSLException.h>
 
 using namespace Atom::HTTP;
 
@@ -45,19 +41,13 @@ void Client::UseCredentials_(std::string username, std::string password)
 void Client::SetupSSL_(std::string key, std::string cert)
 {
     use_ssl_ = true;
-    /*Net::initializeSSL();
-    SharedPtr<Net::InvalidCertificateHandler> cert_handler = new AcceptCertificateHandler(false);*/
     ssl_context_ = new Context(Context::CLIENT_USE, key, cert, "", Context::VERIFY_RELAXED, 9, true, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
-    //SSLManager::instance().initializeClient(0, cert_handler, ssl_context_);
 }
 
 void Client::SetupSSL_(std::string rootcert)
 {
     use_ssl_ = true;
-    /*Net::initializeSSL();
-    SharedPtr<Net::InvalidCertificateHandler> cert_handler = new AcceptCertificateHandler(false);*/
     ssl_context_ = new Context(Context::CLIENT_USE, "", "", rootcert, Context::VERIFY_RELAXED, 9, true, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
-    //SSLManager::instance().initializeClient(0, cert_handler, ssl_context_);
 }
 
 void Client::AddHeader_(std::string name, std::string value)

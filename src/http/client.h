@@ -40,8 +40,10 @@
 #include "Poco/URI.h"
 #include "Poco/Exception.h"
 #include <Poco/JSON/Object.h>
+#include <Poco/Net/NameValueCollection.h>
+#include <Poco/Net/SSLException.h>
 
-#include "http/http_methods.h"
+#include "http/methods.h"
 #include "http/request.h"
 #include "tools/output_logger.h"
 
