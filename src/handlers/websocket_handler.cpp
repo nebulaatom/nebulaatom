@@ -72,26 +72,6 @@ void WebSocketHandler::Process_()
     }
 }
 
-void WebSocketHandler::HandleGETMethod_()
-{
-    
-}
-
-void WebSocketHandler::HandlePOSTMethod_()
-{
-    
-}
-
-void WebSocketHandler::HandlePUTMethod_()
-{
-    
-}
-
-void WebSocketHandler::HandleDELMethod_()
-{
-    
-}
-
 void WebSocketHandler::Transfer_()
 {
     char buffer[1024];
