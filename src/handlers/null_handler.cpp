@@ -31,30 +31,5 @@ void NullHandler::AddFunctions_()
 
 void NullHandler::Process_()
 {
-    CallHTTPMethod_();
-}
-
-void NullHandler::HandleGETMethod_()
-{
-    NullResponse_();
-}
-
-void NullHandler::HandlePOSTMethod_()
-{
-    NullResponse_();
-}
-
-void NullHandler::HandlePUTMethod_()
-{
-    NullResponse_();
-}
-
-void NullHandler::HandleDELMethod_()
-{
-    NullResponse_();
-}
-
-void NullHandler::NullResponse_()
-{
-    HTMLResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Sorry, content not found from " + get_method() + " request.");
+    HTMLResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Sorry, content not found from " + get_http_server_request().value()->getMethod() + " request.");
 }
