@@ -38,10 +38,31 @@ void FrontendHandler::AddFunctions_()
 void FrontendHandler::Process_()
 {
     file_manager_.AddBasicSupportedFiles_();
-    CallHTTPMethod_();
+    auto method = GetMethod_(get_http_server_request().value()->getMethod());
+    switch(method)
+    {
+        case HTTP::EnumMethods::kHTTP_GET:
+            DownloadProcess_();
+            break;
+        case HTTP::EnumMethods::kHTTP_POST:
+            UploadProcess_();
+            break;
+        case HTTP::EnumMethods::kHTTP_PUT:
+            ModifyProcess_();
+            break;
+        case HTTP::EnumMethods::kHTTP_DEL:
+            RemoveProcess_();
+            break;
+        case HTTP::EnumMethods::kHTTP_HEAD:
+        case HTTP::EnumMethods::kHTTP_OPTIONS:
+        case HTTP::EnumMethods::kHTTP_PATCH:
+        case HTTP::EnumMethods::kNULL:
+            JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
+            break;
+    }
 }
 
-void FrontendHandler::HandleGETMethod_()
+void FrontendHandler::DownloadProcess_()
 {
     // Manage the file
 
@@ -77,7 +98,7 @@ void FrontendHandler::HandleGETMethod_()
         file_manager_.DownloadFile_(out_reponse);
 }
 
-void FrontendHandler::HandlePOSTMethod_()
+void FrontendHandler::UploadProcess_()
 {
     // Manage the files
         auto& request = get_http_server_request().value();
@@ -98,7 +119,7 @@ void FrontendHandler::HandlePOSTMethod_()
         CompoundFillResponse_(HTTP::Status::kHTTP_OK, file_manager_.get_result(), "Ok.");
 }
 
-void FrontendHandler::HandlePUTMethod_()
+void FrontendHandler::ModifyProcess_()
 {
     // Manage the file
         auto& request = get_http_server_request().value();
@@ -134,7 +155,7 @@ void FrontendHandler::HandlePUTMethod_()
         CompoundFillResponse_(HTTP::Status::kHTTP_OK, file_manager_.get_result(), "Ok.");
 }
 
-void FrontendHandler::HandleDELMethod_()
+void FrontendHandler::RemoveProcess_()
 {
     // Manage file
         auto& request = get_http_server_request().value();
