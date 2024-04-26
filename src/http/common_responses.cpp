@@ -21,8 +21,7 @@
 
 using namespace Atom::HTTP;
 
-CommonResponses::CommonResponses() :
-    HTTP::Request(HTTP::RequestType::kRequest)
+CommonResponses::CommonResponses()
 {
     FillResponses_();
 }
