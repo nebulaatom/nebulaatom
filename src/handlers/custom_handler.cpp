@@ -41,23 +41,3 @@ void CustomHandler::Process_()
 {
     process_function_(*this);
 }
-
-void CustomHandler::HandleGETMethod_()
-{
-    
-}
-
-void CustomHandler::HandlePOSTMethod_()
-{
-    
-}
-
-void CustomHandler::HandlePUTMethod_()
-{
-    
-}
-
-void CustomHandler::HandleDELMethod_()
-{
-    
-}
