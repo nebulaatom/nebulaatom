@@ -24,11 +24,6 @@ NullHandler::~NullHandler()
 
 }
 
-void NullHandler::AddFunctions_()
-{
-
-}
-
 void NullHandler::Process_()
 {
     HTMLResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Sorry, content not found from " + get_http_server_request().value()->getMethod() + " request.");

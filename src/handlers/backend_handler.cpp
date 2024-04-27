@@ -24,14 +24,6 @@ BackendHandler::~BackendHandler()
 
 }
 
-void BackendHandler::AddFunctions_()
-{
-    for(auto& function : get_functions_manager().get_functions())
-    {
-        get_routes_list().push_back(Tools::Route{function.second.get_endpoint2()});
-    }
-}
-
 void BackendHandler::Process_()
 {
     ProcessActions_();
@@ -40,7 +32,7 @@ void BackendHandler::Process_()
 void BackendHandler::ProcessActions_()
 {
     // Verify current function
-        if(get_current_function().get_actions().empty())
+        if(get_current_function()->get_actions().empty())
         {
             JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Current function has no actions.");
             return;
@@ -48,15 +40,15 @@ void BackendHandler::ProcessActions_()
 
     // Setup shared results
 
-        for(auto& action : get_current_function().get_actions())
+        for(auto& action : get_current_function()->get_actions())
         {
             shared_results_.push_back(action->get_results());
         }
 
     // Process actions of the function
-        Tools::OutputLogger::Log_("Function: " + get_current_function().get_endpoint());
+        Tools::OutputLogger::Log_("Function: " + get_current_function()->get_endpoint());
         JSON::Object::Ptr json_result = new JSON::Object();
-        for(auto& action : get_current_function().get_actions())
+        for(auto& action : get_current_function()->get_actions())
         {
             Tools::OutputLogger::Log_("Action: " + action->get_identifier() + ", Final: " + std::to_string(action->get_final()));
 
@@ -65,7 +57,7 @@ void BackendHandler::ProcessActions_()
 
             // Copy actions
             action->get_actions().clear();
-            auto& actions = get_current_function().get_actions();
+            auto& actions = get_current_function()->get_actions();
             action->get_actions().insert(action->get_actions().end(), actions.begin(), actions.end());
             
             switch(action->get_action_type())

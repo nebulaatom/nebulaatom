@@ -39,7 +39,6 @@ class Atom::Handlers::NullHandler :
         virtual ~NullHandler();
 
     protected:
-        virtual void AddFunctions_() override;
         virtual void Process_() override;
 
     private:

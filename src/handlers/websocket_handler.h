@@ -45,7 +45,6 @@ class Atom::Handlers::WebSocketHandler :
         void Send_(std::string message) const;
         
     protected:
-        virtual void AddFunctions_() override;
         virtual void Process_() override;
         void Transfer_();
         virtual void HandleNewConnection_(HTTP::Request& request, const WebSocketHandler& websocket_handler) = 0;

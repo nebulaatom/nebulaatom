@@ -32,11 +32,6 @@ CustomHandler::~CustomHandler()
 
 }
 
-void CustomHandler::AddFunctions_()
-{
-
-}
-
 void CustomHandler::Process_()
 {
     process_function_(*this);

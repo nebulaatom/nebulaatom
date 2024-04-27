@@ -40,7 +40,6 @@ class Atom::Handlers::BackendHandler : public RootHandler
         virtual ~BackendHandler();
 
     protected:
-        virtual void AddFunctions_() override;
         virtual void Process_() override;
 
         void ProcessActions_();

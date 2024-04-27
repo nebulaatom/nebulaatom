@@ -30,11 +30,6 @@ FrontendHandler::~FrontendHandler()
 
 }
 
-void FrontendHandler::AddFunctions_()
-{
-    
-}
-
 void FrontendHandler::Process_()
 {
     file_manager_.AddBasicSupportedFiles_();

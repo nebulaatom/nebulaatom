@@ -39,7 +39,6 @@ class Atom::Handlers::LoginHandler :
         virtual ~LoginHandler();
 
     protected:
-        virtual void AddFunctions_() override;
         virtual void Process_() override;
         virtual void Login_();
         void StartSession_();

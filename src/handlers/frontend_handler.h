@@ -49,7 +49,6 @@ class Atom::Handlers::FrontendHandler :
         }
 
     protected:
-        virtual void AddFunctions_() override;
         virtual void Process_() override;
         virtual void DownloadProcess_();
         virtual void UploadProcess_();

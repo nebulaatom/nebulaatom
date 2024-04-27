@@ -29,11 +29,6 @@ WebSocketHandler::~WebSocketHandler()
 
 }
 
-void WebSocketHandler::AddFunctions_()
-{
-
-}
-
 void WebSocketHandler::Process_()
 {
     auto& request = get_http_server_request().value();

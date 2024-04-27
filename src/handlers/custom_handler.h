@@ -45,7 +45,6 @@ class Atom::Handlers::CustomHandler :
         }
 
     protected:
-        virtual void AddFunctions_() override;
         virtual void Process_() override;
 
     private:

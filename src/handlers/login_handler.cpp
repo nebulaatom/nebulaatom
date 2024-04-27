@@ -24,15 +24,6 @@ LoginHandler::~LoginHandler()
 
 }
 
-void LoginHandler::AddFunctions_()
-{
-    auto& routes_list = get_routes_list();
-
-    routes_list.push_back({{"api", "system", "login"}});
-    routes_list.push_back({{"api", "system", "logout"}});
-
-}
-
 void LoginHandler::Process_()
 {
     auto method = GetMethod_(get_http_server_request().value()->getMethod());
@@ -96,9 +87,9 @@ void LoginHandler::StartSession_()
         }
 
     // Security verification
-        get_current_security().get_users_manager().get_current_user().set_username(user);
-        get_current_security().get_users_manager().get_current_user().set_password(password);
-        if(!get_current_security().get_users_manager().AuthenticateUser_())
+        get_users_manager().get_current_user().set_username(user);
+        get_users_manager().get_current_user().set_password(password);
+        if(!get_users_manager().AuthenticateUser_())
         {
             JSONResponse_(HTTP::Status::kHTTP_UNAUTHORIZED, "Unauthorized user or wrong user or password.");
             return;
