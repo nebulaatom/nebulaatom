@@ -13,11 +13,10 @@ class MainHandler : public Handlers::BackendHandler
         MainHandler() : Handlers::BackendHandler(){}
         virtual ~MainHandler() {}
 
-        void AddFunctions_() override
+        void AddFunctions_()
         {
             // Function /api/products
-                std::string endpoint = "/api/products";
-                Functions::Function f1{endpoint, HTTP::EnumMethods::kHTTP_GET};
+                Functions::Function::Ptr f1(new Functions::Function{"/api/products", HTTP::EnumMethods::kHTTP_GET});
 
                 // Action 1
                     auto a1 = std::make_shared<Functions::SQLAction>("a1");
@@ -25,7 +24,7 @@ class MainHandler : public Handlers::BackendHandler
                     a1->set_sql_code("SELECT id FROM stores WHERE name = ?");
                     // Parameters
                         a1->get_parameters().push_back(Query::Parameter{"storeName", Tools::RowValueFormatter{std::string("")}, true});
-                    f1.get_actions().push_back(a1);
+                    f1->get_actions().push_back(a1);
 
                 // Action 2
                     auto a2 = std::make_shared<Functions::SQLAction>("a2");
@@ -34,18 +33,19 @@ class MainHandler : public Handlers::BackendHandler
                     a2->set_final(true);
                     // Parameters
                         a2->get_parameters().push_back(Query::Parameter{"id_store", Query::ConditionalField{0, 0}, "a1", false});
-                    f1.get_actions().push_back(a2);
+                    f1->get_actions().push_back(a2);
 
             // Setting up the function
-                    get_functions_manager().get_functions().insert({endpoint, std::move(f1)});
-                    get_routes_list().push_back(Tools::Route("api/products"));
+                    get_functions_manager().get_functions().insert({f1->get_endpoint(), f1});
 
         }
 
         void Process_() override
         {
+            AddFunctions_();
+
             // Set security type
-                get_current_security().set_security_type(Extras::SecurityType::kDisableAll);
+                set_security_type(Extras::SecurityType::kDisableAll);
                 
             // Process the request body
                 ManageRequestBody_();
@@ -64,7 +64,10 @@ class MainHandler : public Handlers::BackendHandler
                 }
 
                 if(!VerifyPermissions_())
+                {
+                    JSONResponse_(HTTP::Status::kHTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
                     return;
+                }
 
             // Process actions
                 ProcessActions_();
