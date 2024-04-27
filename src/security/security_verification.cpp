@@ -20,7 +20,8 @@
 
 using namespace Atom::Extras;
 
-SecurityVerification::SecurityVerification()
+SecurityVerification::SecurityVerification() :
+    security_type_(SecurityType::kDisableAll)
 {
 
 }
