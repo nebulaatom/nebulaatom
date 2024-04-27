@@ -44,7 +44,6 @@
 #include "tools/sessions_manager.h"
 #include "query/database_manager.h"
 #include "tools/route.h"
-#include "http/common_responses.h"
 #include "http/request.h"
 #include "handlers/root_handler.h"
 #include "handlers/null_handler.h"
