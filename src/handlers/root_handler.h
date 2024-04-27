@@ -91,23 +91,12 @@ class Atom::Handlers::RootHandler :
     ,public HTTP::CommonResponses
     ,public HTTP::Methods
     ,public Tools::ManageJSON
+    ,public Extras::SecurityVerification
 {
     public:
         RootHandler();
         virtual ~RootHandler();
 
-        std::string get_user() const { return user_; }
-        bool get_route_verification() const { return route_verification_; }
-        Extras::SecurityVerification& get_current_security()
-        {
-            auto& var = current_security_;
-            return var;
-        }
-        std::list<Tools::Route>& get_routes_list()
-        {
-            auto& var = routes_list_;
-            return var;
-        }
         std::shared_ptr<Atom::Tools::Route>& get_requested_route()
         {
             auto& var = requested_route_;
@@ -118,7 +107,7 @@ class Atom::Handlers::RootHandler :
             auto& var = functions_manager_;
             return var;
         }
-        Functions::Function& get_current_function()
+        Functions::Function::Ptr& get_current_function()
         {
             auto& var = current_function_;
             return var;
@@ -128,7 +117,6 @@ class Atom::Handlers::RootHandler :
         bool SetupSSL_();
 
     protected:
-        virtual void AddFunctions_();
         virtual void Process_() = 0;
         bool VerifySession_();
         bool VerifyPermissions_();
@@ -136,14 +124,10 @@ class Atom::Handlers::RootHandler :
         void ManageRequestBody_();
 
     private:
-        std::string user_;
-        bool route_verification_;
-        Extras::SecurityVerification current_security_;
         std::list<std::string> targets_;
-        std::list<Tools::Route> routes_list_;
         std::shared_ptr<Atom::Tools::Route> requested_route_;
         Functions::FunctionsManager functions_manager_;
-        Functions::Function current_function_;
+        Functions::Function::Ptr current_function_;
 };
 
 #endif // ATOM_HANDLERS_ROOTHANDLER

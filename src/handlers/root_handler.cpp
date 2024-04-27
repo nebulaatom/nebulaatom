@@ -20,12 +20,10 @@
 using namespace Atom::Handlers;
 
 RootHandler::RootHandler() :
-    user_("null")
-    ,route_verification_(true)
-    ,current_function_()
+    current_function_()
 {
     requested_route_ = std::make_shared<Tools::Route>(std::vector<std::string>{""});
-    current_security_.set_security_type(Extras::SecurityType::kDisableAll);
+    set_security_type(Extras::SecurityType::kDisableAll);
 }
 
 RootHandler::~RootHandler()
@@ -56,9 +54,6 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
             std::vector<std::string> segments;
             URI(request.getURI()).getPathSegments(segments);
             requested_route_ = std::make_shared<Tools::Route>(segments);
-
-        // Add functions
-            AddFunctions_();
 
         // Handler Process
             Process_();
@@ -115,7 +110,7 @@ bool RootHandler::VerifySession_()
     // Extract session ID
         auto request = get_http_server_request().value();
         std::string session_id;
-        Poco::Net::NameValueCollection cookies;
+        Net::NameValueCollection cookies;
         request->getCookies(cookies);
         auto cookie_session = cookies.find("nebula-atom-sid");
         auto sessions = Tools::SessionsManager::get_sessions();
@@ -130,7 +125,8 @@ bool RootHandler::VerifySession_()
             }
 
             // Get the session user
-                user_ = sessions.at(session_id).get_user();
+                auto user = sessions.at(session_id).get_user();
+                get_users_manager().get_current_user().set_username(user);
 
             return true;
         }
@@ -140,46 +136,23 @@ bool RootHandler::VerifySession_()
 
 bool RootHandler::VerifyPermissions_()
 {
-    // Setting up user
-        current_security_.get_users_manager().get_current_user().set_username(user_);
-
-    // Verify permissions
-    if(!current_security_.VerifyRoutesPermissions_(*requested_route_, get_method()))
-    {
-        JSONResponse_(HTTP::Status::kHTTP_UNAUTHORIZED, "The user does not have the permissions to perform this operation.");
-        return false;
-    }
-
-    return true;
+    return VerifyRoutesPermissions_(*requested_route_, get_method());
 }
 
 bool RootHandler::IdentifyRoute_()
 {
-    for(auto& it : routes_list_)
+    for(auto& it : get_functions_manager().get_functions())
     {
-        if(requested_route_->SegmentsToString_() == it.SegmentsToString_())
+        if(requested_route_->SegmentsToString_() == it.first)
         {
-            // Setting up the route functions
-            auto endpoint = requested_route_->SegmentsToString_();
-            auto found = functions_manager_.get_functions().find(endpoint);
-            if(found == functions_manager_.get_functions().end())
-                return false;
-
-            // Validate type
-            auto found_type = found->second.get_methods().GetMethod_(get_method());
-            if(found_type == HTTP::EnumMethods::kNULL)
-                return false;
-
-            // Same type
-            if(found_type != found->second.get_type())
+            // Verify same HTTP Method
+            if(GetMethod_(get_method()) != it.second->get_method())
                 continue;
 
-            // Copy function and reset results
-            current_function_ = found->second;
-            for(auto& action : current_function_.get_actions())
-            {
+            // Copy function and reset actions results
+            current_function_ = it.second;
+            for(auto& action : current_function_->get_actions())
                 action->get_results() = std::make_shared<Query::Results>();
-            }
 
             return true;
         }
@@ -206,9 +179,4 @@ void RootHandler::ManageRequestBody_()
     }
 
     Parse_(request_body);
-}
-
-void RootHandler::AddFunctions_()
-{
-
 }
