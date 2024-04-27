@@ -21,16 +21,18 @@ namespace Atom
 class Atom::Functions::FunctionsManager
 {
     public:
+        using FunctionsMap = std::map<std::string, Function::Ptr>;
+
         FunctionsManager();
 
-        std::map<std::string, Functions::Function>& get_functions()
+        FunctionsMap& get_functions()
         {
             auto& var = functions_;
             return var;
         }
 
     private:
-        std::map<std::string, Functions::Function> functions_;
+        FunctionsMap functions_;
 };
 
 #endif // ATOM_FUNCTIONS_FUNCTIONS_MANAGER
