@@ -24,7 +24,7 @@ using namespace Atom::HTTP;
 
 Methods::Methods()
 {
-
+    MapMethods_();
 }
 
 EnumMethods Methods::GetMethod_(const std::string method)
@@ -68,4 +68,23 @@ bool Methods::EvaluateProcess_(std::string request_method)
     }
 
     return false;
+}
+
+void Methods::MapMethods_()
+{
+    map_string_methods_.insert(std::pair{HTTP_GET, EnumMethods::kHTTP_GET});
+    map_string_methods_.insert(std::pair{HTTP_POST, EnumMethods::kHTTP_POST});
+    map_string_methods_.insert(std::pair{HTTP_PUT, EnumMethods::kHTTP_PUT});
+    map_string_methods_.insert(std::pair{HTTP_DEL, EnumMethods::kHTTP_DEL});
+    map_string_methods_.insert(std::pair{HTTP_OPTIONS, EnumMethods::kHTTP_OPTIONS});
+    map_string_methods_.insert(std::pair{HTTP_HEAD, EnumMethods::kHTTP_HEAD});
+    map_string_methods_.insert(std::pair{HTTP_PATCH, EnumMethods::kHTTP_PATCH});
+
+    map_enum_methods_.insert(std::pair{EnumMethods::kHTTP_GET, HTTP_GET});
+    map_enum_methods_.insert(std::pair{EnumMethods::kHTTP_POST, HTTP_POST});
+    map_enum_methods_.insert(std::pair{EnumMethods::kHTTP_PUT, HTTP_PUT});
+    map_enum_methods_.insert(std::pair{EnumMethods::kHTTP_DEL, HTTP_DEL});
+    map_enum_methods_.insert(std::pair{EnumMethods::kHTTP_OPTIONS, HTTP_OPTIONS});
+    map_enum_methods_.insert(std::pair{EnumMethods::kHTTP_HEAD, HTTP_HEAD});
+    map_enum_methods_.insert(std::pair{EnumMethods::kHTTP_PATCH, HTTP_PATCH});
 }
