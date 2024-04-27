@@ -38,7 +38,7 @@ class Atom::Functions::Action :
     public Tools::ManageJSON
 {
     public:
-        using ActionPtr = std::shared_ptr<Action>;
+        using Ptr = std::shared_ptr<Action>;
 
         Action(std::string identifier);
         virtual ~Action();
@@ -70,7 +70,7 @@ class Atom::Functions::Action :
             auto& var = json_result_;
             return var;
         }
-        std::vector<ActionPtr>& get_actions()
+        std::vector<Ptr>& get_actions()
         {
             auto& var = actions_;
             return var;
@@ -99,7 +99,7 @@ class Atom::Functions::Action :
         std::vector<Query::Parameter> parameters_;
         std::shared_ptr<Query::Results> results_;
         JSON::Object::Ptr json_result_;
-        std::vector<ActionPtr> actions_;
+        std::vector<Ptr> actions_;
 };
 
 #endif // FUNCTIONS_ACTION
