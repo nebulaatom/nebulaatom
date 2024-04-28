@@ -87,6 +87,11 @@ RowValueFormatter::~RowValueFormatter()
 
 }
 
+bool RowValueFormatter::TypeIsIqual_(RowValueType row_value_type)
+{
+    return row_value_type == row_value_type_;
+}
+
 void RowValueFormatter::Format_()
 {
     if(value_ == nullptr)

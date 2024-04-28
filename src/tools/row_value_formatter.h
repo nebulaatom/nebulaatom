@@ -91,6 +91,9 @@ class Atom::Tools::RowValueFormatter
 
         void set_value(Poco::Dynamic::Var* value) { value_ = value; }
 
+        bool TypeIsIqual_(RowValueType row_value_type);
+
+    protected:
         void Format_();
 
     private:
