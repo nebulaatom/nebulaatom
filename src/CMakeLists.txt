@@ -28,6 +28,8 @@ set(NEBULAATOM_SOURCES
     ${PROJECT_SOURCE_DIR}/src/query/condition.cpp
     ${PROJECT_SOURCE_DIR}/src/query/parameter.cpp
     ${PROJECT_SOURCE_DIR}/src/query/results.cpp
+    ${PROJECT_SOURCE_DIR}/src/query/row.cpp
+    ${PROJECT_SOURCE_DIR}/src/query/field.cpp
     ${PROJECT_SOURCE_DIR}/src/security/users_manager.cpp
     ${PROJECT_SOURCE_DIR}/src/security/user.cpp
     ${PROJECT_SOURCE_DIR}/src/security/permissions_manager.cpp
@@ -83,6 +85,8 @@ set(NEBULAATOM_headers_query
     ${PROJECT_SOURCE_DIR}/src/query/condition.h
     ${PROJECT_SOURCE_DIR}/src/query/parameter.h
     ${PROJECT_SOURCE_DIR}/src/query/results.h
+    ${PROJECT_SOURCE_DIR}/src/query/row.h
+    ${PROJECT_SOURCE_DIR}/src/query/field.h
 )
 set(NEBULAATOM_headers_security
     ${PROJECT_SOURCE_DIR}/src/security/users_manager.h
