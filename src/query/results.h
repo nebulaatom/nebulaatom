@@ -22,90 +22,26 @@
 
 #include <vector>
 
-#include "tools/row_value_formatter.h"
+#include "query/row.h"
 
 
 namespace Atom
 {
     namespace Query
     {
-        class ConditionalField;
-        class Field;
-        class Row;
         class Results;
     }
 }
 
 
-class Atom::Query::ConditionalField
+class Atom::Query::Results : public std::vector<Row::Ptr>
 {
     public:
-        ConditionalField(std::size_t row, std::size_t column) : row_(row), column_(column) {}
+        using Ptr = std::shared_ptr<Results>;
 
-        std::size_t get_row() const { return row_; }
-        std::size_t get_column() const { return column_; }
-
-        void set_row(std::size_t row) { row_ = row; }
-        void set_column(std::size_t column) { column_ = column; }
-
-    private:
-        std::size_t row_;
-        std::size_t column_;
-};
-
-class Atom::Query::Field
-{
-    public:
-        Field(std::string column_name, Tools::RowValueFormatter value);
-
-        std::string get_column_name() const { return column_name_;}
-        Tools::RowValueFormatter get_value() const {return value_;}
-        Tools::RowValueFormatter& get_value()
-        {
-            auto& var = value_;
-            return var;
-        }
-
-        void set_column_name(std::string column_name) { column_name_ = column_name;}
-        void set_value(Tools::RowValueFormatter value) { value_ = value;}
-
-    private:
-        std::string column_name_;
-        Tools::RowValueFormatter value_;
-};
-
-class Atom::Query::Row
-{
-    public:
-        Row();
-
-        std::vector<Field>& get_fields()
-        {
-            auto& var = fields_;
-            return var;
-        }
-
-        Field FindField_(std::string column_name);
-
-    private:
-        std::vector<Field> fields_;
-};
-
-class Atom::Query::Results
-{
-    public:
         Results();
 
-        std::vector<Row>& get_rows()
-        {
-            auto& var = rows_;
-            return var;
-        }
-
-        std::shared_ptr<Field> FindField_(ConditionalField& field);
-
-    private:
-        std::vector<Row> rows_;
+        Field::Ptr FindField_(Field::Position& field_position);
 };
 
 #endif // ATOM_QUERY_RESULTS
