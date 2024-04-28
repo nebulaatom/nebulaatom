@@ -9,19 +9,19 @@ Parameter::Parameter(std::string name, Tools::RowValueFormatter value, bool edit
     ,name_(name)
     ,editable_(editable)
     ,value_(value)
-    ,conditional_field_(0, 0)
-    ,conditional_field_action_("")
+    ,field_position_(0, 0)
+    ,related_action_("")
 {
     
 }
 
-Parameter::Parameter(std::string name, Query::ConditionalField conditional_field, std::string conditional_field_action, bool editable) :
-    parameter_type_(ParameterType::kConditional)
+Parameter::Parameter(std::string name, Query::Field::Position field_position, std::string related_action, bool editable) :
+    parameter_type_(ParameterType::kPosition)
     ,name_(name)
     ,editable_(editable)
     ,value_(Tools::RowValueFormatter(0))
-    ,conditional_field_(conditional_field)
-    ,conditional_field_action_(conditional_field_action)
+    ,field_position_(field_position)
+    ,related_action_(related_action)
 {
 
 }

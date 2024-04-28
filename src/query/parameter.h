@@ -39,14 +39,14 @@ namespace Atom
 enum class Atom::Query::ParameterType
 {
     kField
-    ,kConditional
+    ,kPosition
 };
 
 class Atom::Query::Parameter
 {
     public:
         Parameter(std::string name, Tools::RowValueFormatter value, bool editable);
-        Parameter(std::string name, Query::ConditionalField conditional_field, std::string conditional_field_action, bool editable);
+        Parameter(std::string name, Query::Field::Position field_position, std::string related_action, bool editable);
 
         ParameterType get_parameter_type() const { return parameter_type_; }
         std::string get_name() const { return name_; }
@@ -56,26 +56,26 @@ class Atom::Query::Parameter
             auto& var = value_;
             return var;
         }
-        Query::ConditionalField& get_conditional_field()
+        Query::Field::Position& get_field_position()
         {
-            auto& var = conditional_field_;
+            auto& var = field_position_;
             return var;
         }
-        std::string get_conditional_field_action() const { return conditional_field_action_; }
+        std::string get_related_action() const { return related_action_; }
 
         void set_parameter_type(ParameterType parameter_type) { parameter_type_ = parameter_type; }
         void set_name(std::string name) { name_ = name; }
         void set_editable(bool editable) { editable_ = editable; }
         void set_value(Tools::RowValueFormatter value) { value_ = value; }
-        void set_conditional_field_action(std::string conditional_field_action) { conditional_field_action_ = conditional_field_action; }
+        void set_related_action(std::string related_action) { related_action_ = related_action; }
 
     private:
         ParameterType parameter_type_;
         std::string name_;
         bool editable_;
         Tools::RowValueFormatter value_;
-        Query::ConditionalField conditional_field_;
-        std::string conditional_field_action_;
+        Query::Field::Position field_position_;
+        std::string related_action_;
 };
 
 #endif // ATOM_QUERY_PARAMETER
