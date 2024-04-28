@@ -21,7 +21,7 @@
 
 
 #include "query/results.h"
-#include "tools/row_value_formatter.h"
+#include "tools/output_logger.h"
 
 
 namespace Atom
@@ -36,46 +36,34 @@ namespace Atom
 
 enum class Atom::Query::ConditionType
 {
-    kIqual
-    ,kNoIqual
-    ,kGreatherThan
-    ,kSmallerThan
-    ,kList
+    kWarning
+    ,kError
 };
 
 class Atom::Query::Condition
 {
     public:
-        Condition(ConditionType type, Tools::RowValueFormatter row_value, ConditionalField conditional_field);
-        Condition(std::vector<Tools::RowValueFormatter> row_values, ConditionalField conditional_field);
+        using Functor = std::function<bool(Results::Ptr)>;
+
+        Condition(std::string identifier, ConditionType type, Functor functor);
 
         ConditionType get_type() const { return type_; }
-        Tools::RowValueFormatter& get_row_value()
+        std::string get_identifier() const { return identifier_; }
+        Functor& get_functor()
         {
-            auto& var = row_value_;
-            return var;
-        }
-        std::vector<Tools::RowValueFormatter>& get_row_values()
-        {
-            auto& var = row_values_;
-            return var;
-        }
-        ConditionalField& get_conditional_field()
-        {
-            auto& var = conditional_field_;
+            auto& var = functor_;
             return var;
         }
 
+        void set_identifier(std::string identifier) { identifier_ = identifier; }
         void set_type(ConditionType type) { type_ = type; }
-        void set_row_value(Tools::RowValueFormatter row_value) { row_value_ = row_value; }
 
-        bool VerifyCondition_(std::shared_ptr<Results>& results);
+        bool VerifyCondition_(Results::Ptr results);
 
     private:
+        std::string identifier_;
         ConditionType type_;
-        Tools::RowValueFormatter row_value_;
-        std::vector<Tools::RowValueFormatter> row_values_;
-        ConditionalField conditional_field_;
+        Functor functor_;
 };
 
 #endif // ATOM_QUERY_CONDITION
