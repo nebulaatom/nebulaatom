@@ -39,6 +39,8 @@ class Atom::Handlers::WebSocketHandler :
     public RootHandler
 {
     public:
+        using VectorSocket = std::vector<const WebSocketHandler*>;
+
         WebSocketHandler();
         virtual ~WebSocketHandler();
 

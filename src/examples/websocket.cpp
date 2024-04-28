@@ -10,7 +10,7 @@ using namespace Atom;
 class MainHandler : public Handlers::WebSocketHandler
 {
     public:
-        MainHandler(std::vector<const WebSocketHandler*>& connected_sockets) : connected_sockets_(connected_sockets){}
+        MainHandler(VectorSocket& connected_sockets) : connected_sockets_(connected_sockets){}
         virtual ~MainHandler(){}
 
         void HandleNewConnection_(HTTP::Request&, const WebSocketHandler& websocket_handler) override
@@ -35,7 +35,7 @@ class MainHandler : public Handlers::WebSocketHandler
         }
 
     private:
-        std::vector<const Handlers::WebSocketHandler*>& connected_sockets_;
+        VectorSocket& connected_sockets_;
 };
 
 
@@ -43,7 +43,7 @@ int main(int argc, char** argv)
 {
     Core::NebulaAtom app;
     
-    std::vector<const Handlers::WebSocketHandler*> connected_sockets;
+    Handlers::WebSocketHandler::VectorSocket connected_sockets;
     app.CustomHandlerCreator_([&](Core::HTTPRequestInfo& info)
     {
         Handlers::RootHandler* handler;
