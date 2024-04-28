@@ -51,7 +51,7 @@ bool UsersManager::AuthenticateUser_()
             action.MakeResults_();
 
         // Verify results
-            if(action.get_results()->get_rows().size() > 0)
+            if(action.get_results()->size() > 0)
                 return true;
             else
                 return false;

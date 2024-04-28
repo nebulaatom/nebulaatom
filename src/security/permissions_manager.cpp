@@ -94,21 +94,31 @@ void PermissionsManager::LoadPermissions_()
             action.MakeResults_();
 
         // Iterate over the results
-            for(auto& row : action.get_results()->get_rows())
+            for(auto& row : *action.get_results())
             {
                 // Get elements
-                auto endpoint = row.FindField_("endpoint").get_value().get_value_string();
-                auto username = row.FindField_("username").get_value().get_value_string();
-                auto id_user = row.FindField_("id_user").get_value().get_value_int();
-                auto action = row.FindField_("action").get_value().get_value_string();
+                auto endpoint = row->FindField_("endpoint");
+                auto username = row->FindField_("username");
+                auto id_user = row->FindField_("id_user");
+                auto action = row->FindField_("action");
+
+                if(endpoint == nullptr || username == nullptr || id_user == nullptr || action == nullptr)
+                {
+                    throw std::runtime_error("Error to get results, FindField_ return a nullptr object.");
+                    return;
+                }
 
                 // Create permission
                 ActionType action_mapped = ActionType::kRead;
-                auto found = action_type_map_.find(action);
+                auto found = action_type_map_.find(action->get_value().get_value_string());
                 if(found != action_type_map_.end())
                     action_mapped = found->second;
 
-                Permission p {{endpoint}, std::make_shared<User>(id_user, username, ""), action_mapped};
+                Permission p
+                {
+                    {endpoint->get_value().get_value_string()}
+                    ,std::make_shared<User>(id_user->get_value().get_value_int(), username->get_value().get_value_string(), ""), action_mapped
+                };
 
                 permissions_.push_back(std::move(p));
             }

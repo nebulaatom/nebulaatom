@@ -66,20 +66,26 @@ void SessionsManager::ReadSessions_()
                 return;
             }
 
-            for(auto& row : action.get_results()->get_rows())
+            for(auto& row : *action.get_results())
             {
-                auto identifier = row.FindField_("identifier").get_value().get_value_string();
-                auto path = row.FindField_("path").get_value().get_value_string();
-                auto user = row.FindField_("user").get_value().get_value_string();
-                auto max_age = row.FindField_("max_age").get_value().get_value_int();
+                auto identifier = row->FindField_("identifier");
+                auto path = row->FindField_("path");
+                auto user = row->FindField_("user");
+                auto max_age = row->FindField_("max_age");
+
+                if(identifier == nullptr || path == nullptr || user == nullptr || max_age == nullptr)
+                {
+                    throw std::runtime_error("Error to get results, FindField_ return a nullptr object.");
+                    return;
+                }
 
                 Extras::Session new_session;
-                new_session.set_id(identifier);
-                new_session.set_user(user);
-                new_session.set_path(path);
-                new_session.set_max_age(max_age);
+                new_session.set_id(identifier->get_value().get_value_string());
+                new_session.set_user(user->get_value().get_value_string());
+                new_session.set_path(path->get_value().get_value_string());
+                new_session.set_max_age(max_age->get_value().get_value_int());
 
-                sessions_.emplace(identifier, std::move(new_session));
+                sessions_.emplace(identifier->get_value().get_value_string(), std::move(new_session));
 
             }
         mutex_.unlock();
