@@ -105,6 +105,11 @@ bool RootHandler::SetupSSL_()
     return true;
 }
 
+Atom::Functions::Function::Ptr RootHandler::AddFunction_(std::string endpoint, HTTP::EnumMethods method)
+{
+    return functions_manager_.AddFunction_(endpoint, method);
+}
+
 bool RootHandler::VerifySession_()
 {
     // Extract session ID

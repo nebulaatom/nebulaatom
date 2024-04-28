@@ -7,6 +7,7 @@
 #include <map>
 
 #include "functions/function.h"
+#include "http/methods.h"
 
 
 namespace Atom
@@ -30,6 +31,8 @@ class Atom::Functions::FunctionsManager
             auto& var = functions_;
             return var;
         }
+
+        Function::Ptr AddFunction_(std::string endpoint, HTTP::EnumMethods method);
 
     private:
         FunctionsMap functions_;

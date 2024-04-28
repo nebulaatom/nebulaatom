@@ -115,6 +115,8 @@ class Atom::Handlers::RootHandler :
 
         virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
         bool SetupSSL_();
+        Functions::Function::Ptr AddFunction_(std::string endpoint, HTTP::EnumMethods method);
+        
 
     protected:
         virtual void Process_() = 0;
