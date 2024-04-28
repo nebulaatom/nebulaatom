@@ -86,9 +86,8 @@ class Atom::Functions::Action :
 
         void IdentifyParameters_();
         Query::Parameter& AddParameter_(std::string name, Tools::RowValueFormatter value, bool editable);
-        Query::Parameter& AddParameter_(std::string name, Query::ConditionalField conditional_field, std::string conditional_field_action, bool editable);
-        Query::Condition& AddCondition_(Query::ConditionType type, Tools::RowValueFormatter row_value, Query::ConditionalField conditional_field);
-        Query::Condition& AddCondition_(std::vector<Tools::RowValueFormatter> row_values, Query::ConditionalField conditional_field);
+        Query::Parameter& AddParameter_(std::string name, Query::Field::Position field_position, std::string related_action, bool editable);
+        Query::Condition& AddCondition_(std::string identifier, Query::ConditionType type, Query::Condition::Functor functor);
         virtual bool Work_() = 0;
 
     private:

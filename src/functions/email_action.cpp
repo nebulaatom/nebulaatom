@@ -79,17 +79,22 @@ void EmailAction::UpdateDataMembers_()
     for(auto& param : get_parameters())
     {
         // Verify conditional parameter
-        if(param.get_parameter_type() == Query::ParameterType::kConditional)
+        if(param.get_parameter_type() == Query::ParameterType::kPosition)
         {
             // Find action results
             auto action_found = std::find_if(get_actions().begin(), get_actions().end(),[&param](std::shared_ptr<Functions::Action>& action)
             {
-                return action->get_identifier() == param.get_conditional_field_action();
+                return action->get_identifier() == param.get_related_action();
             });
 
             if(action_found != get_actions().end())
             {
-                auto row_value = action_found->get()->get_results()->FindField_(param.get_conditional_field());
+                auto row_value = action_found->get()->get_results()->FindField_(param.get_field_position());
+                if(row_value == nullptr)
+                {
+                    throw std::runtime_error("Error to update data members, FindField_ return a nullptr object.");
+                    return;
+                }
                 param.set_value(row_value->get_value());
             }
         }
@@ -126,17 +131,22 @@ void EmailAction::UpdateMessageParameters_()
             continue;
 
         // Verify conditional parameter
-        if(param.get_parameter_type() == Query::ParameterType::kConditional)
+        if(param.get_parameter_type() == Query::ParameterType::kPosition)
         {
             // Find action results
             auto action_found = std::find_if(get_actions().begin(), get_actions().end(),[&param](std::shared_ptr<Functions::Action>& action)
             {
-                return action->get_identifier() == param.get_conditional_field_action();
+                return action->get_identifier() == param.get_related_action();
             });
 
             if(action_found != get_actions().end())
             {
-                auto row_value = action_found->get()->get_results()->FindField_(param.get_conditional_field());
+                auto row_value = action_found->get()->get_results()->FindField_(param.get_field_position());
+                if(row_value == nullptr)
+                {
+                    throw std::runtime_error("Error to update data members, FindField_ return a nullptr object.");
+                    return;
+                }
                 param.set_value(row_value->get_value());
             }
         }

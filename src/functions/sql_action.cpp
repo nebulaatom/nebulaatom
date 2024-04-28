@@ -42,8 +42,22 @@ bool Functions::SQLAction::Work_()
     {
         if(!condition.VerifyCondition_(get_results()))
         {
-            set_custom_error("Condition Error.");
-            return false;
+            switch(condition.get_type())
+            {
+                case Query::ConditionType::kWarning:
+                {
+                    Tools::OutputLogger::Log_("Condition warning (" + condition.get_identifier() + ").");
+
+                    return true;
+                    break;
+                }
+                case Query::ConditionType::kError:
+                {
+                    set_custom_error("Condition error (" + condition.get_identifier() + ").");
+                    return false;
+                    break;
+                }
+            }
         }
     }
 
@@ -72,17 +86,17 @@ bool Functions::SQLAction::ComposeQuery_()
             for(auto& param : get_parameters())
             {
                 // Verify conditional parameter
-                if(param.get_parameter_type() == Query::ParameterType::kConditional)
+                if(param.get_parameter_type() == Query::ParameterType::kPosition)
                 {
                     // Find action results
                     auto action_found = std::find_if(get_actions().begin(), get_actions().end(),[&param](std::shared_ptr<Functions::Action>& action)
                     {
-                        return action->get_identifier() == param.get_conditional_field_action();
+                        return action->get_identifier() == param.get_related_action();
                     });
 
                     if(action_found != get_actions().end())
                     {
-                        auto row_value = action_found->get()->get_results()->FindField_(param.get_conditional_field());
+                        auto row_value = action_found->get()->get_results()->FindField_(param.get_field_position());
                         param.set_value(row_value->get_value());
                     }
                 }
@@ -200,18 +214,19 @@ void Functions::SQLAction::MakeResults_()
         // Make Results
             for(auto& it : results_dataquery)
             {
-                Query::Row row_fields;
+                Query::Row::Ptr row_fields(new Query::Row);
 
                 std::size_t col = 0;
                 for(size_t a = 0; a < it.fieldCount(); a++)
                 {
                     auto column_name = results_dataquery.columnName(col);
                     auto value = it.get(a);
-                    row_fields.get_fields().push_back(Query::Field{column_name, Tools::RowValueFormatter(value)});
+                    // Create shared Query::Field
+                    row_fields->push_back(std::make_shared<Query::Field>(column_name, Tools::RowValueFormatter(value)));
                     col++;
                 }
 
-                get_results()->get_rows().push_back(std::move(row_fields));
+                get_results()->push_back(std::move(row_fields));
             }
 
         // Close session

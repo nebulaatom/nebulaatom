@@ -140,22 +140,15 @@ Query::Parameter& Action::AddParameter_(std::string name, Tools::RowValueFormatt
     return parameters_.back();
 }
 
-Query::Parameter& Action::AddParameter_(std::string name, Query::ConditionalField conditional_field, std::string conditional_field_action, bool editable)
+Query::Parameter& Action::AddParameter_(std::string name, Query::Field::Position field_position, std::string related_action, bool editable)
 {
-    parameters_.push_back(Query::Parameter{name, conditional_field, conditional_field_action, editable});
+    parameters_.push_back(Query::Parameter{name, field_position, related_action, editable});
     return parameters_.back();
 }
 
-Query::Condition& Action::AddCondition_(Query::ConditionType type, Tools::RowValueFormatter row_value, Query::ConditionalField conditional_field)
+Query::Condition& Action::AddCondition_(std::string identifier, Query::ConditionType type, Query::Condition::Functor functor)
 {
-    Query::Condition condition(type, row_value, conditional_field);
-    conditions_.push_back(condition);
-    return conditions_.back();
-}
-
-Query::Condition& Action::AddCondition_(std::vector<Tools::RowValueFormatter> row_values, Query::ConditionalField conditional_field)
-{
-    Query::Condition condition(row_values, conditional_field);
+    Query::Condition condition(identifier, type, functor);
     conditions_.push_back(condition);
     return conditions_.back();
 }
