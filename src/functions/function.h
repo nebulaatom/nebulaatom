@@ -9,6 +9,8 @@
 #include <memory>
 
 #include "functions/action.h"
+#include "functions/sql_action.h"
+#include "functions/email_action.h"
 #include "http/methods.h"
 #include "query/parameter.h"
 
@@ -48,6 +50,9 @@ class Atom::Functions::Function
         void set_endpoint(std::string endpoint) { endpoint_ = endpoint; }
         void set_target(std::string target) { target_ = target; }
         void set_method(HTTP::EnumMethods type) { method_ = type; }
+
+        SQLAction::Ptr AddSQLAction_(std::string identifier);
+        EmailAction::Ptr AddEmailAction_(std::string identifier);
 
     private:
         std::string endpoint_;

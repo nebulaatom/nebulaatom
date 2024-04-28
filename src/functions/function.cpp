@@ -1,5 +1,6 @@
 
 #include "functions/function.h"
+#include "functions/action.h"
 #include "http/methods.h"
 
 using namespace Atom;
@@ -19,4 +20,18 @@ Function::Function(std::string endpoint, HTTP::EnumMethods method) :
     ,method_(method)
 {
     
+}
+
+SQLAction::Ptr Function::AddSQLAction_(std::string identifier)
+{
+    SQLAction::Ptr action = std::make_shared<SQLAction>(identifier);
+    actions_.push_back(action);
+    return action;
+}
+
+EmailAction::Ptr Function::AddEmailAction_(std::string identifier)
+{
+    EmailAction::Ptr action = std::make_shared<EmailAction>(identifier);
+    actions_.push_back(action);
+    return action;
 }
