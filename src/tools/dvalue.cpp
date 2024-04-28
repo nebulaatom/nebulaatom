@@ -16,11 +16,11 @@
  */
 
 
-#include "tools/row_value_formatter.h"
+#include "tools/dvalue.h"
 
 using namespace Atom::Tools;
 
-RowValueFormatter::RowValueFormatter() :
+DValue::DValue() :
     row_value_type_(RowValueType::kEmpty)
     ,value_string_("")
     ,value_int_(0)
@@ -30,7 +30,7 @@ RowValueFormatter::RowValueFormatter() :
 	value_ = nullptr;
 }
 
-RowValueFormatter::RowValueFormatter(Poco::Dynamic::Var& value) :
+DValue::DValue(Poco::Dynamic::Var& value) :
     row_value_type_(RowValueType::kString)
     ,value_string_("")
     ,value_int_(0)
@@ -41,7 +41,7 @@ RowValueFormatter::RowValueFormatter(Poco::Dynamic::Var& value) :
     Format_();
 }
 
-RowValueFormatter::RowValueFormatter(std::string value_string) :
+DValue::DValue(std::string value_string) :
     row_value_type_(RowValueType::kString)
     ,value_string_(value_string)
     ,value_int_(0)
@@ -51,7 +51,7 @@ RowValueFormatter::RowValueFormatter(std::string value_string) :
 	value_ = nullptr;
 }
 
-RowValueFormatter::RowValueFormatter(int value_int) :
+DValue::DValue(int value_int) :
     row_value_type_(RowValueType::kInteger)
     ,value_string_("")
     ,value_int_(value_int)
@@ -61,7 +61,7 @@ RowValueFormatter::RowValueFormatter(int value_int) :
 	value_ = nullptr;
 }
 
-RowValueFormatter::RowValueFormatter(float value_float) :
+DValue::DValue(float value_float) :
     row_value_type_(RowValueType::kFloat)
     ,value_string_("")
     ,value_int_(0)
@@ -71,7 +71,7 @@ RowValueFormatter::RowValueFormatter(float value_float) :
 	value_ = nullptr;
 }
 
-RowValueFormatter::RowValueFormatter(bool value_bool) :
+DValue::DValue(bool value_bool) :
     row_value_type_(RowValueType::kBoolean)
     ,value_string_("")
     ,value_int_(0)
@@ -82,17 +82,17 @@ RowValueFormatter::RowValueFormatter(bool value_bool) :
 }
 
 
-RowValueFormatter::~RowValueFormatter()
+DValue::~DValue()
 {
 
 }
 
-bool RowValueFormatter::TypeIsIqual_(RowValueType row_value_type)
+bool DValue::TypeIsIqual_(RowValueType row_value_type)
 {
     return row_value_type == row_value_type_;
 }
 
-void RowValueFormatter::Format_()
+void DValue::Format_()
 {
     if(value_ == nullptr)
     {

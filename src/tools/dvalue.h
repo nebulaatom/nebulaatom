@@ -16,8 +16,8 @@
  */
 
 
-#ifndef ATOM_TOOLS_ROWVALUEFORMATTER
-#define ATOM_TOOLS_ROWVALUEFORMATTER
+#ifndef ATOM_TOOLS_DVALUE
+#define ATOM_TOOLS_DVALUE
 
 
 #include <string>
@@ -35,7 +35,7 @@ namespace Atom
     namespace Tools
     {
         enum class RowValueType;
-        class RowValueFormatter;
+        class DValue;
     }
 }
 
@@ -51,16 +51,16 @@ enum class Atom::Tools::RowValueType
     ,kBoolean
 };
 
-class Atom::Tools::RowValueFormatter
+class Atom::Tools::DValue
 {
     public:
-        RowValueFormatter();
-        RowValueFormatter(Poco::Dynamic::Var& value);
-        RowValueFormatter(std::string value_string);
-        RowValueFormatter(int value_int);
-        RowValueFormatter(float value_float);
-        RowValueFormatter(bool value_bool);
-        ~RowValueFormatter();
+        DValue();
+        DValue(Poco::Dynamic::Var& value);
+        DValue(std::string value_string);
+        DValue(int value_int);
+        DValue(float value_float);
+        DValue(bool value_bool);
+        ~DValue();
 
         RowValueType& get_row_value_type()
         {
@@ -108,4 +108,4 @@ class Atom::Tools::RowValueFormatter
 };
 
 
-#endif // ATOM_TOOLS_ROWVALUEFORMATTER
+#endif // ATOM_TOOLS_DVALUE
