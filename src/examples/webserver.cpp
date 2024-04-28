@@ -6,11 +6,11 @@
 
 using namespace Atom;
 
-class UploadFile : public Handlers::FrontendHandler
+class Webserver : public Handlers::FrontendHandler
 {
     public:
-        UploadFile(){}
-        virtual ~UploadFile(){}
+        Webserver(){}
+        virtual ~Webserver(){}
 
         void Process_()
         {
@@ -27,7 +27,7 @@ int main(int argc, char** argv)
     // Setting up handler
         app.CustomHandlerCreator_([&](Core::HTTPRequestInfo&)
         {
-            return new UploadFile;
+            return new Webserver;
         });
 
         return app.Init_(argc, argv);
