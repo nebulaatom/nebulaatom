@@ -22,7 +22,7 @@
 
 #include <string>
 
-#include "tools/row_value_formatter.h"
+#include "tools/dvalue.h"
 
 
 namespace Atom
@@ -47,22 +47,22 @@ class Atom::Query::Field
             std::size_t column;
         };
 
-        Field(std::string column_name, Tools::RowValueFormatter value);
+        Field(std::string column_name, Tools::DValue value);
 
         std::string get_column_name() const { return column_name_;}
-        Tools::RowValueFormatter get_value() const {return value_;}
-        Tools::RowValueFormatter& get_value()
+        Tools::DValue get_value() const {return value_;}
+        Tools::DValue& get_value()
         {
             auto& var = value_;
             return var;
         }
 
         void set_column_name(std::string column_name) { column_name_ = column_name;}
-        void set_value(Tools::RowValueFormatter value) { value_ = value;}
+        void set_value(Tools::DValue value) { value_ = value;}
 
     private:
         std::string column_name_;
-        Tools::RowValueFormatter value_;
+        Tools::DValue value_;
 };
 
 

@@ -22,7 +22,7 @@
 
 #include <string>
 
-#include "tools/row_value_formatter.h"
+#include "tools/dvalue.h"
 #include "query/results.h"
 
 
@@ -45,13 +45,13 @@ enum class Atom::Query::ParameterType
 class Atom::Query::Parameter
 {
     public:
-        Parameter(std::string name, Tools::RowValueFormatter value, bool editable);
+        Parameter(std::string name, Tools::DValue value, bool editable);
         Parameter(std::string name, Query::Field::Position field_position, std::string related_action, bool editable);
 
         ParameterType get_parameter_type() const { return parameter_type_; }
         std::string get_name() const { return name_; }
         bool get_editable() const { return editable_; }
-        Tools::RowValueFormatter& get_value()
+        Tools::DValue& get_value()
         {
             auto& var = value_;
             return var;
@@ -66,14 +66,14 @@ class Atom::Query::Parameter
         void set_parameter_type(ParameterType parameter_type) { parameter_type_ = parameter_type; }
         void set_name(std::string name) { name_ = name; }
         void set_editable(bool editable) { editable_ = editable; }
-        void set_value(Tools::RowValueFormatter value) { value_ = value; }
+        void set_value(Tools::DValue value) { value_ = value; }
         void set_related_action(std::string related_action) { related_action_ = related_action; }
 
     private:
         ParameterType parameter_type_;
         std::string name_;
         bool editable_;
-        Tools::RowValueFormatter value_;
+        Tools::DValue value_;
         Query::Field::Position field_position_;
         std::string related_action_;
 };

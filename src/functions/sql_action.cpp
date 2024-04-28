@@ -222,7 +222,7 @@ void Functions::SQLAction::MakeResults_()
                     auto column_name = results_dataquery.columnName(col);
                     auto value = it.get(a);
                     // Create shared Query::Field
-                    row_fields->push_back(std::make_shared<Query::Field>(column_name, Tools::RowValueFormatter(value)));
+                    row_fields->push_back(std::make_shared<Query::Field>(column_name, Tools::DValue(value)));
                     col++;
                 }
 
@@ -284,7 +284,7 @@ JSON::Object::Ptr Functions::SQLAction::CreateJSONResult_()
                 for(size_t a = 0; a < it.fieldCount(); a++)
                 {
                     auto var = it.get(a);
-                    auto row_value = Tools::RowValueFormatter(var);
+                    auto row_value = Tools::DValue(var);
                     switch(row_value.get_row_value_type())
                     {
                         case Tools::RowValueType::kBoolean:

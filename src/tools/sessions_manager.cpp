@@ -19,7 +19,7 @@
 #include "tools/sessions_manager.h"
 #include "Poco/Exception.h"
 #include "query/parameter.h"
-#include "tools/row_value_formatter.h"
+#include "tools/dvalue.h"
 
 using namespace Atom::Tools;
 
@@ -126,10 +126,10 @@ Atom::Extras::Session& SessionsManager::CreateSession_(std::string user, std::st
                 "VALUES (?, ?, ?, ?)"
             ;
             action.set_sql_code(sql_code);
-            action.get_parameters().push_back(Query::Parameter{"identifier", Tools::RowValueFormatter{id}, false});
-            action.get_parameters().push_back(Query::Parameter{"path", Tools::RowValueFormatter{path}, false});
-            action.get_parameters().push_back(Query::Parameter{"user", Tools::RowValueFormatter{user}, false});
-            action.get_parameters().push_back(Query::Parameter{"max_age", Tools::RowValueFormatter{max_age}, false});
+            action.get_parameters().push_back(Query::Parameter{"identifier", Tools::DValue{id}, false});
+            action.get_parameters().push_back(Query::Parameter{"path", Tools::DValue{path}, false});
+            action.get_parameters().push_back(Query::Parameter{"user", Tools::DValue{user}, false});
+            action.get_parameters().push_back(Query::Parameter{"max_age", Tools::DValue{max_age}, false});
 
         // Query process
             action.ComposeQuery_();
@@ -161,7 +161,7 @@ void SessionsManager::DeleteSession_(std::string id)
                 "DELETE FROM _woodpecker_sessions WHERE identifier = ?"
             ;
             action.set_sql_code(sql_code);
-            action.get_parameters().push_back(Query::Parameter{"identifier", Tools::RowValueFormatter{id}, false});
+            action.get_parameters().push_back(Query::Parameter{"identifier", Tools::DValue{id}, false});
 
         // Query process
             action.ComposeQuery_();

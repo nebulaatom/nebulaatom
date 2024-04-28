@@ -134,7 +134,7 @@ void Action::IdentifyParameters_()
     }
 }
 
-Query::Parameter& Action::AddParameter_(std::string name, Tools::RowValueFormatter value, bool editable)
+Query::Parameter& Action::AddParameter_(std::string name, Tools::DValue value, bool editable)
 {
     parameters_.push_back(Query::Parameter{name, value, editable});
     return parameters_.back();

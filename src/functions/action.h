@@ -85,7 +85,7 @@ class Atom::Functions::Action :
         void set_error(bool error) { error_ = error; };
 
         void IdentifyParameters_();
-        Query::Parameter& AddParameter_(std::string name, Tools::RowValueFormatter value, bool editable);
+        Query::Parameter& AddParameter_(std::string name, Tools::DValue value, bool editable);
         Query::Parameter& AddParameter_(std::string name, Query::Field::Position field_position, std::string related_action, bool editable);
         Query::Condition& AddCondition_(std::string identifier, Query::ConditionType type, Query::Condition::Functor functor);
         virtual bool Work_() = 0;

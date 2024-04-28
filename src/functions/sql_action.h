@@ -28,7 +28,7 @@
 #include <Poco/Data/RecordSet.h>
 
 #include "functions/action.h"
-#include "tools/row_value_formatter.h"
+#include "tools/dvalue.h"
 #include "query/results.h"
 
 

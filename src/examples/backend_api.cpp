@@ -6,7 +6,7 @@
 #include "query/condition.h"
 #include "query/results.h"
 #include "tools/route.h"
-#include "tools/row_value_formatter.h"
+#include "tools/dvalue.h"
 
 using namespace Atom;
 
@@ -26,7 +26,7 @@ class MainHandler : public Handlers::BackendHandler
                     a1->set_custom_error("No stores found with this name.");
                     a1->set_sql_code("SELECT id FROM stores WHERE name = ?");
                     // Parameters
-                        a1->AddParameter_("storeName", Tools::RowValueFormatter{std::string("")}, true);
+                        a1->AddParameter_("storeName", Tools::DValue{std::string("")}, true);
                     // Conditions
                         a1->AddCondition_("condition1", Query::ConditionType::kError, [](Query::Results::Ptr results)
                         {

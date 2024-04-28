@@ -38,8 +38,8 @@ bool UsersManager::AuthenticateUser_()
                 "WHERE username = ? AND password = ?"
             ;
             action.set_sql_code(sql_code);
-            action.AddParameter_("username", Tools::RowValueFormatter{current_user_.get_username()}, false);
-            action.AddParameter_("password", Tools::RowValueFormatter{current_user_.get_password()}, false);
+            action.AddParameter_("username", Tools::DValue{current_user_.get_username()}, false);
+            action.AddParameter_("password", Tools::DValue{current_user_.get_password()}, false);
 
         // Query process
             action.ComposeQuery_();
