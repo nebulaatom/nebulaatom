@@ -38,7 +38,7 @@ set(NEBULAATOM_SOURCES
     ${PROJECT_SOURCE_DIR}/src/tools/handler_connection.cpp
     ${PROJECT_SOURCE_DIR}/src/tools/manage_json.cpp
     ${PROJECT_SOURCE_DIR}/src/tools/route.cpp
-    ${PROJECT_SOURCE_DIR}/src/tools/row_value_formatter.cpp
+    ${PROJECT_SOURCE_DIR}/src/tools/dvalue.cpp
     ${PROJECT_SOURCE_DIR}/src/tools/sessions_manager.cpp
     ${PROJECT_SOURCE_DIR}/src/tools/settings_manager.cpp
     ${PROJECT_SOURCE_DIR}/src/tools/output_logger.cpp
@@ -99,7 +99,7 @@ set(NEBULAATOM_headers_tools
     ${PROJECT_SOURCE_DIR}/src/tools/handler_connection.h
     ${PROJECT_SOURCE_DIR}/src/tools/manage_json.cmake_host_system_information()
     ${PROJECT_SOURCE_DIR}/src/tools/route.h
-    ${PROJECT_SOURCE_DIR}/src/tools/row_value_formatter.h
+    ${PROJECT_SOURCE_DIR}/src/tools/dvalue.h
     ${PROJECT_SOURCE_DIR}/src/tools/sessions_manager.h
     ${PROJECT_SOURCE_DIR}/src/tools/settings_manager.h
     ${PROJECT_SOURCE_DIR}/src/tools/output_logger.h
