@@ -73,3 +73,8 @@ std::string Route::SegmentsToString_()
     }
     return segments_to_string;
 }
+
+bool Route::operator==(const Route& route)
+{
+    return route.get_route() == route_;
+}

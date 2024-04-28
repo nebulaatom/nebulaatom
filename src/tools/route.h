@@ -53,6 +53,7 @@ class Atom::Tools::Route
         Route(std::vector<std::string> segments);
         ~Route();
 
+        std::string get_route() const { return route_; }
         RouteType get_current_route_type() const {return current_route_type_;}
         std::vector<std::string> get_segments() const {return segments_;}
 
@@ -60,6 +61,7 @@ class Atom::Tools::Route
         void set_segments(std::vector<std::string> segments) {segments_ = segments;}
 
         std::string SegmentsToString_();
+        bool operator==(const Route& route);
 
     protected:
         void StringToSegment_(std::string& route);
