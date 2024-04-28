@@ -51,6 +51,8 @@ class Atom::Functions::SSLInitializer
 class Atom::Functions::EmailAction : public Atom::Functions::Action
 {
     public:
+        using Ptr = std::shared_ptr<EmailAction>;
+
         EmailAction(std::string identifier);
 
         std::string get_mail_host() const { return mail_host_; }

@@ -1,7 +1,9 @@
 
 #include "functions/action.h"
 #include "Poco/JSON/Object.h"
+#include "query/condition.h"
 
+using namespace Atom;
 using namespace Atom::Functions;
 
 Action::Action(std::string identifier) :
@@ -130,4 +132,30 @@ void Action::IdentifyParameters_()
         set_error(true);
         set_custom_error(string_error);
     }
+}
+
+Query::Parameter& Action::AddParameter_(std::string name, Tools::RowValueFormatter value, bool editable)
+{
+    parameters_.push_back(Query::Parameter{name, value, editable});
+    return parameters_.back();
+}
+
+Query::Parameter& Action::AddParameter_(std::string name, Query::ConditionalField conditional_field, std::string conditional_field_action, bool editable)
+{
+    parameters_.push_back(Query::Parameter{name, conditional_field, conditional_field_action, editable});
+    return parameters_.back();
+}
+
+Query::Condition& Action::AddCondition_(Query::ConditionType type, Tools::RowValueFormatter row_value, Query::ConditionalField conditional_field)
+{
+    Query::Condition condition(type, row_value, conditional_field);
+    conditions_.push_back(condition);
+    return conditions_.back();
+}
+
+Query::Condition& Action::AddCondition_(std::vector<Tools::RowValueFormatter> row_values, Query::ConditionalField conditional_field)
+{
+    Query::Condition condition(row_values, conditional_field);
+    conditions_.push_back(condition);
+    return conditions_.back();
 }

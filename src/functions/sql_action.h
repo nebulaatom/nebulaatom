@@ -53,6 +53,8 @@ class Atom::Functions::SQLAction :
     public Atom::Functions::Action
 {
     public:
+        using Ptr = std::shared_ptr<SQLAction>;
+
         SQLAction(std::string identifier);
 
         std::string get_sql_code() const { return sql_code_; };
