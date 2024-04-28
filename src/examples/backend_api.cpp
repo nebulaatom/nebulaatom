@@ -27,6 +27,30 @@ class MainHandler : public Handlers::BackendHandler
                     a1->set_sql_code("SELECT id FROM stores WHERE name = ?");
                     // Parameters
                         a1->AddParameter_("storeName", Tools::RowValueFormatter{std::string("")}, true);
+                    // Conditions
+                        a1->AddCondition_("condition1", Query::ConditionType::kError, [](Query::Results::Ptr results)
+                        {
+                            if(results->size() == 0)
+                                return false;
+                            else
+                                return true;
+
+                            /* Example of how to scroll through the results
+                            for(auto row : *results)
+                            {
+                                for(auto field : *row)
+                                {
+                                    if(field->get_column_name() != "name")
+                                        continue;
+
+                                    if(!field->get_value().TypeIsIqual_(Tools::RowValueType::kString))
+                                        return false;
+
+                                    if(field->get_value().get_value_string() == "Store name")
+                                        return true;
+                                }
+                            }*/
+                        });
 
                 // Action 2
                     auto a2 = f1->AddSQLAction_("a2");
@@ -34,9 +58,7 @@ class MainHandler : public Handlers::BackendHandler
                     a2->set_sql_code("SELECT * FROM products WHERE id_store = ?");
                     a2->set_final(true);
                     // Parameters
-                        a2->AddParameter_("id_store", Query::ConditionalField{0, 0}, "a1", false);
-                    // Conditions
-                        a2->AddCondition_(Query::ConditionType::kSmallerThan, Tools::RowValueFormatter(100.0f), Query::ConditionalField(0, 2));
+                        a2->AddParameter_("id_store", Query::Field::Position{0, 0}, "a1", false);
         }
 
         void Process_() override
