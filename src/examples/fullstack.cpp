@@ -4,6 +4,7 @@
 #include "handlers/custom_handler.h"
 #include "handlers/frontend_handler.h"
 #include "handlers/root_handler.h"
+#include "tools/route.h"
 
 using namespace Atom;
 
@@ -19,11 +20,9 @@ int main(int argc, char** argv)
         Handlers::RootHandler* handler;
 
         // Manage the route type
-        std::vector<std::string> segments;
-        URI(info.uri).getPathSegments(segments);
-        auto route = std::make_shared<Tools::Route>(segments);
+        Tools::Route route(info.uri);
 
-        switch(route->get_current_route_type())
+        switch(route.get_current_route_type())
         {
             // Manage Frontend
             case Atom::Tools::RouteType::kEntrypoint:
@@ -36,7 +35,7 @@ int main(int argc, char** argv)
             {
                 handler = new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
                 {
-                    if(route->SegmentsToString_() == "/api/products")
+                    if(route == Tools::Route("/api/products"))
                     {
                         Functions::SQLAction a1("a1");
                         a1.set_sql_code("SELECT * FROM products");

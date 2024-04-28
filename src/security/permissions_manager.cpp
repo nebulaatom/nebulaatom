@@ -43,7 +43,7 @@ std::_List_iterator<Permission> PermissionsManager::FindPermission_(Tools::Route
     auto permission_found = std::find_if(permissions_.begin(), permissions_.end(), [&](Permission& permission)
     {
 
-        return permission.get_route().SegmentsToString_() == route.SegmentsToString_()
+        return permission.get_route() == route
         && permission.get_user()->get_username() == user
         && permission.get_action_type() == action_mapped;
     });
