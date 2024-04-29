@@ -1,6 +1,6 @@
 
 #include "core/nebula_atom.h"
-#include "functions/sql_action.h"
+#include "functions/action.h"
 #include "handlers/custom_handler.h"
 #include "handlers/frontend_handler.h"
 #include "handlers/root_handler.h"
@@ -37,7 +37,7 @@ int main(int argc, char** argv)
                 {
                     if(route == Tools::Route("/api/products"))
                     {
-                        Functions::SQLAction a1("a1");
+                        Functions::Action a1("a1");
                         a1.set_sql_code("SELECT * FROM products");
 
                         a1.ComposeQuery_();

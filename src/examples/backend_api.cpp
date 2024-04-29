@@ -23,7 +23,7 @@ class MainHandler : public Handlers::BackendHandler
                 auto f1 = AddFunction_("/api/products", HTTP::EnumMethods::kHTTP_GET);
 
                 // Action 1
-                    auto a1 = f1->AddSQLAction_("a1");
+                    auto a1 = f1->AddAction_("a1");
                     a1->set_custom_error("No stores found with this name.");
                     a1->set_sql_code("SELECT id FROM stores WHERE name = ?");
                     // Parameters
@@ -36,7 +36,7 @@ class MainHandler : public Handlers::BackendHandler
                         });
 
                 // Action 2
-                    auto a2 = f1->AddSQLAction_("a2");
+                    auto a2 = f1->AddAction_("a2");
                     a2->set_custom_error("No products found.");
                     a2->set_sql_code("SELECT * FROM products WHERE id_store = ?");
                     a2->set_final(true);
@@ -73,7 +73,7 @@ class MainHandler : public Handlers::BackendHandler
             // Route identification
                 if(!IdentifyRoute_())
                 {
-                    JSONResponse_(HTTP::Status::kHTTP_NOT_FOUND, "The requested endpoint is not available.");
+                    JSONResponse_(HTTP::Status::kHTTP_NOT_FOUND, "The requested endpoint ("+get_method()+") is not available.");
                     return;
                 }
 

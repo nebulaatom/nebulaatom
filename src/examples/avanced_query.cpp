@@ -1,6 +1,6 @@
 
 #include "core/nebula_atom.h"
-#include "functions/sql_action.h"
+#include "functions/action.h"
 #include "handlers/custom_handler.h"
 #include "http/request.h"
 
@@ -17,7 +17,7 @@ int main(int argc, char** argv)
     {
         return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
         {
-            Functions::SQLAction a1("a1");
+            Functions::Action a1("a1");
             a1.set_sql_code("SELECT * FROM products");
 
             a1.ComposeQuery_();
