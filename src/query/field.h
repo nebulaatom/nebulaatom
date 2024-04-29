@@ -60,6 +60,11 @@ class Atom::Query::Field
         void set_column_name(std::string column_name) { column_name_ = column_name;}
         void set_value(Tools::DValue value) { value_ = value;}
 
+        std::string String_();
+        float Float_();
+        bool Bool_();
+        int Int_();
+
     private:
         std::string column_name_;
         Tools::DValue value_;
