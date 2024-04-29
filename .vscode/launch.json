@@ -114,5 +114,13 @@
             ,"args": []
             ,"cwd": "${workspaceFolder}/build/Debug"
         }
+        ,{
+            "type": "lldb"
+            ,"request": "launch"
+            ,"name": "PostAPI (Debug)"
+            ,"program": "${workspaceFolder}/build/Debug/src/examples/postapi"
+            ,"args": []
+            ,"cwd": "${workspaceFolder}/build/Debug"
+        }
     ]
 }

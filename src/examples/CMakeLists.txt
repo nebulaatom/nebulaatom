@@ -68,3 +68,8 @@ target_link_libraries(clientrequest PUBLIC nebulaatom_static)
 add_executable(usingmethods "using_methods.cpp")
 target_include_directories(usingmethods PUBLIC ${HEADER})
 target_link_libraries(usingmethods PUBLIC nebulaatom_static)
+
+## postapi
+add_executable(postapi "post_api.cpp")
+target_include_directories(postapi PUBLIC ${HEADER})
+target_link_libraries(postapi PUBLIC nebulaatom_static)
