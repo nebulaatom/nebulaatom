@@ -9,8 +9,6 @@
 #include <memory>
 
 #include "functions/action.h"
-#include "functions/sql_action.h"
-#include "functions/email_action.h"
 #include "http/methods.h"
 #include "query/parameter.h"
 
@@ -28,7 +26,6 @@ class Atom::Functions::Function
 {
     public:
         using Ptr = std::shared_ptr<Functions::Function>;
-        using ActionPtr = std::shared_ptr<Action>;
 
         Function();
         Function(std::string endpoint, HTTP::EnumMethods type);
@@ -36,7 +33,7 @@ class Atom::Functions::Function
         std::string get_endpoint() const { return endpoint_; }
         std::string get_target() const { return target_; }
         HTTP::EnumMethods get_method() const { return method_; }
-        std::vector<ActionPtr>& get_actions()
+        std::vector<Action::Ptr>& get_actions()
         {
             auto& var = actions_;
             return var;
@@ -51,14 +48,13 @@ class Atom::Functions::Function
         void set_target(std::string target) { target_ = target; }
         void set_method(HTTP::EnumMethods type) { method_ = type; }
 
-        SQLAction::Ptr AddSQLAction_(std::string identifier);
-        EmailAction::Ptr AddEmailAction_(std::string identifier);
+        Action::Ptr AddAction_(std::string identifier);
 
     private:
         std::string endpoint_;
         std::string target_;
         HTTP::EnumMethods method_;
-        std::vector<ActionPtr> actions_;
+        std::vector<Action::Ptr> actions_;
         HTTP::Methods methods_;
 };
 

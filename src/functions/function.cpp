@@ -22,16 +22,9 @@ Function::Function(std::string endpoint, HTTP::EnumMethods method) :
     
 }
 
-SQLAction::Ptr Function::AddSQLAction_(std::string identifier)
+Action::Ptr Function::AddAction_(std::string identifier)
 {
-    SQLAction::Ptr action = std::make_shared<SQLAction>(identifier);
-    actions_.push_back(action);
-    return action;
-}
-
-EmailAction::Ptr Function::AddEmailAction_(std::string identifier)
-{
-    EmailAction::Ptr action = std::make_shared<EmailAction>(identifier);
+    Action::Ptr action = std::make_shared<Action>(identifier);
     actions_.push_back(action);
     return action;
 }
