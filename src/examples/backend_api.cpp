@@ -26,7 +26,7 @@ class MainHandler : public Handlers::BackendHandler
                     a1->set_custom_error("No stores found with this name.");
                     a1->set_sql_code("SELECT id FROM stores WHERE name = ?");
                     // Parameters
-                        a1->AddParameter_("storeName", Tools::DValue{std::string("")}, true);
+                        a1->AddParameter_("storeName", Tools::DValue(""), true);
                     // Conditions
                         a1->AddCondition_("condition1", Query::ConditionType::kError, [](Query::Results::Ptr results)
                         {
@@ -43,7 +43,7 @@ class MainHandler : public Handlers::BackendHandler
                                     if(field->get_column_name() != "name")
                                         continue;
 
-                                    if(!field->get_value().TypeIsIqual_(Tools::RowValueType::kString))
+                                    if(!field->get_value().TypeIsIqual_(Tools::DValue::Type::kString))
                                         return false;
 
                                     if(field->get_value().get_value_string() == "Store name")
