@@ -39,7 +39,7 @@ void SessionsManager::ReadSessions_()
     {
         mutex_.lock();
         // Setting up the action
-            Functions::SQLAction action{""};
+            Functions::Action action{""};
             action.set_custom_error("Sessions not found.");
             action.set_sql_code("SELECT * FROM _atom_sessions WHERE NOW() < reg_date + INTERVAL max_age SECOND");
 
@@ -120,7 +120,7 @@ Atom::Extras::Session& SessionsManager::CreateSession_(std::string user, std::st
     try
     {
         // Setting up the action
-            Functions::SQLAction action{""};
+            Functions::Action action{""};
             action.set_custom_error("Session not saved.");
             std::string sql_code =
                 "INSERT INTO _atom_sessions (identifier, path, user, max_age) "
@@ -156,7 +156,7 @@ void SessionsManager::DeleteSession_(std::string id)
     try
     {
         // Setting up the action
-            Functions::SQLAction action{""};
+            Functions::Action action{""};
             action.set_custom_error("Session not saved.");
             std::string sql_code =
                 "DELETE FROM _woodpecker_sessions WHERE identifier = ?"

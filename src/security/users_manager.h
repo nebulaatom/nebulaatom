@@ -25,7 +25,7 @@
 
 #include "Poco/Tuple.h"
 
-#include "functions/sql_action.h"
+#include "functions/action.h"
 #include "security/user.h"
 #include "tools/output_logger.h"
 

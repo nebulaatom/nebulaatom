@@ -26,7 +26,7 @@
 #include <algorithm>
 #include <mutex>
 
-#include "functions/sql_action.h"
+#include "functions/action.h"
 #include "security/permission.h"
 #include "tools/route.h"
 #include "tools/output_logger.h"

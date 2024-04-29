@@ -75,7 +75,7 @@ void PermissionsManager::LoadPermissions_()
         }
 
         // Setting up the action
-            Functions::SQLAction action{""};
+            Functions::Action action{""};
             action.set_custom_error("Permissions not found.");
             std::string sql_code =
                 "SELECT ap.endpoint AS endpoint, au.username AS username, au.id AS id_user, ap.action AS action "

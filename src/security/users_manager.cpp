@@ -30,7 +30,7 @@ bool UsersManager::AuthenticateUser_()
     try
     {
         // Setting up the action
-            Functions::SQLAction action{""};
+            Functions::Action action{""};
             action.set_custom_error("User not found.");
             std::string sql_code =
                 "SELECT id "
