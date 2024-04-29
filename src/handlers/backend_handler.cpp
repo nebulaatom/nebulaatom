@@ -60,31 +60,11 @@ void BackendHandler::ProcessActions_()
             auto& actions = get_current_function()->get_actions();
             action->get_actions().insert(action->get_actions().end(), actions.begin(), actions.end());
             
-            switch(action->get_action_type())
+            // Execute action
+            if(!action->Work_())
             {
-                case Functions::ActionType::kSQL:
-                {
-                    if(!action->Work_())
-                    {
-                        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, action->get_custom_error());
-                        return;
-                    }
-                    break;
-                }
-                case Functions::ActionType::kEmail:
-                {
-                    if(!action->Work_())
-                    {
-                        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, action->get_custom_error());
-                        return;
-                    }
-
-                    JSON::Array::Ptr data_array = new JSON::Array();
-                    json_result->set("data", data_array);
-                    json_result->set("status", "OK.");
-                    json_result->set("message", "OK.");
-                    break;
-                }
+                JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, action->get_custom_error());
+                return;
             }
 
             // Set JSON results
