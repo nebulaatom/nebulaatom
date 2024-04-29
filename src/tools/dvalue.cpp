@@ -17,132 +17,285 @@
 
 
 #include "tools/dvalue.h"
+#include "tools/output_logger.h"
 
 using namespace Atom::Tools;
 
 DValue::DValue() :
-    row_value_type_(RowValueType::kEmpty)
+    type_(Type::kEmpty)
     ,value_string_("")
     ,value_int_(0)
     ,value_float_(0.f)
     ,value_bool_(false)
 {
-	value_ = nullptr;
+    
 }
 
 DValue::DValue(Poco::Dynamic::Var& value) :
-    row_value_type_(RowValueType::kString)
+    type_(DValue::Type::kString)
     ,value_string_("")
     ,value_int_(0)
     ,value_float_(0.f)
     ,value_bool_(false)
 {
-	value_ = &value;
-    Format_();
+    Format_(value);
 }
 
 DValue::DValue(std::string value_string) :
-    row_value_type_(RowValueType::kString)
+    type_(DValue::Type::kString)
     ,value_string_(value_string)
     ,value_int_(0)
     ,value_float_(0.f)
     ,value_bool_(false)
 {
-	value_ = nullptr;
+    
+}
+
+DValue::DValue(char* value_string) :
+    type_(DValue::Type::kString)
+    ,value_string_(value_string)
+    ,value_int_(0)
+    ,value_float_(0.f)
+    ,value_bool_(false)
+{
+    
 }
 
 DValue::DValue(int value_int) :
-    row_value_type_(RowValueType::kInteger)
+    type_(DValue::Type::kInteger)
     ,value_string_("")
     ,value_int_(value_int)
     ,value_float_(0.f)
     ,value_bool_(false)
 {
-	value_ = nullptr;
+    
 }
 
 DValue::DValue(float value_float) :
-    row_value_type_(RowValueType::kFloat)
+    type_(DValue::Type::kFloat)
     ,value_string_("")
     ,value_int_(0)
     ,value_float_(value_float)
     ,value_bool_(false)
 {
-	value_ = nullptr;
+    
 }
 
 DValue::DValue(bool value_bool) :
-    row_value_type_(RowValueType::kBoolean)
+    type_(DValue::Type::kBoolean)
     ,value_string_("")
     ,value_int_(0)
     ,value_float_(0.f)
     ,value_bool_(value_bool)
 {
-	value_ = nullptr;
+    
 }
 
-
-DValue::~DValue()
+bool DValue::operator==(DValue& dvalue)
 {
-
-}
-
-bool DValue::TypeIsIqual_(RowValueType row_value_type)
-{
-    return row_value_type == row_value_type_;
-}
-
-void DValue::Format_()
-{
-    if(value_ == nullptr)
+    try
     {
-        row_value_type_ = RowValueType::kEmpty;
-        return;
-    }
-
-    if(value_->isEmpty())
-        row_value_type_ = RowValueType::kEmpty;
-    else if(value_->isNumeric())
-        if(value_->isInteger())
+        if(!TypeIsIqual_(dvalue.type_))
         {
-            if(value_->isBoolean())
+            throw std::runtime_error("Error when comparing different types of data.");
+            return false;
+        }
+
+        switch(dvalue.type_)
+        {
+            case Type::kEmpty: return true;
+            case Type::kBoolean: return value_bool_ == dvalue.get_value_bool();
+            case Type::kFloat: return value_float_ == dvalue.get_value_float();
+            case Type::kInteger: return value_int_ == dvalue.get_value_int();
+            case Type::kString: return value_string_ == dvalue.get_value_string();
+        }
+    }
+    catch(std::exception& error)
+    {
+        Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
+        return false;
+    }
+}
+
+bool DValue::operator!=(DValue& dvalue)
+{
+    try
+    {
+        if(!TypeIsIqual_(dvalue.type_))
+        {
+            throw std::runtime_error("Error when comparing different types of data.");
+            return false;
+        }
+
+        switch(dvalue.type_)
+        {
+            case Type::kEmpty: return true;
+            case Type::kBoolean: return value_bool_ != dvalue.get_value_bool();
+            case Type::kFloat: return value_float_ != dvalue.get_value_float();
+            case Type::kInteger: return value_int_ != dvalue.get_value_int();
+            case Type::kString: return value_string_ != dvalue.get_value_string();
+        }
+    }
+    catch(std::exception& error)
+    {
+        Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
+    }
+}
+
+bool DValue::operator<(DValue& dvalue)
+{
+    try
+    {
+        if(!TypeIsIqual_(dvalue.type_))
+        {
+            throw std::runtime_error("Error when comparing different types of data.");
+            return false;
+        }
+
+        switch(dvalue.type_)
+        {
+            case Type::kEmpty: return true;
+            case Type::kBoolean: return value_bool_ < dvalue.get_value_bool();
+            case Type::kFloat: return value_float_ < dvalue.get_value_float();
+            case Type::kInteger: return value_int_ < dvalue.get_value_int();
+            case Type::kString: return value_string_ < dvalue.get_value_string();
+        }
+    }
+    catch(std::exception& error)
+    {
+        Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
+        return false;
+    }
+}
+
+bool DValue::operator<=(DValue& dvalue)
+{
+    try
+    {
+        if(!TypeIsIqual_(dvalue.type_))
+        {
+            throw std::runtime_error("Error when comparing different types of data.");
+            return false;
+        }
+
+        switch(dvalue.type_)
+        {
+            case Type::kEmpty: return true;
+            case Type::kBoolean: return value_bool_ <= dvalue.get_value_bool();
+            case Type::kFloat: return value_float_ <= dvalue.get_value_float();
+            case Type::kInteger: return value_int_ <= dvalue.get_value_int();
+            case Type::kString: return value_string_ <= dvalue.get_value_string();
+        }
+    }
+    catch(std::exception& error)
+    {
+        Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
+        return false;
+    }
+}
+
+bool DValue::operator>(DValue& dvalue)
+{
+    try
+    {
+        if(!TypeIsIqual_(dvalue.type_))
+        {
+            throw std::runtime_error("Error when comparing different types of data.");
+            return false;
+        }
+
+        switch(dvalue.type_)
+        {
+            case Type::kEmpty: return true;
+            case Type::kBoolean: return value_bool_ > dvalue.get_value_bool();
+            case Type::kFloat: return value_float_ > dvalue.get_value_float();
+            case Type::kInteger: return value_int_ > dvalue.get_value_int();
+            case Type::kString: return value_string_ > dvalue.get_value_string();
+        }
+    }
+    catch(std::exception& error)
+    {
+        Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
+        return false;
+    }
+}
+
+bool DValue::operator>=(DValue& dvalue)
+{
+    try
+    {
+        if(!TypeIsIqual_(dvalue.type_))
+        {
+            throw std::runtime_error("Error when comparing different types of data.");
+            return false;
+        }
+
+        switch(dvalue.type_)
+        {
+            case Type::kEmpty: return true;
+            case Type::kBoolean: return value_bool_ >= dvalue.get_value_bool();
+            case Type::kFloat: return value_float_ >= dvalue.get_value_float();
+            case Type::kInteger: return value_int_ >= dvalue.get_value_int();
+            case Type::kString: return value_string_ >= dvalue.get_value_string();
+        }
+    }
+    catch(std::exception& error)
+    {
+        Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
+        return false;
+    }
+}
+
+bool DValue::TypeIsIqual_(DValue::Type row_value_type)
+{
+    return row_value_type == type_;
+}
+
+void DValue::Format_(Poco::Dynamic::Var& value)
+{
+    if(value.isEmpty())
+        type_ = DValue::Type::kEmpty;
+    else if(value.isNumeric())
+        if(value.isInteger())
+        {
+            if(value.isBoolean())
             {
-                value_bool_ = value_->convert<bool>();
-                row_value_type_ = RowValueType::kBoolean;
+                value_bool_ = value.convert<bool>();
+                type_ = DValue::Type::kBoolean;
             }
             else
             {
-                value_int_ = std::stoi(value_->toString());
-                row_value_type_ = RowValueType::kInteger;
+                value_int_ = std::stoi(value.toString());
+                type_ = DValue::Type::kInteger;
             }
         }
         else
         {
-            value_float_ = std::stof(value_->toString());
-            row_value_type_ = RowValueType::kFloat;
+            value_float_ = std::stof(value.toString());
+            type_ = DValue::Type::kFloat;
         }
-    else if(value_->isDate() || value_->isDateTime())
+    else if(value.isDate() || value.isDateTime())
     {
         DateTime date;
         int diff;
 
-        if(DateTimeParser::tryParse(DateTimeFormat::ISO8601_FORMAT, value_->toString(), date, diff))
+        if(DateTimeParser::tryParse(DateTimeFormat::ISO8601_FORMAT, value.toString(), date, diff))
         {
-            DateTimeParser::parse(DateTimeFormat::ISO8601_FORMAT, value_->toString(), date, diff);
+            DateTimeParser::parse(DateTimeFormat::ISO8601_FORMAT, value.toString(), date, diff);
             auto date_string = DateTimeFormatter::format(date, DateTimeFormat::SORTABLE_FORMAT);
 
             value_string_ = date_string;
-            row_value_type_ = RowValueType::kString;
+            type_ = DValue::Type::kString;
         }
         else
         {
-            value_string_ = value_->toString();
-            row_value_type_ = RowValueType::kString;
+            value_string_ = value.toString();
+            type_ = DValue::Type::kString;
         }
     }
     else
     {
-        value_string_ = value_->toString();
-        row_value_type_ = RowValueType::kString;
+        value_string_ = value.toString();
+        type_ = DValue::Type::kString;
     }
 }

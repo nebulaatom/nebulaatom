@@ -21,6 +21,7 @@
 
 
 #include <string>
+#include <stdexcept>
 
 #include <Poco/Dynamic/Var.h>
 #include "Poco/DateTimeParser.h"
@@ -29,12 +30,13 @@
 #include "Poco/DateTimeFormatter.h"
 #include "Poco/Timestamp.h"
 
+#include "tools/output_logger.h"
+
 
 namespace Atom
 {
     namespace Tools
     {
-        enum class RowValueType;
         class DValue;
     }
 }
@@ -42,32 +44,32 @@ namespace Atom
 using namespace Poco;
 
 
-enum class Atom::Tools::RowValueType
-{
-    kEmpty
-    ,kString
-    ,kInteger
-    ,kFloat
-    ,kBoolean
-};
-
 class Atom::Tools::DValue
 {
     public:
+        enum class Type
+        {
+            kEmpty
+            ,kString
+            ,kInteger
+            ,kFloat
+            ,kBoolean
+        };
+
         DValue();
         DValue(Poco::Dynamic::Var& value);
         DValue(std::string value_string);
+        DValue(char* value_string);
         DValue(int value_int);
         DValue(float value_float);
         DValue(bool value_bool);
-        ~DValue();
+        ~DValue(){}
 
-        RowValueType& get_row_value_type()
+        Type& get_type()
         {
-            auto& var = row_value_type_;
+            auto& var = type_;
             return var;
         }
-        Poco::Dynamic::Var* get_value() const { return value_; }
         std::string& get_value_string()
         {
             auto& var = value_string_;
@@ -89,16 +91,19 @@ class Atom::Tools::DValue
             return var;
         }
 
-        void set_value(Poco::Dynamic::Var* value) { value_ = value; }
-
-        bool TypeIsIqual_(RowValueType row_value_type);
+        bool operator==(DValue& dvalue);
+        bool operator!=(DValue& dvalue);
+        bool operator<(DValue& dvalue);
+        bool operator<=(DValue& dvalue);
+        bool operator>(DValue& dvalue);
+        bool operator>=(DValue& dvalue);
+        bool TypeIsIqual_(Type row_value_type);
 
     protected:
-        void Format_();
+        void Format_(Poco::Dynamic::Var& value);
 
     private:
-        RowValueType row_value_type_;
-        Poco::Dynamic::Var* value_;
+        Type type_;
 
         std::string value_string_;
         int value_int_;
