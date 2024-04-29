@@ -94,7 +94,7 @@ set(NEBULAATOM_headers_security
 )
 set(NEBULAATOM_headers_tools
     ${PROJECT_SOURCE_DIR}/src/tools/handler_connection.h
-    ${PROJECT_SOURCE_DIR}/src/tools/manage_json.cmake_host_system_information()
+    ${PROJECT_SOURCE_DIR}/src/tools/manage_json.h
     ${PROJECT_SOURCE_DIR}/src/tools/route.h
     ${PROJECT_SOURCE_DIR}/src/tools/dvalue.h
     ${PROJECT_SOURCE_DIR}/src/tools/sessions_manager.h
