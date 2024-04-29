@@ -6,33 +6,52 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <array>
+#include <map>
+#include <stdexcept>
+#include <vector>
 
 #include "Poco/JSON/Object.h"
+#include <Poco/Net/HTTPServerRequest.h>
+#include "Poco/Data/Session.h"
+#include "Poco/Data/MySQL/Connector.h"
+#include <Poco/Data/MySQL/MySQLException.h>
+#include <Poco/Data/Statement.h>
+#include <Poco/URI.h>
+#include <Poco/StreamCopier.h>
+#include <Poco/JSON/JSON.h>
+#include <Poco/JSON/JSONException.h>
+#include <Poco/JSON/Array.h>
+#include <Poco/JSON/Object.h>
+#include <Poco/JSON/Parser.h>
+#include <Poco/Dynamic/Var.h>
+#include <Poco/Dynamic/Struct.h>
+#include <Poco/Data/RecordSet.h>
 
 #include "query/results.h"
 #include "query/parameter.h"
 #include "query/condition.h"
 #include "tools/manage_json.h"
 #include "tools/output_logger.h"
+#include "tools/dvalue.h"
 
 
 namespace Atom
 {
     namespace Functions
     {
-        enum class ActionType;
         class Action;
     }
 }
 
 using namespace Poco;
+using namespace Poco::Net;
+using namespace Poco::Data;
+using namespace Poco::Data::Keywords;
 
 
-enum class Atom::Functions::ActionType
-{
-    kSQL
-    ,kEmail
-};
+class DatabaseManager;
+class SettingsManager;
 
 class Atom::Functions::Action :
     public Tools::ManageJSON
@@ -43,7 +62,6 @@ class Atom::Functions::Action :
         Action(std::string identifier);
         virtual ~Action();
 
-        ActionType get_action_type() const { return action_type_; }
         std::string get_identifier() const { return identifier_; };
         std::string get_status() const { return status_; };
         std::string get_message() const { return message_; };
@@ -75,23 +93,42 @@ class Atom::Functions::Action :
             auto& var = actions_;
             return var;
         }
+        std::string get_sql_code() const { return sql_code_; };
+        std::string get_final_query() const {return final_query_;}
+        int get_affected_rows_() const {return affected_rows_;}
+        std::shared_ptr<Data::Session>& get_session()
+        {
+            auto& var = session_;
+            return var;
+        }
+        std::shared_ptr<Data::Statement>& get_query()
+        {
+            auto& var = query_;
+            return var;
+        }
 
-        void set_action_type(ActionType action_type) { action_type_ = action_type; }
         void set_identifier(std::string identifier) { identifier_ = identifier; };
         void set_status(std::string status) { status_ = status; };
         void set_message(std::string message) { message_ = message; };
         void set_custom_error(std::string custom_error) { custom_error_ = custom_error; };
         void set_final(bool final) { final_ = final; };
         void set_error(bool error) { error_ = error; };
+        void set_sql_code(std::string sql_code) { sql_code_ = sql_code; };
+        void set_final_query(std::string final_query) {final_query_ = final_query;}
 
         void IdentifyParameters_();
         Query::Parameter& AddParameter_(std::string name, Tools::DValue value, bool editable);
         Query::Parameter& AddParameter_(std::string name, Query::Field::Position field_position, std::string related_action, bool editable);
         Query::Condition& AddCondition_(std::string identifier, Query::ConditionType type, Query::Condition::Functor functor);
-        virtual bool Work_() = 0;
+        bool ComposeQuery_();
+        void ExecuteQuery_();
+        void MakeResults_();
+        JSON::Object::Ptr CreateJSONResult_();
+        virtual bool Work_();
 
     private:
-        ActionType action_type_;
+        bool InitializeQuery_();
+
         std::string identifier_;
         std::string status_;
         std::string message_;
@@ -103,6 +140,12 @@ class Atom::Functions::Action :
         std::shared_ptr<Query::Results> results_;
         JSON::Object::Ptr json_result_;
         std::vector<Ptr> actions_;
+        std::string sql_code_;
+        std::string final_query_;
+        int affected_rows_;
+        std::shared_ptr<Data::Session> session_;
+        std::shared_ptr<Data::Statement> query_;
+        
 };
 
 #endif // FUNCTIONS_ACTION
