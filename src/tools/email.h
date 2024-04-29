@@ -1,10 +1,11 @@
 
-#ifndef FUNCTIONS_EMAIL_ACTION
-#define FUNCTIONS_EMAIL_ACTION
+#ifndef TOOLS_EMAIL
+#define TOOLS_EMAIL
 
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "Poco/Net/MailMessage.h"
 #include "Poco/Net/MailRecipient.h"
@@ -17,15 +18,14 @@
 #include "Poco/Path.h"
 #include "Poco/Exception.h"
 
-#include "functions/action.h"
+#include "tools/output_logger.h"
 
 
 namespace Atom
 {
-    namespace Functions
+    namespace Tools
     {
-        class SSLInitializer;
-        class EmailAction;
+        class Email;
     }
 }
 
@@ -33,27 +33,12 @@ using namespace Poco;
 using namespace Poco::Util;
 
 
-
-class Atom::Functions::SSLInitializer
+class Atom::Tools::Email
 {
     public:
-        SSLInitializer()
-        {
-            Poco::Net::initializeSSL();
-        }
-        
-        ~SSLInitializer()
-        {
-            Poco::Net::uninitializeSSL();
-        }
-};
+        using Ptr = std::shared_ptr<Email>;
 
-class Atom::Functions::EmailAction : public Atom::Functions::Action
-{
-    public:
-        using Ptr = std::shared_ptr<EmailAction>;
-
-        EmailAction(std::string identifier);
+        Email(std::string identifier);
 
         std::string get_mail_host() const { return mail_host_; }
         std::string get_sender() const { return sender_; }
@@ -71,11 +56,7 @@ class Atom::Functions::EmailAction : public Atom::Functions::Action
         void set_email_user(std::string email_user) { email_user_ = email_user; };
         void set_email_password(std::string email_password) { email_password_ = email_password; };
 
-        virtual bool Work_();
-
-    protected:
-        void UpdateDataMembers_();
-        void UpdateMessageParameters_();
+        virtual bool SendEmail_();
 
     private:
         std::string mail_host_;
@@ -87,4 +68,4 @@ class Atom::Functions::EmailAction : public Atom::Functions::Action
         std::string email_password_;
 };
 
-#endif // FUNCTIONS_EMAIL_ACTION
+#endif // TOOLS_EMAIL
