@@ -5,6 +5,7 @@
 #include "http/methods.h"
 #include "query/condition.h"
 #include "query/results.h"
+#include "tools/output_logger.h"
 #include "tools/route.h"
 #include "tools/dvalue.h"
 
@@ -30,26 +31,8 @@ class MainHandler : public Handlers::BackendHandler
                     // Conditions
                         a1->AddCondition_("condition1", Query::ConditionType::kError, [](Query::Results::Ptr results)
                         {
-                            if(results->size() == 0)
-                                return false;
-                            else
-                                return true;
-
-                            /* Example of how to scroll through the results
-                            for(auto row : *results)
-                            {
-                                for(auto field : *row)
-                                {
-                                    if(field->get_column_name() != "name")
-                                        continue;
-
-                                    if(!field->get_value().TypeIsIqual_(Tools::DValue::Type::kString))
-                                        return false;
-
-                                    if(field->get_value().get_value_string() == "Store name")
-                                        return true;
-                                }
-                            }*/
+                            if(results->size() == 0) return false;
+                            else return true;
                         });
 
                 // Action 2
@@ -59,6 +42,22 @@ class MainHandler : public Handlers::BackendHandler
                     a2->set_final(true);
                     // Parameters
                         a2->AddParameter_("id_store", Query::Field::Position{0, 0}, "a1", false);
+                    // Conditions
+                        a2->AddCondition_("condition1", Query::ConditionType::kError, [](Query::Results::Ptr results)
+                        {
+                            // Example of how to scroll through the results
+                            for(auto row : *results)
+                            {
+                                std::string string_row = "";
+                                for(auto field : *row)
+                                    string_row += field->get_column_name() + ": " + field->get_value().ToString_() + ", ";
+
+                                Tools::OutputLogger::Log_(string_row);
+                            }
+                            
+                            return true;
+                        });
+
         }
 
         void Process_() override
