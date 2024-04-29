@@ -98,6 +98,7 @@ class Atom::Tools::DValue
         bool operator>(DValue& dvalue);
         bool operator>=(DValue& dvalue);
         bool TypeIsIqual_(Type row_value_type);
+        std::string ToString_();
 
     protected:
         void Format_(Poco::Dynamic::Var& value);

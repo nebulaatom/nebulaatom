@@ -17,7 +17,6 @@
 
 
 #include "tools/dvalue.h"
-#include "tools/output_logger.h"
 
 using namespace Atom::Tools;
 
@@ -249,6 +248,78 @@ bool DValue::operator>=(DValue& dvalue)
 bool DValue::TypeIsIqual_(DValue::Type row_value_type)
 {
     return row_value_type == type_;
+}
+
+std::string DValue::ToString_()
+{
+    switch(type_)
+    {
+        case Type::kEmpty:
+        {
+            try
+            {
+                throw std::runtime_error("Erro to convert Empty value to String.");
+            }
+            catch(std::exception& error)
+            {
+                Tools::OutputLogger::Log_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
+                return "";
+            }
+            break;
+        }
+        case Type::kBoolean:
+        {
+            try
+            {
+                return std::to_string(value_bool_);
+            }
+            catch(std::exception& error)
+            {
+                Tools::OutputLogger::Log_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
+                return "";
+            }
+            break;
+        }
+        case Type::kFloat:
+        {
+            try
+            {
+                return std::to_string(value_float_);
+            }
+            catch(std::exception& error)
+            {
+                Tools::OutputLogger::Log_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
+                return "";
+            }
+            break;
+        }
+        case Type::kInteger:
+        {
+            try
+            {
+                return std::to_string(value_int_);
+            }
+            catch(std::exception& error)
+            {
+                Tools::OutputLogger::Log_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
+                return "";
+            }
+            break;
+        }
+        case Type::kString:
+        {
+            try
+            {
+                return value_string_;
+            }
+            catch(std::exception& error)
+            {
+                Tools::OutputLogger::Log_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
+                return "";
+            }
+            break;
+        }
+    }
 }
 
 void DValue::Format_(Poco::Dynamic::Var& value)
