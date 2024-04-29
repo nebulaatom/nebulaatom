@@ -9,8 +9,6 @@ set(NEBULAATOM_SOURCES
     ${PROJECT_SOURCE_DIR}/src/files/file_properties.cpp
     ${PROJECT_SOURCE_DIR}/src/files/file.cpp
     ${PROJECT_SOURCE_DIR}/src/functions/action.cpp
-    ${PROJECT_SOURCE_DIR}/src/functions/email_action.cpp
-    ${PROJECT_SOURCE_DIR}/src/functions/sql_action.cpp
     ${PROJECT_SOURCE_DIR}/src/functions/function.cpp
     ${PROJECT_SOURCE_DIR}/src/functions/functions_manager.cpp
     ${PROJECT_SOURCE_DIR}/src/handlers/root_handler.cpp
@@ -42,6 +40,7 @@ set(NEBULAATOM_SOURCES
     ${PROJECT_SOURCE_DIR}/src/tools/sessions_manager.cpp
     ${PROJECT_SOURCE_DIR}/src/tools/settings_manager.cpp
     ${PROJECT_SOURCE_DIR}/src/tools/output_logger.cpp
+    ${PROJECT_SOURCE_DIR}/src/tools/email.cpp
 )
 
 # Headers
@@ -60,8 +59,6 @@ set(NEBULAATOM_headers_files
 )
 set(NEBULAATOM_headers_functions
     ${PROJECT_SOURCE_DIR}/src/functions/action.h
-    ${PROJECT_SOURCE_DIR}/src/functions/email_action.h
-    ${PROJECT_SOURCE_DIR}/src/functions/sql_action.h
     ${PROJECT_SOURCE_DIR}/src/functions/function.h
     ${PROJECT_SOURCE_DIR}/src/functions/functions_manager.h
 )
@@ -103,6 +100,7 @@ set(NEBULAATOM_headers_tools
     ${PROJECT_SOURCE_DIR}/src/tools/sessions_manager.h
     ${PROJECT_SOURCE_DIR}/src/tools/settings_manager.h
     ${PROJECT_SOURCE_DIR}/src/tools/output_logger.h
+    ${PROJECT_SOURCE_DIR}/src/tools/email.h
 )
 set(HEADER
     ${HEADER}
