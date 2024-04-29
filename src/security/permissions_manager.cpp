@@ -27,8 +27,7 @@ std::map<std::string, ActionType> PermissionsManager::action_type_map_ = {};
 
 PermissionsManager::PermissionsManager()
 {
-    // LoadPermissions_();
-    FillActionTypeMap_();
+    
 }
 
 std::_List_iterator<Permission> PermissionsManager::FindPermission_(Tools::Route& route, std::string user, std::string action_type)
@@ -42,7 +41,6 @@ std::_List_iterator<Permission> PermissionsManager::FindPermission_(Tools::Route
 
     auto permission_found = std::find_if(permissions_.begin(), permissions_.end(), [&](Permission& permission)
     {
-
         return permission.get_route() == route
         && permission.get_user()->get_username() == user
         && permission.get_action_type() == action_mapped;
@@ -58,6 +56,7 @@ std::_List_iterator<Permission> PermissionsManager::FindPermission_(Tools::Route
 
 void PermissionsManager::FillActionTypeMap_()
 {
+    action_type_map_.clear();
     action_type_map_.insert({"POST", ActionType::kCreate});
     action_type_map_.insert({"GET", ActionType::kRead});
     action_type_map_.insert({"PUT", ActionType::kUpdate});
@@ -69,6 +68,7 @@ void PermissionsManager::LoadPermissions_()
     try
     {
         mutex_.lock();
+        FillActionTypeMap_();
         if(permissions_.size() > 0)
         {
             return;
@@ -110,14 +110,14 @@ void PermissionsManager::LoadPermissions_()
 
                 // Create permission
                 ActionType action_mapped = ActionType::kRead;
-                auto found = action_type_map_.find(action->get_value().get_value_string());
+                auto found = action_type_map_.find(action->String_());
                 if(found != action_type_map_.end())
                     action_mapped = found->second;
 
                 Permission p
                 {
-                    {endpoint->get_value().get_value_string()}
-                    ,std::make_shared<User>(id_user->get_value().get_value_int(), username->get_value().get_value_string(), ""), action_mapped
+                    Tools::Route{endpoint->String_()}
+                    ,std::make_shared<User>(id_user->Int_(), username->String_(), ""), action_mapped
                 };
 
                 permissions_.push_back(std::move(p));

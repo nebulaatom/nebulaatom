@@ -17,9 +17,6 @@
  */
 
 #include "tools/sessions_manager.h"
-#include "Poco/Exception.h"
-#include "query/parameter.h"
-#include "tools/dvalue.h"
 
 using namespace Atom::Tools;
 
@@ -80,10 +77,10 @@ void SessionsManager::ReadSessions_()
                 }
 
                 Extras::Session new_session;
-                new_session.set_id(identifier->get_value().get_value_string());
-                new_session.set_user(user->get_value().get_value_string());
-                new_session.set_path(path->get_value().get_value_string());
-                new_session.set_max_age(max_age->get_value().get_value_int());
+                new_session.set_id(identifier->String_());
+                new_session.set_user(user->String_());
+                new_session.set_path(path->String_());
+                new_session.set_max_age(max_age->Int_());
 
                 sessions_.emplace(identifier->get_value().get_value_string(), std::move(new_session));
 
@@ -93,6 +90,10 @@ void SessionsManager::ReadSessions_()
     catch(MySQL::MySQLException& error)
     {
         Tools::OutputLogger::Log_("Error on sessions_manager.cpp on ReadSessions_(): " + std::string(error.message()));
+    }
+    catch(std::exception& error)
+    {
+        Tools::OutputLogger::Log_("Error on sessions_manager.cpp on ReadSessions_(): " + std::string(error.what()));
     }
 }
 
@@ -126,10 +127,10 @@ Atom::Extras::Session& SessionsManager::CreateSession_(std::string user, std::st
                 "VALUES (?, ?, ?, ?)"
             ;
             action.set_sql_code(sql_code);
-            action.get_parameters().push_back(Query::Parameter{"identifier", Tools::DValue{id}, false});
-            action.get_parameters().push_back(Query::Parameter{"path", Tools::DValue{path}, false});
-            action.get_parameters().push_back(Query::Parameter{"user", Tools::DValue{user}, false});
-            action.get_parameters().push_back(Query::Parameter{"max_age", Tools::DValue{max_age}, false});
+            action.AddParameter_("identifier", Tools::DValue(id), false);
+            action.AddParameter_("path", Tools::DValue(path), false);
+            action.AddParameter_("user", Tools::DValue(user), false);
+            action.AddParameter_("max_age", Tools::DValue(max_age), false);
 
         // Query process
             action.ComposeQuery_();
@@ -161,7 +162,7 @@ void SessionsManager::DeleteSession_(std::string id)
                 "DELETE FROM _woodpecker_sessions WHERE identifier = ?"
             ;
             action.set_sql_code(sql_code);
-            action.get_parameters().push_back(Query::Parameter{"identifier", Tools::DValue{id}, false});
+            action.AddParameter_("identifier", Tools::DValue(id), false);
 
         // Query process
             action.ComposeQuery_();

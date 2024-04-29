@@ -102,33 +102,33 @@ bool Functions::SQLAction::ComposeQuery_()
                 }
 
                 // Add final value to query
-                switch(param.get_value().get_row_value_type())
+                switch(param.get_value().get_type())
                 {
-                    case Tools::RowValueType::kEmpty:
+                    case Tools::DValue::Type::kEmpty:
                     {
                         auto value = Poco::Nullable<int>();
                         *query_ , use(value);
                         break;
                     }
-                    case Tools::RowValueType::kString:
+                    case Tools::DValue::Type::kString:
                     {
                         auto& value = param.get_value().get_value_string();
                         *query_ , use(value);
                         break;
                     }
-                    case Tools::RowValueType::kInteger:
+                    case Tools::DValue::Type::kInteger:
                     {
                         auto& value = param.get_value().get_value_int();
                         *query_ , use(value);
                         break;
                     }
-                    case Tools::RowValueType::kFloat:
+                    case Tools::DValue::Type::kFloat:
                     {
                         auto& value = param.get_value().get_value_float();
                         *query_ , use(value);
                         break;
                     }
-                    case Tools::RowValueType::kBoolean:
+                    case Tools::DValue::Type::kBoolean:
                     {
                         auto& value = param.get_value().get_value_bool();
                         *query_ , use(value);
@@ -285,21 +285,21 @@ JSON::Object::Ptr Functions::SQLAction::CreateJSONResult_()
                 {
                     auto var = it.get(a);
                     auto row_value = Tools::DValue(var);
-                    switch(row_value.get_row_value_type())
+                    switch(row_value.get_type())
                     {
-                        case Tools::RowValueType::kBoolean:
+                        case Tools::DValue::Type::kBoolean:
                             row_fields->set(results.columnName(a), row_value.get_value_bool());
                             break;
-                        case Tools::RowValueType::kFloat:
+                        case Tools::DValue::Type::kFloat:
                             row_fields->set(results.columnName(a), row_value.get_value_float());
                             break;
-                        case Tools::RowValueType::kInteger:
+                        case Tools::DValue::Type::kInteger:
                             row_fields->set(results.columnName(a), row_value.get_value_int());
                             break;
-                        case Tools::RowValueType::kString:
+                        case Tools::DValue::Type::kString:
                             row_fields->set(results.columnName(a), row_value.get_value_string());
                             break;
-                        case Tools::RowValueType::kEmpty:
+                        case Tools::DValue::Type::kEmpty:
                             row_fields->set(results.columnName(a), "");
                             break;
                     }

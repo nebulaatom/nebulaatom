@@ -23,10 +23,15 @@
 #include <string>
 #include <map>
 #include <mutex>
+#include <exception>
+
+#include "Poco/Exception.h"
 
 #include "extras/session.h"
 #include "functions/sql_action.h"
 #include "tools/output_logger.h"
+#include "query/parameter.h"
+#include "tools/dvalue.h"
 
 namespace Atom
 {
