@@ -22,6 +22,7 @@ set(NEBULAATOM_SOURCES
     ${PROJECT_SOURCE_DIR}/src/http/common_responses.cpp
     ${PROJECT_SOURCE_DIR}/src/http/methods.cpp
     ${PROJECT_SOURCE_DIR}/src/http/request.cpp
+    ${PROJECT_SOURCE_DIR}/src/http/body.cpp
     ${PROJECT_SOURCE_DIR}/src/query/database_manager.cpp
     ${PROJECT_SOURCE_DIR}/src/query/condition.cpp
     ${PROJECT_SOURCE_DIR}/src/query/parameter.cpp
@@ -76,6 +77,7 @@ set(NEBULAATOM_headers_http
     ${PROJECT_SOURCE_DIR}/src/http/common_responses.h
     ${PROJECT_SOURCE_DIR}/src/http/methods.h
     ${PROJECT_SOURCE_DIR}/src/http/request.h
+    ${PROJECT_SOURCE_DIR}/src/http/body.h
 )
 set(NEBULAATOM_headers_query
     ${PROJECT_SOURCE_DIR}/src/query/database_manager.h
