@@ -50,17 +50,29 @@ class Atom::Tools::ManageJSON
         ManageJSON();
         ~ManageJSON();
 
-        JSON::Array::Ptr& get_json_body(){return json_body_;}
-        std::string get_json_body_string() const { return json_body_string_; }
+        JSON::Array::Ptr get_json_array() const { return json_array_; }
+        JSON::Object::Ptr get_json_object() const { return json_object_; }
+        JSON::Array::Ptr& get_json_array()
+        {
+            auto& var = json_array_;
+            return var;
+        }
+        JSON::Object::Ptr& get_json_object()
+        {
+            auto& var = json_object_;
+            return var;
+        }
 
-        std::string ReadBody_(std::istream& stream);
-        bool Parse_(std::string string_to_parse);
+        void set_json_array(JSON::Array::Ptr json_array) { json_array_ = json_array; }
+        void set_json_object(JSON::Object::Ptr json_object) { json_object_ = json_object; }
+
+        void Parse_(std::string& string_to_parse);
         JSON::Object::Ptr ExtractObject_(Dynamic::Var& object);
-        JSON::Array::Ptr ExtractArray_(Dynamic::Var object);
+        JSON::Array::Ptr ExtractArray_(Dynamic::Var& object);
 
     private:
-        JSON::Array::Ptr json_body_;
-        std::string json_body_string_;
+        JSON::Array::Ptr json_array_;
+        JSON::Object::Ptr json_object_;
 };
 
 #endif // ATOM_TOOLS_MANAGEJSON

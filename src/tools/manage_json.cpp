@@ -21,8 +21,8 @@
 using namespace Atom::Tools;
 
 ManageJSON::ManageJSON() :
-    json_body_(new JSON::Array())
-    ,json_body_string_("")
+    json_array_(new JSON::Array())
+    ,json_object_(new JSON::Object())
 {
 
 }
@@ -32,33 +32,16 @@ ManageJSON::~ManageJSON()
 
 }
 
-std::string ManageJSON::ReadBody_(std::istream& stream)
+void ManageJSON::Parse_(std::string& string_to_parse)
 {
-    std::string json_body;
-    StreamCopier::copyToString(stream, json_body);
-
-    if(json_body.empty())
-        return "";
-
-    return json_body;
-}
-
-bool ManageJSON::Parse_(std::string string_to_parse)
-{
-    if(string_to_parse.empty())
-        return false;
-
     JSON::Parser parser;
 
-    Dynamic::Var var_tmp = parser.parse(string_to_parse);
+    Dynamic::Var var_tmp(parser.parse(string_to_parse));
 
-    if(!var_tmp.isArray())
-        return false;
-
-    json_body_ = var_tmp.extract<JSON::Array::Ptr>();
-    json_body_string_ = string_to_parse;
-
-    return true;
+    if(var_tmp.isArray())
+        json_array_ = var_tmp.extract<JSON::Array::Ptr>();
+    else
+        json_object_ = var_tmp.extract<JSON::Object::Ptr>();
 }
 
 JSON::Object::Ptr ManageJSON::ExtractObject_(Dynamic::Var& object)
@@ -69,7 +52,7 @@ JSON::Object::Ptr ManageJSON::ExtractObject_(Dynamic::Var& object)
     return object.extract<JSON::Object::Ptr>();
 }
 
-JSON::Array::Ptr ManageJSON::ExtractArray_(Dynamic::Var object)
+JSON::Array::Ptr ManageJSON::ExtractArray_(Dynamic::Var& object)
 {
     auto final = JSON::Array::Ptr();
 
