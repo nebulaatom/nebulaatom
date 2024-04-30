@@ -213,6 +213,18 @@ void FileManager::ProcessContentLength_()
     }
 }
 
+bool FileManager::VerifyMaxFileSize_()
+{
+    auto max_file_size = Tools::SettingsManager::get_basic_properties_().max_file_size;
+    for(auto& file_it : files_)
+    {
+        int content_length = file_it.get_content_length();
+        if(content_length > max_file_size)
+            return false;
+    }
+    return true;
+}
+
 void FileManager::DownloadFile_(std::ostream& out_response)
 {
     if(files_.empty() || files_.front().get_requested_file()->path() == "")

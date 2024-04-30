@@ -115,6 +115,7 @@ class Atom::Files::FileManager: public Net::PartHandler
         Files::File CreateTempFile_(std::string uri);
         Files::File CreateTempFileFromAddress_(std::string address);
         void ProcessContentLength_();
+        bool VerifyMaxFileSize_();
 
 
     protected:
