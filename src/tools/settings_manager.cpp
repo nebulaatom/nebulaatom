@@ -37,6 +37,7 @@ void Tools::SettingsManager::SetUpProperties_()
     basic_properties_.max_queued = 100;
     basic_properties_.max_threads = 16;
     basic_properties_.timeout = 20;
+    basic_properties_.max_file_size = 15;
     basic_properties_.db_host = "127.0.0.1";
     basic_properties_.db_port = "3306";
     basic_properties_.db_name = "";
@@ -95,6 +96,13 @@ void Tools::SettingsManager::ReadBasicProperties_()
             PrintError_("ReadBasicProperties_", "session_max_age");
             
         basic_properties_.session_max_age = session_max_age.as<int>();
+        
+        // max_file_size
+        auto max_file_size = config["max_file_size"];
+        if (!VerifyYAMLScalarNode_(max_file_size))
+            PrintError_("ReadBasicProperties_", "max_file_size");
+            
+        basic_properties_.max_file_size = max_file_size.as<int>();
         
         // directory_base
         auto directory_base = config["directory_base"];
