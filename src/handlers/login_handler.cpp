@@ -77,9 +77,9 @@ void LoginHandler::StartSession_()
     // Get the user and password
         std::string user = "", password = "";
 
-        if(get_json_body()->size() > 0)
+        if(get_json_array()->size() > 0)
         {
-            auto json_auth = get_json_body()->getObject(0);
+            auto json_auth = get_json_array()->getObject(0);
             if(!json_auth->get("user").isEmpty())
                 user = json_auth->get("user").toString();
             if(!json_auth->get("password").isEmpty())
