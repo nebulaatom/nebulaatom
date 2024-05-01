@@ -107,6 +107,13 @@ void FrontendHandler::UploadProcess_()
             return;
         }
 
+    // Verify max file size
+        if(!file_manager_.VerifyMaxFileSize_())
+        {
+            HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The requested file exceeds the file size limit.");
+            return;
+        }
+
     // Upload file
         file_manager_.UploadFile_();
 
@@ -140,6 +147,13 @@ void FrontendHandler::ModifyProcess_()
         if(!file_manager_.IsSupported_())
         {
             HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Requested file is not supported.");
+            return;
+        }
+        
+    // Verify max file size
+        if(!file_manager_.VerifyMaxFileSize_())
+        {
+            HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The requested file exceeds the file size limit.");
             return;
         }
 
