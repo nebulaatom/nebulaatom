@@ -26,6 +26,7 @@
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPServerResponse.h>
 #include <Poco/Net/HTTPCookie.h>
+#include <Poco/Net/NameValueCollection.h>
 
 
 namespace Atom
@@ -99,10 +100,9 @@ class Atom::HTTP::Request
         }
         std::string get_uri() const { return uri_; }
         std::string get_method() const { return method_; }
+        std::string get_content_type() const { return content_type_; };
+        Net::NameValueCollection get_content_type_parameters() const { return content_type_parameters_; };
 
-        void set_uri(std::string uri) { uri_ = uri; }
-        void set_method(std::string method) { method_ = method; }
-        
         void AddHeader_(std::string name, std::string value);
         void AddCookie_(std::string name, std::string value);
 
@@ -119,7 +119,8 @@ class Atom::HTTP::Request
         std::vector<HTTP::Cookie> cookies_;
         std::string uri_;
         std::string method_;
-
+        std::string content_type_;
+        Net::NameValueCollection content_type_parameters_;
 };
 
 #endif // ATOM_HTTP_REQUEST
