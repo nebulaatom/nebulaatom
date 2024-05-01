@@ -30,8 +30,11 @@
 #include <Poco/JSON/Array.h>
 #include <Poco/Net/NameValueCollection.h>
 #include <Poco/Net/MessageHeader.h>
+#include <Poco/Net/HTTPServerRequest.h>
+#include <Poco/Net/HTMLForm.h>
 
 #include "tools/manage_json.h"
+#include "files/file_manager.h"
 
 
 namespace Atom
@@ -50,7 +53,8 @@ class Atom::HTTP::Body : public Tools::ManageJSON
     public:
         enum class Type
         {
-            kFormURLEncoded
+            kFormMultipart
+            ,kFormURLEncoded
             ,kJSON
             ,kURI
         };
@@ -66,20 +70,27 @@ class Atom::HTTP::Body : public Tools::ManageJSON
             auto& var = query_parameters_;
             return var;
         }
-        Net::NameValueCollection& get_parameters()
+        Files::FileManager& get_files_parameters()
         {
-            auto& var = parameters_;
+            auto& var = files_parameters_;
+            return var;
+        }
+        std::shared_ptr<HTMLForm>& get_form()
+        {
+            auto& var = form_;
             return var;
         }
 
-        void ReadFormURLEncoded_(std::istream& stream);
+        void ReadFormMultipart_(Net::HTTPServerRequest& request);
+        void ReadFormURLEncoded_(Net::HTTPServerRequest& request, std::istream& stream);
         void ReadJSON_(std::istream& stream);
         void ReadFromURI_(std::string& uri);
 
     private:
         Type body_type_;
         URI::QueryParameters query_parameters_;
-        Net::NameValueCollection parameters_;
+        Files::FileManager files_parameters_;
+        std::shared_ptr<HTMLForm> form_;
         
 };
 

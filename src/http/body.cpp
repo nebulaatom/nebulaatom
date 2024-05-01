@@ -22,20 +22,28 @@ using namespace Atom::HTTP;
 
 Body::Body() :
     body_type_(Type::kURI)
+    ,files_parameters_(Files::OperationType::kUpload)
+    ,form_(new Net::HTMLForm)
 {
     
 }
 
-void Body::ReadFormURLEncoded_(std::istream& stream)
+void Body::ReadFormMultipart_(Net::HTTPServerRequest& request)
 {
-    std::string form_body;
-    StreamCopier::copyToString(stream, form_body);
+    form_ = std::make_shared<Net::HTMLForm>(request, request.stream(), files_parameters_);
+    body_type_ = Type::kFormMultipart;
+}
 
-    if(form_body.empty())
+void Body::ReadFormURLEncoded_(Net::HTTPServerRequest& request, std::istream& stream)
+{
+    std::string body_uri;
+    StreamCopier::copyToString(stream, body_uri);
+
+    if(body_uri.empty())
         return;
 
-    std::string tmp;
-    Net::MessageHeader::splitParameters(form_body, tmp, parameters_);
+    body_uri = request.getHost() + "?" + body_uri;
+    ReadFromURI_(body_uri);
     body_type_ = Type::kFormURLEncoded;
 }
 
