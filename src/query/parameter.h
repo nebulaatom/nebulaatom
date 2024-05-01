@@ -45,6 +45,8 @@ enum class Atom::Query::ParameterType
 class Atom::Query::Parameter
 {
     public:
+        using Ptr = std::shared_ptr<Parameter>;
+
         Parameter(std::string name, Tools::DValue value, bool editable);
         Parameter(std::string name, Query::Field::Position field_position, std::string related_action, bool editable);
 

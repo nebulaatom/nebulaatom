@@ -43,6 +43,7 @@ enum class Atom::Query::ConditionType
 class Atom::Query::Condition
 {
     public:
+        using Ptr = std::shared_ptr<Condition>;
         using Functor = std::function<bool(Results::Ptr)>;
 
         Condition(std::string identifier, ConditionType type, Functor functor);
