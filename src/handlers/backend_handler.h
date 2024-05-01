@@ -34,7 +34,7 @@ namespace Atom
 class Atom::Handlers::BackendHandler : public RootHandler
 {
     public:
-        using VectorShrResults = std::vector<std::shared_ptr<Query::Results>>;
+        using VectorShrResults = std::vector<Query::Results::Ptr>;
 
         using RootHandler::RootHandler;
         virtual ~BackendHandler();

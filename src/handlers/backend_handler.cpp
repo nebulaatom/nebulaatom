@@ -52,14 +52,35 @@ void BackendHandler::ProcessActions_()
         {
             Tools::OutputLogger::Log_("Action: " + action->get_identifier() + ", Final: " + std::to_string(action->get_final()));
 
-            // Set JSNO body
-            action->get_json_body().reset(get_json_body());
+            // Set JSON body
+            action->set_json_array(get_json_array());
 
             // Copy actions
             action->get_actions().clear();
             auto& actions = get_current_function()->get_actions();
             action->get_actions().insert(action->get_actions().end(), actions.begin(), actions.end());
             
+            // Identify parameters
+            switch(get_body_type())
+            {
+                case HTTP::Body::Type::kFormMultipart:
+                    action->IdentifyParameters_(get_form());
+                    action->IdentifyParameters_(get_files_parameters());
+                    break;
+                case HTTP::Body::Type::kJSON:
+                    action->IdentifyParameters_(get_json_array());
+                    break;
+                case HTTP::Body::Type::kURI:
+                case HTTP::Body::Type::kFormURLEncoded:
+                    action->IdentifyParameters_(get_query_parameters());
+                    break;
+            }
+            if(action->get_error())
+            {
+                JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, action->get_custom_error());
+                return;
+            }
+
             // Execute action
             if(!action->Work_())
             {
@@ -69,7 +90,7 @@ void BackendHandler::ProcessActions_()
 
             // Set JSON results
             if(action->get_final())
-                json_result.reset(action->get_json_result());
+                json_result = action->get_json_result();
 
         }
 
