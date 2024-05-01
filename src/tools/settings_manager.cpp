@@ -102,7 +102,7 @@ void Tools::SettingsManager::ReadBasicProperties_()
         if (!VerifyYAMLScalarNode_(max_file_size))
             PrintError_("ReadBasicProperties_", "max_file_size");
             
-        basic_properties_.max_file_size = max_file_size.as<int>();
+        basic_properties_.max_file_size = max_file_size.as<float>();
         
         // directory_base
         auto directory_base = config["directory_base"];
