@@ -67,6 +67,7 @@
 #include "tools/settings_manager.h"
 #include "tools/output_logger.h"
 #include "http/methods.h"
+#include "http/body.h"
 
 
 namespace Atom
@@ -90,8 +91,8 @@ class Atom::Handlers::RootHandler :
     public HTTPRequestHandler
     ,public HTTP::CommonResponses
     ,public HTTP::Methods
-    ,public Tools::ManageJSON
     ,public Extras::SecurityVerification
+    ,public HTTP::Body
 {
     public:
         RootHandler();
@@ -116,9 +117,6 @@ class Atom::Handlers::RootHandler :
         virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
         bool SetupSSL_();
         Functions::Function::Ptr AddFunction_(std::string endpoint, HTTP::EnumMethods method);
-        
-
-    protected:
         virtual void Process_() = 0;
         bool VerifySession_();
         bool VerifyPermissions_();

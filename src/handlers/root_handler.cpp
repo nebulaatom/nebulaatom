@@ -169,19 +169,24 @@ bool RootHandler::IdentifyRoute_()
 void RootHandler::ManageRequestBody_()
 {
     auto request = get_http_server_request().value();
-    std::string request_body = ReadBody_(request->stream());
-
-    if(request_body.empty())
+    if(get_method() == "POST" || get_method() == "PUT")
     {
-        URI tmp_uri(request->getURI());
-        if(!(tmp_uri.getQueryParameters().size() > 0))
-            return;
-        if(tmp_uri.getQueryParameters()[0].first != "json")
-            return;
-        if(tmp_uri.getQueryParameters()[0].second.empty())
-            return;
-        request_body = tmp_uri.getQueryParameters()[0].second;
+        if(get_content_type() == "multipart/form-data")
+        {
+            ReadFormMultipart_(*request);
+        }
+        else if(get_content_type() == "application/x-www-form-urlencoded")
+        {
+            ReadFormURLEncoded_(*request, request->stream());
+        }
+        else if(get_content_type() == "application/json")
+        {
+            ReadJSON_(request->stream());
+        }
     }
-
-    Parse_(request_body);
+    else
+    {
+        std::string uri = request->getURI();
+        ReadFromURI_(uri);
+    }
 }
