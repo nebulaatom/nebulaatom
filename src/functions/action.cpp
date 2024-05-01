@@ -110,29 +110,126 @@ void Action::IdentifyParameters_()
                             auto index = std::distance(get_parameters().begin(), found_param);
                             get_parameters().erase(found_param);
 
-                            // Insert new element
-                            auto parameter = Query::Parameter(parameter_name, parameter_value, true);
-                            get_parameters().insert(get_parameters().begin() + index, std::move(parameter));
-                        }
-                    }
 
+void Action::IdentifyParameters_(JSON::Array::Ptr json_array)
+{
+    try
+    {
+        // Iterate over JSON array
+        for (std::size_t a = 0; a < json_array->size(); a++)
+        {
+            // Get Parameters Array
+                JSON::Array::Ptr parameters_array = GetParametersArray_(json_array, a);
+                if(parameters_array == nullptr)
+                    continue;
+
+            // Iterate over parameters array
+                for(std::size_t b = 0; b < parameters_array->size(); b++)
+                {
+                    // Get parameter object
+                    Query::Parameter::Ptr parameter = GetParameterObject_(parameters_array, b);
+                    if(parameter == nullptr)
+                        continue;
+
+                    // Replace Parameter
+                    ReplaceParamater_(parameter);
                 }
 
         }
     }
-    catch(std::runtime_error& error)
-    {
-        std::string string_error = "Error on query_actions.cpp on IdentifyFilters_(): " + std::string(error.what());
-        Tools::OutputLogger::Log_(string_error);
-        set_error(true);
-        set_custom_error(string_error);
-    }
     catch(JSON::JSONException& error)
     {
-        std::string string_error = "Error on query_actions.cpp on IdentifyFilters_(): " + std::string(error.what());
-        Tools::OutputLogger::Log_(string_error);
-        set_error(true);
-        set_custom_error(string_error);
+        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
+    }
+    catch(std::runtime_error& error)
+    {
+        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
+    }
+    catch(std::exception& error)
+    {
+        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
+    }
+}
+
+void Action::IdentifyParameters_(std::shared_ptr<Net::HTMLForm> form)
+{
+    try
+    {
+        // Iterate over files
+        for (auto& value : *form)
+        {
+            // Get parameter object
+            Query::Parameter::Ptr parameter(new Query::Parameter(value.first, value.second, true));
+
+            // Replace Parameter
+            ReplaceParamater_(parameter);
+        }
+    }
+    catch(std::runtime_error& error)
+    {
+        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
+    }
+    catch(std::exception& error)
+    {
+        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
+    }
+}
+
+void Action::IdentifyParameters_(Files::FileManager& files_parameters)
+{
+    try
+    {
+        // Iterate over files
+        for (auto& file : files_parameters.get_files())
+        {
+            float filesize = file.get_tmp_file()->getSize();
+            if(filesize > Tools::SettingsManager::get_basic_properties_().max_file_size * 1000000)
+                continue;
+
+            std::ifstream istr;
+            std::stringstream parameter_value;
+            istr.open(file.get_tmp_file()->path());
+            StreamCopier::copyStream(istr, parameter_value);
+            istr.close();
+
+            // Get parameter object
+            Query::Parameter::Ptr parameter(new Query::Parameter(file.get_name(), parameter_value.str(), true));
+
+            // Replace Parameter
+            ReplaceParamater_(parameter);
+        }
+    }
+    catch(std::runtime_error& error)
+    {
+        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
+    }
+    catch(std::exception& error)
+    {
+        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
+    }
+}
+
+void Action::IdentifyParameters_(URI::QueryParameters& query_parameters)
+{
+    try
+    {
+        // Iterate over JSON array
+        for (auto& query_parameter : query_parameters)
+        {
+            // Get parameter object
+            Query::Parameter::Ptr parameter(new Query::Parameter(query_parameter.first, query_parameter.second, true));
+
+            // Replace Parameter
+            ReplaceParamater_(parameter);
+        }
+    }
+    catch(std::runtime_error& error)
+    {
+        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
+    }
+    catch(std::exception& error)
+    {
+        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
     }
 }
 

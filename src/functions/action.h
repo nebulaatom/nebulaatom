@@ -116,10 +116,10 @@ class Atom::Functions::Action :
         void set_sql_code(std::string sql_code) { sql_code_ = sql_code; };
         void set_final_query(std::string final_query) {final_query_ = final_query;}
 
-        void IdentifyParameters_();
-        Query::Parameter& AddParameter_(std::string name, Tools::DValue value, bool editable);
-        Query::Parameter& AddParameter_(std::string name, Query::Field::Position field_position, std::string related_action, bool editable);
-        Query::Condition& AddCondition_(std::string identifier, Query::ConditionType type, Query::Condition::Functor functor);
+        void IdentifyParameters_(std::shared_ptr<Net::HTMLForm> form);
+        void IdentifyParameters_(Files::FileManager& files_parameters);
+        void IdentifyParameters_(JSON::Array::Ptr json_array);
+        void IdentifyParameters_(URI::QueryParameters& query_parameters);
         bool ComposeQuery_();
         void ExecuteQuery_();
         void MakeResults_();
