@@ -26,90 +26,91 @@ Action::~Action()
 
 }
 
-
-void Action::IdentifyParameters_()
+JSON::Array::Ptr Action::GetParametersArray_(JSON::Array::Ptr json_array, int counter)
 {
-    try
+    // Get the action object
+    if(json_array->get(counter).isEmpty())
     {
-        auto& data_array = get_json_body();
+        Tools::OutputLogger::Log_("Warning on action.cpp on GetParametersArray_(): Data array haves an empty action.");
+        return nullptr;
+    }
+    auto action_object = json_array->getObject(counter);
 
-        for (std::size_t a = 0; a < data_array->size(); a++)
-        {
-            // Get the action object
-                if(data_array->get(a).isEmpty())
-                {
-                    Tools::OutputLogger::Log_("Data array haves an empty action.");
-                    continue;
-                }
+    // Get the action identifier
+    if(action_object->get("action_id").isEmpty() || !action_object->get("action_id").isString())
+    {
+        Tools::OutputLogger::Log_("Warning on action.cpp on GetParametersArray_(): The action object does not have an action_id String Object.");
+        return nullptr;
+    }
+    auto action_id = action_object->get("action_id").toString();
 
-                auto action_object = data_array->getObject(a);
+    // Verify Action identifier
+    if(action_id != get_identifier())
+        return nullptr;
 
-            // Get the action identifier
-                if(action_object->get("action_id").isEmpty() || !action_object->get("action_id").isString())
-                {
-                    Tools::OutputLogger::Log_("The action object does not have an action_id String Object.");
-                    continue;
-                }
+    // Get the parameters object
+    if(action_object->get("parameters").isEmpty() || !action_object->get("parameters").isArray())
+    {
+        Tools::OutputLogger::Log_("Warning on action.cpp on GetParametersArray_(): The action object does not have a parameters array.");
+        return nullptr;
+    }
 
-                auto action_id = action_object->get("action_id").toString();
+    return action_object->getArray("parameters");
+}
 
-            // Verify Action identifier
-                if(action_id != get_identifier())
-                    continue;
+Query::Parameter::Ptr Action::GetParameterObject_(JSON::Array::Ptr parameters_array, int counter)
+{
+    if(parameters_array->get(counter).isEmpty())
+    {
+        Tools::OutputLogger::Log_("Warning on action.cpp on GetParameterObject_(): Parameters array haves an empty element.");
+        return nullptr;
+    }
 
-            // Get the parameters object
-                if(action_object->get("parameters").isEmpty() || !action_object->get("parameters").isArray())
-                {
-                    Tools::OutputLogger::Log_("The action object does not have a parameters array.");
-                    continue;
-                }
+    auto parameter_object = parameters_array->getObject(counter);
 
-                auto parameters_array = action_object->getArray("parameters");
+    // Get parameter name
+    if(parameter_object->get("name").isEmpty() || !parameter_object->get("name").isString())
+    {
+        Tools::OutputLogger::Log_("Warning on action.cpp on GetParameterObject_(): Parameter name is not a String Object.");
+        return nullptr;
+    }
 
-            // Iterate over parameters array
-                for(std::size_t b = 0; b < parameters_array->size(); b++)
-                {
-                    // Get parameter object
-                    if(parameters_array->get(b).isEmpty())
-                    {
-                        Tools::OutputLogger::Log_("Parameters array haves an empty element.");
-                        continue;
-                    }
+    auto parameter_name = parameter_object->get("name").toString();
 
-                    auto parameter_object = parameters_array->getObject(b);
+    // Get parameter value
+    if(parameter_object->get("value").isEmpty())
+    {
+        Tools::OutputLogger::Log_("Warning on action.cpp on GetParameterObject_(): Parameter value is empty.");
+        return nullptr;
+    }
 
-                    // Get parameter name
-                    if(parameter_object->get("name").isEmpty() || !parameter_object->get("name").isString())
-                    {
-                        Tools::OutputLogger::Log_("Parameter name is not a String Object.");
-                        continue;
-                    }
+    auto parameter_value = parameter_object->get("value");
 
-                    auto parameter_name = parameter_object->get("name").toString();
+    // Create and return parameter
+    Query::Parameter::Ptr parameter(new Query::Parameter(parameter_name, parameter_value, true));
+    return parameter;
+}
 
-                    // Get parameter value
-                    if(parameter_object->get("value").isEmpty())
-                    {
-                        Tools::OutputLogger::Log_("Parameter value is empty.");
-                        continue;
-                    }
+void Action::ReplaceParamater_(Query::Parameter::Ptr parameter)
+{
+    // Find if exists parameter
+    auto found_param = std::find_if(parameters_.begin(), parameters_.end(), [parameter](Query::Parameter::Ptr& param)
+    {
+        return param->get_name() == parameter->get_name();
+    });
 
-                    auto parameter_value = parameter_object->get("value");
+    // Remplace parameter value
+    if(found_param != parameters_.end())
+    {
+        if(!found_param->get()->get_editable()) return;
 
-                    // Find if exists parameter
-                    auto found_param = std::find_if(get_parameters().begin(), get_parameters().end(), [parameter_name](Query::Parameter parameter)
-                    {
-                        return parameter.get_name() == parameter_name;
-                    });
+        auto index = std::distance(parameters_.begin(), found_param);
+        parameters_.erase(found_param);
 
-                    // Remplace parameter value
-                    if(found_param != get_parameters().end())
-                    {
-                        if(found_param->get_editable())
-                        {
-                            auto index = std::distance(get_parameters().begin(), found_param);
-                            get_parameters().erase(found_param);
-
+        // Insert new element
+        parameters_.insert(parameters_.begin() + index, parameter);
+    }
+}
 
 void Action::IdentifyParameters_(JSON::Array::Ptr json_array)
 {
@@ -233,32 +234,26 @@ void Action::IdentifyParameters_(URI::QueryParameters& query_parameters)
     }
 }
 
-Query::Parameter& Action::AddParameter_(std::string name, Tools::DValue value, bool editable)
+Query::Parameter::Ptr Action::AddParameter_(std::string name, Tools::DValue value, bool editable)
 {
-    parameters_.push_back(Query::Parameter{name, value, editable});
+    parameters_.push_back(std::make_shared<Query::Parameter>(name, value, editable));
     return parameters_.back();
 }
 
-Query::Parameter& Action::AddParameter_(std::string name, Query::Field::Position field_position, std::string related_action, bool editable)
+Query::Parameter::Ptr Action::AddParameter_(std::string name, Query::Field::Position field_position, std::string related_action, bool editable)
 {
-    parameters_.push_back(Query::Parameter{name, field_position, related_action, editable});
+    parameters_.push_back(std::make_shared<Query::Parameter>(name, field_position, related_action, editable));
     return parameters_.back();
 }
 
-Query::Condition& Action::AddCondition_(std::string identifier, Query::ConditionType type, Query::Condition::Functor functor)
+Query::Condition::Ptr Action::AddCondition_(std::string identifier, Query::ConditionType type, Query::Condition::Functor functor)
 {
-    Query::Condition condition(identifier, type, functor);
-    conditions_.push_back(condition);
+    conditions_.push_back(std::make_shared<Query::Condition>(identifier, type, functor));
     return conditions_.back();
 }
 
 bool Action::Work_()
 {
-    // Identify parameters
-    IdentifyParameters_();
-    if(get_error())
-        return false;
-
     // Compose query
     ComposeQuery_();
     if(get_error())
@@ -277,20 +272,20 @@ bool Action::Work_()
     // Verify Conditions
     for(auto& condition : get_conditions())
     {
-        if(!condition.VerifyCondition_(get_results()))
+        if(!condition->VerifyCondition_(get_results()))
         {
-            switch(condition.get_type())
+            switch(condition->get_type())
             {
                 case Query::ConditionType::kWarning:
                 {
-                    Tools::OutputLogger::Log_("Condition warning (" + condition.get_identifier() + ").");
+                    Tools::OutputLogger::Log_("Condition warning (" + condition->get_identifier() + ").");
 
                     return true;
                     break;
                 }
                 case Query::ConditionType::kError:
                 {
-                    set_custom_error("Condition error (" + condition.get_identifier() + ").");
+                    set_custom_error("Condition error (" + condition->get_identifier() + ").");
                     return false;
                     break;
                 }
@@ -300,9 +295,9 @@ bool Action::Work_()
 
     if(get_final())
     {
-        get_json_result() = CreateJSONResult_();
-        get_json_result()->set("status", get_status());
-        get_json_result()->set("message", get_message());
+        json_result_ = CreateJSONResult_();
+        json_result_->set("status", get_status());
+        json_result_->set("message", get_message());
     }
 
     return true;
@@ -320,26 +315,26 @@ bool Action::ComposeQuery_()
             *query_ << sql_code_;
 
         // Set the parameters
-            for(auto& param : get_parameters())
+            for(auto& param : parameters_)
             {
                 // Verify conditional parameter
-                if(param.get_parameter_type() == Query::ParameterType::kPosition)
+                if(param->get_parameter_type() == Query::ParameterType::kPosition)
                 {
                     // Find action results
-                    auto action_found = std::find_if(get_actions().begin(), get_actions().end(),[&param](std::shared_ptr<Functions::Action>& action)
+                    auto action_found = std::find_if(get_actions().begin(), get_actions().end(),[&param](Functions::Action::Ptr action)
                     {
-                        return action->get_identifier() == param.get_related_action();
+                        return action->get_identifier() == param->get_related_action();
                     });
 
                     if(action_found != get_actions().end())
                     {
-                        auto row_value = action_found->get()->get_results()->FindField_(param.get_field_position());
-                        param.set_value(row_value->get_value());
+                        auto row_value = action_found->get()->get_results()->FindField_(param->get_field_position());
+                        param->set_value(row_value->get_value());
                     }
                 }
 
                 // Add final value to query
-                switch(param.get_value().get_type())
+                switch(param->get_value().get_type())
                 {
                     case Tools::DValue::Type::kEmpty:
                     {
@@ -349,25 +344,25 @@ bool Action::ComposeQuery_()
                     }
                     case Tools::DValue::Type::kString:
                     {
-                        auto& value = param.get_value().get_value_string();
+                        auto& value = param->get_value().get_value_string();
                         *query_ , use(value);
                         break;
                     }
                     case Tools::DValue::Type::kInteger:
                     {
-                        auto& value = param.get_value().get_value_int();
+                        auto& value = param->get_value().get_value_int();
                         *query_ , use(value);
                         break;
                     }
                     case Tools::DValue::Type::kFloat:
                     {
-                        auto& value = param.get_value().get_value_float();
+                        auto& value = param->get_value().get_value_float();
                         *query_ , use(value);
                         break;
                     }
                     case Tools::DValue::Type::kBoolean:
                     {
-                        auto& value = param.get_value().get_value_bool();
+                        auto& value = param->get_value().get_value_bool();
                         *query_ , use(value);
                         break;
                     }
@@ -380,26 +375,17 @@ bool Action::ComposeQuery_()
     }
     catch(MySQL::MySQLException& error)
     {
-        std::string string_error = "Error on query_actions.cpp on ComposeQuery_(): " + std::string(error.message());
-        Tools::OutputLogger::Log_(string_error);
-        set_error(true);
-        set_custom_error(string_error);
+        NotifyError_("Error on action.cpp on ComposeQuery_(): " + std::string(error.message()));
         return false;
     }
     catch(std::runtime_error& error)
     {
-        std::string string_error = "Error on query_actions.cpp on ComposeQuery_(): " + std::string(error.what());
-        Tools::OutputLogger::Log_(string_error);
-        set_error(true);
-        set_custom_error(string_error);
+        NotifyError_("Error on action.cpp on ComposeQuery_(): " + std::string(error.what()));
         return false;
     }
     catch(std::exception& error)
     {
-        std::string string_error = "Error on query_actions.cpp on ComposeQuery_(): " + std::string(error.what());
-        Tools::OutputLogger::Log_(string_error);
-        set_error(true);
-        set_custom_error(string_error);
+        NotifyError_("Error on action.cpp on ComposeQuery_(): " + std::string(error.what()));
         return false;
     }
     return false;
@@ -413,26 +399,17 @@ void Action::ExecuteQuery_()
     }
     catch(MySQL::MySQLException& error)
     {
-        std::string string_error = "Error on query_actions.cpp on ExecuteQuery_(): " + std::string(error.message());
-        Tools::OutputLogger::Log_(string_error);
-        set_error(true);
-        set_custom_error(string_error);
+        NotifyError_("Error on action.cpp on ExecuteQuery_(): " + std::string(error.message()));
         return;
     }
     catch(std::runtime_error& error)
     {
-        std::string string_error = "Error on query_actions.cpp on ExecuteQuery_(): " + std::string(error.what());
-        Tools::OutputLogger::Log_(string_error);
-        set_error(true);
-        set_custom_error(string_error);
+        NotifyError_("Error on action.cpp on ExecuteQuery_(): " + std::string(error.what()));
         return;
     }
     catch(std::exception& error)
     {
-        std::string string_error = "Error on query_actions.cpp on ExecuteQuery_(): " + std::string(error.what());
-        Tools::OutputLogger::Log_(string_error);
-        set_error(true);
-        set_custom_error(string_error);
+        NotifyError_("Error on action.cpp on ExecuteQuery_(): " + std::string(error.what()));
         return;
     }
 }
@@ -471,26 +448,17 @@ void Action::MakeResults_()
     }
     catch(JSON::JSONException& error)
     {
-        std::string string_error = "Error on query_actions.cpp on CreateJSONResult_(): " + std::string(error.message());
-        Tools::OutputLogger::Log_(string_error);
-        set_error(true);
-        set_custom_error(string_error);
+        NotifyError_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.message()));
         return;
     }
     catch(std::runtime_error& error)
     {
-        std::string string_error = "Error on query_actions.cpp on CreateJSONResult_(): " + std::string(error.what());
-        Tools::OutputLogger::Log_(string_error);
-        set_error(true);
-        set_custom_error(string_error);
+        NotifyError_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.what()));
         return;
     }
     catch(std::exception& error)
     {
-        std::string string_error = "Error on query_actions.cpp on CreateJSONResult_(): " + std::string(error.what());
-        Tools::OutputLogger::Log_(string_error);
-        set_error(true);
-        set_custom_error(string_error);
+        NotifyError_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.what()));
         return;
     }
 
@@ -551,19 +519,26 @@ JSON::Object::Ptr Action::CreateJSONResult_()
     }
     catch(JSON::JSONException& error)
     {
-        Tools::OutputLogger::Log_("Error on query_actions.cpp on CreateJSONResult_(): " + std::string(error.message()));
+        Tools::OutputLogger::Log_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.message()));
         return JSON::Object::Ptr{};
     }
     catch(std::runtime_error& error)
     {
-        Tools::OutputLogger::Log_("Error on query_actions.cpp on CreateJSONResult_(): " + std::string(error.what()));
+        Tools::OutputLogger::Log_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.what()));
         return JSON::Object::Ptr{};
     }
     catch(std::exception& error)
     {
-        Tools::OutputLogger::Log_("Error on query_actions.cpp on CreateJSONResult_(): " + std::string(error.what()));
+        Tools::OutputLogger::Log_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.what()));
         return JSON::Object::Ptr{};
     }
+}
+
+void Action::NotifyError_(std::string message)
+{
+    Tools::OutputLogger::Log_(message);
+    set_error(true);
+    set_custom_error(message);
 }
 
 bool Action::InitializeQuery_()
@@ -582,26 +557,17 @@ bool Action::InitializeQuery_()
     }
     catch(MySQL::MySQLException& error)
     {
-        std::string string_error = "Error on query_actions.cpp on InitializeQuery_(): " + std::string(error.message());
-        Tools::OutputLogger::Log_(string_error);
-        set_error(true);
-        set_custom_error(string_error);
+        NotifyError_("Error on action.cpp on InitializeQuery_(): " + std::string(error.message()));
         return false;
     }
     catch(std::runtime_error& error)
     {
-        std::string string_error = "Error on query_actions.cpp on InitializeQuery_(): " + std::string(error.what());
-        Tools::OutputLogger::Log_(string_error);
-        set_error(true);
-        set_custom_error(string_error);
+        NotifyError_("Error on action.cpp on InitializeQuery_(): " + std::string(error.what()));
         return false;
     }
     catch(std::exception& error)
     {
-        std::string string_error = "Error on query_actions.cpp on InitializeQuery_(): " + std::string(error.what());
-        Tools::OutputLogger::Log_(string_error);
-        set_error(true);
-        set_custom_error(string_error);
+        NotifyError_("Error on action.cpp on InitializeQuery_(): " + std::string(error.what()));
         return false;
     }
     return false;

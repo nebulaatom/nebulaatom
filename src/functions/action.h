@@ -27,6 +27,7 @@
 #include <Poco/Dynamic/Var.h>
 #include <Poco/Dynamic/Struct.h>
 #include <Poco/Data/RecordSet.h>
+#include <Poco/Net/HTMLForm.h>
 
 #include "query/results.h"
 #include "query/parameter.h"
@@ -34,6 +35,7 @@
 #include "tools/manage_json.h"
 #include "tools/output_logger.h"
 #include "tools/dvalue.h"
+#include "files/file_manager.h"
 
 
 namespace Atom
@@ -68,22 +70,22 @@ class Atom::Functions::Action :
         std::string get_custom_error() const { return custom_error_; };
         bool get_final() const { return final_; };
         bool get_error() const { return error_; };
-        std::vector<Query::Condition>& get_conditions()
+        std::vector<Query::Condition::Ptr> get_conditions()
         {
             auto& var = conditions_;
             return var;
         }
-        std::vector<Query::Parameter>& get_parameters()
+        std::vector<Query::Parameter::Ptr> get_parameters()
         {
             auto& var = parameters_;
             return var;
         }
-        std::shared_ptr<Query::Results>& get_results()
+        Query::Results::Ptr get_results()
         {
             auto& var = results_;
             return var;
         }
-        JSON::Object::Ptr& get_json_result()
+        JSON::Object::Ptr get_json_result()
         {
             auto& var = json_result_;
             return var;
@@ -116,6 +118,12 @@ class Atom::Functions::Action :
         void set_sql_code(std::string sql_code) { sql_code_ = sql_code; };
         void set_final_query(std::string final_query) {final_query_ = final_query;}
 
+        JSON::Array::Ptr GetParametersArray_(JSON::Array::Ptr json_array, int counter);
+        Query::Parameter::Ptr GetParameterObject_(JSON::Array::Ptr parameters_array, int counter);
+        void ReplaceParamater_(Query::Parameter::Ptr parameter);
+        Query::Parameter::Ptr AddParameter_(std::string name, Tools::DValue value, bool editable);
+        Query::Parameter::Ptr AddParameter_(std::string name, Query::Field::Position field_position, std::string related_action, bool editable);
+        Query::Condition::Ptr AddCondition_(std::string identifier, Query::ConditionType type, Query::Condition::Functor functor);
         void IdentifyParameters_(std::shared_ptr<Net::HTMLForm> form);
         void IdentifyParameters_(Files::FileManager& files_parameters);
         void IdentifyParameters_(JSON::Array::Ptr json_array);
@@ -126,6 +134,9 @@ class Atom::Functions::Action :
         JSON::Object::Ptr CreateJSONResult_();
         virtual bool Work_();
 
+    protected:
+        void NotifyError_(std::string message);
+
     private:
         bool InitializeQuery_();
 
@@ -135,8 +146,8 @@ class Atom::Functions::Action :
         std::string custom_error_;
         bool final_;
         bool error_;
-        std::vector<Query::Condition> conditions_;
-        std::vector<Query::Parameter> parameters_;
+        std::vector<Query::Condition::Ptr> conditions_;
+        std::vector<Query::Parameter::Ptr> parameters_;
         std::shared_ptr<Query::Results> results_;
         JSON::Object::Ptr json_result_;
         std::vector<Ptr> actions_;
