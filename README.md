@@ -7,8 +7,6 @@
 
 ## Introduction
 
-Developed, designed and made by the **Software Developers Team** of NebulaCSF | [NebulaCSF website](https://nebulacsf.com)
-
 Hello! Thank you for using this software, developed with a lot of effort and affection for the Free Software community.
 
 ## About this software
@@ -64,9 +62,35 @@ cmake --build . --target install
 
 **Work in progress!**
 
+- Hello World example:
+
+```cpp
+#include "core/nebula_atom.h"
+#include "handlers/custom_handler.h"
+#include "http/request.h"
+
+using namespace Atom;
+
+int main(int argc, char** argv)
+{
+    Core::NebulaAtom app;
+
+    app.CustomHandlerCreator_([&](Core::HTTPRequestInfo&)
+    {
+        return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
+        {
+            self.CustomHTMLResponse_(HTTP::Status::kHTTP_OK, "Hello!");
+        });
+    });
+
+    return app.Init_(argc, argv);
+}
+```
+
 ## Contact
 
 - **Gitlab**: [@nebulacsf](https://gitlab.com/nebulacsf/software/main/nebula-atom)
+- **Github**: [@nebulacsf](https://github.com/NebulaCSF/nebula-atom)
 - **Web**: [NebulaCSF](https://www.nebulacsf.com)
 - **Email**: [NebulaCSF](mailto:support@nebulacsf.com)
 
