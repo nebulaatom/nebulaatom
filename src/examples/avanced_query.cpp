@@ -68,6 +68,14 @@ int main(int argc, char** argv)
             result->set("message", a1.get_message());
 
             self.CompoundResponse_(HTTP::Status::kHTTP_OK, result);
+
+            // Create ASYNC query (for logs, notifications and another activities)
+
+            Functions::Action a2("a2");
+            a1.set_sql_code("INSERT INTO test_logs (log) VALUES ('test log')");
+            a1.ComposeQuery_();
+            a1.ExecuteAsyncQuery_();
+            Tools::OutputLogger::Log_("Continue...");
         });
     });
 
