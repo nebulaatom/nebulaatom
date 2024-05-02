@@ -10,6 +10,7 @@
 #include <map>
 #include <stdexcept>
 #include <vector>
+#include <thread>
 
 #include "Poco/JSON/Object.h"
 #include <Poco/Net/HTTPServerRequest.h>
@@ -130,6 +131,7 @@ class Atom::Functions::Action :
         void IdentifyParameters_(URI::QueryParameters& query_parameters);
         bool ComposeQuery_();
         void ExecuteQuery_();
+        void ExecuteAsyncQuery_();
         void MakeResults_();
         JSON::Object::Ptr CreateJSONResult_();
         virtual bool Work_();
@@ -140,6 +142,8 @@ class Atom::Functions::Action :
     private:
         bool InitializeQuery_();
 
+        bool async_;
+        bool async_finished_;
         std::string identifier_;
         std::string status_;
         std::string message_;

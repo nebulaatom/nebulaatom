@@ -1,13 +1,16 @@
 
 #include "functions/action.h"
 #include "query/database_manager.h"
+#include "tools/output_logger.h"
 #include "tools/settings_manager.h"
 
 using namespace Atom;
 using namespace Atom::Functions;
 
 Action::Action(std::string identifier) :
-    identifier_(identifier)
+    async_(false)
+    ,async_finished_(false)
+    ,identifier_(identifier)
     ,status_("OK.")
     ,message_("OK.")
     ,custom_error_("")
@@ -23,7 +26,16 @@ Action::Action(std::string identifier) :
 
 Action::~Action()
 {
-
+    // The current object will be destroyed when the 
+    // asynchronous function finishes executing
+    if(async_)
+    {
+        while(true)
+        {
+            if(async_finished_)
+                break;
+        }
+    }
 }
 
 JSON::Array::Ptr Action::GetParametersArray_(JSON::Array::Ptr json_array, int counter)
@@ -396,6 +408,7 @@ void Action::ExecuteQuery_()
     try
     {
         affected_rows_ = query_->execute();
+        if(async_) async_finished_ = true;
     }
     catch(MySQL::MySQLException& error)
     {
@@ -410,6 +423,32 @@ void Action::ExecuteQuery_()
     catch(std::exception& error)
     {
         NotifyError_("Error on action.cpp on ExecuteQuery_(): " + std::string(error.what()));
+        return;
+    }
+}
+
+void Action::ExecuteAsyncQuery_()
+{
+    try
+    {
+        async_ = true;
+        async_finished_ = false;
+        std::thread thread_obj(&Action::ExecuteQuery_, this);
+        thread_obj.detach();
+    }
+    catch(MySQL::MySQLException& error)
+    {
+        NotifyError_("Error on action.cpp on ExecuteAsyncQuery_(): " + std::string(error.message()));
+        return;
+    }
+    catch(std::runtime_error& error)
+    {
+        NotifyError_("Error on action.cpp on ExecuteAsyncQuery_(): " + std::string(error.what()));
+        return;
+    }
+    catch(std::exception& error)
+    {
+        NotifyError_("Error on action.cpp on ExecuteAsyncQuery_(): " + std::string(error.what()));
         return;
     }
 }
