@@ -31,6 +31,7 @@ Route::Route(std::string route) :
     ,current_route_type_(RouteType::kEntrypoint)
 {
     StringToSegment_(route);
+    IdentifyRouteType_();
 }
 
 Route::Route(std::vector<std::string> segments) :
