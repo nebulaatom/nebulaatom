@@ -50,7 +50,7 @@ DValue::DValue(std::string value_string) :
     
 }
 
-DValue::DValue(char* value_string) :
+DValue::DValue(const char* value_string) :
     type_(DValue::Type::kString)
     ,value_string_(value_string)
     ,value_int_(0)
@@ -138,6 +138,7 @@ bool DValue::operator!=(DValue& dvalue)
     catch(std::exception& error)
     {
         Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
+        return false;
     }
 }
 
