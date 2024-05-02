@@ -73,6 +73,8 @@ void BackendHandler::ProcessActions_()
                 case HTTP::Body::Type::kURI:
                 case HTTP::Body::Type::kFormURLEncoded:
                     action->IdentifyParameters_(get_query_parameters());
+                    if(get_json_array()->size() > 0)
+                        action->IdentifyParameters_(get_json_array());
                     break;
             }
             if(action->get_error())
