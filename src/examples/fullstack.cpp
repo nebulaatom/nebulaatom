@@ -44,11 +44,11 @@ int main(int argc, char** argv)
                         a1.ExecuteQuery_();
                         a1.MakeResults_();
 
-                        a1.get_json_result() = a1.CreateJSONResult_();
-                        a1.get_json_result()->set("status", a1.get_status());
-                        a1.get_json_result()->set("message", a1.get_message());
+                        auto result = a1.CreateJSONResult_();
+                        result->set("status", a1.get_status());
+                        result->set("message", a1.get_message());
 
-                        self.CompoundResponse_(HTTP::Status::kHTTP_OK, a1.get_json_result());
+                        self.CompoundResponse_(HTTP::Status::kHTTP_OK, result);
                     }
                     else
                         self.JSONResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Endpoint not found.");
