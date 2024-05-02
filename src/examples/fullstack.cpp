@@ -35,7 +35,7 @@ int main(int argc, char** argv)
             {
                 handler = new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
                 {
-                    if(route == Tools::Route("/api/products"))
+                    if(*self.get_requested_route() == Tools::Route("/api/products"))
                     {
                         Functions::Action a1("a1");
                         a1.set_sql_code("SELECT * FROM products");
