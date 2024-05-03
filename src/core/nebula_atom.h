@@ -67,18 +67,14 @@ using namespace Poco;
 using namespace Poco::Net;
 using namespace Poco::Util;
 
-class Atom::Core::NebulaAtom : public Util::ServerApplication
+class Atom::Core::NebulaAtom : Util::ServerApplication
 {
     public:
         NebulaAtom(bool use_ssl = false);
         virtual ~NebulaAtom();
 
         bool get_use_ssl() const { return use_ssl_; }
-        HTTPServer* get_server()
-        {
-            auto var = server_.get();
-            return var;
-        }
+        Core::Server::Ptr get_server() const { return server_; }
         HandlerFactory* get_handler_factory()
         {
             auto& var = handler_factory_;
@@ -100,7 +96,8 @@ class Atom::Core::NebulaAtom : public Util::ServerApplication
     protected:
         void initialize(Application& self) override;
         void uninitialize() override;
-        virtual int main(const std::vector < std::string > & args) override;
+        virtual int main(const std::vector<std::string>& args) override;
+        void SetupServer_();
         void SetupSSL_();
 
     private:
