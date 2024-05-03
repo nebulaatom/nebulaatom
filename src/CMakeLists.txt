@@ -2,6 +2,7 @@
 # Sources
 set(NEBULAATOM_SOURCES
     ${PROJECT_SOURCE_DIR}/src/core/nebula_atom.cpp
+    ${PROJECT_SOURCE_DIR}/src/core/server.cpp
     ${PROJECT_SOURCE_DIR}/src/core/handler_factory.cpp
     ${PROJECT_SOURCE_DIR}/src/extras/session.cpp
     ${PROJECT_SOURCE_DIR}/src/extras/values_properties.cpp
@@ -47,6 +48,7 @@ set(NEBULAATOM_SOURCES
 # Headers
 set(NEBULAATOM_headers_core
     ${PROJECT_SOURCE_DIR}/src/core/nebula_atom.h
+    ${PROJECT_SOURCE_DIR}/src/core/server.h
     ${PROJECT_SOURCE_DIR}/src/core/handler_factory.h
 )
 set(NEBULAATOM_headers_extras
