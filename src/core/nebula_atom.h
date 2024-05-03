@@ -25,6 +25,7 @@
 #include <memory>
 #include <exception>
 
+#include <Poco/Util/ServerApplication.h>
 #include <Poco/Net/ServerSocket.h>
 #include <Poco/Net/HTTPServer.h>
 #include <Poco/Net/HTTPServerParams.h>
@@ -46,6 +47,7 @@
 #include <Poco/Net/NetSSL.h>
 #include <Poco/Net/SSLManager.h>
 
+#include "core/server.h"
 #include "core/handler_factory.h"
 #include "query/database_manager.h"
 #include "tools/settings_manager.h"
@@ -57,7 +59,6 @@ namespace Atom
 {
     namespace Core
     {
-        struct SSLInitializer;
         class NebulaAtom;
     }
 }
@@ -66,11 +67,11 @@ using namespace Poco;
 using namespace Poco::Net;
 using namespace Poco::Util;
 
-class Atom::Core::NebulaAtom
+class Atom::Core::NebulaAtom : public Util::ServerApplication
 {
     public:
         NebulaAtom(bool use_ssl = false);
-        virtual ~NebulaAtom(){}
+        virtual ~NebulaAtom();
 
         bool get_use_ssl() const { return use_ssl_; }
         HTTPServer* get_server()
@@ -91,17 +92,23 @@ class Atom::Core::NebulaAtom
 
         void set_use_ssl(bool use_ssl) { use_ssl_ = use_ssl; }
 
-        void CustomHandlerCreator_(HandlerFactory::FunctionHandlerCreator handler_creator);
-        void AddHandler_(std::string route, HandlerFactory::FunctionHandler handler);
         int Init_();
         int Init_(int argc, char** argv);
-        int SettingUpServer_();
+        void CustomHandlerCreator_(HandlerFactory::FunctionHandlerCreator handler_creator);
+        void AddHandler_(std::string route, HandlerFactory::FunctionHandler handler);
+
+    protected:
+        void initialize(Application& self) override;
+        void uninitialize() override;
+        virtual int main(const std::vector < std::string > & args) override;
+        void SetupSSL_();
 
     private:
         bool use_ssl_;
-        std::unique_ptr<HTTPServer> server_;
+        Core::Server::Ptr server_;
         HandlerFactory* handler_factory_;
         std::vector<std::string> console_parameters_;
+        Context::Ptr context_;
 };
 
 #endif // ATOM_CORE_NEBULAATOM
