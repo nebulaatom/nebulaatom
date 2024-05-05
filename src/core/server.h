@@ -32,6 +32,7 @@
 #include "Poco/Net/SecureServerSocket.h"
 
 #include "tools/output_logger.h"
+#include "tools/settings_manager.h"
 
 using namespace Poco;
 using namespace Poco::Net;
@@ -53,7 +54,12 @@ class Atom::Core::Server : public Net::HTTPServer
         Server(HTTPRequestHandlerFactory::Ptr factory, const ServerSocket& socket, HTTPServerParams::Ptr params);
         Server(HTTPRequestHandlerFactory::Ptr factory, const SecureServerSocket& socket, HTTPServerParams::Ptr params);
         virtual ~Server();
-        
+
+    protected:
+        void SetupParams_(HTTPServerParams::Ptr params);
+    
+    private:
+        std::string server_name_;
 };
 
 #endif // ATOM_CORE_SERVER

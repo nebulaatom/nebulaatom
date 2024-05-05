@@ -21,17 +21,25 @@ using namespace Atom::Core;
 
 Server::Server(HTTPRequestHandlerFactory::Ptr factory, const ServerSocket& socket, HTTPServerParams::Ptr params) :
     Net::HTTPServer(factory, socket, params)
+    ,server_name_("NebulaAtom")
 {
-
+    SetupParams_(params);
 }
 
 Server::Server(HTTPRequestHandlerFactory::Ptr factory, const SecureServerSocket& socket, HTTPServerParams::Ptr params) :
     Net::HTTPServer(factory, socket, params)
 {
-    
+    SetupParams_(params);
 }
 
 Server::~Server()
 {
 
+}
+
+void Server::SetupParams_(HTTPServerParams::Ptr params)
+{
+    params->setServerName(server_name_);
+    params->setMaxQueued(Tools::SettingsManager::get_basic_properties_().max_queued);
+    params->setMaxThreads(Tools::SettingsManager::get_basic_properties_().max_threads);
 }
