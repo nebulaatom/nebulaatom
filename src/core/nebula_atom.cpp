@@ -35,16 +35,6 @@ NebulaAtom::~NebulaAtom()
         Net::uninitializeSSL();
 }
 
-void NebulaAtom::initialize(Application& self)
-{
-    ServerApplication::initialize(self);
-}
-    
-void NebulaAtom::uninitialize()
-{
-    ServerApplication::uninitialize();
-}
-
 void NebulaAtom::CustomHandlerCreator_(HandlerFactory::FunctionHandlerCreator handler_creator)
 {
     handler_factory_->set_handler_creator(std::move(handler_creator));
@@ -61,21 +51,19 @@ void NebulaAtom::AddHandler_(std::string route, HandlerFactory::FunctionHandler 
 
 int NebulaAtom::Init_()
 {
-    return run();
+    return Main_();
 }
 
 int NebulaAtom::Init_(int argc, char** argv)
 {
-    return run(argc, argv);
+    console_parameters_ = std::vector<std::string>(argv, argv + argc);
+    return Main_();
 }
 
-int NebulaAtom::main(const std::vector<std::string >& args)
+int NebulaAtom::Main_()
 {
     try
     {
-        // Setting up console parameters
-        console_parameters_ = std::vector<std::string>(args);
-
         // Setup server
         SetupServer_();
 
@@ -83,7 +71,7 @@ int NebulaAtom::main(const std::vector<std::string >& args)
         server_->start();
         Tools::OutputLogger::Log_("Server started at port " + std::to_string(Tools::SettingsManager::get_basic_properties_().port));
 
-        waitForTerminationRequest();
+		terminator.wait();
 
         Tools::OutputLogger::Log_("Shutting down server... ");
         server_->stop();

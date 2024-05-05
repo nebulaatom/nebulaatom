@@ -25,7 +25,6 @@
 #include <memory>
 #include <exception>
 
-#include <Poco/Util/ServerApplication.h>
 #include <Poco/Net/ServerSocket.h>
 #include <Poco/Net/HTTPServer.h>
 #include <Poco/Net/HTTPServerParams.h>
@@ -67,7 +66,7 @@ using namespace Poco;
 using namespace Poco::Net;
 using namespace Poco::Util;
 
-class Atom::Core::NebulaAtom : Util::ServerApplication
+class Atom::Core::NebulaAtom
 {
     public:
         NebulaAtom(bool use_ssl = false);
@@ -94,9 +93,7 @@ class Atom::Core::NebulaAtom : Util::ServerApplication
         void AddHandler_(std::string route, HandlerFactory::FunctionHandler handler);
 
     protected:
-        void initialize(Application& self) override;
-        void uninitialize() override;
-        virtual int main(const std::vector<std::string>& args) override;
+        virtual int Main_();
         void SetupServer_();
         void SetupSSL_();
 
@@ -106,6 +103,11 @@ class Atom::Core::NebulaAtom : Util::ServerApplication
         HandlerFactory* handler_factory_;
         std::vector<std::string> console_parameters_;
         Context::Ptr context_;
+        #if defined(POCO_OS_FAMILY_WINDOWS)
+            NamedEvent terminator(ProcessImpl::terminationEventName(Process::id()));
+        #else
+            Event terminator;
+        #endif
 };
 
 #endif // ATOM_CORE_NEBULAATOM
