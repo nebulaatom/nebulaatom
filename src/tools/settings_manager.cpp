@@ -36,7 +36,6 @@ void Tools::SettingsManager::SetUpProperties_()
     basic_properties_.port = 8080;
     basic_properties_.max_queued = 100;
     basic_properties_.max_threads = 16;
-    basic_properties_.timeout = 20;
     basic_properties_.max_file_size = 15;
     basic_properties_.db_host = "127.0.0.1";
     basic_properties_.db_port = "3306";
@@ -82,13 +81,6 @@ void Tools::SettingsManager::ReadBasicProperties_()
             PrintError_("ReadBasicProperties_", "max_threads");
             
         basic_properties_.max_threads = max_threads.as<int>();
-        
-        // timeout
-        auto timeout = config["timeout"];
-        if (!VerifyYAMLScalarNode_(timeout))
-            PrintError_("ReadBasicProperties_", "timeout");
-            
-        basic_properties_.timeout = timeout.as<int>();
         
         // session_max_age
         auto session_max_age = config["session_max_age"];
