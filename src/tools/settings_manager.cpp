@@ -34,7 +34,7 @@ void Tools::SettingsManager::SetUpProperties_()
 {
     mutex_.lock();
     basic_properties_.port = 8080;
-    basic_properties_.max_queued = 100;
+    basic_properties_.max_queued = 1000;
     basic_properties_.max_threads = 16;
     basic_properties_.max_file_size = 15;
     basic_properties_.db_host = "127.0.0.1";
