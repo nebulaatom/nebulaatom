@@ -69,7 +69,11 @@ int NebulaAtom::Main_()
 
         // Start server, wait and stop
         server_->start();
-        Tools::OutputLogger::Log_("Server started at port " + std::to_string(Tools::SettingsManager::get_basic_properties_().port));
+        Tools::OutputLogger::Log_(
+            "Server started at port " + std::to_string(Tools::SettingsManager::get_basic_properties_().port)
+            + " (Max threads: " + std::to_string(server_->params().getMaxThreads())
+            + ", Max Queued: " + std::to_string(server_->params().getMaxQueued()) + ")"
+        );
 
 		terminator.wait();
 
@@ -79,6 +83,11 @@ int NebulaAtom::Main_()
         return 0;
     }
     catch(Net::SSLException& error)
+    {
+        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on main(): " + error.displayText());
+        return 1;
+    }
+    catch(Net::NetException& error)
     {
         Tools::OutputLogger::Log_("Error on nebula_atom.cpp on main(): " + error.displayText());
         return 1;
@@ -112,65 +121,49 @@ int NebulaAtom::Main_()
 
 void NebulaAtom::SetupServer_()
 {
-    try
+    // Setup Socket and Server
+    if(use_ssl_)
     {
-        // Setup Socket and Server
-        if(use_ssl_)
-        {
-            SetupSSL_();
+        SetupSSL_();
 
-            SecureServerSocket secure_server_socket(Tools::SettingsManager::get_basic_properties_().port);
-            server_ = std::make_shared<Core::Server>(handler_factory_, secure_server_socket, new HTTPServerParams);
-        }
-        else
-        {
-            ServerSocket server_socket(Tools::SettingsManager::get_basic_properties_().port);
-            server_ = std::make_shared<Core::Server>(handler_factory_, server_socket, new HTTPServerParams);
-        }
-        }
-    catch(std::exception& error)
+        SecureServerSocket secure_server_socket(Tools::SettingsManager::get_basic_properties_().port);
+        server_ = std::make_shared<Core::Server>(handler_factory_, secure_server_socket, new HTTPServerParams);
+    }
+    else
     {
-        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on SetupServer_(): " + std::string(error.what()));
-        return;
+        ServerSocket server_socket(Tools::SettingsManager::get_basic_properties_().port);
+        server_ = std::make_shared<Core::Server>(handler_factory_, server_socket, new HTTPServerParams);
     }
 }
 
 void NebulaAtom::SetupSSL_()
 {
-    try
-    {
-        // Setup certificate handler and key handler
-        SharedPtr<Net::InvalidCertificateHandler> cert_handler = new Net::ConsoleCertificateHandler(true);
-        SharedPtr<Net::PrivateKeyPassphraseHandler> keyhandler = new Net::KeyConsoleHandler(true);
+    // Setup certificate handler and key handler
+    SharedPtr<Net::InvalidCertificateHandler> cert_handler = new Net::ConsoleCertificateHandler(true);
+    SharedPtr<Net::PrivateKeyPassphraseHandler> keyhandler = new Net::KeyConsoleHandler(true);
 
-        Context::Params params;
-        params.privateKeyFile = Tools::SettingsManager::get_basic_properties_().key;
-        params.certificateFile = Tools::SettingsManager::get_basic_properties_().certificate;
-        params.caLocation = Tools::SettingsManager::get_basic_properties_().rootcert;
+    Context::Params params;
+    params.privateKeyFile = Tools::SettingsManager::get_basic_properties_().key;
+    params.certificateFile = Tools::SettingsManager::get_basic_properties_().certificate;
+    params.caLocation = Tools::SettingsManager::get_basic_properties_().rootcert;
 
-        if (params.certificateFile.empty() && params.privateKeyFile.empty())
-            throw SSLException("Configuration error: no certificate file has been specified");
+    if (params.certificateFile.empty() && params.privateKeyFile.empty())
+        throw SSLException("Configuration error: no certificate file has been specified");
 
-        // optional options for which we have defaults defined
-        params.verificationMode = Context::VERIFY_RELAXED;
-        params.verificationDepth = 9;
-        params.loadDefaultCAs = true;
-        params.cipherList = "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH";
-        params.dhParamsFile = "";
-        params.ecdhCurve = "";
+    // optional options for which we have defaults defined
+    params.verificationMode = Context::VERIFY_RELAXED;
+    params.verificationDepth = 9;
+    params.loadDefaultCAs = true;
+    params.cipherList = "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH";
+    params.dhParamsFile = "";
+    params.ecdhCurve = "";
 
-        Context::Usage usage = Context::TLSV1_3_SERVER_USE;
-        context_ = new Context(usage, params);
+    Context::Usage usage = Context::TLSV1_3_SERVER_USE;
+    context_ = new Context(usage, params);
 
-        context_->enableSessionCache(false);
-        context_->enableExtendedCertificateVerification(false);
-        context_->preferServerCiphers();
+    context_->enableSessionCache(false);
+    context_->enableExtendedCertificateVerification(false);
+    context_->preferServerCiphers();
 
-        Net::SSLManager::instance().initializeServer(keyhandler, cert_handler, context_);
-    }
-    catch(Net::SSLException& error)
-    {
-        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on SetupSSL_(): " + error.displayText());
-        return;
-    }
+    Net::SSLManager::instance().initializeServer(keyhandler, cert_handler, context_);
 }
