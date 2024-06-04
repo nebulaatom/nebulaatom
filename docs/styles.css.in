@@ -1,0 +1,175 @@
+*{
+	color: #fff;
+}
+body{
+    background-color: #182227;
+}
+.sm-dox {
+	padding: 0 10px;
+	background-image: none;
+	line-height: 36px;
+}
+.navpath ul {
+	font-size: 11px;
+	background-image: none;
+	background-repeat: none;
+	background-position: 0;
+	height: 30px;
+	line-height: 30px;
+	color: #ffffff;
+	border: none;
+	overflow: hidden;
+	margin: 0px;
+	padding: 0px;
+}
+.navpath li {
+	list-style-type: none;
+	float: left;
+	padding-left: 10px;
+	padding-right: 15px;
+	background-image: none;
+	background-repeat: no-repeat;
+	background-position: none;
+	color: #ffffff;
+}
+.navpath li.navelem{
+	border-right: 1px solid #fff;
+}
+.navpath li.navelem a {
+	height: 32px;
+	display: block;
+	text-decoration: none;
+	outline: none;
+	color: #ffffff;
+	text-shadow: none;
+	text-decoration: none;
+}
+.navpath li.navelem a:hover {
+	color: #a7a7a7;
+}
+a.el {
+	font-weight: bold;
+	text-decoration: underline;
+}
+.sm-dox a, .sm-dox a:focus, .sm-dox a:hover, .sm-dox a:active {
+	padding: 0px 12px;
+	padding-right: 43px;
+	font-size: 13px;
+	font-weight: bold;
+	line-height: 36px;
+	text-decoration: none;
+	text-shadow: none;
+	color: #ffffff;
+	outline: none;
+}
+#MSearchBox {
+	white-space: nowrap;
+	background: none;
+	border-radius: 0;
+	box-shadow: none;
+	z-index: 102;
+	padding: 7px 15px;
+	color:#fff;
+}
+#MSearchField {
+	display: inline-block;
+	vertical-align: middle;
+	width: 7.5em;
+	height: 1.1em;
+	margin: 0 0.15em;
+	padding: 0;
+	line-height: 1em;
+	border: none;
+	color: #ffffff;
+	outline: none;
+	-webkit-border-radius: 0px;
+	border-radius: 0px;
+	background: none;
+}
+.MSearchBoxInactive{
+	color:#fff;
+}
+.MSearchBoxActive{
+	color:#fff;
+}
+.MSearchBoxActive #MSearchField {
+	color: #fff;
+}
+#MSearchResultsWindow {
+	display: none;
+	position: absolute;
+	left: 0;
+	top: 0;
+	border: none;
+	background-color: #ffffff;
+	z-index: 10000;
+	color: #444;
+	padding: .5cm;
+	margin-top: .5cm;
+}
+div.header {
+	background-image: none;
+	background-repeat: repeat-x;
+	background-color: inherit;
+	margin: 0px;
+	border-bottom: 1px solid #ffffff;
+}
+h2.groupheader {
+	border-bottom: 1px solid #ffffff;
+	color: #f67d00;
+	font-size: 150%;
+	font-weight: normal;
+	margin-top: 1.75em;
+	padding-top: 8px;
+	padding-bottom: 4px;
+	width: 100%;
+}
+.mdescLeft, .mdescRight, .memItemLeft, .memItemRight, .memTemplItemLeft, .memTemplItemRight, .memTemplParams {
+	background-color: inherit;
+	border: none;
+	margin: 4px;
+	padding: 1px 0 0 8px;
+}
+.directory tr.even {
+	padding-left: 6px;
+	background-color: inherit;
+}
+.classindex dl.odd {
+	background-color: #394d57;
+}
+a, a:visited{
+	color:#fff;
+}
+.contents a:visited {
+	color: #ffffff;
+}
+.sm-dox ul {
+	border: none;
+	padding: 5px 0;
+	background: #394d57;
+	border-radius: 2px !important;
+	box-shadow: none;
+	color: #fff;
+}
+.sm-dox li:hover {
+	background-color: #5f7885;
+}
+.sm-dox ul a, .sm-dox ul a:hover, .sm-dox ul a:focus, .sm-dox ul a:active, .sm-dox ul a.highlighted {
+	background-image: none;
+	border: 0 !important;
+	color: #ffffff;
+	background-image: none;
+}
+.sm-dox ul a, .sm-dox ul a:focus, .sm-dox ul a:hover, .sm-dox ul a:active {
+	font-size: 12px;
+	border-left: 8px solid transparent;
+	line-height: 36px;
+	text-shadow: none;
+	background-color: inherit;
+	background-image: none;
+	color: #fff;
+}
+table.directory tr{
+	background-color: inherit;
+	color: #fff;
+}

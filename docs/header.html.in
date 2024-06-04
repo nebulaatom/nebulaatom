@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en" class="h-100">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="Jose Rivas, and Nebula Atom contributors">
+        <!--BEGIN PROJECT_NAME--><title>Docs: $title | Nebula Atom Framework</title><!--END PROJECT_NAME-->
+        <link rel="shortcut icon" href="../../../assets/images/favicon.ico" type="image/x-icon">
+
+        <link href="$relpath^tabs.css" rel="stylesheet" type="text/css"/>
+        <script type="text/javascript" src="$relpath^jquery.js"></script>
+        <script type="text/javascript" src="$relpath^dynsections.js"></script>
+        $treeview
+        $search
+        $mathjax
+        <link href="$relpath^$stylesheet" rel="stylesheet" type="text/css" />
+        $extrastylesheet
+
+        <link href="../../../assets/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../../assets/css/main.css" rel="stylesheet">
+
+    </head>
+    <body class="d-flex flex-column h-100">
+
+        <header>
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-md bg-ligth">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">
+                        <img src="../../../assets/images/logo.png" alt="Logo" width="64">
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarCollapse">
+                        <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                            <li class="nav-item">
+                                <a class="nav-link" href="../../../">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../../../download/">Download</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="../../../docs/">API Documentation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../../../development/">Development</a>
+                            </li>
+                        </ul>
+                        <form class="d-flex">
+                            <a class="nav-link" target="_blank" href="https://github.com/nebulaatom/nebulaatom">
+                                <img src="../../../assets/images/github-logo.png" alt="Github Logo" width="32">
+                            </a>
+                        </form>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Content -->
+        <main class="flex-shrink-0">
+            
+        </main>
+
+
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+
+<!--BEGIN TITLEAREA-->
+    <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+            <tbody>
+            <tr style="height: 56px;">
+                <!--BEGIN DISABLE_INDEX-->
+                <!--BEGIN SEARCHENGINE-->
+                <td>$searchbox</td>
+                <!--END SEARCHENGINE-->
+                <!--END DISABLE_INDEX-->
+            </tr>
+            </tbody>
+        </table>
+    </div>
+<!--END TITLEAREA-->
