@@ -55,7 +55,7 @@
 #include "Poco/Net/SecureServerSocket.h"
 #include "Poco/Net/X509Certificate.h"
 
-#include "nebula-atomConfig.h"
+#include "nebulaatomConfig.h"
 #include "tools/sessions_manager.h"
 #include "query/database_manager.h"
 #include "tools/route.h"
