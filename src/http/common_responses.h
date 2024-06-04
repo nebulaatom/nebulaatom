@@ -26,7 +26,7 @@
 #include <Poco/JSON/JSON.h>
 #include <Poco/JSON/Object.h>
 
-#include "nebula-atomConfig.h"
+#include "nebulaatomConfig.h"
 #include "files/file_manager.h"
 #include "http/request.h"
 
