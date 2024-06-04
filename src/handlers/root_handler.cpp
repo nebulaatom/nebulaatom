@@ -50,6 +50,9 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
                 return;
             }
 
+        // Add Server header
+            AddHeader_("server", "nebulaatom/" + std::string(PACKAGE_VERSION_COMPLETE));
+
         // Set requested route
             std::vector<std::string> segments;
             URI(request.getURI()).getPathSegments(segments);
