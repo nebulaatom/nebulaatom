@@ -57,7 +57,7 @@ class Atom::Core::Server : public Net::HTTPServer
 
     protected:
         void SetupParams_(HTTPServerParams::Ptr params);
-    
+
     private:
         std::string server_name_;
 };

@@ -2,7 +2,7 @@
 
 ## Project
 cmake_minimum_required(VERSION 3.16)
-project("nebula-atom" LANGUAGES CXX C)
+project("nebulaatom" LANGUAGES CXX C)
 set(PROJECT_FULL_NAME "Nebula Atom")
 
 ## Include CMake files

@@ -21,13 +21,14 @@ using namespace Atom::Core;
 
 Server::Server(HTTPRequestHandlerFactory::Ptr factory, const ServerSocket& socket, HTTPServerParams::Ptr params) :
     Net::HTTPServer(factory, socket, params)
-    ,server_name_("NebulaAtom")
+    ,server_name_("nebulaatom")
 {
     SetupParams_(params);
 }
 
 Server::Server(HTTPRequestHandlerFactory::Ptr factory, const SecureServerSocket& socket, HTTPServerParams::Ptr params) :
     Net::HTTPServer(factory, socket, params)
+    ,server_name_("nebulaatom")
 {
     SetupParams_(params);
 }
