@@ -21,3 +21,10 @@ Field::Ptr Row::FindField_(std::string column_name)
 
     return *field_value;
 }
+
+Field::Ptr Row::AddField_(std::string column_name, Tools::DValue value)
+{
+    Field::Ptr field = std::make_shared<Field>(column_name, value);
+    push_back(field);
+    return field;
+}

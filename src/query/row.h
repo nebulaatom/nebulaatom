@@ -23,6 +23,7 @@
 #include <vector>
 
 #include "query/field.h"
+#include "tools/dvalue.h"
 
 
 namespace Atom
@@ -42,6 +43,7 @@ class Atom::Query::Row : public std::vector<Field::Ptr>
         Row();
 
         Field::Ptr FindField_(std::string column_name);
+        Field::Ptr AddField_(std::string column_name, Tools::DValue value);
 };
 
 #endif // ATOM_QUERY_ROW
