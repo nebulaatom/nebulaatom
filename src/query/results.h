@@ -42,6 +42,7 @@ class Atom::Query::Results : public std::vector<Row::Ptr>
         Results();
 
         Field::Ptr FindField_(Field::Position& field_position);
+        Row::Ptr AddRow_();
 };
 
 #endif // ATOM_QUERY_RESULTS

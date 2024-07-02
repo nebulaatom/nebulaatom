@@ -31,3 +31,10 @@ Field::Ptr Results::FindField_(Field::Position& field_position)
         auto field_value = row->at(field_position.column);
         return field_value;
 }
+
+Row::Ptr Results::AddRow_()
+{
+    Row::Ptr row = std::make_shared<Row>();
+    push_back(row);
+    return row;
+}
