@@ -12,24 +12,26 @@ int main(int argc, char** argv)
     Query::DatabaseManager::StartMySQL_();
     Tools::SettingsManager::ReadBasicProperties_();
 
-    // Cached uery
-    Functions::CacheAction a1("a1", 5s);
-    a1.set_sql_code("SELECT * FROM products");
-    a1.set_final(true);
-
-    a1.Work_();
+    // Cached Action
+        Functions::CacheAction a1("a1", 5s);
+        a1.set_sql_code("SELECT * FROM products");
+        a1.set_final(true);
+        a1.Work_();
 
     // Custom handler creator
-    app.CustomHandlerCreator_([&](Core::HTTPRequestInfo&)
-    {
-        return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
+        app.CustomHandlerCreator_([&](Core::HTTPRequestInfo&)
         {
-            // Process the request body
-            self.ManageRequestBody_();
+            return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
+            {
+                // Process the request body
+                self.ManageRequestBody_();
 
-            self.CompoundResponse_(HTTP::Status::kHTTP_OK, a1.get_json_result());
+                std::mutex mutex;
+                mutex.lock();
+                self.CompoundResponse_(HTTP::Status::kHTTP_OK, a1.get_json_result());
+                mutex.unlock();
+            });
         });
-    });
 
     // Run
         auto code = app.Init_(argc, argv);
