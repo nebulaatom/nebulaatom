@@ -122,5 +122,13 @@
             ,"args": []
             ,"cwd": "${workspaceFolder}/build/Debug"
         }
+        ,{
+            "type": "lldb"
+            ,"request": "launch"
+            ,"name": "CachedAction (Debug)"
+            ,"program": "${workspaceFolder}/build/Debug/src/examples/cachedaction"
+            ,"args": []
+            ,"cwd": "${workspaceFolder}/build/Debug"
+        }
     ]
 }
