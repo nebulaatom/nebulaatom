@@ -13,7 +13,7 @@ int main(int argc, char** argv)
     Tools::SettingsManager::ReadBasicProperties_();
 
     // Cached Action
-        Functions::CacheAction a1("a1", 5s);
+        Functions::CacheAction a1("a1", 10s);
         a1.set_sql_code("SELECT * FROM products");
         a1.set_final(true);
         a1.Work_();
