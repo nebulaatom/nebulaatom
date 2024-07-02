@@ -73,3 +73,8 @@ target_link_libraries(usingmethods PUBLIC nebulaatom_static)
 add_executable(postapi "post_api.cpp")
 target_include_directories(postapi PUBLIC ${HEADER})
 target_link_libraries(postapi PUBLIC nebulaatom_static)
+
+## cachedaction
+add_executable(cachedaction "cached_action.cpp")
+target_include_directories(cachedaction PUBLIC ${HEADER})
+target_link_libraries(cachedaction PUBLIC nebulaatom_static)
