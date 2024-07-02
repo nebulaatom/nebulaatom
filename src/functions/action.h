@@ -160,6 +160,7 @@ class Atom::Functions::Action :
         int affected_rows_;
         std::shared_ptr<Data::Session> session_;
         std::shared_ptr<Data::Statement> query_;
+        std::mutex mutex_;
         
 };
 

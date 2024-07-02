@@ -458,6 +458,8 @@ void Action::MakeResults_()
 {
     try
     {
+        mutex_.lock();
+
         // Variables
             Data::RecordSet results_dataquery(*query_);
 
@@ -485,6 +487,8 @@ void Action::MakeResults_()
 
         // Close session
             session_->close();
+        
+        mutex_.unlock();
     }
     catch(JSON::JSONException& error)
     {
@@ -509,6 +513,8 @@ JSON::Object::Ptr Action::CreateJSONResult_()
 {
     try
     {
+        mutex_.lock();
+
         // Variables
             JSON::Object::Ptr result_json = new JSON::Object();
             JSON::Array::Ptr data_array = new JSON::Array();
@@ -548,6 +554,7 @@ JSON::Object::Ptr Action::CreateJSONResult_()
 
             result_json->set("data", data_array);
 
+            mutex_.unlock();
             return result_json;
     }
     catch(JSON::JSONException& error)
