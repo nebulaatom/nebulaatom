@@ -2,8 +2,8 @@
 // SPDX-FileCopyrightText: 2022 <copyright holder> <email>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef ATOM_TOOLSANDLERCONNECTION
-#define ATOM_TOOLSANDLERCONNECTION
+#ifndef ATOM_TOOLS_HANDLERCONNECTION
+#define ATOM_TOOLS_HANDLERCONNECTION
 
 
 #include <functional>
@@ -35,4 +35,4 @@ class Atom::Tools::HandlerConnection
 };
 
 
-#endif // ATOM_TOOLSANDLERCONNECTION
+#endif // ATOM_TOOLS_HANDLERCONNECTION

@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_ROUTE
-#define ATOM_ROUTE
+#ifndef ATOM_TOOLS_ROUTE
+#define ATOM_TOOLS_ROUTE
 
 
 #include <string>
@@ -73,4 +73,4 @@ class Atom::Tools::Route
         std::vector<std::string> segments_;
 };
 
-#endif // ATOM_ROUTE
+#endif // ATOM_TOOLS_ROUTE

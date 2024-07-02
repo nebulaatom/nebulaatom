@@ -1,6 +1,6 @@
 
-#ifndef TOOLS_EMAIL
-#define TOOLS_EMAIL
+#ifndef ATOM_TOOLS_EMAIL
+#define ATOM_TOOLS_EMAIL
 
 
 #include <string>
@@ -68,4 +68,4 @@ class Atom::Tools::Email
         std::string email_password_;
 };
 
-#endif // TOOLS_EMAIL
+#endif // ATOM_TOOLS_EMAIL

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOM_TOOLS_SETTINGS_MANAGER
-#define ATOM_TOOLS_SETTINGS_MANAGER
+#ifndef ATOM_TOOLS_SETTINGSMANAGER
+#define ATOM_TOOLS_SETTINGSMANAGER
 
 
 #include <iostream>
@@ -81,4 +81,4 @@ class Atom::Tools::SettingsManager
         static std::string properties_file_address_;
 };
 
-#endif // ATOM_TOOLS_SETTINGS_MANAGER
+#endif // ATOM_TOOLS_SETTINGSMANAGER
