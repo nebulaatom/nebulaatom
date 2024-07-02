@@ -512,40 +512,33 @@ JSON::Object::Ptr Action::CreateJSONResult_()
         // Variables
             JSON::Object::Ptr result_json = new JSON::Object();
             JSON::Array::Ptr data_array = new JSON::Array();
-            Data::RecordSet results(*query_);
-
-        // Default values
-            if(query_.get() == nullptr)
-            {
-                result_json->set("data", data_array);
-                return result_json;
-            }
 
         // Make JSON data
-            for(auto& it : results)
+            for(auto& rows : *results_)
             {
                 JSON::Object::Ptr row_fields = new JSON::Object();
-
-                for(size_t a = 0; a < it.fieldCount(); a++)
+                
+                // Iterate over rows
+                for(auto& field : *rows)
                 {
-                    auto var = it.get(a);
-                    auto row_value = Tools::DValue(var);
-                    switch(row_value.get_type())
+                    auto column_name = field->get_column_name();
+                    auto& field_value = field->get_value();
+                    switch(field->get_value().get_type())
                     {
                         case Tools::DValue::Type::kBoolean:
-                            row_fields->set(results.columnName(a), row_value.get_value_bool());
+                            row_fields->set(column_name, field_value.get_value_bool());
                             break;
                         case Tools::DValue::Type::kFloat:
-                            row_fields->set(results.columnName(a), row_value.get_value_float());
+                            row_fields->set(column_name, field_value.get_value_float());
                             break;
                         case Tools::DValue::Type::kInteger:
-                            row_fields->set(results.columnName(a), row_value.get_value_int());
+                            row_fields->set(column_name, field_value.get_value_int());
                             break;
                         case Tools::DValue::Type::kString:
-                            row_fields->set(results.columnName(a), row_value.get_value_string());
+                            row_fields->set(column_name, field_value.get_value_string());
                             break;
                         case Tools::DValue::Type::kEmpty:
-                            row_fields->set(results.columnName(a), "");
+                            row_fields->set(column_name, "");
                             break;
                     }
                 }
