@@ -2,9 +2,14 @@
     "version": "2.0.0"
     ,"tasks": [
         {
+            "label": "Remove CPack DEB"
+            ,"type": "shell"
+            ,"command": "rm -r build/Debug/cpack/*"
+        },
+        {
             "label": "Build CPack DEB"
             ,"type": "shell"
-            ,"command": "rm -r build/Debug/cpack/* && cpack --config build/Debug/CPackSourceConfig.cmake && cpack --config build/Debug/CPackConfig.cmake"
+            ,"command": "cpack --config build/Debug/CPackSourceConfig.cmake && cpack --config build/Debug/CPackConfig.cmake"
         },
         {
             "label": "Install CPack DEB"
@@ -15,6 +20,16 @@
             "label": "Doxygen Documentation"
             ,"type": "shell"
             ,"command": "cd build/Debug && doxygen"
+        },
+        {
+            "label": "Conan install Deps"
+            ,"type": "shell"
+            ,"command": "cd build/Debug && conan install --build=missing ../../"
+        },
+        {
+            "label": "Generate Cert/Key"
+            ,"type": "shell"
+            ,"command": "cd build/Debug && openssl req -nodes -new -x509 -keyout cert.pem -out key.pem"
         }
     ]
 }
