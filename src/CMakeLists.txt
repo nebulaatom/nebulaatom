@@ -10,6 +10,7 @@ set(NEBULAATOM_SOURCES
     ${PROJECT_SOURCE_DIR}/src/files/file_properties.cpp
     ${PROJECT_SOURCE_DIR}/src/files/file.cpp
     ${PROJECT_SOURCE_DIR}/src/functions/action.cpp
+    ${PROJECT_SOURCE_DIR}/src/functions/cache_action.cpp
     ${PROJECT_SOURCE_DIR}/src/functions/function.cpp
     ${PROJECT_SOURCE_DIR}/src/functions/functions_manager.cpp
     ${PROJECT_SOURCE_DIR}/src/handlers/root_handler.cpp
@@ -62,6 +63,7 @@ set(NEBULAATOM_headers_files
 )
 set(NEBULAATOM_headers_functions
     ${PROJECT_SOURCE_DIR}/src/functions/action.h
+    ${PROJECT_SOURCE_DIR}/src/functions/cache_action.h
     ${PROJECT_SOURCE_DIR}/src/functions/function.h
     ${PROJECT_SOURCE_DIR}/src/functions/functions_manager.h
 )
