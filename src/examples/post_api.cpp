@@ -21,30 +21,15 @@ class MainHandler : public Handlers::BackendHandler
             // Function /api/products
                 auto f1 = AddFunction_("/api/products", HTTP::EnumMethods::kHTTP_POST);
 
-                // Action 1
-                    auto a1 = f1->AddAction_("a1");
-                    a1->set_custom_error("The product exists.");
-                    a1->set_sql_code("SELECT * FROM products WHERE name = ?");
-                    // Parameters
-                        a1->AddParameter_("productName", Tools::DValue(""), true);
-                    // Conditions
-                        a1->AddCondition_("condition1", Query::ConditionType::kError, [](Query::Results::Ptr results)
-                        {
-                            if(results->size() > 0)
-                                return false;
-                            else
-                                return true;
-                        });
-
-                // Action 2
-                    auto a2 = f1->AddAction_("a2");
-                    a2->set_custom_error("Error to add product.");
-                    a2->set_sql_code("INSERT INTO products (name, price, id_store) VALUES (?, ?, ?)");
-                    a2->set_final(true);
-                    // Parameters
-                        a2->AddParameter_("productName", Tools::DValue(""), true);
-                        a2->AddParameter_("productPrice", Tools::DValue(""), true);
-                        a2->AddParameter_("idStore", Tools::DValue(""), true);
+                // Action
+                    auto action = f1->AddAction_("a1");
+                    action->set_custom_error("Error to add product.");
+                    action->set_sql_code("INSERT INTO products (name, price, id_store) VALUES (?, ?, ?)");
+                    action->set_final(true);
+                    // Parameters and conditions
+                    action->AddParameter_("productName", Tools::DValue(""), true);
+                    action->AddParameter_("productPrice", Tools::DValue(""), true);
+                    action->AddParameter_("idStore", Tools::DValue(""), true);
         }
 
         void Process_() override
