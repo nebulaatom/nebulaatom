@@ -116,11 +116,12 @@ void Action::ReplaceParamater_(Query::Parameter::Ptr parameter)
     {
         if(!found_param->get()->get_editable()) return;
 
-        auto index = std::distance(parameters_.begin(), found_param);
+        found_param->get()->set_value(parameter->get_value());
+        /*auto index = std::distance(parameters_.begin(), found_param);
         parameters_.erase(found_param);
 
         // Insert new element
-        parameters_.insert(parameters_.begin() + index, parameter);
+        parameters_.insert(parameters_.begin() + index, parameter);*/
     }
 }
 
@@ -258,12 +259,6 @@ Query::Parameter::Ptr Action::AddParameter_(std::string name, Query::Field::Posi
     return parameters_.back();
 }
 
-Query::Condition::Ptr Action::AddCondition_(std::string identifier, Query::ConditionType type, Query::Condition::Functor functor)
-{
-    conditions_.push_back(std::make_shared<Query::Condition>(identifier, type, functor));
-    return conditions_.back();
-}
-
 bool Action::Work_()
 {
     // Compose query
@@ -280,30 +275,6 @@ bool Action::Work_()
     MakeResults_();
     if(get_error())
         return false;
-
-    // Verify Conditions
-    for(auto& condition : get_conditions())
-    {
-        if(!condition->VerifyCondition_(get_results()))
-        {
-            switch(condition->get_type())
-            {
-                case Query::ConditionType::kWarning:
-                {
-                    Tools::OutputLogger::Log_("Condition warning (" + condition->get_identifier() + ").");
-
-                    return true;
-                    break;
-                }
-                case Query::ConditionType::kError:
-                {
-                    set_custom_error("Condition error (" + condition->get_identifier() + ").");
-                    return false;
-                    break;
-                }
-            }
-        }
-    }
 
     if(get_final())
     {
@@ -329,21 +300,12 @@ bool Action::ComposeQuery_()
         // Set the parameters
             for(auto& param : parameters_)
             {
-                // Verify conditional parameter
-                if(param->get_parameter_type() == Query::ParameterType::kPosition)
-                {
-                    // Find action results
-                    auto action_found = std::find_if(get_actions().begin(), get_actions().end(),[&param](Functions::Action::Ptr action)
-                    {
-                        return action->get_identifier() == param->get_related_action();
-                    });
+                // Setup positional parameter
+                SetupPositionParameter_(param);
 
-                    if(action_found != get_actions().end())
-                    {
-                        auto row_value = action_found->get()->get_results()->FindField_(param->get_field_position());
-                        param->set_value(row_value->get_value());
-                    }
-                }
+                // Verify Parameter condition
+                if(!VerifyParameterCondition_(param))
+                    return false;
 
                 // Add final value to query
                 switch(param->get_value().get_type())
@@ -611,4 +573,63 @@ bool Action::InitializeQuery_()
         return false;
     }
     return false;
+}
+
+void Action::SetupPositionParameter_(Query::Parameter::Ptr parameter)
+{
+    if(parameter->get_parameter_type() == Query::ParameterType::kPosition)
+    {
+        // Find action results
+        auto action_found = std::find_if(actions_.begin(), actions_.end(),[&parameter](Functions::Action::Ptr action)
+        {
+            return action->get_identifier() == parameter->get_related_action();
+        });
+
+        // Set DValue found
+        if(action_found != actions_.end())
+        {
+            auto row_value = action_found->get()->get_results()->FindField_(parameter->get_field_position());
+            if(row_value != nullptr)
+                parameter->set_value(row_value->get_value());
+        }
+    }
+}
+
+bool Action::VerifyParameterCondition_(Query::Parameter::Ptr parameter)
+{
+    bool result = true;
+    if(parameter->get_condition() == nullptr)
+        result = false;
+    else if(!parameter->get_condition()->VerifyCondition_(parameter))
+    {
+        switch(parameter->get_condition()->get_type())
+        {
+            case Query::ConditionType::kWarning:
+            {
+                if(parameter->get_error() == "")
+                    Tools::OutputLogger::Log_("Parameter condition warning (Identifier: " + parameter->get_condition()->get_identifier() + ", Parameter name: " + parameter->get_name() + ").");
+                else
+                    Tools::OutputLogger::Log_(parameter->get_error());
+                result = true;
+                break;
+            }
+            case Query::ConditionType::kError:
+            {
+                if(parameter->get_error() == "")
+                {
+                    Tools::OutputLogger::Log_("Parameter condition error (Identifier: " + parameter->get_condition()->get_identifier() + ", Parameter name: " + parameter->get_name() + ").");
+                    set_custom_error("Parameter condition error (Identifier: " + parameter->get_condition()->get_identifier() + ", Parameter name: " + parameter->get_name() + ").");
+                }
+                else
+                {
+                    Tools::OutputLogger::Log_(parameter->get_error());
+                    set_custom_error(parameter->get_error());
+                }
+                error_ = true;
+                result = false;
+                break;
+            }
+        }
+    }
+    return result;
 }

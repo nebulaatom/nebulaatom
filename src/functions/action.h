@@ -71,11 +71,6 @@ class Atom::Functions::Action :
         std::string get_custom_error() const { return custom_error_; };
         bool get_final() const { return final_; };
         bool get_error() const { return error_; };
-        std::vector<Query::Condition::Ptr> get_conditions()
-        {
-            auto& var = conditions_;
-            return var;
-        }
         std::vector<Query::Parameter::Ptr> get_parameters()
         {
             auto& var = parameters_;
@@ -124,7 +119,6 @@ class Atom::Functions::Action :
         void ReplaceParamater_(Query::Parameter::Ptr parameter);
         Query::Parameter::Ptr AddParameter_(std::string name, Tools::DValue value, bool editable);
         Query::Parameter::Ptr AddParameter_(std::string name, Query::Field::Position field_position, std::string related_action, bool editable);
-        Query::Condition::Ptr AddCondition_(std::string identifier, Query::ConditionType type, Query::Condition::Functor functor);
         void IdentifyParameters_(std::shared_ptr<Net::HTMLForm> form);
         void IdentifyParameters_(Files::FileManager& files_parameters);
         void IdentifyParameters_(JSON::Array::Ptr json_array);
@@ -138,6 +132,8 @@ class Atom::Functions::Action :
 
     protected:
         void NotifyError_(std::string message);
+        void SetupPositionParameter_(Query::Parameter::Ptr parameter);
+        bool VerifyParameterCondition_(Query::Parameter::Ptr parameter);
 
     private:
         bool InitializeQuery_();
@@ -150,7 +146,6 @@ class Atom::Functions::Action :
         std::string custom_error_;
         bool final_;
         bool error_;
-        std::vector<Query::Condition::Ptr> conditions_;
         std::vector<Query::Parameter::Ptr> parameters_;
         std::shared_ptr<Query::Results> results_;
         JSON::Object::Ptr json_result_;
