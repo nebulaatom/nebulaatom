@@ -14,7 +14,7 @@ Action::Action(std::string identifier) :
     ,status_("OK.")
     ,message_("OK.")
     ,custom_error_("")
-    ,final_(false)
+    ,final_(true)
     ,error_(false)
     ,sql_code_("SELECT 1")
     ,final_query_("")
