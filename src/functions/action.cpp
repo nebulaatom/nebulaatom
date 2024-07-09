@@ -599,7 +599,7 @@ bool Action::VerifyParameterCondition_(Query::Parameter::Ptr parameter)
 {
     bool result = true;
     if(parameter->get_condition() == nullptr)
-        result = false;
+        result = true;
     else if(!parameter->get_condition()->VerifyCondition_(parameter))
     {
         switch(parameter->get_condition()->get_type())
