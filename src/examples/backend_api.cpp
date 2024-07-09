@@ -4,6 +4,7 @@
 #include "handlers/login_handler.h"
 #include "http/methods.h"
 #include "query/condition.h"
+#include "query/parameter.h"
 #include "query/results.h"
 #include "tools/output_logger.h"
 #include "tools/route.h"
@@ -26,38 +27,51 @@ class MainHandler : public Handlers::BackendHandler
                     auto a1 = f1->AddAction_("a1");
                     a1->set_custom_error("No stores found with this name.");
                     a1->set_sql_code("SELECT id FROM stores WHERE name = ?");
-                    // Parameters
-                        a1->AddParameter_("storeName", Tools::DValue(""), true);
-                    // Conditions
-                        a1->AddCondition_("condition1", Query::ConditionType::kError, [](Query::Results::Ptr results)
+                    // Parameters and conditions
+                    auto param = a1->AddParameter_("storeName", Tools::DValue(""), true);
+                    param->SetupCondition_("cond-param1", Query::ConditionType::kError, [](Query::Parameter::Ptr param)
+                    {
+                        if(param->get_value().ToString_() == "")
                         {
-                            if(results->size() == 0) return false;
-                            else return true;
-                        });
+                            param->set_error("storeName cannot be iqual to a empty string");
+                            return false;
+                        }
+                        else if(param->get_value().ToString_().size() < 3)
+                        {
+                            param->set_error("storeName cannot be less than 3 characters");
+                            return false;
+                        }
+                        else
+                            return true;
+                    });
 
                 // Action 2
                     auto a2 = f1->AddAction_("a2");
                     a2->set_custom_error("No products found.");
                     a2->set_sql_code("SELECT * FROM products WHERE id_store = ?");
                     a2->set_final(true);
-                    // Parameters
-                        a2->AddParameter_("id_store", Query::Field::Position{0, 0}, "a1", false);
-                    // Conditions
-                        a2->AddCondition_("condition1", Query::ConditionType::kError, [](Query::Results::Ptr results)
+                    // Parameters and conditions
+                    auto param2 = a2->AddParameter_("id_store", Query::Field::Position{0, 0}, "a1", false);
+                    param2->SetupCondition_("cond-param2", Query::ConditionType::kError, [](Query::Parameter::Ptr param)
+                    {
+                        if(param->get_value().ToString_() == "")
                         {
-                            // Example of how to scroll through the results
-                            for(auto row : *results)
-                            {
-                                std::string string_row = "";
-                                for(auto field : *row)
-                                    string_row += field->get_column_name() + ": " + field->get_value().ToString_() + ", ";
-
-                                Tools::OutputLogger::Log_(string_row);
-                            }
-                            
+                            param->set_error("id_store cannot be iqual to a empty string");
+                            return false;
+                        }
+                        else if(param->get_value().get_type() != Tools::DValue::Type::kInteger)
+                        {
+                            param->set_error("id_store must be an integer value");
+                            return false;
+                        }
+                        if(param->get_value().get_value_int() < 0)
+                        {
+                            param->set_error("id_store must be greather or iqual than 0");
+                            return false;
+                        }
+                        else
                             return true;
-                        });
-
+                    });
         }
 
         void Process_() override
