@@ -29,7 +29,7 @@ namespace Atom
     namespace Query
     {
         enum class ConditionType;
-        class Condition;
+        template <typename T> class Condition;
     }
 }
 
@@ -40,11 +40,11 @@ enum class Atom::Query::ConditionType
     ,kError
 };
 
-class Atom::Query::Condition
+template <typename T> class Atom::Query::Condition
 {
     public:
         using Ptr = std::shared_ptr<Condition>;
-        using Functor = std::function<bool(Results::Ptr)>;
+        using Functor = std::function<bool(T)>;
 
         Condition(std::string identifier, ConditionType type, Functor functor);
 
@@ -58,13 +58,27 @@ class Atom::Query::Condition
 
         void set_identifier(std::string identifier) { identifier_ = identifier; }
         void set_type(ConditionType type) { type_ = type; }
+        void set_functor(Functor functor) { functor_ = functor; }
 
-        bool VerifyCondition_(Results::Ptr results);
+        bool VerifyCondition_(T t);
 
     private:
         std::string identifier_;
         ConditionType type_;
         Functor functor_;
 };
+
+template <typename T> Atom::Query::Condition<T>::Condition(std::string identifier, ConditionType type, Functor functor) :
+    identifier_(identifier)
+    ,type_(type)
+    ,functor_(functor)
+{
+
+}
+
+template <typename T> bool Atom::Query::Condition<T>::VerifyCondition_(T t)
+{
+    return functor_(t);
+}
 
 #endif // ATOM_QUERY_CONDITION
