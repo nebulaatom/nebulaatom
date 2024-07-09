@@ -25,11 +25,40 @@ class MainHandler : public Handlers::BackendHandler
                     auto action = f1->AddAction_("a1");
                     action->set_custom_error("Error to add product.");
                     action->set_sql_code("INSERT INTO products (name, price, id_store) VALUES (?, ?, ?)");
-                    action->set_final(true);
                     // Parameters and conditions
-                    action->AddParameter_("productName", Tools::DValue(""), true);
-                    action->AddParameter_("productPrice", Tools::DValue(""), true);
-                    action->AddParameter_("idStore", Tools::DValue(""), true);
+                    action->AddParameter_("productName", Tools::DValue(""), true)
+                    ->SetupCondition_("condition-productName", Query::ConditionType::kError, [](Query::Parameter::Ptr param)
+                    {
+                        if(param->get_value().ToString_() == "")
+                        {
+                            param->set_error("productName cannot be iqual to a empty string");
+                            return false;
+                        }
+                        else
+                            return true;
+                    });
+                    action->AddParameter_("productPrice", Tools::DValue(""), true)
+                    ->SetupCondition_("condition-productPrice", Query::ConditionType::kError, [](Query::Parameter::Ptr param)
+                    {
+                        if(param->get_value().ToString_() == "")
+                        {
+                            param->set_error("productPrice cannot be iqual to a empty string");
+                            return false;
+                        }
+                        else
+                            return true;
+                    });
+                    action->AddParameter_("idStore", Tools::DValue(""), true)
+                    ->SetupCondition_("condition-idStore", Query::ConditionType::kError, [](Query::Parameter::Ptr param)
+                    {
+                        if(param->get_value().ToString_() == "")
+                        {
+                            param->set_error("idStore cannot be iqual to a empty string");
+                            return false;
+                        }
+                        else
+                            return true;
+                    });
         }
 
         void Process_() override
