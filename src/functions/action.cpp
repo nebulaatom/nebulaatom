@@ -13,7 +13,7 @@ Action::Action(std::string identifier) :
     ,identifier_(identifier)
     ,status_("OK.")
     ,message_("OK.")
-    ,custom_error_("")
+    ,custom_error_("Error in Action")
     ,final_(true)
     ,error_(false)
     ,sql_code_("SELECT 1")
@@ -540,7 +540,6 @@ void Action::NotifyError_(std::string message)
 {
     Tools::OutputLogger::Log_(message);
     set_error(true);
-    set_custom_error(message);
 }
 
 bool Action::InitializeQuery_()
