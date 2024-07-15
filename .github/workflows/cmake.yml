@@ -1,0 +1,47 @@
+
+name: CMake System for Nebula Atom
+
+on:
+  push
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: debian:12
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        apt-get update && apt-get install -y
+        make
+        binutils
+        g++
+        git
+        cmake
+        libssl-dev
+        libpoco-dev
+        libmariadb-dev
+        libyaml-cpp-dev
+        
+    - name: Configure CMake
+      run: |
+        mkdir ${{github.workspace}}/build && cd ${{github.workspace}}/build
+        cmake ../ -DCMAKE_BUILD_TYPE=release && cmake --build .
+
+    - name: Build
+      working-directory: ${{github.workspace}}/build
+      run: |
+        cmake --build . --target install -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: CPack
+      working-directory: ${{github.workspace}}/build
+      run: |
+        cpack --config CPackSourceConfig.cmake && cpack --config CPackConfig.cmake
+
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: src/example/helloworld
