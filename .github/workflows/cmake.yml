@@ -5,7 +5,7 @@ on:
   push
 
 env:
-  BUILD_TYPE: Release
+  BUILD_TYPE: Debug
 
 jobs:
   build:
@@ -24,7 +24,7 @@ jobs:
       run: |
         mkdir ${{github.workspace}}/build
         cd ${{github.workspace}}/build
-        cmake ../ -DCMAKE_BUILD_TYPE=release
+        cmake ../ -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
         cmake --build .
 
     - name: Build
