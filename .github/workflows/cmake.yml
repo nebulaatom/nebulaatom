@@ -18,7 +18,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y make binutils g++ git cmake libssl-dev
-        sudo apt-get install -y libpoco-dev libmariadb-dev libyaml-cpp-dev
+        sudo apt-get install -y libpoco-dev libmysqlclient-dev libyaml-cpp-dev
         
     - name: Configure CMake
       run: |
