@@ -16,21 +16,16 @@ jobs:
 
     - name: Install dependencies
       run: |
-        apt-get update && apt-get install -y
-        make
-        binutils
-        g++
-        git
-        cmake
-        libssl-dev
-        libpoco-dev
-        libmariadb-dev
-        libyaml-cpp-dev
+        sudo apt-get update
+        sudo apt-get install -y make binutils g++ git cmake libssl-dev
+        sudo apt-get install -y libpoco-dev libmariadb-dev libyaml-cpp-dev
         
     - name: Configure CMake
       run: |
-        mkdir ${{github.workspace}}/build && cd ${{github.workspace}}/build
-        cmake ../ -DCMAKE_BUILD_TYPE=release && cmake --build .
+        mkdir ${{github.workspace}}/build
+        cd ${{github.workspace}}/build
+        cmake ../ -DCMAKE_BUILD_TYPE=release
+        cmake --build .
 
     - name: Build
       working-directory: ${{github.workspace}}/build
@@ -40,7 +35,8 @@ jobs:
     - name: CPack
       working-directory: ${{github.workspace}}/build
       run: |
-        cpack --config CPackSourceConfig.cmake && cpack --config CPackConfig.cmake
+        cpack --config CPackSourceConfig.cmake
+        cpack --config CPackConfig.cmake
 
     - name: Test
       working-directory: ${{github.workspace}}/build
