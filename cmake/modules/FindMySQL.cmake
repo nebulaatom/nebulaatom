@@ -53,7 +53,7 @@ endif()
 
 # Find library dirs
 find_library(MySQL_LIBRARIES
-	NAMES mysqlclient_r mariadbclient mariadb
+	NAMES mysqlclient_r mariadbclient mariadb mysqlclient libmysqlclient
 	PATHS /usr/lib/mysql
 			/usr/lib/mariadb
 			/usr/local/lib/mysql
@@ -65,6 +65,7 @@ find_library(MySQL_LIBRARIES
 			/opt/mysql/mysql/lib/mysql
 			/opt/mysql/lib/mysql
 			/opt/rh/rh-mariadb105/root/usr/lib64
+			/usr/lib/x86_64-linux-gnu/
 )
 
 # Verify if exists directories
