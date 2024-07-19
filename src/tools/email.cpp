@@ -5,7 +5,7 @@
 
 using namespace Atom::Tools;
 
-Email::Email(std::string identifier) :
+Email::Email() :
     mail_host_("")
     ,sender_("")
     ,recipient_("")

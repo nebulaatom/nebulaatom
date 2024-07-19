@@ -16,7 +16,7 @@ int main(int argc, char** argv)
         {
             self.SetupSSL_();
 
-            Tools::Email a("a1");
+            Tools::Email a;
             a.set_mail_host("smtp.host.com");
             a.set_subject("Test Email");
             a.set_email_user("user@host.com");
@@ -24,8 +24,10 @@ int main(int argc, char** argv)
             a.set_recipient("recipient@host.com");
             a.set_email_password("password");
             a.set_email_message("Hello!");
-            a.SendEmail_();
-            self.CustomHTMLResponse_(HTTP::Status::kHTTP_OK, "Email sended.");
+            if(a.SendEmail_())
+                self.CustomHTMLResponse_(HTTP::Status::kHTTP_OK, "Email sended.");
+            else
+                self.CustomHTMLResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Error to send email.");
         });
     });
 

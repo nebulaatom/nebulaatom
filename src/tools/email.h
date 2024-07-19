@@ -38,7 +38,7 @@ class Atom::Tools::Email
     public:
         using Ptr = std::shared_ptr<Email>;
 
-        Email(std::string identifier);
+        Email();
 
         std::string get_mail_host() const { return mail_host_; }
         std::string get_sender() const { return sender_; }
