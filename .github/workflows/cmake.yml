@@ -41,5 +41,5 @@ jobs:
 
     - name: Test
       run: |
-        build/src/example/helloworld &
+        build/src/examples/helloworld &
         pkill helloworld
