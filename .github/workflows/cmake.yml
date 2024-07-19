@@ -23,22 +23,22 @@ jobs:
         
     - name: Configure CMake
       run: |
-        mkdir ${{github.workspace}}/build
-        cd ${{github.workspace}}/build
+        mkdir build
+        cd build
         cmake ../ -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
         cmake --build .
 
     - name: Build
-      working-directory: ${{github.workspace}}/build
+      working-directory: build
       run: |
         cmake --build . --target install
 
     - name: CPack
-      working-directory: ${{github.workspace}}/build
+      working-directory: build
       run: |
         cpack --config CPackSourceConfig.cmake
         cpack --config CPackConfig.cmake
 
     - name: Test
-      working-directory: ${{github.workspace}}/build
+      working-directory: build
       run: src/example/helloworld
