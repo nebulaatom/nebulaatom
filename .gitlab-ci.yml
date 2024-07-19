@@ -30,16 +30,12 @@ build:
     - cmake ../ -DCMAKE_BUILD_TYPE=release && cmake --build .
     - cmake --build . --target install
     - cpack --config CPackSourceConfig.cmake && cpack --config CPackConfig.cmake
+    - src/examples/helloworld
   artifacts:
     paths:
       - build/cpack/libnebulaatom-*-Linux.deb
       - version.txt
   
-test:
-  stage: build
-  script:
-    - src/examples/helloworld
-
 upload:
   stage: upload
   image: curlimages/curl:latest
