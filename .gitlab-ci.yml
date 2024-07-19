@@ -30,7 +30,7 @@ build:
     - cmake ../ -DCMAKE_BUILD_TYPE=release && cmake --build .
     - cmake --build . --target install
     - cpack --config CPackSourceConfig.cmake && cpack --config CPackConfig.cmake
-    - src/examples/helloworld
+    - src/examples/helloworld &
     - pkill helloworld
   artifacts:
     paths:
