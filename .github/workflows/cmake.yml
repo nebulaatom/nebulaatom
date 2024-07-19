@@ -17,9 +17,9 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sudo apt-get update
-        sudo apt-get install -y make binutils g++ git cmake libssl-dev
-        sudo apt-get install -y libpoco-dev libmysqlclient-dev libyaml-cpp-dev
+        apt-get update
+        apt-get install -y make binutils g++ git cmake libssl-dev
+        apt-get install -y libpoco-dev libmysqlclient-dev libyaml-cpp-dev
         
     - name: Configure CMake
       run: |
