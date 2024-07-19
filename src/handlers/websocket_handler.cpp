@@ -51,6 +51,7 @@ void WebSocketHandler::Process_()
         {
             case WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:
                 response->set("Sec-WebSocket-Version", WebSocket::WEBSOCKET_VERSION);
+                break;
             case WebSocket::WS_ERR_NO_HANDSHAKE:
             case WebSocket::WS_ERR_HANDSHAKE_NO_VERSION:
             case WebSocket::WS_ERR_HANDSHAKE_NO_KEY:
