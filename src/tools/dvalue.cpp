@@ -114,6 +114,8 @@ bool DValue::operator==(DValue& dvalue)
         Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
         return false;
     }
+
+    return false;
 }
 
 bool DValue::operator!=(DValue& dvalue)
@@ -140,6 +142,8 @@ bool DValue::operator!=(DValue& dvalue)
         Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
         return false;
     }
+
+    return false;
 }
 
 bool DValue::operator<(DValue& dvalue)
@@ -166,6 +170,8 @@ bool DValue::operator<(DValue& dvalue)
         Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
         return false;
     }
+
+    return false;
 }
 
 bool DValue::operator<=(DValue& dvalue)
@@ -192,6 +198,8 @@ bool DValue::operator<=(DValue& dvalue)
         Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
         return false;
     }
+
+    return false;
 }
 
 bool DValue::operator>(DValue& dvalue)
@@ -218,6 +226,8 @@ bool DValue::operator>(DValue& dvalue)
         Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
         return false;
     }
+
+    return false;
 }
 
 bool DValue::operator>=(DValue& dvalue)
@@ -244,6 +254,8 @@ bool DValue::operator>=(DValue& dvalue)
         Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
         return false;
     }
+
+    return false;
 }
 
 bool DValue::TypeIsIqual_(DValue::Type row_value_type)
@@ -253,6 +265,7 @@ bool DValue::TypeIsIqual_(DValue::Type row_value_type)
 
 std::string DValue::ToString_()
 {
+    std::string final_string = "";
     switch(type_)
     {
         case Type::kEmpty:
@@ -264,7 +277,6 @@ std::string DValue::ToString_()
             catch(std::exception& error)
             {
                 Tools::OutputLogger::Log_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
-                return "";
             }
             break;
         }
@@ -272,12 +284,11 @@ std::string DValue::ToString_()
         {
             try
             {
-                return std::to_string(value_bool_);
+                final_string = std::to_string(value_bool_);
             }
             catch(std::exception& error)
             {
                 Tools::OutputLogger::Log_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
-                return "";
             }
             break;
         }
@@ -285,12 +296,11 @@ std::string DValue::ToString_()
         {
             try
             {
-                return std::to_string(value_float_);
+                final_string = std::to_string(value_float_);
             }
             catch(std::exception& error)
             {
                 Tools::OutputLogger::Log_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
-                return "";
             }
             break;
         }
@@ -298,12 +308,11 @@ std::string DValue::ToString_()
         {
             try
             {
-                return std::to_string(value_int_);
+                final_string = std::to_string(value_int_);
             }
             catch(std::exception& error)
             {
                 Tools::OutputLogger::Log_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
-                return "";
             }
             break;
         }
@@ -311,16 +320,17 @@ std::string DValue::ToString_()
         {
             try
             {
-                return value_string_;
+                final_string = value_string_;
             }
             catch(std::exception& error)
             {
                 Tools::OutputLogger::Log_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
-                return "";
             }
             break;
         }
     }
+
+    return final_string;
 }
 
 void DValue::Format_(Poco::Dynamic::Var& value)
