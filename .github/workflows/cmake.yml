@@ -9,7 +9,8 @@ env:
 
 jobs:
   build:
-    runs-on: debian-12
+    runs-on: ubuntu-latest
+    container: debian-12
 
     steps:
     - uses: actions/checkout@v4
