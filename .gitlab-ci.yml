@@ -34,6 +34,11 @@ build:
     paths:
       - build/cpack/libnebulaatom-*-Linux.deb
       - version.txt
+  
+test:
+  stage: build
+  script:
+    - src/examples/helloworld
 
 upload:
   stage: upload
