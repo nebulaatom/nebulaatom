@@ -40,5 +40,5 @@ jobs:
         cpack --config CPackConfig.cmake
 
     - name: Test
-      working-directory: build
-      run: src/example/helloworld
+      working-directory: build/src/example/
+      run: helloworld
