@@ -247,6 +247,10 @@ void Action::IdentifyParameters_(URI::QueryParameters& query_parameters)
     }
 }
 
+void Action::SetupCondition_(std::string identifier, Query::ConditionType type, Query::Condition<Action&>::Functor functor)
+{
+    condition_ = std::make_shared<Query::Condition<Action&>>(identifier, type, functor);
+}
 Query::Parameter::Ptr Action::AddParameter_(std::string name, Tools::DValue value, bool editable)
 {
     parameters_.push_back(std::make_shared<Query::Parameter>(name, value, editable));

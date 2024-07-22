@@ -128,6 +128,7 @@ class Atom::Functions::Action :
         void IdentifyParameters_(Files::FileManager& files_parameters);
         void IdentifyParameters_(JSON::Array::Ptr json_array);
         void IdentifyParameters_(URI::QueryParameters& query_parameters);
+        void SetupCondition_(std::string identifier, Query::ConditionType type, Query::Condition<Action&>::Functor functor);
         bool ComposeQuery_();
         void ExecuteQuery_();
         void ExecuteAsyncQuery_();
