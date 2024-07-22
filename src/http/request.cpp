@@ -20,10 +20,7 @@
 
 using namespace Atom::HTTP;
 
-Request::Request() :
-    uri_("")
-    ,method_("")
-    ,content_type_("")
+Request::Request()
 {
     http_server_request_ = std::nullopt;
     http_server_response_ = std::nullopt;
@@ -42,10 +39,6 @@ void Request::AddCookie_(std::string name, std::string value)
 void Request::SetupRequest_(Net::HTTPServerRequest& request)
 {
     http_server_request_.emplace(&request);
-    uri_ = request.getURI();
-    method_ = request.getMethod();
-
-    Net::MessageHeader::splitParameters(request.getContentType(), content_type_, content_type_parameters_);
 }
 
 void Request::SetupResponse_(Net::HTTPServerResponse& response)

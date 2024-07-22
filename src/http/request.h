@@ -98,11 +98,7 @@ class Atom::HTTP::Request
             auto& var = cookies_;
             return var;
         }
-        std::string get_uri() const { return uri_; }
-        std::string get_method() const { return method_; }
-        std::string get_content_type() const { return content_type_; };
-        Net::NameValueCollection get_content_type_parameters() const { return content_type_parameters_; };
-
+        
         void AddHeader_(std::string name, std::string value);
         void AddCookie_(std::string name, std::string value);
 
@@ -117,10 +113,6 @@ class Atom::HTTP::Request
         HTTPServerResponsePtr http_server_response_;
         std::vector<HTTP::Header> headers_;
         std::vector<HTTP::Cookie> cookies_;
-        std::string uri_;
-        std::string method_;
-        std::string content_type_;
-        Net::NameValueCollection content_type_parameters_;
 };
 
 #endif // ATOM_HTTP_REQUEST
