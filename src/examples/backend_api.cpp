@@ -28,6 +28,13 @@ class MainHandler : public Handlers::BackendHandler
                     a1->set_custom_error("No stores found with this name.");
                     a1->set_sql_code("SELECT id FROM stores WHERE name = ?");
                     a1->set_final(false);
+                    a1->SetupCondition_("verify-identifier", Query::ConditionType::kWarning, [](Functions::Action& action)
+                    {
+                        if(action.get_results()->size() > 0)
+                            Tools::OutputLogger::Log_("Results > 0");
+                        
+                        return true;
+                    });
                     // Parameters and conditions
                     auto param = a1->AddParameter_("storeName", Tools::DValue(""), true);
                     param->SetupCondition_("cond-param1", Query::ConditionType::kError, [](Query::Parameter::Ptr param)
