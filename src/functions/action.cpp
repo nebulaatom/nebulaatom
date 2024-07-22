@@ -267,17 +267,18 @@ bool Action::Work_()
 {
     // Compose query
     ComposeQuery_();
-    if(get_error())
-        return false;
+    if(error_) return false;
 
     // Execute query
     ExecuteQuery_();
-    if(get_error())
-        return false;
+    if(error_) return false;
 
     // Make results
     MakeResults_();
-    if(get_error())
+    if(error_) return false;
+
+    // Verify condition
+    if(!VerifyCondition_())
         return false;
 
     if(get_final())
