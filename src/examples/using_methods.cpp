@@ -29,7 +29,7 @@ int main(int argc, char** argv)
             });
 
             // Evaluate request method
-            if(!methods.EvaluateProcess_(self.get_method()))
+            if(!methods.EvaluateProcess_(self.get_properties().method))
                 self.HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "HTTP Method not found.");
         });
     });

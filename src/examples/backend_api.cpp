@@ -94,7 +94,7 @@ class MainHandler : public Handlers::BackendHandler
             // Route identification
                 if(!IdentifyRoute_())
                 {
-                    JSONResponse_(HTTP::Status::kHTTP_NOT_FOUND, "The requested endpoint ("+get_method()+") is not available.");
+                    JSONResponse_(HTTP::Status::kHTTP_NOT_FOUND, "The requested endpoint ("+get_properties().method+") is not available.");
                     return;
                 }
 
