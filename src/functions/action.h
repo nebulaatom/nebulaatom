@@ -76,6 +76,11 @@ class Atom::Functions::Action :
             auto& var = parameters_;
             return var;
         }
+        Query::Condition<Action&>::Ptr get_condition()
+        {
+            auto& var = condition_;
+            return var;
+        }
         Query::Results::Ptr get_results()
         {
             auto& var = results_;
@@ -147,6 +152,7 @@ class Atom::Functions::Action :
         bool final_;
         bool error_;
         std::vector<Query::Parameter::Ptr> parameters_;
+        Query::Condition<Action&>::Ptr condition_;
         std::shared_ptr<Query::Results> results_;
         JSON::Object::Ptr json_result_;
         std::vector<Ptr> actions_;
