@@ -84,6 +84,7 @@ class Atom::HTTP::Methods
         const std::string GetMethod_(EnumMethods& method);
         void AddProcess_(const std::string method, MethodProcess process);
         bool EvaluateProcess_(std::string request_method);
+        std::string IdentifyMethod_(std::string method);
 
     protected:
         void MapMethods_();

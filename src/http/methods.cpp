@@ -69,6 +69,16 @@ bool Methods::EvaluateProcess_(std::string request_method)
 
     return false;
 }
+std::string Methods::IdentifyMethod_(std::string method)
+{
+    for(auto method_it: map_string_methods_)
+    {
+        if(method == method_it.first)
+            return method;
+    }
+
+    return HTTP_GET;
+}
 
 void Methods::MapMethods_()
 {
