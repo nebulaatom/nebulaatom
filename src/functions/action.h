@@ -140,6 +140,7 @@ class Atom::Functions::Action :
         void NotifyError_(std::string message);
         void SetupPositionParameter_(Query::Parameter::Ptr parameter);
         bool VerifyParameterCondition_(Query::Parameter::Ptr parameter);
+        bool VerifyCondition_();
 
     private:
         bool InitializeQuery_();

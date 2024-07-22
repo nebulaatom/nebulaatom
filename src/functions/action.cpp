@@ -636,3 +636,42 @@ bool Action::VerifyParameterCondition_(Query::Parameter::Ptr parameter)
     }
     return result;
 }
+
+bool Action::VerifyCondition_()
+{
+    bool result = true;
+    if(condition_ == nullptr)
+        result = true;
+    else if(!condition_->VerifyCondition_(*this))
+    {
+        switch(condition_->get_type())
+        {
+            case Query::ConditionType::kWarning:
+            {
+                if(custom_error_ == "")
+                    Tools::OutputLogger::Log_("Action condition warning (Identifier: " + condition_->get_identifier() + ", Action: " + identifier_ + ").");
+                else
+                    Tools::OutputLogger::Log_(custom_error_);
+                result = true;
+                break;
+            }
+            case Query::ConditionType::kError:
+            {
+                if(custom_error_ == "")
+                {
+                    Tools::OutputLogger::Log_("Action condition error (Identifier: " + condition_->get_identifier() + ", Action: " + identifier_ + ").");
+                    set_custom_error("Action condition error (Identifier: " + condition_->get_identifier() + ", Action: " + identifier_ + ").");
+                }
+                else
+                {
+                    Tools::OutputLogger::Log_(custom_error_);
+                    set_custom_error(custom_error_);
+                }
+                error_ = true;
+                result = false;
+                break;
+            }
+        }
+    }
+    return result;
+}
