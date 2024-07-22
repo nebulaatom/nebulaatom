@@ -38,6 +38,8 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
         // Set request and response
             SetupRequest_(request);
             SetupResponse_(response);
+
+            Tools::OutputLogger::Log_(request.getURI() + " " + request.getMethod());
             
             if(!get_http_server_request().has_value())
             {
@@ -57,6 +59,9 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
             std::vector<std::string> segments;
             URI(request.getURI()).getPathSegments(segments);
             requested_route_ = std::make_shared<Tools::Route>(segments);
+
+        // Setup Properties
+            SetupProperties_();
 
         // Handler Process
             Process_();
@@ -144,7 +149,7 @@ bool RootHandler::VerifySession_()
 
 bool RootHandler::VerifyPermissions_()
 {
-    return VerifyRoutesPermissions_(*requested_route_, get_method());
+    return VerifyRoutesPermissions_(*requested_route_, properties_.method);
 }
 
 bool RootHandler::IdentifyRoute_()
@@ -154,7 +159,7 @@ bool RootHandler::IdentifyRoute_()
         if(requested_route_->SegmentsToString_() == it.first)
         {
             // Verify same HTTP Method
-            if(GetMethod_(get_method()) != it.second->get_method())
+            if(GetMethod_(properties_.method) != it.second->get_method())
                 continue;
 
             // Copy function and reset actions results
@@ -172,17 +177,17 @@ bool RootHandler::IdentifyRoute_()
 void RootHandler::ManageRequestBody_()
 {
     auto request = get_http_server_request().value();
-    if(get_method() == "POST" || get_method() == "PUT")
+    if(properties_.method == "POST" || properties_.method == "PUT")
     {
-        if(get_content_type() == "multipart/form-data")
+        if(properties_.content_type == "multipart/form-data")
         {
             ReadFormMultipart_(*request);
         }
-        else if(get_content_type() == "application/x-www-form-urlencoded")
+        else if(properties_.content_type == "application/x-www-form-urlencoded")
         {
             ReadFormURLEncoded_(*request, request->stream());
         }
-        else if(get_content_type() == "application/json")
+        else if(properties_.content_type == "application/json")
         {
             ReadJSON_(request->stream());
         }
@@ -192,4 +197,16 @@ void RootHandler::ManageRequestBody_()
         std::string uri = request->getURI();
         ReadFromURI_(uri);
     }
+}
+
+void RootHandler::SetupProperties_()
+{
+    auto request = get_http_server_request().value();
+    if(!get_http_server_request().has_value())
+        return;
+
+    properties_.method = IdentifyMethod_(request->getMethod());
+    properties_.uri = request->getURI();
+    properties_.content_type = request->getContentType();
+    Net::MessageHeader::splitParameters(request->getContentType(), properties_.content_type, properties_.content_type_parameters);
 }

@@ -96,9 +96,22 @@ class Atom::Handlers::RootHandler :
     ,public HTTP::Body
 {
     public:
+        struct Properties
+        {
+            std::string method;
+            std::string uri;
+            std::string content_type;
+            Net::NameValueCollection content_type_parameters;
+        };
+
         RootHandler();
         virtual ~RootHandler();
 
+        struct Properties& get_properties()
+        {
+            auto& var = properties_;
+            return var;
+        }
         std::shared_ptr<Atom::Tools::Route>& get_requested_route()
         {
             auto& var = requested_route_;
@@ -124,7 +137,11 @@ class Atom::Handlers::RootHandler :
         bool IdentifyRoute_();
         void ManageRequestBody_();
 
+    protected:
+        void SetupProperties_();
+
     private:
+        struct Properties properties_;
         std::list<std::string> targets_;
         std::shared_ptr<Atom::Tools::Route> requested_route_;
         Functions::FunctionsManager functions_manager_;
