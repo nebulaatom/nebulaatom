@@ -7,14 +7,9 @@
             ,"command": "rm -r build/Debug/cpack/*"
         },
         {
-            "label": "Build CPack DEB"
+            "label": "Build and Install CPack DEB"
             ,"type": "shell"
-            ,"command": "cpack --config build/Debug/CPackSourceConfig.cmake && cpack --config build/Debug/CPackConfig.cmake"
-        },
-        {
-            "label": "Install CPack DEB"
-            ,"type": "shell"
-            ,"command": "sudo dpkg -i build/Debug/cpack/libnebulaatom-*-Linux.deb && sudo apt-get install -f"
+            ,"command": "cpack --config build/Debug/CPackSourceConfig.cmake && cpack --config build/Debug/CPackConfig.cmake && sudo dpkg -i build/Debug/cpack/libnebulaatom-*-Linux.deb && sudo apt-get install -f"
         },
         {
             "label": "Doxygen Documentation"
