@@ -85,29 +85,16 @@ class Atom::Core::NebulaAtom
             return var;
         }
 
-        void set_use_ssl(bool use_ssl) { use_ssl_ = use_ssl; }
-
         int Init_();
         int Init_(int argc, char** argv);
         void CustomHandlerCreator_(HandlerFactory::FunctionHandlerCreator handler_creator);
         void AddHandler_(std::string route, HandlerFactory::FunctionHandler handler);
 
-    protected:
-        virtual int Main_();
-        void SetupServer_();
-        void SetupSSL_();
-
     private:
-        bool use_ssl_;
+        const bool use_ssl_;
         Core::Server::Ptr server_;
         HandlerFactory* handler_factory_;
         std::vector<std::string> console_parameters_;
-        Context::Ptr context_;
-        #if defined(POCO_OS_FAMILY_WINDOWS)
-            NamedEvent terminator(ProcessImpl::terminationEventName(Process::id()));
-        #else
-            Event terminator;
-        #endif
 };
 
 #endif // ATOM_CORE_NEBULAATOM

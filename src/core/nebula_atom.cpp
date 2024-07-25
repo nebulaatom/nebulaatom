@@ -51,119 +51,52 @@ void NebulaAtom::AddHandler_(std::string route, HandlerFactory::FunctionHandler 
 
 int NebulaAtom::Init_()
 {
-    return Main_();
+    try
+    {
+        server_ = std::make_shared<Server>(handler_factory_);
+        server_->set_use_ssl(use_ssl_);
+        return server_->run(console_parameters_);
+    }
+    catch(Net::SSLException& error)
+    {
+        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on Init_(): " + error.displayText());
+        return 1;
+    }
+    catch(Net::NetException& error)
+    {
+        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on Init_(): " + error.displayText());
+        return 1;
+    }
+    catch(Poco::NullPointerException& error)
+    {
+        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on Init_(): " + error.displayText());
+        return 1;
+    }
+    catch(Poco::SystemException& error)
+    {
+        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on Init_(): " + error.displayText());
+        return 1;
+    }
+    catch(std::runtime_error& error)
+    {
+        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on Init_(): " + std::string(error.what()));
+        return 1;
+    }
+    catch(std::exception& error)
+    {
+        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on Init_(): " + std::string(error.what()));
+        return 1;
+    }
+    catch(...)
+    {
+        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on Init_(): Unhandled");
+        return 1;
+    }
 }
 
 int NebulaAtom::Init_(int argc, char** argv)
 {
     console_parameters_ = std::vector<std::string>(argv, argv + argc);
-    return Main_();
-}
 
-int NebulaAtom::Main_()
-{
-    try
-    {
-        // Setup server
-        SetupServer_();
-
-        // Start server, wait and stop
-        server_->start();
-        Tools::OutputLogger::Log_(
-            "Server started at port " + std::to_string(Tools::SettingsManager::get_basic_properties_().port)
-            + " (Max threads: " + std::to_string(server_->params().getMaxThreads())
-            + ", Max Queued: " + std::to_string(server_->params().getMaxQueued()) + ")"
-        );
-
-		terminator.wait();
-
-        Tools::OutputLogger::Log_("Shutting down server... ");
-        server_->stop();
-        
-        return 0;
-    }
-    catch(Net::SSLException& error)
-    {
-        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on main(): " + error.displayText());
-        return 1;
-    }
-    catch(Net::NetException& error)
-    {
-        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on main(): " + error.displayText());
-        return 1;
-    }
-    catch(Poco::NullPointerException& error)
-    {
-        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on main(): " + error.displayText());
-        return 1;
-    }
-    catch(Poco::SystemException& error)
-    {
-        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on main(): " + error.displayText());
-        return 1;
-    }
-    catch(std::runtime_error& error)
-    {
-        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on main(): " + std::string(error.what()));
-        return 1;
-    }
-    catch(std::exception& error)
-    {
-        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on main(): " + std::string(error.what()));
-        return 1;
-    }
-    catch(...)
-    {
-        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on main(): Unhandled");
-        return 1;
-    }
-}
-
-void NebulaAtom::SetupServer_()
-{
-    // Setup Socket and Server
-    if(use_ssl_)
-    {
-        SetupSSL_();
-
-        SecureServerSocket secure_server_socket(Tools::SettingsManager::get_basic_properties_().port);
-        server_ = std::make_shared<Core::Server>(handler_factory_, secure_server_socket, new HTTPServerParams);
-    }
-    else
-    {
-        ServerSocket server_socket(Tools::SettingsManager::get_basic_properties_().port);
-        server_ = std::make_shared<Core::Server>(handler_factory_, server_socket, new HTTPServerParams);
-    }
-}
-
-void NebulaAtom::SetupSSL_()
-{
-    // Setup certificate handler and key handler
-    SharedPtr<Net::InvalidCertificateHandler> cert_handler = new Net::ConsoleCertificateHandler(true);
-    SharedPtr<Net::PrivateKeyPassphraseHandler> keyhandler = new Net::KeyConsoleHandler(true);
-
-    Context::Params params;
-    params.privateKeyFile = Tools::SettingsManager::get_basic_properties_().key;
-    params.certificateFile = Tools::SettingsManager::get_basic_properties_().certificate;
-    params.caLocation = Tools::SettingsManager::get_basic_properties_().rootcert;
-
-    if (params.certificateFile.empty() && params.privateKeyFile.empty())
-        throw SSLException("Configuration error: no certificate file has been specified");
-
-    // optional options for which we have defaults defined
-    params.verificationMode = Context::VERIFY_RELAXED;
-    params.verificationDepth = 9;
-    params.loadDefaultCAs = true;
-    params.cipherList = "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH";
-    params.dhParamsFile = "";
-    params.ecdhCurve = "";
-
-    Context::Usage usage = Context::TLSV1_3_SERVER_USE;
-    context_ = new Context(usage, params);
-
-    context_->enableSessionCache(false);
-    context_->enableExtendedCertificateVerification(false);
-    context_->preferServerCiphers();
-
-    Net::SSLManager::instance().initializeServer(keyhandler, cert_handler, context_);
+    return Init_();
 }
