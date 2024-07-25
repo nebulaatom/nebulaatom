@@ -16,25 +16,15 @@
 */
 
 #include "core/server.h"
+#include <memory>
 
 using namespace Atom::Core;
 
-Server::Server(HTTPRequestHandlerFactory::Ptr factory, const ServerSocket& socket, HTTPServerParams::Ptr params) :
-    Net::HTTPServer(factory, socket, params)
-    ,server_name_("nebulaatom")
+Server::Server(HandlerFactory* handler_factory) :
+    handler_factory_(handler_factory)
 {
-    SetupParams_(params);
-}
-
-Server::Server(HTTPRequestHandlerFactory::Ptr factory, const SecureServerSocket& socket, HTTPServerParams::Ptr params) :
-    Net::HTTPServer(factory, socket, params)
-    ,server_name_("nebulaatom")
-{
-    SetupParams_(params);
-}
-
-Server::~Server()
-{
+    if(handler_factory_ == nullptr)
+        handler_factory_ = new HandlerFactory();
 
 }
 
@@ -43,4 +33,53 @@ void Server::SetupParams_(HTTPServerParams::Ptr params)
     params->setServerName(server_name_);
     params->setMaxQueued(Tools::SettingsManager::get_basic_properties_().max_queued);
     params->setMaxThreads(Tools::SettingsManager::get_basic_properties_().max_threads);
+}
+
+void Server::initialize(Application& self)
+{
+    ServerApplication::initialize(self);
+
+    if(use_ssl_)
+    {
+        auto& config = self.config();
+        config.setString("openSSL.server.privateKeyFile", Tools::SettingsManager::get_basic_properties_().key);
+        config.setString("openSSL.server.certificateFile", Tools::SettingsManager::get_basic_properties_().certificate);
+        config.setString("openSSL.server.caConfig", Tools::SettingsManager::get_basic_properties_().rootcert);
+    }
+}
+    
+void Server::uninitialize()
+{
+    ServerApplication::uninitialize();
+}
+
+int Server::main(const std::vector<std::string>&)
+{
+    auto server_params = new HTTPServerParams;
+    SetupParams_(server_params);
+
+    // Setup Socket and Server
+    if(use_ssl_)
+    {
+        SecureServerSocket secure_server_socket(Tools::SettingsManager::get_basic_properties_().port);
+        http_server_ = std::make_unique<HTTPServer>(handler_factory_, secure_server_socket, new HTTPServerParams);
+    }
+    else
+    {
+        ServerSocket server_socket(Tools::SettingsManager::get_basic_properties_().port);
+        http_server_ = std::make_unique<HTTPServer>(handler_factory_, server_socket, new HTTPServerParams);
+    }
+
+    http_server_->start();
+    Tools::OutputLogger::Log_(
+        "Server started at port " + std::to_string(Tools::SettingsManager::get_basic_properties_().port)
+        + " (Max threads: " + std::to_string(Tools::SettingsManager::get_basic_properties_().max_threads)
+        + ", Max Queued: " + std::to_string(Tools::SettingsManager::get_basic_properties_().max_queued) + ")"
+    );
+    
+    waitForTerminationRequest();
+    
+    http_server_->stop();
+        
+    return Application::EXIT_OK;
 }
