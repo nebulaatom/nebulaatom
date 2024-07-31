@@ -29,7 +29,7 @@ class MainHandler : public Handlers::BackendHandler
                     action->AddParameter_("productName", Tools::DValue(""), true)
                     ->SetupCondition_("condition-productName", Query::ConditionType::kError, [](Query::Parameter::Ptr param)
                     {
-                        if(param->get_value().ToString_() == "")
+                        if(param->ToString_() == "")
                         {
                             param->set_error("productName cannot be iqual to a empty string");
                             return false;
@@ -40,7 +40,7 @@ class MainHandler : public Handlers::BackendHandler
                     action->AddParameter_("productPrice", Tools::DValue(""), true)
                     ->SetupCondition_("condition-productPrice", Query::ConditionType::kError, [](Query::Parameter::Ptr param)
                     {
-                        if(param->get_value().ToString_() == "")
+                        if(param->ToString_() == "")
                         {
                             param->set_error("productPrice cannot be iqual to a empty string");
                             return false;
@@ -51,7 +51,7 @@ class MainHandler : public Handlers::BackendHandler
                     action->AddParameter_("idStore", Tools::DValue(""), true)
                     ->SetupCondition_("condition-idStore", Query::ConditionType::kError, [](Query::Parameter::Ptr param)
                     {
-                        if(param->get_value().ToString_() == "")
+                        if(param->ToString_() == "")
                         {
                             param->set_error("idStore cannot be iqual to a empty string");
                             return false;
