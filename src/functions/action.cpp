@@ -346,7 +346,7 @@ bool Action::ComposeQuery_()
                         break;
                     }
                 }
-                Tools::OutputLogger::Log_("Parameter in ComposeQuery_(): " + param->get_name() + ": " + param->get_value().ToString_());
+                Tools::OutputLogger::Log_("Parameter in ComposeQuery_(): " + param->get_name() + ": " + param->ToString_());
             }
 
         // Return
