@@ -39,12 +39,12 @@ class MainHandler : public Handlers::BackendHandler
                     auto param = a1->AddParameter_("storeName", Tools::DValue(""), true);
                     param->SetupCondition_("cond-param1", Query::ConditionType::kError, [](Query::Parameter::Ptr param)
                     {
-                        if(param->get_value().ToString_() == "")
+                        if(param->ToString_() == "")
                         {
                             param->set_error("storeName cannot be iqual to a empty string");
                             return false;
                         }
-                        else if(param->get_value().ToString_().size() < 3)
+                        else if(param->ToString_().size() < 3)
                         {
                             param->set_error("storeName cannot be less than 3 characters");
                             return false;
@@ -61,7 +61,7 @@ class MainHandler : public Handlers::BackendHandler
                     auto param2 = a2->AddParameter_("id_store", Query::Field::Position{0, 0}, "a1", false);
                     param2->SetupCondition_("cond-param2", Query::ConditionType::kError, [](Query::Parameter::Ptr param)
                     {
-                        if(param->get_value().ToString_() == "")
+                        if(param->ToString_() == "")
                         {
                             param->set_error("id_store cannot be iqual to a empty string");
                             return false;
@@ -71,7 +71,7 @@ class MainHandler : public Handlers::BackendHandler
                             param->set_error("id_store must be an integer value");
                             return false;
                         }
-                        if(param->get_value().get_value_int() < 0)
+                        if(param->IntValue_() < 0)
                         {
                             param->set_error("id_store must be greather or iqual than 0");
                             return false;
