@@ -111,7 +111,7 @@ bool DValue::operator==(DValue& dvalue)
     }
     catch(std::exception& error)
     {
-        Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
+        Tools::OutputLogger::Error_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
         return false;
     }
 
@@ -139,7 +139,7 @@ bool DValue::operator!=(DValue& dvalue)
     }
     catch(std::exception& error)
     {
-        Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
+        Tools::OutputLogger::Error_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
         return false;
     }
 
@@ -167,7 +167,7 @@ bool DValue::operator<(DValue& dvalue)
     }
     catch(std::exception& error)
     {
-        Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
+        Tools::OutputLogger::Error_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
         return false;
     }
 
@@ -195,7 +195,7 @@ bool DValue::operator<=(DValue& dvalue)
     }
     catch(std::exception& error)
     {
-        Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
+        Tools::OutputLogger::Error_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
         return false;
     }
 
@@ -223,7 +223,7 @@ bool DValue::operator>(DValue& dvalue)
     }
     catch(std::exception& error)
     {
-        Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
+        Tools::OutputLogger::Error_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
         return false;
     }
 
@@ -251,7 +251,7 @@ bool DValue::operator>=(DValue& dvalue)
     }
     catch(std::exception& error)
     {
-        Tools::OutputLogger::Log_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
+        Tools::OutputLogger::Error_("Error on dvalue.cpp on operator==(): " + std::string(error.what()));
         return false;
     }
 
@@ -276,7 +276,7 @@ std::string DValue::ToString_()
             }
             catch(std::exception& error)
             {
-                Tools::OutputLogger::Log_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
+                Tools::OutputLogger::Error_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
             }
             break;
         }
@@ -288,7 +288,7 @@ std::string DValue::ToString_()
             }
             catch(std::exception& error)
             {
-                Tools::OutputLogger::Log_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
+                Tools::OutputLogger::Error_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
             }
             break;
         }
@@ -300,7 +300,7 @@ std::string DValue::ToString_()
             }
             catch(std::exception& error)
             {
-                Tools::OutputLogger::Log_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
+                Tools::OutputLogger::Error_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
             }
             break;
         }
@@ -312,7 +312,7 @@ std::string DValue::ToString_()
             }
             catch(std::exception& error)
             {
-                Tools::OutputLogger::Log_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
+                Tools::OutputLogger::Error_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
             }
             break;
         }
@@ -324,7 +324,7 @@ std::string DValue::ToString_()
             }
             catch(std::exception& error)
             {
-                Tools::OutputLogger::Log_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
+                Tools::OutputLogger::Error_("Error on dvalue.cpp on ToString_(): " + std::string(error.what()));
             }
             break;
         }

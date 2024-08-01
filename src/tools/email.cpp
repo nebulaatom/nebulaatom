@@ -56,13 +56,13 @@ bool Email::SendEmail_()
     catch(std::runtime_error& error)
     {
         std::string string_error = "Error on email.cpp on SendEmail_(): " + std::string(error.what());
-        Tools::OutputLogger::Log_(string_error);
+        Tools::OutputLogger::Error_(string_error);
         return false;
     }
     catch(std::exception& error)
     {
         std::string string_error = "Error on email.cpp on SendEmail_(): " + std::string(error.what());
-        Tools::OutputLogger::Log_(string_error);
+        Tools::OutputLogger::Error_(string_error);
         return false;
     }
     return false;
