@@ -58,7 +58,7 @@ bool UsersManager::AuthenticateUser_()
     }
     catch(const std::exception& error)
     {
-        Tools::OutputLogger::Log_("Error on users_manager.cpp on AuthenticateUser_(): " + std::string(error.what()));
+        Tools::OutputLogger::Error_("Error on users_manager.cpp on AuthenticateUser_(): " + std::string(error.what()));
         return false;
     }
 }
