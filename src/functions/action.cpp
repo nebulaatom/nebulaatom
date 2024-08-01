@@ -153,15 +153,15 @@ void Action::IdentifyParameters_(JSON::Array::Ptr json_array)
     }
     catch(JSON::JSONException& error)
     {
-        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
+        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
     }
     catch(std::runtime_error& error)
     {
-        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
+        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
     }
     catch(std::exception& error)
     {
-        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
+        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
     }
 }
 
@@ -181,11 +181,11 @@ void Action::IdentifyParameters_(std::shared_ptr<Net::HTMLForm> form)
     }
     catch(std::runtime_error& error)
     {
-        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
+        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
     }
     catch(std::exception& error)
     {
-        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
+        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
     }
 }
 
@@ -215,11 +215,11 @@ void Action::IdentifyParameters_(Files::FileManager& files_parameters)
     }
     catch(std::runtime_error& error)
     {
-        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
+        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
     }
     catch(std::exception& error)
     {
-        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
+        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
     }
 }
 
@@ -239,11 +239,11 @@ void Action::IdentifyParameters_(URI::QueryParameters& query_parameters)
     }
     catch(std::runtime_error& error)
     {
-        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
+        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
     }
     catch(std::exception& error)
     {
-        NotifyError_("Error on action.cpp on IdentifyFilters_(): " + std::string(error.what()));
+        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
     }
 }
 
@@ -459,17 +459,17 @@ void Action::MakeResults_()
     }
     catch(JSON::JSONException& error)
     {
-        NotifyError_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.message()));
+        NotifyError_("Error on action.cpp on MakeResults_(): " + std::string(error.message()));
         return;
     }
     catch(std::runtime_error& error)
     {
-        NotifyError_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.what()));
+        NotifyError_("Error on action.cpp on MakeResults_(): " + std::string(error.what()));
         return;
     }
     catch(std::exception& error)
     {
-        NotifyError_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.what()));
+        NotifyError_("Error on action.cpp on MakeResults_(): " + std::string(error.what()));
         return;
     }
 
@@ -526,24 +526,24 @@ JSON::Object::Ptr Action::CreateJSONResult_()
     }
     catch(JSON::JSONException& error)
     {
-        Tools::OutputLogger::Log_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.message()));
+        Tools::OutputLogger::Error_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.message()));
         return JSON::Object::Ptr{};
     }
     catch(std::runtime_error& error)
     {
-        Tools::OutputLogger::Log_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.what()));
+        Tools::OutputLogger::Error_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.what()));
         return JSON::Object::Ptr{};
     }
     catch(std::exception& error)
     {
-        Tools::OutputLogger::Log_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.what()));
+        Tools::OutputLogger::Error_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.what()));
         return JSON::Object::Ptr{};
     }
 }
 
 void Action::NotifyError_(std::string message)
 {
-    Tools::OutputLogger::Log_(message);
+    Tools::OutputLogger::Error_(message);
     set_error(true);
 }
 
@@ -611,9 +611,9 @@ bool Action::VerifyParameterCondition_(Query::Parameter::Ptr parameter)
             case Query::ConditionType::kWarning:
             {
                 if(parameter->get_error() == "")
-                    Tools::OutputLogger::Log_("Parameter condition warning (Identifier: " + parameter->get_condition()->get_identifier() + ", Parameter name: " + parameter->get_name() + ").");
+                    Tools::OutputLogger::Warning_("Parameter condition warning (Identifier: " + parameter->get_condition()->get_identifier() + ", Parameter name: " + parameter->get_name() + ").");
                 else
-                    Tools::OutputLogger::Log_(parameter->get_error());
+                    Tools::OutputLogger::Warning_(parameter->get_error());
                 result = true;
                 break;
             }
@@ -621,12 +621,12 @@ bool Action::VerifyParameterCondition_(Query::Parameter::Ptr parameter)
             {
                 if(parameter->get_error() == "")
                 {
-                    Tools::OutputLogger::Log_("Parameter condition error (Identifier: " + parameter->get_condition()->get_identifier() + ", Parameter name: " + parameter->get_name() + ").");
+                    Tools::OutputLogger::Error_("Parameter condition error (Identifier: " + parameter->get_condition()->get_identifier() + ", Parameter name: " + parameter->get_name() + ").");
                     set_custom_error("Parameter condition error (Identifier: " + parameter->get_condition()->get_identifier() + ", Parameter name: " + parameter->get_name() + ").");
                 }
                 else
                 {
-                    Tools::OutputLogger::Log_(parameter->get_error());
+                    Tools::OutputLogger::Error_(parameter->get_error());
                     set_custom_error(parameter->get_error());
                 }
                 error_ = true;
@@ -650,9 +650,9 @@ bool Action::VerifyCondition_()
             case Query::ConditionType::kWarning:
             {
                 if(custom_error_ == "")
-                    Tools::OutputLogger::Log_("Action condition warning (Identifier: " + condition_->get_identifier() + ", Action: " + identifier_ + ").");
+                    Tools::OutputLogger::Warning_("Action condition warning (Identifier: " + condition_->get_identifier() + ", Action: " + identifier_ + ").");
                 else
-                    Tools::OutputLogger::Log_(custom_error_);
+                    Tools::OutputLogger::Warning_(custom_error_);
                 result = true;
                 break;
             }
@@ -660,12 +660,12 @@ bool Action::VerifyCondition_()
             {
                 if(custom_error_ == "")
                 {
-                    Tools::OutputLogger::Log_("Action condition error (Identifier: " + condition_->get_identifier() + ", Action: " + identifier_ + ").");
+                    Tools::OutputLogger::Error_("Action condition error (Identifier: " + condition_->get_identifier() + ", Action: " + identifier_ + ").");
                     set_custom_error("Action condition error (Identifier: " + condition_->get_identifier() + ", Action: " + identifier_ + ").");
                 }
                 else
                 {
-                    Tools::OutputLogger::Log_(custom_error_);
+                    Tools::OutputLogger::Error_(custom_error_);
                     set_custom_error(custom_error_);
                 }
                 error_ = true;
