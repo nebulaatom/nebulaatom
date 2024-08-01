@@ -59,37 +59,37 @@ int NebulaAtom::Init_()
     }
     catch(Net::SSLException& error)
     {
-        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on Init_(): " + error.displayText());
+        Tools::OutputLogger::Error_("Error on nebula_atom.cpp on Init_(): " + error.displayText());
         return 1;
     }
     catch(Net::NetException& error)
     {
-        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on Init_(): " + error.displayText());
+        Tools::OutputLogger::Error_("Error on nebula_atom.cpp on Init_(): " + error.displayText());
         return 1;
     }
     catch(Poco::NullPointerException& error)
     {
-        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on Init_(): " + error.displayText());
+        Tools::OutputLogger::Error_("Error on nebula_atom.cpp on Init_(): " + error.displayText());
         return 1;
     }
     catch(Poco::SystemException& error)
     {
-        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on Init_(): " + error.displayText());
+        Tools::OutputLogger::Error_("Error on nebula_atom.cpp on Init_(): " + error.displayText());
         return 1;
     }
     catch(std::runtime_error& error)
     {
-        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on Init_(): " + std::string(error.what()));
+        Tools::OutputLogger::Error_("Error on nebula_atom.cpp on Init_(): " + std::string(error.what()));
         return 1;
     }
     catch(std::exception& error)
     {
-        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on Init_(): " + std::string(error.what()));
+        Tools::OutputLogger::Error_("Error on nebula_atom.cpp on Init_(): " + std::string(error.what()));
         return 1;
     }
     catch(...)
     {
-        Tools::OutputLogger::Log_("Error on nebula_atom.cpp on Init_(): Unhandled");
+        Tools::OutputLogger::Error_("Error on nebula_atom.cpp on Init_(): Unhandled");
         return 1;
     }
 }

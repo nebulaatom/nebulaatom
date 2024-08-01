@@ -62,27 +62,27 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
     }
     catch(MySQL::MySQLException& error)
     {
-        Tools::OutputLogger::Log_("Error on handler_factory.cpp on createRequestHandler(): " + error.displayText());
+        Tools::OutputLogger::Error_("Error on handler_factory.cpp on createRequestHandler(): " + error.displayText());
         ErrorResponse_(request, "Error with the database. " + error.displayText());
     }
     catch(JSON::JSONException& error)
     {
-        Tools::OutputLogger::Log_("Error on handler_factory.cpp on createRequestHandler(): " + error.displayText());
+        Tools::OutputLogger::Error_("Error on handler_factory.cpp on createRequestHandler(): " + error.displayText());
         ErrorResponse_(request, "Internal server error. " + error.displayText());
     }
     catch(Poco::NullPointerException& error)
     {
-        Tools::OutputLogger::Log_("Error on handler_factory.cpp on createRequestHandler(): " + error.displayText());
+        Tools::OutputLogger::Error_("Error on handler_factory.cpp on createRequestHandler(): " + error.displayText());
         ErrorResponse_(request, "Internal server error. " + error.displayText());
     }
     catch(std::runtime_error& error)
     {
-        Tools::OutputLogger::Log_("Error on handler_factory.cpp on createRequestHandler(): " + std::string(error.what()));
+        Tools::OutputLogger::Error_("Error on handler_factory.cpp on createRequestHandler(): " + std::string(error.what()));
         ErrorResponse_(request, "Internal server error. " + std::string(error.what()));
     }
     catch(std::exception& error)
     {
-        Tools::OutputLogger::Log_("Error on handler_factory.cpp on createRequestHandler(): " + std::string(error.what()));
+        Tools::OutputLogger::Error_("Error on handler_factory.cpp on createRequestHandler(): " + std::string(error.what()));
         ErrorResponse_(request, "Internal server error. " +  std::string(error.what()));
     }
 
