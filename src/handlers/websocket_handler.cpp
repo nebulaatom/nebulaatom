@@ -46,7 +46,7 @@ void WebSocketHandler::Process_()
     }
     catch (WebSocketException& error)
     {
-        Tools::OutputLogger::Log_(error.displayText());
+        Tools::OutputLogger::Error_(error.displayText());
         switch (error.code())
         {
             case WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:
@@ -63,7 +63,7 @@ void WebSocketHandler::Process_()
     }
     catch(std::exception& error)
     {
-        Tools::OutputLogger::Log_("Error on websocket_handler.cpp on Process_(): " + std::string(error.what()));
+        Tools::OutputLogger::Error_("Error on websocket_handler.cpp on Process_(): " + std::string(error.what()));
         JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Internal server error. " + std::string(error.what()));
     }
 }
