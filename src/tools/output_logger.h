@@ -34,10 +34,18 @@ namespace Atom
 {
     namespace Tools
     {
+        enum class LogType;
         class OutputLogger;
     }
 }
 
+
+enum class Atom::Tools::LogType
+{
+    kInfo
+    ,kWarning
+    ,kError
+};
 
 class Atom::Tools::OutputLogger
 {
@@ -51,7 +59,10 @@ class Atom::Tools::OutputLogger
         static void set_log_to_file(bool log_to_file) { log_to_file_ = log_to_file; }
         static void set_output_file_address(bool output_file_address) { output_file_address_ = output_file_address; }
 
-        static void Log_(const std::string& message);
+        static void Log_(Tools::LogType log_type, std::string& message);
+        static void Log_(std::string message);
+        static void Warning_(std::string message);
+        static void Error_(std::string message);
         static std::string CurrentDateTime_();
 
     private:

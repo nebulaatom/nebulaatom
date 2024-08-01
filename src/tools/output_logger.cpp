@@ -29,23 +29,47 @@ OutputLogger::OutputLogger()
     
 }
 
-void OutputLogger::Log_(const std::string& message)
+void OutputLogger::Log_(Tools::LogType log_type, std::string& message)
 {
     mutex_.lock();
-    std::cout << CurrentDateTime_() << " " << message << std::endl;
+
+    switch(log_type)
+    {
+        case Tools::LogType::kInfo: message = "[INFO]: " + message; break;
+        case Tools::LogType::kWarning: message = "[WARNING]: " + message; break;
+        case Tools::LogType::kError: message = "[ERROR]: " + message; break;
+    }
+    message = CurrentDateTime_() + " " + message;
+
+    std::cout << message << std::endl;
 
     if (log_to_file_)
     {
         std::ofstream file_stream(output_file_address_, std::ios_base::app);
         if (file_stream.is_open())
         {
-            file_stream << CurrentDateTime_() << " " << message << std::endl;
+            file_stream << message << std::endl;
             file_stream.close();
         }
         else
             std::cerr << CurrentDateTime_() << " Error on output_logger.cpp on Log_(): Error to write to log file" << std::endl;
     }
     mutex_.unlock();
+}
+
+void OutputLogger::Log_(std::string message)
+{
+    Log_(Tools::LogType::kInfo, message);
+}
+
+void OutputLogger::Warning_(std::string message)
+{
+    Log_(Tools::LogType::kWarning, message);
+}
+
+void OutputLogger::Error_(std::string message)
+{
+    Log_(Tools::LogType::kError, message);
 }
 
 std::string OutputLogger::CurrentDateTime_()
