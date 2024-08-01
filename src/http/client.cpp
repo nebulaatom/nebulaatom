@@ -95,7 +95,7 @@ void Client::SendNormalRequest_()
 	}
 	catch (Exception& exc)
 	{
-		Tools::OutputLogger::Log_(exc.displayText());
+		Tools::OutputLogger::Error_(exc.displayText());
 		return;
 	}
 }
@@ -132,12 +132,12 @@ void Client::SendSSLRequest_()
 	}
 	catch (SSLException& exc)
 	{
-		Tools::OutputLogger::Log_(exc.displayText());
+		Tools::OutputLogger::Error_(exc.displayText());
 		return;
 	}
 	catch (Exception& exc)
 	{
-		Tools::OutputLogger::Log_(exc.displayText());
+		Tools::OutputLogger::Error_(exc.displayText());
 		return;
 	}
 }
