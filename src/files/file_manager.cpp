@@ -17,7 +17,7 @@
 
 #include "files/file_manager.h"
 
-using namespace Atom::Files;
+using namespace NAF::Files;
 
 FileManager::FileManager() :
     operation_type_(OperationType::kDownload)
@@ -369,7 +369,7 @@ void FileManager::AddBasicSupportedFiles_()
     supported_files_.emplace(std::make_pair("txt", Files::FileProperties{"text/plain", true, {""}}));
 }
 
-Atom::Files::File FileManager::CreateTempFile_(std::string uri)
+NAF::Files::File FileManager::CreateTempFile_(std::string uri)
 {
     auto tmp_uri = URI(uri);
     auto tmp_file = Files::File("file", Path(tmp_uri.getPath()).getFileName(), "", 0);
@@ -378,7 +378,7 @@ Atom::Files::File FileManager::CreateTempFile_(std::string uri)
     return tmp_file;
 }
 
-Atom::Files::File FileManager::CreateTempFileFromAddress_(std::string address)
+NAF::Files::File FileManager::CreateTempFileFromAddress_(std::string address)
 {
     auto tmp_uri = URI(address);
     auto tmp_file = Files::File("file", Path(tmp_uri.getPath()).getFileName(), "", 0);

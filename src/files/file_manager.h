@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_FILES_FILEMANAGER
-#define ATOM_FILES_FILEMANAGER
+#ifndef NAF_FILES_FILEMANAGER
+#define NAF_FILES_FILEMANAGER
 
 
 #include <string>
@@ -47,7 +47,7 @@
 #include "tools/settings_manager.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Files
     {
@@ -61,7 +61,7 @@ using namespace Poco;
 using namespace Poco::Net;
 
 
-enum class Atom::Files::OperationType
+enum class NAF::Files::OperationType
 {
     kDownload
     ,kUpload
@@ -69,7 +69,7 @@ enum class Atom::Files::OperationType
 };
 
 
-class Atom::Files::FileManager: public Net::PartHandler
+class NAF::Files::FileManager: public Net::PartHandler
 {
     public:
         FileManager();
@@ -135,4 +135,4 @@ class Atom::Files::FileManager: public Net::PartHandler
         std::vector<Files::File> files_;
 };
 
-#endif // ATOM_FILES_FILEMANAGER
+#endif // NAF_FILES_FILEMANAGER

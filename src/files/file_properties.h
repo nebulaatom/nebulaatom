@@ -15,15 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOM_FILES_FILEPROPERTIES
-#define ATOM_FILES_FILEPROPERTIES
+#ifndef NAF_FILES_FILEPROPERTIES
+#define NAF_FILES_FILEPROPERTIES
 
 
 #include <string>
 #include <vector>
 
 
-namespace Atom
+namespace NAF
 {
 	namespace Files
 	{
@@ -32,7 +32,7 @@ namespace Atom
 }
 
 
-class Atom::Files::FileProperties
+class NAF::Files::FileProperties
 {
 	public:
 		FileProperties(std::string content_type, bool binary, std::vector<std::string> other_extensions);
@@ -60,4 +60,4 @@ class Atom::Files::FileProperties
 		std::vector<std::string> other_extensions_;
 };
 
-#endif // ATOM_FILES_FILEPROPERTIES
+#endif // NAF_FILES_FILEPROPERTIES

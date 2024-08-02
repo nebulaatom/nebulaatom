@@ -2,8 +2,8 @@
 // SPDX-FileCopyrightText: 2022 <copyright holder> <email>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef ATOM_FILES_FILE
-#define ATOM_FILES_FILE
+#ifndef NAF_FILES_FILE
+#define NAF_FILES_FILE
 
 
 #include <string>
@@ -15,7 +15,7 @@
 #include "files/file_properties.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Files
     {
@@ -27,14 +27,14 @@ namespace Atom
 using namespace Poco;
 
 
-enum class Atom::Files::FileType
+enum class NAF::Files::FileType
 {
     kBinary
     ,kTextPlain
 };
 
 
-class Atom::Files::File
+class NAF::Files::File
 {
     public:
         File();
@@ -87,4 +87,4 @@ class Atom::Files::File
         std::shared_ptr<Poco::File> tmp_file_;
 };
 
-#endif // ATOM_FILES_FILE
+#endif // NAF_FILES_FILE
