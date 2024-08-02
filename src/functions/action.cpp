@@ -43,7 +43,7 @@ JSON::Array::Ptr Action::GetParametersArray_(JSON::Array::Ptr json_array, int co
     // Get the action object
     if(json_array->get(counter).isEmpty())
     {
-        Tools::OutputLogger::Log_("Warning on action.cpp on GetParametersArray_(): Data array haves an empty action.");
+        Tools::OutputLogger::Warning_("Warning on action.cpp on GetParametersArray_(): Data array haves an empty action.");
         return nullptr;
     }
     auto action_object = json_array->getObject(counter);
@@ -51,7 +51,7 @@ JSON::Array::Ptr Action::GetParametersArray_(JSON::Array::Ptr json_array, int co
     // Get the action identifier
     if(action_object->get("action_id").isEmpty() || !action_object->get("action_id").isString())
     {
-        Tools::OutputLogger::Log_("Warning on action.cpp on GetParametersArray_(): The action object does not have an action_id String Object.");
+        Tools::OutputLogger::Warning_("Warning on action.cpp on GetParametersArray_(): The action object does not have an action_id String Object.");
         return nullptr;
     }
     auto action_id = action_object->get("action_id").toString();
@@ -63,7 +63,7 @@ JSON::Array::Ptr Action::GetParametersArray_(JSON::Array::Ptr json_array, int co
     // Get the parameters object
     if(action_object->get("parameters").isEmpty() || !action_object->get("parameters").isArray())
     {
-        Tools::OutputLogger::Log_("Warning on action.cpp on GetParametersArray_(): The action object does not have a parameters array.");
+        Tools::OutputLogger::Warning_("Warning on action.cpp on GetParametersArray_(): The action object does not have a parameters array.");
         return nullptr;
     }
 
@@ -74,7 +74,7 @@ Query::Parameter::Ptr Action::GetParameterObject_(JSON::Array::Ptr parameters_ar
 {
     if(parameters_array->get(counter).isEmpty())
     {
-        Tools::OutputLogger::Log_("Warning on action.cpp on GetParameterObject_(): Parameters array haves an empty element.");
+        Tools::OutputLogger::Warning_("Warning on action.cpp on GetParameterObject_(): Parameters array haves an empty element.");
         return nullptr;
     }
 
@@ -83,7 +83,7 @@ Query::Parameter::Ptr Action::GetParameterObject_(JSON::Array::Ptr parameters_ar
     // Get parameter name
     if(parameter_object->get("name").isEmpty() || !parameter_object->get("name").isString())
     {
-        Tools::OutputLogger::Log_("Warning on action.cpp on GetParameterObject_(): Parameter name is not a String Object.");
+        Tools::OutputLogger::Warning_("Warning on action.cpp on GetParameterObject_(): Parameter name is not a String Object.");
         return nullptr;
     }
 
@@ -92,7 +92,7 @@ Query::Parameter::Ptr Action::GetParameterObject_(JSON::Array::Ptr parameters_ar
     // Get parameter value
     if(parameter_object->get("value").isEmpty())
     {
-        Tools::OutputLogger::Log_("Warning on action.cpp on GetParameterObject_(): Parameter value is empty.");
+        Tools::OutputLogger::Warning_("Warning on action.cpp on GetParameterObject_(): Parameter value is empty.");
         return nullptr;
     }
 
@@ -117,11 +117,6 @@ void Action::ReplaceParamater_(Query::Parameter::Ptr parameter)
         if(!found_param->get()->get_editable()) return;
 
         found_param->get()->set_value(parameter->get_value());
-        /*auto index = std::distance(parameters_.begin(), found_param);
-        parameters_.erase(found_param);
-
-        // Insert new element
-        parameters_.insert(parameters_.begin() + index, parameter);*/
     }
 }
 
@@ -346,11 +341,11 @@ bool Action::ComposeQuery_()
                         break;
                     }
                 }
-                Tools::OutputLogger::Log_("Parameter in ComposeQuery_(): " + param->get_name() + ": " + param->ToString_());
+                Tools::OutputLogger::Debug_("Parameter in ComposeQuery_(): " + param->get_name() + ": " + param->ToString_());
             }
 
         // Return
-            Tools::OutputLogger::Log_("Final query: " + query_->toString());
+            Tools::OutputLogger::Debug_("Final query: " + query_->toString());
             return true;
     }
     catch(MySQL::MySQLException& error)
