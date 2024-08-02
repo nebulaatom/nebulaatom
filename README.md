@@ -69,7 +69,7 @@ cmake --build . --target install
 #include "handlers/custom_handler.h"
 #include "http/request.h"
 
-using namespace Atom;
+using namespace NAF;
 
 int main(int argc, char** argv)
 {
@@ -89,10 +89,8 @@ int main(int argc, char** argv)
 
 ## Contact
 
-- **Gitlab**: [@nebulacsf](https://gitlab.com/nebulacsf/software/main/nebula-atom)
 - **Github**: [@nebulacsf](https://github.com/NebulaCSF/nebula-atom)
-- **Web**: [NebulaCSF](https://www.nebulacsf.com)
-- **Email**: [NebulaCSF](mailto:support@nebulacsf.com)
+- **Web**: [NebulaCSF](https://nebulaatom.github.io/)
 
 ## License
 
