@@ -28,7 +28,7 @@
 #include "security/user.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Security
     {
@@ -38,7 +38,7 @@ namespace Atom
 }
 
 
-enum class Atom::Security::ActionType
+enum class NAF::Security::ActionType
 {
     kCreate
     ,kRead
@@ -46,7 +46,7 @@ enum class Atom::Security::ActionType
     ,kDelete
 };
 
-class Atom::Security::Permission
+class NAF::Security::Permission
 {
     public:
         Permission();

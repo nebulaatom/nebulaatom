@@ -18,7 +18,7 @@
 
 #include "security/security_verification.h"
 
-using namespace Atom::Extras;
+using namespace NAF::Extras;
 
 SecurityVerification::SecurityVerification() :
     security_type_(SecurityType::kDisableAll)

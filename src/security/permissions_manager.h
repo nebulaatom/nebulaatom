@@ -31,7 +31,7 @@
 #include "tools/route.h"
 #include "tools/output_logger.h"
 
-namespace Atom
+namespace NAF
 {
     namespace Security
     {
@@ -42,7 +42,7 @@ namespace Atom
 using namespace Poco;
 
 
-class Atom::Security::PermissionsManager
+class NAF::Security::PermissionsManager
 {
     public:
         using PermissionToLoad = Poco::Tuple<std::string, std::string, std::string, int, std::string, bool, bool>;

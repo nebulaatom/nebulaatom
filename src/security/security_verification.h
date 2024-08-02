@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_SECURITY_SECURITY_VERIFICATION
-#define ATOM_SECURITY_SECURITY_VERIFICATION
+#ifndef NAF_SECURITY_SECURITY_VERIFICATION
+#define NAF_SECURITY_SECURITY_VERIFICATION
 
 
 #include <string>
@@ -31,7 +31,7 @@
 #include "tools/output_logger.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Extras
     {
@@ -43,13 +43,13 @@ namespace Atom
 using namespace Poco;
 
 
-enum class Atom::Extras::SecurityType
+enum class NAF::Extras::SecurityType
 {
     kDisableAll
     ,kEnableAll
 };
 
-class Atom::Extras::SecurityVerification
+class NAF::Extras::SecurityVerification
 {
     public:
         SecurityVerification();
@@ -77,4 +77,4 @@ class Atom::Extras::SecurityVerification
 };
 
 
-#endif // ATOM_SECURITY_SECURITY_VERIFICATION
+#endif // NAF_SECURITY_SECURITY_VERIFICATION

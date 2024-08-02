@@ -18,8 +18,8 @@
 
 #include "security/permissions_manager.h"
 
-using namespace Atom;
-using namespace Atom::Security;
+using namespace NAF;
+using namespace NAF::Security;
 
 std::mutex PermissionsManager::mutex_;
 std::list<Permission> PermissionsManager::permissions_ = {};

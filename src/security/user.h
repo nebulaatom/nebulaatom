@@ -24,7 +24,7 @@
 #include <string>
 
 
-namespace Atom
+namespace NAF
 {
     namespace Security
     {
@@ -33,7 +33,7 @@ namespace Atom
 }
 
 
-class Atom::Security::User
+class NAF::Security::User
 {
     public:
         User();

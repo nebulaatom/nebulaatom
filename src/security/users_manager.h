@@ -30,7 +30,7 @@
 #include "tools/output_logger.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Security
     {
@@ -39,7 +39,7 @@ namespace Atom
 }
 
 
-class Atom::Security::UsersManager
+class NAF::Security::UsersManager
 {
     public:
         UsersManager();

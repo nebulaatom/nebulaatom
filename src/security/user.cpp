@@ -18,7 +18,7 @@
 
 #include "security/user.h"
 
-using namespace Atom::Security;
+using namespace NAF::Security;
 
 User::User() :
     id_(-1)

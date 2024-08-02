@@ -18,7 +18,7 @@
 
 #include "security/users_manager.h"
 
-using namespace Atom::Security;
+using namespace NAF::Security;
 
 UsersManager::UsersManager()
 {
