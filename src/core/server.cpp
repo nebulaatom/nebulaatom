@@ -18,7 +18,7 @@
 #include "core/server.h"
 #include <memory>
 
-using namespace Atom::Core;
+using namespace NAF::Core;
 
 Server::Server(HandlerFactory* handler_factory) :
     handler_factory_(handler_factory)

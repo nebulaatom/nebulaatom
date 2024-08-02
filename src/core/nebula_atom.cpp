@@ -17,7 +17,7 @@
 
 #include "nebula_atom.h"
 
-using namespace Atom::Core;
+using namespace NAF::Core;
 
 NebulaAtom::NebulaAtom(bool use_ssl) :
     use_ssl_(use_ssl)

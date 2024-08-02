@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_CORE_SERVER
-#define ATOM_CORE_SERVER
+#ifndef NAF_CORE_SERVER
+#define NAF_CORE_SERVER
 
 
 #include <Poco/ThreadPool.h>
@@ -40,7 +40,7 @@ using namespace Poco;
 using namespace Poco::Net;
 using namespace Poco::Util;
 
-namespace Atom
+namespace NAF
 {
     namespace Core
     {
@@ -49,7 +49,7 @@ namespace Atom
 }
 
 
-class Atom::Core::Server : public Util::ServerApplication
+class NAF::Core::Server : public Util::ServerApplication
 {
     public:
         using Ptr = std::shared_ptr<Server>;
@@ -74,4 +74,4 @@ class Atom::Core::Server : public Util::ServerApplication
         std::unique_ptr<HTTPServer> http_server_;
 };
 
-#endif // ATOM_CORE_SERVER
+#endif // NAF_CORE_SERVER

@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_CORE_NEBULAATOM
-#define ATOM_CORE_NEBULAATOM
+#ifndef NAF_CORE_NEBULAATOM
+#define NAF_CORE_NEBULAATOM
 
 
 #include <string>
@@ -54,7 +54,7 @@
 #include "tools/output_logger.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Core
     {
@@ -66,7 +66,7 @@ using namespace Poco;
 using namespace Poco::Net;
 using namespace Poco::Util;
 
-class Atom::Core::NebulaAtom
+class NAF::Core::NebulaAtom
 {
     public:
         NebulaAtom(bool use_ssl = false);
@@ -97,4 +97,4 @@ class Atom::Core::NebulaAtom
         std::vector<std::string> console_parameters_;
 };
 
-#endif // ATOM_CORE_NEBULAATOM
+#endif // NAF_CORE_NEBULAATOM

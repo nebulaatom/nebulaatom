@@ -21,7 +21,7 @@
 #include "http/common_responses.h"
 #include "tools/handler_connection.h"
 
-using namespace Atom::Core;
+using namespace NAF::Core;
 
 HandlerFactory::HandlerFactory() :
     handler_creator_(nullptr)
@@ -49,7 +49,7 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
                 if(found != connections_.end())
                     f = found->second.return_handler_;
                 else
-                    f = [&](){return new Atom::Handlers::NullHandler();};
+                    f = [&](){return new NAF::Handlers::NullHandler();};
 
                 return f();
             };
@@ -86,7 +86,7 @@ HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPServerRequest
         ErrorResponse_(request, "Internal server error. " +  std::string(error.what()));
     }
 
-    return new Atom::Handlers::NullHandler();
+    return new NAF::Handlers::NullHandler();
 }
 
 void HandlerFactory::ErrorResponse_(const HTTPServerRequest& request, std::string error)

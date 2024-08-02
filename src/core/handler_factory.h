@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_COREANDLER_FACTORY
-#define ATOM_COREANDLER_FACTORY
+#ifndef NAF_COREANDLER_FACTORY
+#define NAF_COREANDLER_FACTORY
 
 
 #include <map>
@@ -58,7 +58,7 @@ using namespace Poco::Net;
 using namespace Poco::JSON;
 using namespace Poco::Data::Keywords;
 
-namespace Atom
+namespace NAF
 {
     namespace Core
     {
@@ -68,7 +68,7 @@ namespace Atom
 }
 
 
-struct Atom::Core::HTTPRequestInfo
+struct NAF::Core::HTTPRequestInfo
 {
     HTTPRequestInfo(std::string uri, std::string method) : uri(uri), method(method){}
 
@@ -76,12 +76,12 @@ struct Atom::Core::HTTPRequestInfo
     std::string method;
 };
 
-class Atom::Core::HandlerFactory :
+class NAF::Core::HandlerFactory :
     public HTTPRequestHandlerFactory
 {
     public:
-        using FunctionHandler = std::function<Atom::Handlers::RootHandler*()>;
-        using FunctionHandlerCreator = std::function<Atom::Handlers::RootHandler*(Core::HTTPRequestInfo& info)>;
+        using FunctionHandler = std::function<NAF::Handlers::RootHandler*()>;
+        using FunctionHandlerCreator = std::function<NAF::Handlers::RootHandler*(Core::HTTPRequestInfo& info)>;
         using Connections = std::map<std::string, Tools::HandlerConnection>;
 
         HandlerFactory();
@@ -109,4 +109,4 @@ class Atom::Core::HandlerFactory :
         Connections connections_;
 };
 
-#endif // ATOM_COREANDLER_FACTORY
+#endif // NAF_COREANDLER_FACTORY
