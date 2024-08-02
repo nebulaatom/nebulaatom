@@ -16,15 +16,15 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_EXTRAS_VALUESPROPERTIES
-#define ATOM_EXTRAS_VALUESPROPERTIES
+#ifndef NAF_EXTRAS_VALUESPROPERTIES
+#define NAF_EXTRAS_VALUESPROPERTIES
 
 
 #include <string>
 #include <map>
 #include <vector>
 
-namespace Atom
+namespace NAF
 {
     namespace Extras
     {
@@ -32,7 +32,7 @@ namespace Atom
     }
 }
 
-class Atom::Extras::ValuesProperties
+class NAF::Extras::ValuesProperties
 {
     public:
         ValuesProperties();
@@ -89,4 +89,4 @@ class Atom::Extras::ValuesProperties
         bool quotes_;
 };
 
-#endif // ATOM_EXTRAS_VALUESPROPERTIES
+#endif // NAF_EXTRAS_VALUESPROPERTIES

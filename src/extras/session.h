@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOM_EXTRAS_SESSION
-#define ATOM_EXTRAS_SESSION
+#ifndef NAF_EXTRAS_SESSION
+#define NAF_EXTRAS_SESSION
 
 
 #include <string>
@@ -29,7 +29,7 @@
 #include "Poco/MD5Engine.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Extras
     {
@@ -41,7 +41,7 @@ using namespace Poco;
 using namespace Poco::Net;
 
 
-class Atom::Extras::Session
+class NAF::Extras::Session
 {
     public:
         Session();
@@ -95,4 +95,4 @@ class Atom::Extras::Session
 };
 
 
-#endif // ATOM_EXTRAS_SESSION
+#endif // NAF_EXTRAS_SESSION
