@@ -3,7 +3,7 @@
 #include "handlers/custom_handler.h"
 #include "tools/settings_manager.h"
 
-using namespace Atom;
+using namespace NAF;
 
 int main(int argc, char** argv)
 {

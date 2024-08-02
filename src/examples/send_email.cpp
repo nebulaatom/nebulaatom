@@ -3,7 +3,7 @@
 #include "handlers/custom_handler.h"
 #include "tools/email.h"
 
-using namespace Atom;
+using namespace NAF;
 
 int main(int argc, char** argv)
 {

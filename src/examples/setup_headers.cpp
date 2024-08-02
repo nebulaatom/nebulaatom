@@ -3,7 +3,7 @@
 #include "handlers/custom_handler.h"
 #include "http/request.h"
 
-using namespace Atom;
+using namespace NAF;
 
 int main(int argc, char** argv)
 {

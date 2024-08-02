@@ -2,7 +2,7 @@
 #include "http/client.h"
 #include "http/methods.h"
 
-using namespace Atom;
+using namespace NAF;
 
 int main()
 {

@@ -2,7 +2,7 @@
 #include "core/nebula_atom.h"
 #include "handlers/custom_handler.h"
 
-using namespace Atom;
+using namespace NAF;
 
 int main(int argc, char** argv)
 {

@@ -4,7 +4,7 @@
 #include "http/common_responses.h"
 #include "http/methods.h"
 
-using namespace Atom;
+using namespace NAF;
 
 int main(int argc, char** argv)
 {

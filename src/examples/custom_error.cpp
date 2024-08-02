@@ -4,7 +4,7 @@
 #include "handlers/custom_handler.h"
 #include "http/common_responses.h"
 
-using namespace Atom;
+using namespace NAF;
 
 int main(int argc, char** argv)
 {

@@ -8,7 +8,7 @@
 #include "tools/route.h"
 #include "tools/dvalue.h"
 
-using namespace Atom;
+using namespace NAF;
 
 class MainHandler : public Handlers::BackendHandler
 {
@@ -111,9 +111,9 @@ int main(int argc, char** argv)
         app.CustomHandlerCreator_([&](Core::HTTPRequestInfo& info)
         {
             // Routes
-            Atom::Tools::Route requested_route(info.uri);
-            Atom::Tools::Route login_route({"api", "system", "login"});
-            Atom::Tools::Route logout_route({"api", "system", "logout"});
+            NAF::Tools::Route requested_route(info.uri);
+            NAF::Tools::Route login_route({"api", "system", "login"});
+            NAF::Tools::Route logout_route({"api", "system", "logout"});
 
             // Return handler
             Handlers::RootHandler* handler;

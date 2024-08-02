@@ -4,7 +4,7 @@
 #include "handlers/frontend_handler.h"
 #include "http/request.h"
 
-using namespace Atom;
+using namespace NAF;
 
 class Webserver : public Handlers::FrontendHandler
 {

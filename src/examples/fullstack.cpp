@@ -6,7 +6,7 @@
 #include "handlers/root_handler.h"
 #include "tools/route.h"
 
-using namespace Atom;
+using namespace NAF;
 
 int main(int argc, char** argv)
 {
@@ -25,13 +25,13 @@ int main(int argc, char** argv)
         switch(route.get_current_route_type())
         {
             // Manage Frontend
-            case Atom::Tools::RouteType::kEntrypoint:
+            case NAF::Tools::RouteType::kEntrypoint:
             {
                 handler = new Handlers::FrontendHandler;
                 break;
             }
             // Manage Backend
-            case Atom::Tools::RouteType::kEndpoint:
+            case NAF::Tools::RouteType::kEndpoint:
             {
                 handler = new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
                 {

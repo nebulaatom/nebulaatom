@@ -7,7 +7,7 @@
 #include "tools/output_logger.h"
 #include <Poco/JSON/Object.h>
 
-using namespace Atom;
+using namespace NAF;
 
 void ViewParameters(Handlers::CustomHandler& self)
 {

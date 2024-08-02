@@ -5,7 +5,7 @@
 #include "handlers/frontend_handler.h"
 #include "tools/dvalue.h"
 
-using namespace Atom;
+using namespace NAF;
 
 class UploadFile : public Handlers::FrontendHandler
 {
