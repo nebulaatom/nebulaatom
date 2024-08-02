@@ -22,6 +22,7 @@ using namespace Atom::Tools;
 
 std::mutex OutputLogger::mutex_;
 bool OutputLogger::log_to_file_ = false;
+bool OutputLogger::print_debug_ = false;
 std::string OutputLogger::output_file_address_ = "nebulaatom.log";
 
 OutputLogger::OutputLogger()
@@ -31,13 +32,19 @@ OutputLogger::OutputLogger()
 
 void OutputLogger::Log_(Tools::LogType log_type, std::string& message)
 {
+    if(!print_debug_ && log_type == Tools::LogType::kDebug)
+    {
+        return;
+    }
+
     mutex_.lock();
 
     switch(log_type)
     {
-        case Tools::LogType::kInfo: message = "[INFO]: " + message; break;
+        case Tools::LogType::kInfo:message = "[INFO]: " + message; break;
         case Tools::LogType::kWarning: message = "[WARNING]: " + message; break;
         case Tools::LogType::kError: message = "[ERROR]: " + message; break;
+        case Tools::LogType::kDebug: message = "[DEBUG]: " + message; break;
     }
     message = CurrentDateTime_() + " " + message;
 
@@ -70,6 +77,11 @@ void OutputLogger::Warning_(std::string message)
 void OutputLogger::Error_(std::string message)
 {
     Log_(Tools::LogType::kError, message);
+}
+
+void OutputLogger::Debug_(std::string message)
+{
+    Log_(Tools::LogType::kDebug, message);
 }
 
 std::string OutputLogger::CurrentDateTime_()
