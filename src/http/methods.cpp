@@ -20,7 +20,7 @@
 #include <exception>
 #include <stdexcept>
 
-using namespace Atom::HTTP;
+using namespace NAF::HTTP;
 
 Methods::Methods()
 {

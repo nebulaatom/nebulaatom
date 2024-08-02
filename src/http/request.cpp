@@ -18,7 +18,7 @@
 
 #include "http/request.h"
 
-using namespace Atom::HTTP;
+using namespace NAF::HTTP;
 
 Request::Request()
 {

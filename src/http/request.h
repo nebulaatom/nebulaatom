@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_HTTP_REQUEST
-#define ATOM_HTTP_REQUEST
+#ifndef NAF_HTTP_REQUEST
+#define NAF_HTTP_REQUEST
 
 
 #include <vector>
@@ -29,7 +29,7 @@
 #include <Poco/Net/NameValueCollection.h>
 
 
-namespace Atom
+namespace NAF
 {
     namespace HTTP
     {
@@ -44,7 +44,7 @@ using namespace Poco::Net;
 
 
 
-class Atom::HTTP::Header
+class NAF::HTTP::Header
 {
     public:
         Header(std::string name, std::string value) : 
@@ -57,7 +57,7 @@ class Atom::HTTP::Header
         std::string value;
 };
 
-class Atom::HTTP::Cookie
+class NAF::HTTP::Cookie
 {
     public:
         Cookie(std::string name, std::string value) : 
@@ -70,7 +70,7 @@ class Atom::HTTP::Cookie
         std::string value;
 };
 
-class Atom::HTTP::Request
+class NAF::HTTP::Request
 {
     public:
         using HTTPServerRequestPtr = std::optional<HTTPServerRequest*>;
@@ -115,4 +115,4 @@ class Atom::HTTP::Request
         std::vector<HTTP::Cookie> cookies_;
 };
 
-#endif // ATOM_HTTP_REQUEST
+#endif // NAF_HTTP_REQUEST

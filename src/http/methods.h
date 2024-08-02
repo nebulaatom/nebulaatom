@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_HTTPMETHODS
-#define ATOM_HTTPMETHODS
+#ifndef NAF_HTTPMETHODS
+#define NAF_HTTPMETHODS
 
 #include <map>
 #include <string>
@@ -26,7 +26,7 @@
 #include <exception>
 
 
-namespace Atom
+namespace NAF
 {
     namespace HTTP
     {
@@ -43,7 +43,7 @@ namespace Atom
 }
 
 
-enum class Atom::HTTP::EnumMethods
+enum class NAF::HTTP::EnumMethods
 {
     kHTTP_GET
     ,kHTTP_POST
@@ -55,7 +55,7 @@ enum class Atom::HTTP::EnumMethods
     ,kNULL
 };
 
-class Atom::HTTP::Methods
+class NAF::HTTP::Methods
 {
     public:
         using MethodProcess = std::function<void(HTTP::Methods&)>;
@@ -95,4 +95,4 @@ class Atom::HTTP::Methods
         std::list<MethodStruct> process_;
 };
 
-#endif // ATOM_HTTPMETHODS
+#endif // NAF_HTTPMETHODS

@@ -18,7 +18,7 @@
 
 #include "http/client.h"
 
-using namespace Atom::HTTP;
+using namespace NAF::HTTP;
 
 Client::Client(std::string uri, const std::string method) :
     use_ssl_(false)

@@ -19,7 +19,7 @@
 #include "files/file_manager.h"
 #include "http/request.h"
 
-using namespace Atom::HTTP;
+using namespace NAF::HTTP;
 
 CommonResponses::CommonResponses()
 {

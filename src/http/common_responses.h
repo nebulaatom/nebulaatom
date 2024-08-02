@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_HTTP_COMMONRESPONSES
-#define ATOM_HTTP_COMMONRESPONSES
+#ifndef NAF_HTTP_COMMONRESPONSES
+#define NAF_HTTP_COMMONRESPONSES
 
 
 #include <string>
@@ -31,7 +31,7 @@
 #include "http/request.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace HTTP
     {
@@ -45,7 +45,7 @@ using namespace Poco;
 using namespace Poco::Net;
 
 
-enum class Atom::HTTP::ResponseType
+enum class NAF::HTTP::ResponseType
 {
     kError
     ,kWarning
@@ -53,7 +53,7 @@ enum class Atom::HTTP::ResponseType
     ,kSuccess
 };
 
-enum class Atom::HTTP::Status
+enum class NAF::HTTP::Status
 {
     kHTTP_OK = 200
     ,kHTTP_BAD_REQUEST = 400
@@ -65,7 +65,7 @@ enum class Atom::HTTP::Status
     ,kHTTP_SERVICE_UNAVAILABLE = 503
 };
 
-class Atom::HTTP::CommonResponses : public HTTP::Request
+class NAF::HTTP::CommonResponses : public HTTP::Request
 {
     public:
         struct Attributes
@@ -100,4 +100,4 @@ class Atom::HTTP::CommonResponses : public HTTP::Request
         std::map<HTTP::Status, Attributes> responses_;
 };
 
-#endif // ATOM_HTTP_COMMONRESPONSES
+#endif // NAF_HTTP_COMMONRESPONSES

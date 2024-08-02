@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_HTTP_CLIENT
-#define ATOM_HTTP_CLIENT
+#ifndef NAF_HTTP_CLIENT
+#define NAF_HTTP_CLIENT
 
 
 #include <functional>
@@ -48,7 +48,7 @@
 #include "tools/output_logger.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace HTTP
     {
@@ -60,7 +60,7 @@ using namespace Poco;
 using namespace Poco::Net;
 
 
-class Atom::HTTP::Client
+class NAF::HTTP::Client
 {
     public:
         using ClientResponseFunction = std::function<void(std::stringstream& response, Net::HTTPRequest& http_request, Net::HTTPResponse& http_response)>;
@@ -119,4 +119,4 @@ class Atom::HTTP::Client
         Context::Ptr ssl_context_;
 };
 
-#endif // ATOM_HTTP_CLIENT
+#endif // NAF_HTTP_CLIENT

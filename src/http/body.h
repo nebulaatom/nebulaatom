@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_HTTP_BODY
-#define ATOM_HTTP_BODY
+#ifndef NAF_HTTP_BODY
+#define NAF_HTTP_BODY
 
 
 #include <istream>
@@ -37,7 +37,7 @@
 #include "files/file_manager.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace HTTP
     {
@@ -48,7 +48,7 @@ namespace Atom
 using namespace Poco;
 
 
-class Atom::HTTP::Body : public Tools::ManageJSON
+class NAF::HTTP::Body : public Tools::ManageJSON
 {
     public:
         enum class Type
@@ -94,4 +94,4 @@ class Atom::HTTP::Body : public Tools::ManageJSON
         
 };
 
-#endif // ATOM_HTTP_BODY
+#endif // NAF_HTTP_BODY
