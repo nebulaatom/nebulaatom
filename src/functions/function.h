@@ -1,6 +1,6 @@
 
-#ifndef ATOM_FUNCTIONS_FUNCTION
-#define ATOM_FUNCTIONS_FUNCTION
+#ifndef NAF_FUNCTIONS_FUNCTION
+#define NAF_FUNCTIONS_FUNCTION
 
 
 #include <string>
@@ -13,7 +13,7 @@
 #include "query/parameter.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Functions
     {
@@ -22,7 +22,7 @@ namespace Atom
 }
 
 
-class Atom::Functions::Function
+class NAF::Functions::Function
 {
     public:
         using Ptr = std::shared_ptr<Functions::Function>;
@@ -59,4 +59,4 @@ class Atom::Functions::Function
 };
 
 
-#endif // ATOM_FUNCTIONS_FUNCTION
+#endif // NAF_FUNCTIONS_FUNCTION

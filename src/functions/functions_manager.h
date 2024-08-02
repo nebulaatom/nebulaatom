@@ -1,6 +1,6 @@
 
-#ifndef ATOM_FUNCTIONS_FUNCTIONS_MANAGER
-#define ATOM_FUNCTIONS_FUNCTIONS_MANAGER
+#ifndef NAF_FUNCTIONS_FUNCTIONS_MANAGER
+#define NAF_FUNCTIONS_FUNCTIONS_MANAGER
 
 
 #include <string>
@@ -10,7 +10,7 @@
 #include "http/methods.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Functions
     {
@@ -19,7 +19,7 @@ namespace Atom
 }
 
 
-class Atom::Functions::FunctionsManager
+class NAF::Functions::FunctionsManager
 {
     public:
         using FunctionsMap = std::map<std::string, Function::Ptr>;
@@ -38,4 +38,4 @@ class Atom::Functions::FunctionsManager
         FunctionsMap functions_;
 };
 
-#endif // ATOM_FUNCTIONS_FUNCTIONS_MANAGER
+#endif // NAF_FUNCTIONS_FUNCTIONS_MANAGER

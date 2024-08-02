@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOM_FUNCTIONS_CACHEACTION
-#define ATOM_FUNCTIONS_CACHEACTION
+#ifndef NAF_FUNCTIONS_CACHEACTION
+#define NAF_FUNCTIONS_CACHEACTION
 
 
 #include <string>
@@ -33,7 +33,7 @@
 #include "functions/action.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Functions
     {
@@ -44,7 +44,7 @@ namespace Atom
 using namespace std::chrono_literals;
 
 
-class Atom::Functions::CacheAction : public Functions::Action
+class NAF::Functions::CacheAction : public Functions::Action
 {
     public:
         using Ptr = std::shared_ptr<CacheAction>;
@@ -70,4 +70,4 @@ class Atom::Functions::CacheAction : public Functions::Action
         std::mutex mutex_;
 };
 
-#endif // ATOM_FUNCTIONS_CACHEACTION
+#endif // NAF_FUNCTIONS_CACHEACTION

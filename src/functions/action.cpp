@@ -4,8 +4,8 @@
 #include "tools/output_logger.h"
 #include "tools/settings_manager.h"
 
-using namespace Atom;
-using namespace Atom::Functions;
+using namespace NAF;
+using namespace NAF::Functions;
 
 Action::Action(std::string identifier) :
     async_(false)

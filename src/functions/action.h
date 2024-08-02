@@ -39,7 +39,7 @@
 #include "files/file_manager.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Functions
     {
@@ -56,7 +56,7 @@ using namespace Poco::Data::Keywords;
 class DatabaseManager;
 class SettingsManager;
 
-class Atom::Functions::Action :
+class NAF::Functions::Action :
     public Tools::ManageJSON
 {
     public:

@@ -3,8 +3,8 @@
 #include "functions/action.h"
 #include "http/methods.h"
 
-using namespace Atom;
-using namespace Atom::Functions;
+using namespace NAF;
+using namespace NAF::Functions;
 
 Function::Function() :
     endpoint_("")

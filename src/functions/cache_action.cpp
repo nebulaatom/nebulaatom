@@ -18,7 +18,7 @@
 
 #include "functions/cache_action.h"
 
-using namespace Atom::Functions;
+using namespace NAF::Functions;
 
 CacheAction::CacheAction(std::string identifier, std::chrono::seconds update_time) :
     Functions::Action(identifier)
