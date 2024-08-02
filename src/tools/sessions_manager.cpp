@@ -47,19 +47,19 @@ void SessionsManager::ReadSessions_()
             action.ComposeQuery_();
             if(action.get_error())
             {
-                Tools::OutputLogger::Log_("Error on sessions_manager.cpp on ReadSessions_(): " + action.get_custom_error());
+                Tools::OutputLogger::Error_("Error on sessions_manager.cpp on ReadSessions_(): " + action.get_custom_error());
                 return;
             }
             action.ExecuteQuery_();
             if(action.get_error())
             {
-                Tools::OutputLogger::Log_("Error on sessions_manager.cpp on ReadSessions_(): " + action.get_custom_error());
+                Tools::OutputLogger::Error_("Error on sessions_manager.cpp on ReadSessions_(): " + action.get_custom_error());
                 return;
             }
             action.MakeResults_();
             if(action.get_error())
             {
-                Tools::OutputLogger::Log_("Error on sessions_manager.cpp on ReadSessions_(): " + action.get_custom_error());
+                Tools::OutputLogger::Error_("Error on sessions_manager.cpp on ReadSessions_(): " + action.get_custom_error());
                 return;
             }
 
