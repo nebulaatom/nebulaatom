@@ -15,14 +15,14 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_HANDLERS_CUSTOMANDLER
-#define ATOM_HANDLERS_CUSTOMANDLER
+#ifndef NAF_HANDLERS_CUSTOMANDLER
+#define NAF_HANDLERS_CUSTOMANDLER
 
 
 #include "handlers/root_handler.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Handlers
     {
@@ -31,7 +31,7 @@ namespace Atom
 }
 
 
-class Atom::Handlers::CustomHandler :
+class NAF::Handlers::CustomHandler :
     public RootHandler
 {
     public:
@@ -51,4 +51,4 @@ class Atom::Handlers::CustomHandler :
         std::function<void(CustomHandler&)> process_function_;
 };
 
-#endif // ATOM_HANDLERS_CUSTOMANDLER
+#endif // NAF_HANDLERS_CUSTOMANDLER

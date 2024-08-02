@@ -15,14 +15,14 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_HANDLERS_LOGINHANDLER
-#define ATOM_HANDLERS_LOGINHANDLER
+#ifndef NAF_HANDLERS_LOGINHANDLER
+#define NAF_HANDLERS_LOGINHANDLER
 
 
 #include "handlers/root_handler.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Handlers
     {
@@ -31,7 +31,7 @@ namespace Atom
 }
 
 
-class Atom::Handlers::LoginHandler :
+class NAF::Handlers::LoginHandler :
     public RootHandler
 {
     public:
@@ -48,4 +48,4 @@ class Atom::Handlers::LoginHandler :
     private:
 };
 
-#endif // ATOM_HANDLERS_LOGINHANDLER
+#endif // NAF_HANDLERS_LOGINHANDLER

@@ -17,7 +17,7 @@
 
 #include "handlers/backend_handler.h"
 
-using namespace Atom::Handlers;
+using namespace NAF::Handlers;
 
 BackendHandler::~BackendHandler()
 {

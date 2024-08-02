@@ -15,14 +15,14 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_HANDLERS_BACKENDHANDLER
-#define ATOM_HANDLERS_BACKENDHANDLER
+#ifndef NAF_HANDLERS_BACKENDHANDLER
+#define NAF_HANDLERS_BACKENDHANDLER
 
 
 #include "handlers/root_handler.h"
 #include "query/results.h"
 
-namespace Atom
+namespace NAF
 {
     namespace Handlers
     {
@@ -31,7 +31,7 @@ namespace Atom
 }
 
 
-class Atom::Handlers::BackendHandler : public RootHandler
+class NAF::Handlers::BackendHandler : public RootHandler
 {
     public:
         using VectorShrResults = std::vector<Query::Results::Ptr>;
@@ -48,4 +48,4 @@ class Atom::Handlers::BackendHandler : public RootHandler
         VectorShrResults shared_results_;
 };
 
-#endif // ATOM_HANDLERS_BACKENDHANDLER
+#endif // NAF_HANDLERS_BACKENDHANDLER

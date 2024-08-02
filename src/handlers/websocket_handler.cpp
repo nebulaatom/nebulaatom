@@ -17,7 +17,7 @@
 
 #include "handlers/websocket_handler.h"
 
-using namespace Atom::Handlers;
+using namespace NAF::Handlers;
 
 WebSocketHandler::WebSocketHandler()
 {

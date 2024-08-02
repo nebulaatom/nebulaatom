@@ -18,7 +18,7 @@
 #include "handlers/custom_handler.h"
 #include "handlers/root_handler.h"
 
-using namespace Atom::Handlers;
+using namespace NAF::Handlers;
 
 CustomHandler::CustomHandler(std::function<void(CustomHandler&)> process_function) :  
     RootHandler()

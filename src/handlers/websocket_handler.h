@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_HANDLERS_WEBSOCKETHANDLER
-#define ATOM_HANDLERS_WEBSOCKETHANDLER
+#ifndef NAF_HANDLERS_WEBSOCKETHANDLER
+#define NAF_HANDLERS_WEBSOCKETHANDLER
 
 
 #include "Poco/Net/WebSocket.h"
@@ -26,7 +26,7 @@
 #include "http/request.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Handlers
     {
@@ -35,7 +35,7 @@ namespace Atom
 }
 
 
-class Atom::Handlers::WebSocketHandler :
+class NAF::Handlers::WebSocketHandler :
     public RootHandler
 {
     public:
@@ -57,4 +57,4 @@ class Atom::Handlers::WebSocketHandler :
 		std::unique_ptr<WebSocket> websocket_;
 };
 
-#endif // ATOM_HANDLERS_WEBSOCKETHANDLER
+#endif // NAF_HANDLERS_WEBSOCKETHANDLER

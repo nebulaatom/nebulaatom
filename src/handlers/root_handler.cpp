@@ -17,7 +17,7 @@
 
 #include "handlers/root_handler.h"
 
-using namespace Atom::Handlers;
+using namespace NAF::Handlers;
 
 RootHandler::RootHandler() :
     current_function_()
@@ -113,7 +113,7 @@ bool RootHandler::SetupSSL_()
     return true;
 }
 
-Atom::Functions::Function::Ptr RootHandler::AddFunction_(std::string endpoint, HTTP::EnumMethods method)
+NAF::Functions::Function::Ptr RootHandler::AddFunction_(std::string endpoint, HTTP::EnumMethods method)
 {
     return functions_manager_.AddFunction_(endpoint, method);
 }

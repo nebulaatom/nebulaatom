@@ -15,14 +15,14 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_HANDLERS_NULLHANDLER
-#define ATOM_HANDLERS_NULLHANDLER
+#ifndef NAF_HANDLERS_NULLHANDLER
+#define NAF_HANDLERS_NULLHANDLER
 
 
 #include "handlers/root_handler.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Handlers
     {
@@ -31,7 +31,7 @@ namespace Atom
 }
 
 
-class Atom::Handlers::NullHandler :
+class NAF::Handlers::NullHandler :
     public RootHandler
 {
     public:
@@ -45,4 +45,4 @@ class Atom::Handlers::NullHandler :
         void NullResponse_();
 };
 
-#endif // ATOM_HANDLERS_NULLHANDLER
+#endif // NAF_HANDLERS_NULLHANDLER

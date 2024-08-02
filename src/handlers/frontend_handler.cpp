@@ -17,7 +17,7 @@
 
 #include "handlers/frontend_handler.h"
 
-using namespace Atom::Handlers;
+using namespace NAF::Handlers;
 
 FrontendHandler::FrontendHandler() :
     RootHandler()

@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_HANDLERS_ROOTHANDLER
-#define ATOM_HANDLERS_ROOTHANDLER
+#ifndef NAF_HANDLERS_ROOTHANDLER
+#define NAF_HANDLERS_ROOTHANDLER
 
 
 #include <istream>
@@ -71,7 +71,7 @@
 #include "http/body.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Handlers
     {
@@ -88,7 +88,7 @@ using Poco::Data::Session;
 using Poco::Data::Statement;
 
 
-class Atom::Handlers::RootHandler :
+class NAF::Handlers::RootHandler :
     public HTTPRequestHandler
     ,public HTTP::CommonResponses
     ,public HTTP::Methods
@@ -112,7 +112,7 @@ class Atom::Handlers::RootHandler :
             auto& var = properties_;
             return var;
         }
-        std::shared_ptr<Atom::Tools::Route>& get_requested_route()
+        std::shared_ptr<NAF::Tools::Route>& get_requested_route()
         {
             auto& var = requested_route_;
             return var;
@@ -143,9 +143,9 @@ class Atom::Handlers::RootHandler :
     private:
         struct Properties properties_;
         std::list<std::string> targets_;
-        std::shared_ptr<Atom::Tools::Route> requested_route_;
+        std::shared_ptr<NAF::Tools::Route> requested_route_;
         Functions::FunctionsManager functions_manager_;
         Functions::Function::Ptr current_function_;
 };
 
-#endif // ATOM_HANDLERS_ROOTHANDLER
+#endif // NAF_HANDLERS_ROOTHANDLER
