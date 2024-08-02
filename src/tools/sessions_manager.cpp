@@ -18,9 +18,9 @@
 
 #include "tools/sessions_manager.h"
 
-using namespace Atom::Tools;
+using namespace NAF::Tools;
 
-std::map<std::string, Atom::Extras::Session> SessionsManager::sessions_ = {};
+std::map<std::string, NAF::Extras::Session> SessionsManager::sessions_ = {};
 std::mutex SessionsManager::mutex_;
 
 SessionsManager::SessionsManager()
@@ -97,7 +97,7 @@ void SessionsManager::ReadSessions_()
     }
 }
 
-Atom::Extras::Session& SessionsManager::CreateSession_(std::string user, std::string path, int max_age)
+NAF::Extras::Session& SessionsManager::CreateSession_(std::string user, std::string path, int max_age)
 {
     Extras::Session new_session;
     new_session.set_user(user);

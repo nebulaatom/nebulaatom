@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOM_TOOLS_SETTINGSMANAGER
-#define ATOM_TOOLS_SETTINGSMANAGER
+#ifndef NAF_TOOLS_SETTINGSMANAGER
+#define NAF_TOOLS_SETTINGSMANAGER
 
 
 #include <iostream>
@@ -32,7 +32,7 @@
 
 #include "tools/output_logger.h"
 
-namespace Atom
+namespace NAF
 {
     namespace Tools
     {
@@ -43,7 +43,7 @@ namespace Atom
 using namespace Poco;
 
 
-class Atom::Tools::SettingsManager
+class NAF::Tools::SettingsManager
 {
     public:
         struct BasicProperties
@@ -82,4 +82,4 @@ class Atom::Tools::SettingsManager
         static std::string properties_file_address_;
 };
 
-#endif // ATOM_TOOLS_SETTINGSMANAGER
+#endif // NAF_TOOLS_SETTINGSMANAGER

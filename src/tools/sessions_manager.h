@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOM_TOOLS_SESSIONSMANAGER
-#define ATOM_TOOLS_SESSIONSMANAGER
+#ifndef NAF_TOOLS_SESSIONSMANAGER
+#define NAF_TOOLS_SESSIONSMANAGER
 
 
 #include <string>
@@ -33,7 +33,7 @@
 #include "query/parameter.h"
 #include "tools/dvalue.h"
 
-namespace Atom
+namespace NAF
 {
     namespace Tools
     {
@@ -42,20 +42,20 @@ namespace Atom
 }
 
 
-class Atom::Tools::SessionsManager
+class NAF::Tools::SessionsManager
 {
     public:
         SessionsManager();
         ~SessionsManager();
 
-        static std::map<std::string, Atom::Extras::Session>& get_sessions()
+        static std::map<std::string, NAF::Extras::Session>& get_sessions()
         {
             auto& var = sessions_;
             return var;
         }
 
         static void ReadSessions_();
-        static Atom::Extras::Session& CreateSession_(std::string user, std::string path, int max_age);
+        static NAF::Extras::Session& CreateSession_(std::string user, std::string path, int max_age);
         static void DeleteSession_(std::string id);
 
     protected:
@@ -63,7 +63,7 @@ class Atom::Tools::SessionsManager
 
     private:
         static std::mutex mutex_;
-        static std::map<std::string, Atom::Extras::Session> sessions_;
+        static std::map<std::string, NAF::Extras::Session> sessions_;
 };
 
-#endif // ATOM_TOOLS_SESSIONSMANAGER
+#endif // NAF_TOOLS_SESSIONSMANAGER

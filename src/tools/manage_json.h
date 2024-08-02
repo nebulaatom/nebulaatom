@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_TOOLS_MANAGEJSON
-#define ATOM_TOOLS_MANAGEJSON
+#ifndef NAF_TOOLS_MANAGEJSON
+#define NAF_TOOLS_MANAGEJSON
 
 
 #include <istream>
@@ -35,7 +35,7 @@
 using namespace Poco;
 
 
-namespace Atom
+namespace NAF
 {
     namespace Tools
     {
@@ -44,7 +44,7 @@ namespace Atom
 }
 
 
-class Atom::Tools::ManageJSON
+class NAF::Tools::ManageJSON
 {
     public:
         ManageJSON();
@@ -75,4 +75,4 @@ class Atom::Tools::ManageJSON
         JSON::Object::Ptr json_object_;
 };
 
-#endif // ATOM_TOOLS_MANAGEJSON
+#endif // NAF_TOOLS_MANAGEJSON

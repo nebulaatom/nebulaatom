@@ -2,8 +2,8 @@
 // SPDX-FileCopyrightText: 2022 <copyright holder> <email>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef ATOM_TOOLS_HANDLERCONNECTION
-#define ATOM_TOOLS_HANDLERCONNECTION
+#ifndef NAF_TOOLS_HANDLERCONNECTION
+#define NAF_TOOLS_HANDLERCONNECTION
 
 
 #include <functional>
@@ -14,7 +14,7 @@
 #include "handlers/frontend_handler.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Tools
     {
@@ -22,17 +22,17 @@ namespace Atom
     }
 }
 
-class Atom::Tools::HandlerConnection
+class NAF::Tools::HandlerConnection
 {
     public:
-        using HandlerFunctor = std::function<Atom::Handlers::RootHandler*()>;
+        using HandlerFunctor = std::function<NAF::Handlers::RootHandler*()>;
 
-        HandlerConnection(Atom::Tools::Route route, HandlerFunctor handler);
+        HandlerConnection(NAF::Tools::Route route, HandlerFunctor handler);
         ~HandlerConnection();
 
-        Atom::Tools::Route current_route_;
+        NAF::Tools::Route current_route_;
         HandlerFunctor return_handler_;
 };
 
 
-#endif // ATOM_TOOLS_HANDLERCONNECTION
+#endif // NAF_TOOLS_HANDLERCONNECTION

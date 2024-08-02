@@ -18,7 +18,7 @@
 
 #include "tools/manage_json.h"
 
-using namespace Atom::Tools;
+using namespace NAF::Tools;
 
 ManageJSON::ManageJSON() :
     json_array_(new JSON::Array())

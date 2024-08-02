@@ -15,8 +15,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_TOOLS_ROUTE
-#define ATOM_TOOLS_ROUTE
+#ifndef NAF_TOOLS_ROUTE
+#define NAF_TOOLS_ROUTE
 
 
 #include <string>
@@ -26,7 +26,7 @@
 #include "Poco/URI.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Tools
     {
@@ -38,14 +38,14 @@ namespace Atom
 using namespace Poco;
 
 
-enum class Atom::Tools::RouteType
+enum class NAF::Tools::RouteType
 {
     kEntrypoint
     ,kEndpoint
 };
 
 
-class Atom::Tools::Route
+class NAF::Tools::Route
 {
     public:
         Route();
@@ -73,4 +73,4 @@ class Atom::Tools::Route
         std::vector<std::string> segments_;
 };
 
-#endif // ATOM_TOOLS_ROUTE
+#endif // NAF_TOOLS_ROUTE

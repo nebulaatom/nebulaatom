@@ -18,7 +18,7 @@
 
 #include "tools/dvalue.h"
 
-using namespace Atom::Tools;
+using namespace NAF::Tools;
 
 DValue::DValue() :
     type_(Type::kEmpty)

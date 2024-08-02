@@ -16,8 +16,8 @@
  */
 
 
-#ifndef ATOM_TOOLS_DVALUE
-#define ATOM_TOOLS_DVALUE
+#ifndef NAF_TOOLS_DVALUE
+#define NAF_TOOLS_DVALUE
 
 
 #include <string>
@@ -33,7 +33,7 @@
 #include "tools/output_logger.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Tools
     {
@@ -44,7 +44,7 @@ namespace Atom
 using namespace Poco;
 
 
-class Atom::Tools::DValue
+class NAF::Tools::DValue
 {
     public:
         enum class Type
@@ -115,4 +115,4 @@ class Atom::Tools::DValue
 };
 
 
-#endif // ATOM_TOOLS_DVALUE
+#endif // NAF_TOOLS_DVALUE

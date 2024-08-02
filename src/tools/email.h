@@ -1,6 +1,6 @@
 
-#ifndef ATOM_TOOLS_EMAIL
-#define ATOM_TOOLS_EMAIL
+#ifndef NAF_TOOLS_EMAIL
+#define NAF_TOOLS_EMAIL
 
 
 #include <string>
@@ -21,7 +21,7 @@
 #include "tools/output_logger.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Tools
     {
@@ -33,7 +33,7 @@ using namespace Poco;
 using namespace Poco::Util;
 
 
-class Atom::Tools::Email
+class NAF::Tools::Email
 {
     public:
         using Ptr = std::shared_ptr<Email>;
@@ -68,4 +68,4 @@ class Atom::Tools::Email
         std::string email_password_;
 };
 
-#endif // ATOM_TOOLS_EMAIL
+#endif // NAF_TOOLS_EMAIL

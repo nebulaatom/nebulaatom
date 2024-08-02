@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATOM_TOOLS_OUTPUTLOGGER
-#define ATOM_TOOLS_OUTPUTLOGGER
+#ifndef NAF_TOOLS_OUTPUTLOGGER
+#define NAF_TOOLS_OUTPUTLOGGER
 
 
 #include <iostream>
@@ -30,7 +30,7 @@
 #include <mutex>
 
 
-namespace Atom
+namespace NAF
 {
     namespace Tools
     {
@@ -40,7 +40,7 @@ namespace Atom
 }
 
 
-enum class Atom::Tools::LogType
+enum class NAF::Tools::LogType
 {
     kInfo
     ,kWarning
@@ -48,7 +48,7 @@ enum class Atom::Tools::LogType
     ,kDebug
 };
 
-class Atom::Tools::OutputLogger
+class NAF::Tools::OutputLogger
 {
     public:
         OutputLogger();
@@ -76,4 +76,4 @@ class Atom::Tools::OutputLogger
         static std::string output_file_address_;
 };
 
-#endif // ATOM_TOOLS_OUTPUTLOGGER
+#endif // NAF_TOOLS_OUTPUTLOGGER

@@ -17,7 +17,7 @@
 
 #include "route.h"
 
-using namespace Atom::Tools;
+using namespace NAF::Tools;
 
 Route::Route() :
     route_("")

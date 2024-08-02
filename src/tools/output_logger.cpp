@@ -18,7 +18,7 @@
 
 #include "tools/output_logger.h"
 
-using namespace Atom::Tools;
+using namespace NAF::Tools;
 
 std::mutex OutputLogger::mutex_;
 bool OutputLogger::log_to_file_ = false;

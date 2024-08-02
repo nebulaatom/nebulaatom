@@ -3,7 +3,7 @@
 #include <Poco/Net/NetSSL.h>
 #include <stdexcept>
 
-using namespace Atom::Tools;
+using namespace NAF::Tools;
 
 Email::Email() :
     mail_host_("")

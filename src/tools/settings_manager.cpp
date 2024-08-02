@@ -18,7 +18,7 @@
 
 #include "tools/settings_manager.h"
 
-using namespace Atom;
+using namespace NAF;
 using namespace Tools;
 
 std::mutex SettingsManager::mutex_;
