@@ -46,11 +46,11 @@ void BackendHandler::ProcessActions_()
         }
 
     // Process actions of the function
-        Tools::OutputLogger::Log_("Function: " + get_current_function()->get_endpoint());
+        Tools::OutputLogger::Debug_("Function: " + get_current_function()->get_endpoint());
         JSON::Object::Ptr json_result = new JSON::Object();
         for(auto& action : get_current_function()->get_actions())
         {
-            Tools::OutputLogger::Log_("Action: " + action->get_identifier() + ", Final: " + std::to_string(action->get_final()));
+            Tools::OutputLogger::Debug_("Action: " + action->get_identifier() + ", Final: " + std::to_string(action->get_final()));
 
             // Set JSON body
             action->set_json_array(get_json_array());

@@ -52,10 +52,10 @@ void CacheAction::WorkInBackground_()
     while(state_)
     {
         mutex_.lock();
-        Tools::OutputLogger::Log_("Work in background");
+        Tools::OutputLogger::Debug_("Work in background");
         get_results()->clear();
         Action::Work_();
-        Tools::OutputLogger::Log_("Work maded");
+        Tools::OutputLogger::Debug_("Work maded");
         mutex_.unlock();
 
         std::this_thread::sleep_for(update_time_);

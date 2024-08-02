@@ -38,7 +38,7 @@ void WebSocketHandler::Process_()
     {
         websocket_ = std::make_unique<WebSocket>(*request, *response);
         websocket_->setReceiveTimeout(Poco::Timespan());
-        Tools::OutputLogger::Log_("WebSocket connection established.");
+        Tools::OutputLogger::Debug_("WebSocket connection established.");
 
         HandleNewConnection_(*this, *this);
         Transfer_();
@@ -89,7 +89,7 @@ void WebSocketHandler::Transfer_()
     }
     while (n > 0 && (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE);
 
-    Tools::OutputLogger::Log_("WebSocket connection closed.");
+    Tools::OutputLogger::Debug_("WebSocket connection closed.");
 
 }
 

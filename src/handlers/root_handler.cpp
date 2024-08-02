@@ -39,7 +39,7 @@ void RootHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& 
             SetupRequest_(request);
             SetupResponse_(response);
 
-            Tools::OutputLogger::Log_(request.getURI() + " " + request.getMethod());
+            Tools::OutputLogger::Debug_(request.getURI() + " " + request.getMethod());
             
             if(!get_http_server_request().has_value())
             {
