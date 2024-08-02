@@ -14,3 +14,5 @@ directory_for_temp_files : "/tmp"
 certificate: "cert.pem"
 key: "key.pem"
 rootcert: ""
+logger_output_file: "nebulaatom.log"
+debug: true
