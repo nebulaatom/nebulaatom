@@ -1,7 +1,7 @@
 
 #include "query/results.h"
 
-using namespace Atom::Query;
+using namespace NAF::Query;
 
 Results::Results()
 {

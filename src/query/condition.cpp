@@ -1,4 +1,4 @@
 
 #include "query/condition.h"
 
-using namespace Atom::Query;
+using namespace NAF::Query;

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOM_QUERY_RESULTS
-#define ATOM_QUERY_RESULTS
+#ifndef NAF_QUERY_RESULTS
+#define NAF_QUERY_RESULTS
 
 
 #include <vector>
@@ -25,7 +25,7 @@
 #include "query/row.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Query
     {
@@ -34,7 +34,7 @@ namespace Atom
 }
 
 
-class Atom::Query::Results : public std::vector<Row::Ptr>
+class NAF::Query::Results : public std::vector<Row::Ptr>
 {
     public:
         using Ptr = std::shared_ptr<Results>;
@@ -45,4 +45,4 @@ class Atom::Query::Results : public std::vector<Row::Ptr>
         Row::Ptr AddRow_();
 };
 
-#endif // ATOM_QUERY_RESULTS
+#endif // NAF_QUERY_RESULTS

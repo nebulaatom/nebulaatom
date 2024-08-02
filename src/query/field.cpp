@@ -1,7 +1,7 @@
 
 #include "field.h"
 
-using namespace Atom::Query;
+using namespace NAF::Query;
 
 Field::Field(std::string column_name, Tools::DValue value) :
     column_name_(column_name)

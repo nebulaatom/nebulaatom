@@ -1,7 +1,7 @@
 
 #include "query/parameter.h"
 
-using namespace Atom::Query;
+using namespace NAF::Query;
 
 Parameter::Parameter(std::string name, Tools::DValue value, bool editable) :
     parameter_type_(ParameterType::kField)

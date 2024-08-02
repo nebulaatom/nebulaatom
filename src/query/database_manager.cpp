@@ -20,8 +20,8 @@
 #include "tools/settings_manager.h"
 #include <Poco/Mutex.h>
 
-using namespace Atom;
-using namespace Atom::Query;
+using namespace NAF;
+using namespace NAF::Query;
 
 std::mutex DatabaseManager::mutex_;
 bool DatabaseManager::initialized_ = false;

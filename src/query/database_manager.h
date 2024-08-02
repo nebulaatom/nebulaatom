@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOM_QUERY_DATABASE_MANAGER
-#define ATOM_QUERY_DATABASE_MANAGER
+#ifndef NAF_QUERY_DATABASE_MANAGER
+#define NAF_QUERY_DATABASE_MANAGER
 
 
 #include <iostream>
@@ -34,7 +34,7 @@
 //#include "tools/settings_manager.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Query
     {
@@ -47,7 +47,7 @@ using namespace Poco::Data;
 using namespace Poco::Data::Keywords;
 
 class SettingsManager;
-class Atom::Query::DatabaseManager
+class NAF::Query::DatabaseManager
 {
     public:
         DatabaseManager();
@@ -63,4 +63,4 @@ class Atom::Query::DatabaseManager
 
 };
 
-#endif // ATOM_QUERY_DATABASE_MANAGER
+#endif // NAF_QUERY_DATABASE_MANAGER

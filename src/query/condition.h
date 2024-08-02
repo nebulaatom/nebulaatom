@@ -16,15 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOM_QUERY_CONDITION
-#define ATOM_QUERY_CONDITION
+#ifndef NAF_QUERY_CONDITION
+#define NAF_QUERY_CONDITION
 
 
 #include "query/results.h"
 #include "tools/output_logger.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Query
     {
@@ -34,13 +34,13 @@ namespace Atom
 }
 
 
-enum class Atom::Query::ConditionType
+enum class NAF::Query::ConditionType
 {
     kWarning
     ,kError
 };
 
-template <typename T> class Atom::Query::Condition
+template <typename T> class NAF::Query::Condition
 {
     public:
         using Ptr = std::shared_ptr<Condition>;
@@ -68,7 +68,7 @@ template <typename T> class Atom::Query::Condition
         Functor functor_;
 };
 
-template <typename T> Atom::Query::Condition<T>::Condition(std::string identifier, ConditionType type, Functor functor) :
+template <typename T> NAF::Query::Condition<T>::Condition(std::string identifier, ConditionType type, Functor functor) :
     identifier_(identifier)
     ,type_(type)
     ,functor_(functor)
@@ -76,9 +76,9 @@ template <typename T> Atom::Query::Condition<T>::Condition(std::string identifie
 
 }
 
-template <typename T> bool Atom::Query::Condition<T>::VerifyCondition_(T t)
+template <typename T> bool NAF::Query::Condition<T>::VerifyCondition_(T t)
 {
     return functor_(t);
 }
 
-#endif // ATOM_QUERY_CONDITION
+#endif // NAF_QUERY_CONDITION

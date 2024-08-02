@@ -1,7 +1,7 @@
 
 #include "query/row.h"
 
-using namespace Atom::Query;
+using namespace NAF::Query;
 
 Row::Row()
 {

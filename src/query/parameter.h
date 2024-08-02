@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOM_QUERY_PARAMETER
-#define ATOM_QUERY_PARAMETER
+#ifndef NAF_QUERY_PARAMETER
+#define NAF_QUERY_PARAMETER
 
 
 #include <string>
@@ -27,7 +27,7 @@
 #include "query/condition.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Query
     {
@@ -37,13 +37,13 @@ namespace Atom
 }
 
 
-enum class Atom::Query::ParameterType
+enum class NAF::Query::ParameterType
 {
     kField
     ,kPosition
 };
 
-class Atom::Query::Parameter
+class NAF::Query::Parameter
 {
     public:
         using Ptr = std::shared_ptr<Parameter>;
@@ -97,4 +97,4 @@ class Atom::Query::Parameter
         Query::Condition<Ptr>::Ptr condition_;
 };
 
-#endif // ATOM_QUERY_PARAMETER
+#endif // NAF_QUERY_PARAMETER

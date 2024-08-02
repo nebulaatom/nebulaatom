@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ATOM_QUERY_ROW
-#define ATOM_QUERY_ROW
+#ifndef NAF_QUERY_ROW
+#define NAF_QUERY_ROW
 
 
 #include <vector>
@@ -26,7 +26,7 @@
 #include "tools/dvalue.h"
 
 
-namespace Atom
+namespace NAF
 {
     namespace Query
     {
@@ -35,7 +35,7 @@ namespace Atom
 }
 
 
-class Atom::Query::Row : public std::vector<Field::Ptr>
+class NAF::Query::Row : public std::vector<Field::Ptr>
 {
     public:
         using Ptr = std::shared_ptr<Row>;
@@ -46,4 +46,4 @@ class Atom::Query::Row : public std::vector<Field::Ptr>
         Field::Ptr AddField_(std::string column_name, Tools::DValue value);
 };
 
-#endif // ATOM_QUERY_ROW
+#endif // NAF_QUERY_ROW
