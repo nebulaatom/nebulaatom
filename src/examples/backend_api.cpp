@@ -31,7 +31,7 @@ class MainHandler : public Handlers::BackendHandler
                     a1->SetupCondition_("verify-identifier", Query::ConditionType::kWarning, [](Functions::Action& action)
                     {
                         if(action.get_results()->size() > 0)
-                            Tools::OutputLogger::Log_("Results > 0");
+                            Tools::OutputLogger::Debug_("Results > 0");
                         
                         return true;
                     });

@@ -16,9 +16,9 @@ void ViewParameters(Handlers::CustomHandler& self)
         case HTTP::Body::Type::kFormMultipart:
         {
             for(auto& file : self.get_files_parameters().get_files())
-                Tools::OutputLogger::Log_("FormMultipart parameter: " + file.get_name() + ", " + file.get_filename());
+                Tools::OutputLogger::Debug_("FormMultipart parameter: " + file.get_name() + ", " + file.get_filename());
             for(auto& value : *self.get_form())
-                Tools::OutputLogger::Log_("FormMultipart parameter: " + value.first + ", " + value.second);
+                Tools::OutputLogger::Debug_("FormMultipart parameter: " + value.first + ", " + value.second);
             break;
         }
         case HTTP::Body::Type::kJSON:
@@ -31,7 +31,7 @@ void ViewParameters(Handlers::CustomHandler& self)
         case HTTP::Body::Type::kURI:
         {
             for(auto param : self.get_query_parameters())
-                Tools::OutputLogger::Log_("URI parameter: " + param.first + ", " + param.second);
+                Tools::OutputLogger::Debug_("URI parameter: " + param.first + ", " + param.second);
             self.get_json_array()->stringify(std::cout);
             break;
         }
