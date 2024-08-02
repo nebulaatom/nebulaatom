@@ -53,7 +53,8 @@ class Atom::Tools::SettingsManager
             std::string db_host, db_port, db_name, db_user, db_password;
             std::string directory_base, directory_for_uploaded_files, directory_for_temp_files;
             std::string certificate, key, rootcert;
-            std::string logger_output_file_;
+            std::string logger_output_file;
+            bool debug;
         };
 
         SettingsManager();

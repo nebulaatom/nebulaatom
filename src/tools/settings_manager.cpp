@@ -49,7 +49,8 @@ void Tools::SettingsManager::SetUpProperties_()
     basic_properties_.certificate = "";
     basic_properties_.key = "";
     basic_properties_.rootcert = "";
-    basic_properties_.logger_output_file_ = "nebulaatom.log";
+    basic_properties_.logger_output_file = "nebulaatom.log";
+    basic_properties_.debug = false;
     mutex_.unlock();
 }
 
@@ -174,15 +175,27 @@ void Tools::SettingsManager::ReadBasicProperties_()
         basic_properties_.rootcert = rootcert.as<std::string>();
         
         // logger_output_file_
-        auto logger_output_file_ = config["logger_output_file_"];
-        if (VerifyYAMLScalarNode_(logger_output_file_))
-            basic_properties_.logger_output_file_ = logger_output_file_.as<std::string>();
+        auto logger_output_file = config["logger_output_file"];
+        if (!VerifyYAMLScalarNode_(logger_output_file))
+            PrintError_("ReadBasicProperties_", "logger_output_file");
+        
+        basic_properties_.logger_output_file = logger_output_file.as<std::string>();
+        Tools::OutputLogger::set_output_file_address(basic_properties_.logger_output_file);
+        
+        // debug
+        auto debug = config["debug"];
+        if (!VerifyYAMLScalarNode_(debug))
+            PrintError_("ReadBasicProperties_", "debug");
+        
+        basic_properties_.debug = debug.as<bool>();
+        Tools::OutputLogger::set_print_debug(basic_properties_.debug);
+        
         
         mutex_.unlock();
     }
     catch(std::exception& e)
     {
-        PrintError_("ReadBasicProperties_", "general: " + std::string(e.what()));
+        PrintError_("ReadBasicProperties_", std::string(e.what()));
         return;
     }
 }
