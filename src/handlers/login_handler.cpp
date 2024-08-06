@@ -46,9 +46,6 @@ void LoginHandler::Process_()
 
 void LoginHandler::Login_()
 {
-    // Process the request body
-    ManageRequestBody_();
-
     std::vector<std::string> login_route({"api", "system", "login"});
     std::vector<std::string> logout_route({"api", "system", "logout"});
 
@@ -74,21 +71,12 @@ void LoginHandler::StartSession_()
             return;
         }
 
-    // Get the user and password
-        std::string user = "", password = "";
+        // Process the request body
+        ManageRequestBody_();
 
-        if(get_json_array()->size() > 0)
-        {
-            auto json_auth = get_json_array()->getObject(0);
-            if(!json_auth->get("user").isEmpty())
-                user = json_auth->get("user").toString();
-            if(!json_auth->get("password").isEmpty())
-                password =  json_auth->get("password").toString();
-        }
+        // Identify parameters
+        IdentifyParameters_(get_users_manager().get_action());
 
-    // Security verification
-        get_users_manager().get_current_user().set_username(user);
-        get_users_manager().get_current_user().set_password(password);
         if(!get_users_manager().AuthenticateUser_())
         {
             JSONResponse_(HTTP::Status::kHTTP_UNAUTHORIZED, "Unauthorized user or wrong user or password.");
@@ -96,7 +84,12 @@ void LoginHandler::StartSession_()
         }
 
     // Create the session
-        auto session = Tools::SessionsManager::CreateSession_(user, "/", Tools::SettingsManager::get_basic_properties_().session_max_age);
+        auto session = Tools::SessionsManager::CreateSession_
+        (
+            get_users_manager().get_current_user().get_username()
+            ,"/"
+            ,Tools::SettingsManager::get_basic_properties_().session_max_age
+        );
 
     // Response
         Poco::Net::HTTPCookie cookie("nebula-atom-sid", session.get_id());
