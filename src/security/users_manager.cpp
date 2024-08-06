@@ -17,41 +17,43 @@
 */
 
 #include "security/users_manager.h"
+#include "query/parameter.h"
 
 using namespace NAF::Security;
 
 UsersManager::UsersManager()
 {
-
+    // Setting up the action
+    action_ = std::make_shared<Functions::Action>("login-action");
+    action_->set_sql_code("SELECT id FROM _naf_users WHERE username = ? AND password = ?");
+    action_->AddParameter_("username", Tools::DValue(""), true);
+    action_->AddParameter_("password", Tools::DValue(""), true);
 }
 
 bool UsersManager::AuthenticateUser_()
 {
     try
     {
-        // Setting up the action
-            Functions::Action action{""};
-            action.set_custom_error("User not found.");
-            std::string sql_code =
-                "SELECT id "
-                "FROM _atom_users "
-                "WHERE username = ? AND password = ?"
-            ;
-            action.set_sql_code(sql_code);
-            action.AddParameter_("username", Tools::DValue(current_user_.get_username()), false);
-            action.AddParameter_("password", Tools::DValue(current_user_.get_password()), false);
+        // Set current user
+            auto& parameters = action_->get_parameters();
+            auto found = std::find_if(parameters.begin(), parameters.end(), [&](Query::Parameter::Ptr parameter)
+            {
+                return parameter->get_name() == "username";
+            });
+            if(found != parameters.end())
+                current_user_.set_username((*found)->ToString_());
 
         // Query process
-            action.ComposeQuery_();
-            if(action.get_error())
+            action_->ComposeQuery_();
+            if(action_->get_error())
                 return false;
-            action.ExecuteQuery_();
-            if(action.get_error())
+            action_->ExecuteQuery_();
+            if(action_->get_error())
                 return false;
-            action.MakeResults_();
+            action_->MakeResults_();
 
         // Verify results
-            if(action.get_results()->size() > 0)
+            if(action_->get_results()->size() > 0)
                 return true;
             else
                 return false;
