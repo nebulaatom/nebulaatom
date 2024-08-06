@@ -71,7 +71,7 @@ class NAF::Functions::Action :
         std::string get_custom_error() const { return custom_error_; };
         bool get_final() const { return final_; };
         bool get_error() const { return error_; };
-        std::vector<Query::Parameter::Ptr> get_parameters()
+        std::vector<Query::Parameter::Ptr>& get_parameters()
         {
             auto& var = parameters_;
             return var;
