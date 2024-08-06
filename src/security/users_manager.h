@@ -49,11 +49,17 @@ class NAF::Security::UsersManager
             auto& var = current_user_;
             return var;
         }
+        Functions::Action::Ptr get_action()
+        {
+            auto& var = action_;
+            return var;
+        }
 
         bool AuthenticateUser_();
 
     private:
         User current_user_;
+        Functions::Action::Ptr action_;
 };
 
 
