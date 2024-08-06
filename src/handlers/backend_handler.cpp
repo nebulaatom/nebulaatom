@@ -61,22 +61,7 @@ void BackendHandler::ProcessActions_()
             action->get_actions().insert(action->get_actions().end(), actions.begin(), actions.end());
             
             // Identify parameters
-            switch(get_body_type())
-            {
-                case HTTP::Body::Type::kFormMultipart:
-                    action->IdentifyParameters_(get_form());
-                    action->IdentifyParameters_(get_files_parameters());
-                    break;
-                case HTTP::Body::Type::kJSON:
-                    action->IdentifyParameters_(get_json_array());
-                    break;
-                case HTTP::Body::Type::kURI:
-                case HTTP::Body::Type::kFormURLEncoded:
-                    action->IdentifyParameters_(get_query_parameters());
-                    if(get_json_array()->size() > 0)
-                        action->IdentifyParameters_(get_json_array());
-                    break;
-            }
+            IdentifyParameters_(action);
             if(action->get_error())
             {
                 JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, action->get_custom_error());
