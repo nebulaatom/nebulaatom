@@ -139,6 +139,7 @@ class NAF::Handlers::RootHandler :
 
     protected:
         void SetupProperties_();
+        void IdentifyParameters_(Functions::Action::Ptr action);
 
     private:
         struct Properties properties_;

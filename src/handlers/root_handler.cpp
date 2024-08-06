@@ -210,3 +210,23 @@ void RootHandler::SetupProperties_()
     properties_.content_type = request->getContentType();
     Net::MessageHeader::splitParameters(request->getContentType(), properties_.content_type, properties_.content_type_parameters);
 }
+
+void RootHandler::IdentifyParameters_(Functions::Action::Ptr action)
+{
+    switch(get_body_type())
+    {
+        case HTTP::Body::Type::kFormMultipart:
+            action->IdentifyParameters_(get_form());
+            action->IdentifyParameters_(get_files_parameters());
+            break;
+        case HTTP::Body::Type::kJSON:
+            action->IdentifyParameters_(get_json_array());
+            break;
+        case HTTP::Body::Type::kURI:
+        case HTTP::Body::Type::kFormURLEncoded:
+            action->IdentifyParameters_(get_query_parameters());
+            if(get_json_array()->size() > 0)
+                action->IdentifyParameters_(get_json_array());
+            break;
+    }
+}
