@@ -78,3 +78,8 @@ target_link_libraries(postapi PUBLIC nebulaatom_static)
 add_executable(cachedaction "cached_action.cpp")
 target_include_directories(cachedaction PUBLIC ${HEADER})
 target_link_libraries(cachedaction PUBLIC nebulaatom_static)
+
+## frontend
+add_executable(frontend "frontend.cpp")
+target_include_directories(frontend PUBLIC ${HEADER})
+target_link_libraries(frontend PUBLIC nebulaatom_static)

@@ -15,7 +15,6 @@ set(NEBULAATOM_SOURCES
     ${PROJECT_SOURCE_DIR}/src/functions/functions_manager.cpp
     ${PROJECT_SOURCE_DIR}/src/handlers/root_handler.cpp
     ${PROJECT_SOURCE_DIR}/src/handlers/backend_handler.cpp
-    ${PROJECT_SOURCE_DIR}/src/handlers/frontend_handler.cpp
     ${PROJECT_SOURCE_DIR}/src/handlers/login_handler.cpp
     ${PROJECT_SOURCE_DIR}/src/handlers/null_handler.cpp
     ${PROJECT_SOURCE_DIR}/src/handlers/custom_handler.cpp
@@ -70,7 +69,6 @@ set(NEBULAATOM_headers_functions
 set(NEBULAATOM_headers_handlers
     ${PROJECT_SOURCE_DIR}/src/handlers/root_handler.h
     ${PROJECT_SOURCE_DIR}/src/handlers/backend_handler.h
-    ${PROJECT_SOURCE_DIR}/src/handlers/frontend_handler.h
     ${PROJECT_SOURCE_DIR}/src/handlers/login_handler.h
     ${PROJECT_SOURCE_DIR}/src/handlers/null_handler.h
     ${PROJECT_SOURCE_DIR}/src/handlers/custom_handler.h
