@@ -16,6 +16,8 @@ class Frontend : public Handlers::RootHandler
 
         void Process_()
         {
+            file_manager_.set_directory_base("/var/www");
+            file_manager_.set_directory_for_uploaded_files("/var/www/uploaded-files");
             file_manager_.AddBasicSupportedFiles_();
             auto method = GetMethod_(get_properties().method);
             switch(method)
