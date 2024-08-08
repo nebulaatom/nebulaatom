@@ -80,10 +80,10 @@ class NAF::Query::Parameter
         void set_related_action(std::string related_action) { related_action_ = related_action; }
 
         std::string ToString_();
-        std::string StringValue_();
-        int IntValue_();
-        bool BoolValue_();
-        float FloatValue_();
+        std::string& StringValue_();
+        int& IntValue_();
+        bool& BoolValue_();
+        float& FloatValue_();
         void SetupCondition_(std::string identifier, Query::ConditionType type, Query::Condition<Ptr>::Functor functor);
 
     private:

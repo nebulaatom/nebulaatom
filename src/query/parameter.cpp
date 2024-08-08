@@ -32,7 +32,7 @@ std::string Parameter::ToString_()
     return value_.ToString_();
 }
 
-std::string Parameter::StringValue_()
+std::string& Parameter::StringValue_()
 {
     if(!value_.TypeIsIqual_(Tools::DValue::Type::kString))
     {
@@ -42,7 +42,7 @@ std::string Parameter::StringValue_()
     return value_.get_value_string();
 }
 
-int Parameter::IntValue_()
+int& Parameter::IntValue_()
 {
     if(!value_.TypeIsIqual_(Tools::DValue::Type::kInteger))
     {
@@ -52,7 +52,7 @@ int Parameter::IntValue_()
     return value_.get_value_int();
 }
 
-bool Parameter::BoolValue_()
+bool& Parameter::BoolValue_()
 {
     if(!value_.TypeIsIqual_(Tools::DValue::Type::kBoolean))
     {
@@ -62,7 +62,7 @@ bool Parameter::BoolValue_()
     return value_.get_value_bool();
 }
 
-float Parameter::FloatValue_()
+float& Parameter::FloatValue_()
 {
     if(!value_.TypeIsIqual_(Tools::DValue::Type::kFloat))
     {
