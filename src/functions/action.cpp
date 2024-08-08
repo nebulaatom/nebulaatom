@@ -202,8 +202,7 @@ void Action::IdentifyParameters_(Files::FileManager& files_parameters)
 
             // Find parameter
             auto found_param = std::find_if(parameters_.begin(), parameters_.end(), [&file](Query::Parameter::Ptr& param)
-            {  // Find if exists parameter
-        
+            {
                 return param->get_name() == file.get_name();
             });
 
