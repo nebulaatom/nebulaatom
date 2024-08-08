@@ -26,7 +26,7 @@ LoginHandler::~LoginHandler()
 
 void LoginHandler::Process_()
 {
-    auto method = GetMethod_(get_http_server_request().value()->getMethod());
+    auto method = GetMethod_(get_properties().method);
     switch(method)
     {
         case HTTP::EnumMethods::kHTTP_POST:
