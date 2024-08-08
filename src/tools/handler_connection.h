@@ -11,7 +11,6 @@
 #include "handlers/root_handler.h"
 #include "handlers/null_handler.h"
 #include "handlers/backend_handler.h"
-#include "handlers/frontend_handler.h"
 
 
 namespace NAF
