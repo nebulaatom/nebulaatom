@@ -3,6 +3,7 @@
 #include "query/database_manager.h"
 #include "tools/output_logger.h"
 #include "tools/settings_manager.h"
+#include <string>
 
 using namespace NAF;
 using namespace NAF::Functions;
@@ -193,19 +194,31 @@ void Action::IdentifyParameters_(Files::FileManager& files_parameters)
         {
             float filesize = file.get_tmp_file()->getSize();
             if(filesize > Tools::SettingsManager::get_basic_properties_().max_file_size * 1000000)
+            {
+                Tools::OutputLogger::Warning_("Warning on action.cpp on IdentifyParameters_(): The file " + file.get_name()
+                    + " exceeds the maximum file size (" + std::to_string(Tools::SettingsManager::get_basic_properties_().max_file_size) + ")");
                 continue;
+            }
 
-            std::ifstream istr;
-            std::stringstream parameter_value;
-            istr.open(file.get_tmp_file()->path());
-            StreamCopier::copyStream(istr, parameter_value);
-            istr.close();
+            // Find parameter
+            auto found_param = std::find_if(parameters_.begin(), parameters_.end(), [&file](Query::Parameter::Ptr& param)
+            {  // Find if exists parameter
+        
+                return param->get_name() == file.get_name();
+            });
 
-            // Get parameter object
-            Query::Parameter::Ptr parameter(new Query::Parameter(file.get_name(), parameter_value.str(), true));
+            // Remplace parameter value
+            if(found_param != parameters_.end())
+            {
+                if(!found_param->get()->get_editable()) return;
 
-            // Replace Parameter
-            ReplaceParamater_(parameter);
+                std::ifstream istr; std::stringstream parameter_value;
+                istr.open(file.get_tmp_file()->path());
+                StreamCopier::copyStream(istr, parameter_value);
+                istr.close();
+
+                found_param->get()->set_value(parameter_value.str());
+            }
         }
     }
     catch(std::runtime_error& error)
@@ -341,7 +354,10 @@ bool Action::ComposeQuery_()
                         break;
                     }
                 }
-                Tools::OutputLogger::Debug_("Parameter in ComposeQuery_(): " + param->get_name() + ": " + param->ToString_());
+                if(param->get_value().get_value_string().size() < 1000)
+                    Tools::OutputLogger::Debug_("Parameter in ComposeQuery_(): " + param->get_name() + ": " + param->ToString_());
+                else
+                    Tools::OutputLogger::Debug_("Parameter in ComposeQuery_(): " + param->get_name() + ": -- BIG STRING --");
             }
 
         // Return
