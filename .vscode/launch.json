@@ -130,5 +130,13 @@
             ,"args": []
             ,"cwd": "${workspaceFolder}/build/Debug"
         }
+        ,{
+            "type": "lldb"
+            ,"request": "launch"
+            ,"name": "Frontend (Debug)"
+            ,"program": "${workspaceFolder}/build/Debug/src/examples/frontend"
+            ,"args": []
+            ,"cwd": "${workspaceFolder}/build/Debug"
+        }
     ]
 }
