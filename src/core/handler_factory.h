@@ -48,7 +48,6 @@
 #include "handlers/root_handler.h"
 #include "handlers/null_handler.h"
 #include "handlers/backend_handler.h"
-#include "handlers/frontend_handler.h"
 #include "handlers/login_handler.h"
 #include "handlers/websocket_handler.h"
 #include "tools/output_logger.h"
