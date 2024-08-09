@@ -34,7 +34,7 @@ class NAF::Functions::Function
         };
 
         Function();
-        Function(std::string endpoint, HTTP::EnumMethods type);
+        Function(std::string endpoint, HTTP::EnumMethods method, ResponseType response_type = ResponseType::kJSON);
 
         std::string get_endpoint() const { return endpoint_; }
         std::string get_target() const { return target_; }
@@ -59,7 +59,8 @@ class NAF::Functions::Function
         void set_response_type(ResponseType response_type) { response_type_ = response_type; }
 
         Action::Ptr AddAction_(std::string identifier);
-        bool ProcessJSONResponse_(JSON::Object::Ptr& json_result);
+        bool ProcessJSON_(JSON::Object::Ptr& json_result);
+        bool ProcessFile_(std::string& file_path);
 
     private:
         std::string endpoint_;

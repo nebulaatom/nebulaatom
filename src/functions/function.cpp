@@ -11,16 +11,18 @@ Function::Function() :
     ,target_("")
     ,error_(false)
     ,error_message_("Unknown error.")
+    ,response_type_(ResponseType::kJSON)
     ,method_(HTTP::EnumMethods::kHTTP_GET)
 {
     
 }
 
-Function::Function(std::string endpoint, HTTP::EnumMethods method) :
+Function::Function(std::string endpoint, HTTP::EnumMethods method, ResponseType response_type) :
     endpoint_(endpoint)
     ,target_("")
     ,error_(false)
     ,error_message_("Unknown error.")
+    ,response_type_(response_type)
     ,method_(method)
 {
     
@@ -33,7 +35,7 @@ Action::Ptr Function::AddAction_(std::string identifier)
     return action;
 }
 
-bool Function::ProcessJSONResponse_(JSON::Object::Ptr& json_result)
+bool Function::ProcessJSON_(JSON::Object::Ptr& json_result)
 {
     // Process actions of the function
     Tools::OutputLogger::Debug_("Function: " + endpoint_);
@@ -64,6 +66,47 @@ bool Function::ProcessJSONResponse_(JSON::Object::Ptr& json_result)
         // Set JSON results
         if(action->get_final())
             json_result = action->get_json_result();
+    }
+
+    return true;
+}
+
+bool Function::ProcessFile_(std::string& file_path)
+{
+    // Process actions of the function
+    Tools::OutputLogger::Debug_("Function: " + endpoint_);
+    for(auto& action : actions_)
+    {
+        Tools::OutputLogger::Debug_("Action: " + action->get_identifier() + ", Final: " + std::to_string(action->get_final()));
+
+        // Copy actions references
+        action->get_actions_container().clear();
+        action->get_actions_container().insert(action->get_actions_container().end(), actions_.begin(), actions_.end());
+        
+        // Identify parameters
+        if(action->get_error())
+        {
+            error_ = true;
+            error_message_ = action->get_custom_error();
+            return false;
+        }
+
+        // Execute action
+        if(!action->Work_())
+        {
+            error_ = true;
+            error_message_ = action->get_custom_error();
+            return false;
+        }
+
+        // Set JSON results
+        if(action->get_final())
+        {
+            Query::Field::Position position(0, 0);
+            Query::Field::Ptr field = action->get_results()->FindField_(position);
+            if(field != nullptr)
+                file_path = field->String_();
+        }
     }
 
     return true;
