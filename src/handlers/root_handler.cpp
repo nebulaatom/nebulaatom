@@ -230,3 +230,12 @@ void RootHandler::IdentifyParameters_(Functions::Action::Ptr action)
             break;
     }
 }
+
+void RootHandler::IdentifyParameters_()
+{
+    auto& actions = current_function_->get_actions();
+    for(auto it = actions.begin(); it != actions.end(); ++it)
+    {
+        IdentifyParameters_(*it);
+    }
+}

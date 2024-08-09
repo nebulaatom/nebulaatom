@@ -29,6 +29,7 @@
 #include <stdexcept>
 #include <memory>
 
+#include "functions/action.h"
 #include "yaml-cpp/yaml.h"
 #include "Poco/Exception.h"
 #include <Poco/Net/HTTPRequestHandler.h>
@@ -140,6 +141,7 @@ class NAF::Handlers::RootHandler :
     protected:
         void SetupProperties_();
         void IdentifyParameters_(Functions::Action::Ptr action);
+        void IdentifyParameters_();
 
     private:
         struct Properties properties_;
