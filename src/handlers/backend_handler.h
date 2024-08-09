@@ -36,16 +36,11 @@ class NAF::Handlers::BackendHandler : public RootHandler
     public:
         using VectorShrResults = std::vector<Query::Results::Ptr>;
 
-        using RootHandler::RootHandler;
-        virtual ~BackendHandler();
+        BackendHandler();
 
     protected:
         virtual void Process_() override;
-
         void ProcessActions_();
-
-    private:
-        VectorShrResults shared_results_;
 };
 
 #endif // NAF_HANDLERS_BACKENDHANDLER

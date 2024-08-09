@@ -19,7 +19,8 @@
 
 using namespace NAF::Handlers;
 
-BackendHandler::~BackendHandler()
+BackendHandler::BackendHandler() :
+    RootHandler::RootHandler()
 {
 
 }
@@ -32,55 +33,25 @@ void BackendHandler::Process_()
 void BackendHandler::ProcessActions_()
 {
     // Verify current function
-        if(get_current_function()->get_actions().empty())
+    if(get_current_function()->get_actions().empty())
+    {
+        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Current function has no actions.");
+        return;
+    }
+    // Identify parameters
+    IdentifyParameters_();
+
+    // Process current function
+    JSON::Object::Ptr json_result = new JSON::Object();
+    if(!get_current_function()->ProcessJSONResponse_(json_result))
+    {
+        if(get_current_function()->get_error())
         {
-            JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Current function has no actions.");
+            JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, get_current_function()->get_error_message());
             return;
         }
+    }
 
-    // Setup shared results
-
-        for(auto& action : get_current_function()->get_actions())
-        {
-            shared_results_.push_back(action->get_results());
-        }
-
-    // Process actions of the function
-        Tools::OutputLogger::Debug_("Function: " + get_current_function()->get_endpoint());
-        JSON::Object::Ptr json_result = new JSON::Object();
-        for(auto& action : get_current_function()->get_actions())
-        {
-            Tools::OutputLogger::Debug_("Action: " + action->get_identifier() + ", Final: " + std::to_string(action->get_final()));
-
-            // Set JSON body
-            action->set_json_array(get_json_array());
-
-            // Copy actions
-            action->get_actions().clear();
-            auto& actions = get_current_function()->get_actions();
-            action->get_actions().insert(action->get_actions().end(), actions.begin(), actions.end());
-            
-            // Identify parameters
-            IdentifyParameters_(action);
-            if(action->get_error())
-            {
-                JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, action->get_custom_error());
-                return;
-            }
-
-            // Execute action
-            if(!action->Work_())
-            {
-                JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, action->get_custom_error());
-                return;
-            }
-
-            // Set JSON results
-            if(action->get_final())
-                json_result = action->get_json_result();
-
-        }
-
-    // Send results
-        CompoundResponse_(HTTP::Status::kHTTP_OK, json_result);
+    // Send JSON results
+    CompoundResponse_(HTTP::Status::kHTTP_OK, json_result);
 }
