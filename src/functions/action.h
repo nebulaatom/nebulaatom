@@ -56,8 +56,7 @@ using namespace Poco::Data::Keywords;
 class DatabaseManager;
 class SettingsManager;
 
-class NAF::Functions::Action :
-    public Tools::ManageJSON
+class NAF::Functions::Action
 {
     public:
         using Ptr = std::shared_ptr<Action>;
@@ -91,9 +90,9 @@ class NAF::Functions::Action :
             auto& var = json_result_;
             return var;
         }
-        std::vector<Ptr>& get_actions()
+        std::vector<Ptr>& get_actions_container()
         {
-            auto& var = actions_;
+            auto& var = actions_container_;
             return var;
         }
         std::string get_sql_code() const { return sql_code_; };
@@ -157,7 +156,7 @@ class NAF::Functions::Action :
         Query::Condition<Action&>::Ptr condition_;
         std::shared_ptr<Query::Results> results_;
         JSON::Object::Ptr json_result_;
-        std::vector<Ptr> actions_;
+        std::vector<Ptr> actions_container_;
         std::string sql_code_;
         std::string final_query_;
         int affected_rows_;

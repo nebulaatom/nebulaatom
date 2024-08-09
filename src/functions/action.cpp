@@ -3,7 +3,6 @@
 #include "query/database_manager.h"
 #include "tools/output_logger.h"
 #include "tools/settings_manager.h"
-#include <string>
 
 using namespace NAF;
 using namespace NAF::Functions;
@@ -594,13 +593,13 @@ void Action::SetupPositionParameter_(Query::Parameter::Ptr parameter)
     if(parameter->get_parameter_type() == Query::ParameterType::kPosition)
     {
         // Find action results
-        auto action_found = std::find_if(actions_.begin(), actions_.end(),[&parameter](Functions::Action::Ptr action)
+        auto action_found = std::find_if(actions_container_.begin(), actions_container_.end(),[&parameter](Functions::Action::Ptr action)
         {
             return action->get_identifier() == parameter->get_related_action();
         });
 
         // Set DValue found
-        if(action_found != actions_.end())
+        if(action_found != actions_container_.end())
         {
             auto row_value = action_found->get()->get_results()->FindField_(parameter->get_field_position());
             if(row_value != nullptr)
