@@ -32,6 +32,8 @@ class NAF::Functions::Function
 
         std::string get_endpoint() const { return endpoint_; }
         std::string get_target() const { return target_; }
+        bool get_error() const { return error_; }
+        std::string get_error_message() const { return error_message_; }
         HTTP::EnumMethods get_method() const { return method_; }
         std::vector<Action::Ptr>& get_actions()
         {
@@ -49,10 +51,13 @@ class NAF::Functions::Function
         void set_method(HTTP::EnumMethods type) { method_ = type; }
 
         Action::Ptr AddAction_(std::string identifier);
+        bool ProcessJSONResponse_(JSON::Object::Ptr& json_result);
 
     private:
         std::string endpoint_;
         std::string target_;
+        bool error_;
+        std::string error_message_;
         HTTP::EnumMethods method_;
         std::vector<Action::Ptr> actions_;
         HTTP::Methods methods_;
