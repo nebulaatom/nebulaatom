@@ -157,43 +157,25 @@ bool Function::ProcessJSON_(JSON::Object::Ptr& json_result)
     return true;
 }
 
-bool Function::ProcessFile_(std::string& file_path)
+bool Function::ProcessFile_(std::string& filepath)
 {
     // Process actions of the function
     Tools::OutputLogger::Debug_("Function: " + endpoint_);
     for(auto& action : actions_)
     {
-        Tools::OutputLogger::Debug_("Action: " + action->get_identifier() + ", Final: " + std::to_string(action->get_final()));
+        // Process Action
+        ProcessAction_(action);
 
-        // Copy actions references
-        action->get_actions_container().clear();
-        action->get_actions_container().insert(action->get_actions_container().end(), actions_.begin(), actions_.end());
-        
-        // Identify parameters
-        if(action->get_error())
-        {
-            error_ = true;
-            error_message_ = action->get_custom_error();
-            return false;
-        }
-
-        // Execute action
-        if(!action->Work_())
-        {
-            error_ = true;
-            error_message_ = action->get_custom_error();
-            return false;
-        }
-
-        // Set JSON results
+        // Set filepath
         if(action->get_final())
         {
             Query::Field::Position position(0, 0);
             Query::Field::Ptr field = action->get_results()->FindField_(position);
             if(field != nullptr)
-                file_path = field->String_();
+                filepath = field->String_();
         }
     }
 
     return true;
 }
+
