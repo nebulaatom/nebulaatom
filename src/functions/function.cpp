@@ -302,3 +302,22 @@ void Function::ModifyProcess_(std::string& filepath)
     CompoundFillResponse_(HTTP::Status::kHTTP_OK, file_manager_->get_result(), "Ok.");
 }
 
+void Function::RemoveProcess_(std::string& filepath)
+{
+    // Manage file
+    file_manager_->set_operation_type(Files::OperationType::kDelete);
+    file_manager_->get_files().push_back(file_manager_->CreateTempFile_("/" + filepath));
+
+    // Basic operations
+    if(!file_manager_->CheckFiles_())
+    {
+        HTMLResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Requested file bad check.");
+        return;
+    }
+
+    // Remove
+    file_manager_->RemoveFile_();
+        
+    // Response
+    JSONResponse_(HTTP::Status::kHTTP_OK, "Ok.");
+}
