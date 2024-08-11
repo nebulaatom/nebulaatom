@@ -212,3 +212,40 @@ void Function::DownloadProcess_(std::string& filepath)
     // Download file
     file_manager_->DownloadFile_(out_reponse);
 }
+
+void Function::UploadProcess_()
+{
+    // Manage the files
+    file_manager_->set_operation_type(Files::OperationType::kUpload);
+
+    // Change path
+    for(auto& file : file_manager_->get_files())
+    {
+        if(!file_manager_->ChangePathAndFilename_(file, file_manager_->get_directory_base()))
+        {
+            HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The file cannot be processed.");
+            return;
+        }
+    }
+
+    // Verify supported files
+    if(!file_manager_->IsSupported_())
+    {
+        HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Requested file is not supported.");
+        return;
+    }
+
+    // Verify max file size
+    if(!file_manager_->VerifyMaxFileSize_())
+    {
+        HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The requested file exceeds the file size limit.");
+        return;
+    }
+
+    // Upload file
+    file_manager_->UploadFile_();
+
+    // Response
+    CompoundFillResponse_(HTTP::Status::kHTTP_OK, file_manager_->get_result(), "Ok.");
+}
+
