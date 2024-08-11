@@ -52,6 +52,67 @@ void Function::Setup_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request
         return;
     }
 }
+void Function::Process_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request::HTTPServerResponsePtr response)
+{
+    Setup_(request, response);
+
+    switch(response_type_)
+    {
+        case Functions::Function::ResponseType::kJSON:
+        {
+            JSON::Object::Ptr json_result = new JSON::Object();
+            if(!ProcessJSON_(json_result))
+            {
+                if(error_)
+                {
+                    JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, error_message_);
+                    return;
+                }
+            }
+
+            // Send JSON results
+            CompoundResponse_(HTTP::Status::kHTTP_OK, json_result);
+
+            break;
+        }
+        case Functions::Function::ResponseType::kFile:
+        {
+            std::string filepath = "";
+            if(!ProcessFile_(filepath))
+            {
+                if(error_)
+                {
+                    JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, error_message_);
+                    return;
+                }
+            }
+
+            switch(method_)
+            {
+                case HTTP::EnumMethods::kHTTP_GET:
+                    DownloadProcess_(filepath);
+                    break;
+                case HTTP::EnumMethods::kHTTP_POST:
+                    UploadProcess_();
+                    break;
+                case HTTP::EnumMethods::kHTTP_PUT:
+                    ModifyProcess_(filepath);
+                    break;
+                case HTTP::EnumMethods::kHTTP_DEL:
+                    RemoveProcess_(filepath);
+                    break;
+                case HTTP::EnumMethods::kHTTP_HEAD:
+                case HTTP::EnumMethods::kHTTP_OPTIONS:
+                case HTTP::EnumMethods::kHTTP_PATCH:
+                case HTTP::EnumMethods::kNULL:
+                    JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
+                    break;
+            }
+            
+            break;
+        }
+    }
+}
 
         // Copy actions references
         action->get_actions_container().clear();

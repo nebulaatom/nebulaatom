@@ -59,6 +59,7 @@ class NAF::Functions::Function
         void set_response_type(ResponseType response_type) { response_type_ = response_type; }
 
         Action::Ptr AddAction_(std::string identifier);
+        void Process_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request::HTTPServerResponsePtr response);
         bool ProcessJSON_(JSON::Object::Ptr& json_result);
         void Setup_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request::HTTPServerResponsePtr response);
 
