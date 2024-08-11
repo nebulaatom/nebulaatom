@@ -38,20 +38,9 @@ class NAF::Handlers::BackendHandler : public RootHandler
 
         BackendHandler();
 
-        Files::FileManager& get_file_manager()
-        {
-            auto& var = file_manager_;
-            return var;
-        }
-
     protected:
         virtual void Process_() override;
         void ProcessActions_();
-        void ProcessJSONResponse_();
-        void ProcessFileResponse_();
-
-    private:
-        Files::FileManager file_manager_;
 };
 
 #endif // NAF_HANDLERS_BACKENDHANDLER
