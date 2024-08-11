@@ -44,7 +44,6 @@ void Tools::SettingsManager::SetUpProperties_()
     basic_properties_.db_password = "";
     basic_properties_.session_max_age = 3600;
     basic_properties_.directory_base = "/var/www";
-    basic_properties_.directory_for_uploaded_files = "/var/www";
     basic_properties_.directory_for_temp_files = "/tmp";
     basic_properties_.certificate = "";
     basic_properties_.key = "";
@@ -103,13 +102,6 @@ void Tools::SettingsManager::ReadBasicProperties_()
             PrintError_("ReadBasicProperties_", "directory_base");
 
         basic_properties_.directory_base = directory_base.as<std::string>();
-        
-        // directory_for_uploaded_files
-        auto directory_for_uploaded_files = config["directory_for_uploaded_files"];
-        if (!VerifyYAMLScalarNode_(directory_for_uploaded_files))
-            PrintError_("ReadBasicProperties_", "directory_for_uploaded_files");
-            
-        basic_properties_.directory_for_uploaded_files = directory_for_uploaded_files.as<std::string>();
         
         // directory_for_temp_files
         auto directory_for_temp_files = config["directory_for_temp_files"];
