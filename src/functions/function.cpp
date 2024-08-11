@@ -1,7 +1,5 @@
 
 #include "functions/function.h"
-#include "functions/action.h"
-#include "http/methods.h"
 
 using namespace NAF;
 using namespace NAF::Functions;
@@ -13,6 +11,7 @@ Function::Function() :
     ,error_message_("Unknown error.")
     ,response_type_(ResponseType::kJSON)
     ,method_(HTTP::EnumMethods::kHTTP_GET)
+    ,file_manager_(new Files::FileManager())
 {
     
 }
@@ -24,6 +23,7 @@ Function::Function(std::string endpoint, HTTP::EnumMethods method, ResponseType 
     ,error_message_("Unknown error.")
     ,response_type_(response_type)
     ,method_(method)
+    ,file_manager_(new Files::FileManager())
 {
     
 }
@@ -52,6 +52,7 @@ void Function::Setup_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request
         return;
     }
 }
+
 void Function::Process_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request::HTTPServerResponsePtr response)
 {
     Setup_(request, response);

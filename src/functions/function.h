@@ -8,9 +8,12 @@
 #include <map>
 #include <memory>
 
+#include "files/file_manager.h"
 #include "functions/action.h"
 #include "http/methods.h"
 #include "query/parameter.h"
+#include "http/request.h"
+#include "http/common_responses.h"
 
 
 namespace NAF
@@ -22,7 +25,7 @@ namespace NAF
 }
 
 
-class NAF::Functions::Function
+class NAF::Functions::Function : public HTTP::CommonResponses
 {
     public:
         using Ptr = std::shared_ptr<Functions::Function>;
@@ -50,6 +53,11 @@ class NAF::Functions::Function
         HTTP::Methods& get_methods()
         {
             auto& var = methods_;
+            return var;
+        }
+        Files::FileManager::Ptr& get_file_manager()
+        {
+            auto& var = file_manager_;
             return var;
         }
 
@@ -80,6 +88,7 @@ class NAF::Functions::Function
         HTTP::EnumMethods method_;
         std::vector<Action::Ptr> actions_;
         HTTP::Methods methods_;
+        Files::FileManager::Ptr file_manager_;
 };
 
 
