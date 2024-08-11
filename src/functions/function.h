@@ -63,6 +63,7 @@ class NAF::Functions::Function
         bool ProcessAction_(Action::Ptr action);
         bool ProcessJSON_(JSON::Object::Ptr& json_result);
         bool ProcessFile_(std::string& filepath);
+        void DownloadProcess_(std::string& filepath);
         void Setup_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request::HTTPServerResponsePtr response);
 
     private:

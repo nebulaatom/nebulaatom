@@ -179,3 +179,36 @@ bool Function::ProcessFile_(std::string& filepath)
     return true;
 }
 
+void Function::DownloadProcess_(std::string& filepath)
+{
+    // Manage the file
+    file_manager_->set_operation_type(Files::OperationType::kDownload);
+    file_manager_->get_files().push_back(file_manager_->CreateTempFile_("/" + filepath));
+    auto& tmp_file = file_manager_->get_files().front();
+
+    // Check file
+    if(!file_manager_->CheckFiles_())
+    {
+        HTMLResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Requested file bad check.");
+        return;
+    }
+
+    // Is supported
+    if(!file_manager_->IsSupported_(tmp_file))
+    {
+        HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Requested file is not supported.");
+        return;
+    }
+    file_manager_->ProcessContentLength_();
+
+    // Reponse
+    auto& response = get_http_server_response().value();
+    response->setStatus(HTTPResponse::HTTP_OK);
+    response->setContentType(tmp_file.get_content_type());
+    response->setContentLength(tmp_file.get_content_length());
+    
+    std::ostream& out_reponse = response->send();
+
+    // Download file
+    file_manager_->DownloadFile_(out_reponse);
+}
