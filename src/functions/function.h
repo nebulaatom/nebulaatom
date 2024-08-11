@@ -60,6 +60,7 @@ class NAF::Functions::Function
 
         Action::Ptr AddAction_(std::string identifier);
         void Process_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request::HTTPServerResponsePtr response);
+        bool ProcessAction_(Action::Ptr action);
         bool ProcessJSON_(JSON::Object::Ptr& json_result);
         void Setup_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request::HTTPServerResponsePtr response);
 

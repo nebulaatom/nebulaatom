@@ -114,25 +114,32 @@ void Function::Process_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Reque
     }
 }
 
-        // Copy actions references
-        action->get_actions_container().clear();
-        action->get_actions_container().insert(action->get_actions_container().end(), actions_.begin(), actions_.end());
-        
-        // Identify parameters
-        if(action->get_error())
-        {
-            error_ = true;
-            error_message_ = action->get_custom_error();
-            return false;
-        }
+bool Function::ProcessAction_(Action::Ptr action)
+{
+    Tools::OutputLogger::Debug_("Action: " + action->get_identifier() + ", Final: " + std::to_string(action->get_final()));
 
-        // Execute action
-        if(!action->Work_())
-        {
-            error_ = true;
-            error_message_ = action->get_custom_error();
-            return false;
-        }
+    // Copy actions references
+    action->get_actions_container().clear();
+    action->get_actions_container().insert(action->get_actions_container().end(), actions_.begin(), actions_.end());
+    
+    // Identify parameters
+    if(action->get_error())
+    {
+        error_ = true;
+        error_message_ = action->get_custom_error();
+        return false;
+    }
+
+    // Execute action
+    if(!action->Work_())
+    {
+        error_ = true;
+        error_message_ = action->get_custom_error();
+        return false;
+    }
+    return true;
+}
+
 
         // Set JSON results
         if(action->get_final())
