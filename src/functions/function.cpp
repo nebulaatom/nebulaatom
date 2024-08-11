@@ -140,6 +140,14 @@ bool Function::ProcessAction_(Action::Ptr action)
     return true;
 }
 
+bool Function::ProcessJSON_(JSON::Object::Ptr& json_result)
+{
+    // Process actions of the function
+    Tools::OutputLogger::Debug_("Function: " + endpoint_);
+    for(auto& action : actions_)
+    {
+        // Process Action
+        ProcessAction_(action);
 
         // Set JSON results
         if(action->get_final())
