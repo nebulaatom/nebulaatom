@@ -65,6 +65,7 @@ class NAF::Functions::Function
         bool ProcessFile_(std::string& filepath);
         void DownloadProcess_(std::string& filepath);
         void UploadProcess_();
+        void ModifyProcess_(std::string& filepath);
         void Setup_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request::HTTPServerResponsePtr response);
 
     private:

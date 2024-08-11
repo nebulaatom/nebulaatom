@@ -249,3 +249,56 @@ void Function::UploadProcess_()
     CompoundFillResponse_(HTTP::Status::kHTTP_OK, file_manager_->get_result(), "Ok.");
 }
 
+void Function::ModifyProcess_(std::string& filepath)
+{
+    // Manage the file
+    Files::FileManager tmp_file_manager = Files::FileManager(*file_manager_);
+    tmp_file_manager.set_operation_type(Files::OperationType::kDelete);
+
+    tmp_file_manager.get_files().clear();
+    tmp_file_manager.get_files().push_back(file_manager_->CreateTempFile_("/" + filepath));
+
+    // Check file
+    if(!tmp_file_manager.CheckFiles_())
+    {
+        HTMLResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Requested file bad check.");
+        return;
+    }
+
+    // Remove the file
+    tmp_file_manager.RemoveFile_();
+
+    // Process new file to upload
+    file_manager_->set_operation_type(Files::OperationType::kUpload);
+    
+    // Change path
+    for(auto& file : file_manager_->get_files())
+    {
+        if(!file_manager_->ChangePathAndFilename_(file, file_manager_->get_directory_base()))
+        {
+            HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The file cannot be processed.");
+            return;
+        }
+    }
+
+    // Is supported
+    if(!file_manager_->IsSupported_())
+    {
+        HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Requested file is not supported.");
+        return;
+    }
+    
+    // Verify max file size
+    if(!file_manager_->VerifyMaxFileSize_())
+    {
+        HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The requested file exceeds the file size limit.");
+        return;
+    }
+
+    // Upload
+    file_manager_->UploadFile_();
+
+    // Response
+    CompoundFillResponse_(HTTP::Status::kHTTP_OK, file_manager_->get_result(), "Ok.");
+}
+
