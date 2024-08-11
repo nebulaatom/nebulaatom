@@ -26,6 +26,8 @@
 #include <fstream>
 #include <memory>
 #include <iostream>
+#include <exception>
+#include <stdexcept>
 
 #include "Poco/Path.h"
 #include "Poco/File.h"
@@ -45,6 +47,7 @@
 #include "files/file_properties.h"
 #include "files/file.h"
 #include "tools/settings_manager.h"
+#include "tools/output_logger.h"
 
 
 namespace NAF
@@ -72,7 +75,10 @@ enum class NAF::Files::OperationType
 class NAF::Files::FileManager: public Net::PartHandler
 {
     public:
+        using Ptr = std::shared_ptr<FileManager>;
+
         FileManager();
+        FileManager(FileManager& file_manager);
         FileManager(OperationType operation_type);
         ~FileManager();
 
@@ -83,7 +89,6 @@ class NAF::Files::FileManager: public Net::PartHandler
         }
         OperationType get_operation_type() const{return operation_type_;}
         std::string get_directory_base() const{return directory_base_;}
-        std::string get_directory_for_uploaded_files() const{return directory_for_uploaded_files_;}
         std::string get_directory_for_temp_files() const{return directory_for_temp_files_;}
         JSON::Object::Ptr& get_result()
         {
@@ -98,7 +103,6 @@ class NAF::Files::FileManager: public Net::PartHandler
 
         void set_operation_type(OperationType operation_type){operation_type_ = operation_type;}
         void set_directory_base(std::string directory_base) { directory_base_ = directory_base;}
-        void set_directory_for_uploaded_files(std::string directory_for_uploaded_files) { directory_for_uploaded_files_ = directory_for_uploaded_files;}
         void set_directory_for_temp_files(std::string directory_for_temp_files) { directory_for_temp_files_ = directory_for_temp_files;}
 
         void handlePart(const MessageHeader& header, std::istream& stream) override;
@@ -116,20 +120,18 @@ class NAF::Files::FileManager: public Net::PartHandler
         Files::File CreateTempFileFromAddress_(std::string address);
         void ProcessContentLength_();
         bool VerifyMaxFileSize_();
-
+        bool ChangePathAndFilename_(Files::File& file, std::string directory, bool change_filename = true);
 
     protected:
         void ProcessFiles_(Files::File& file, Files::FileProperties properties);
         void ProcessFileType_();
         std::string SplitHeaderValue_(const MessageHeader& header, std::string header_name, std::string parameter);
-        void CheckTargetFilename_(Files::File& file, std::string directory);
         std::size_t ReplaceText_(std::string& inout, std::string what, std::string with);
 
     private:
         std::map<std::string, Files::FileProperties> supported_files_;
         OperationType operation_type_;
         std::string directory_base_;
-        std::string directory_for_uploaded_files_;
         std::string directory_for_temp_files_;
         JSON::Object::Ptr result_;
         std::vector<Files::File> files_;

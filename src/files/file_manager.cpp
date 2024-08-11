@@ -24,8 +24,16 @@ FileManager::FileManager() :
 {
     result_ = new JSON::Object();
     directory_base_ = Tools::SettingsManager::get_basic_properties_().directory_base;
-    directory_for_uploaded_files_ = Tools::SettingsManager::get_basic_properties_().directory_for_uploaded_files;
     directory_for_temp_files_ = Tools::SettingsManager::get_basic_properties_().directory_for_temp_files;
+}
+
+FileManager::FileManager(FileManager& file_manager)
+{
+    operation_type_ = file_manager.get_operation_type();
+    result_ = file_manager.get_result();
+    directory_base_ = file_manager.get_directory_base();
+    directory_for_temp_files_ = file_manager.get_directory_for_temp_files();
+    files_ = file_manager.get_files();
 }
 
 FileManager::FileManager(OperationType operation_type) :
@@ -33,7 +41,6 @@ FileManager::FileManager(OperationType operation_type) :
 {
     result_ = new JSON::Object();
     directory_base_ = Tools::SettingsManager::get_basic_properties_().directory_base;
-    directory_for_uploaded_files_ = Tools::SettingsManager::get_basic_properties_().directory_for_uploaded_files;
     directory_for_temp_files_ = Tools::SettingsManager::get_basic_properties_().directory_for_temp_files;
 }
 
@@ -57,7 +64,8 @@ void FileManager::handlePart(const MessageHeader& header, std::istream& stream)
         tmp_file.set_filename(filename);
 
     // Check temporary file
-        CheckTargetFilename_(tmp_file, directory_for_temp_files_);
+        if(!ChangePathAndFilename_(tmp_file, directory_for_temp_files_))
+            throw std::runtime_error("Could not set file address");
 
     // Create temporary file
         CountingInputStream istr(stream);
@@ -67,7 +75,8 @@ void FileManager::handlePart(const MessageHeader& header, std::istream& stream)
         ostr.close();
 
     // Check final target file
-        CheckTargetFilename_(current_file, directory_for_uploaded_files_);
+        if(!ChangePathAndFilename_(current_file, directory_base_))
+            throw std::runtime_error("Could not set file address");
 
     // Add new file and its temporal file
         current_file.get_requested_file().reset(new Poco::File(*current_file.get_requested_path()));
@@ -291,22 +300,30 @@ std::string FileManager::SplitHeaderValue_(const MessageHeader& header, std::str
         return "";
 }
 
-void FileManager::CheckTargetFilename_(Files::File& file, std::string directory)
+bool FileManager::ChangePathAndFilename_(Files::File& file, std::string directory, bool change_filename)
 {
     bool check = false;
+    int cont = 0;
 
     do
     {
-        file.get_requested_path().reset
-        (
-            new Path(directory + "/" + GenerateName_(file.get_filename()))
-        );
+        if(change_filename)
+            file.get_requested_path().reset(new Path(directory + "/" + GenerateName_(file.get_filename())));
+        else
+            file.get_requested_path().reset(new Path(directory + "/" + file.get_filename()));
+        
         file.get_requested_file().reset(new Poco::File(*file.get_requested_path()));
 
         check = CheckFile_(file);
+        cont++;
+
+        // Condition to avoid infinite loop
+        if(cont > 1000000)
+            return false;
     }
     while(!check);
 
+    return true;
 }
 
 std::size_t FileManager::ReplaceText_(std::string& inout, std::string what, std::string with)
