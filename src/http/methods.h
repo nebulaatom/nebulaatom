@@ -34,6 +34,7 @@ namespace NAF
         const std::string HTTP_POST = "POST";
         const std::string HTTP_PUT = "PUT";
         const std::string HTTP_DEL = "DEL";
+        const std::string HTTP_DELETE = "DELETE";
         const std::string HTTP_OPTIONS = "OPTIONS";
         const std::string HTTP_HEAD = "HEAD";
         const std::string HTTP_PATCH = "PATCH";

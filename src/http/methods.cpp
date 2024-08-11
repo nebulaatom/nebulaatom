@@ -86,6 +86,7 @@ void Methods::MapMethods_()
     map_string_methods_.insert(std::pair{HTTP_POST, EnumMethods::kHTTP_POST});
     map_string_methods_.insert(std::pair{HTTP_PUT, EnumMethods::kHTTP_PUT});
     map_string_methods_.insert(std::pair{HTTP_DEL, EnumMethods::kHTTP_DEL});
+    map_string_methods_.insert(std::pair{HTTP_DELETE, EnumMethods::kHTTP_DEL});
     map_string_methods_.insert(std::pair{HTTP_OPTIONS, EnumMethods::kHTTP_OPTIONS});
     map_string_methods_.insert(std::pair{HTTP_HEAD, EnumMethods::kHTTP_HEAD});
     map_string_methods_.insert(std::pair{HTTP_PATCH, EnumMethods::kHTTP_PATCH});
