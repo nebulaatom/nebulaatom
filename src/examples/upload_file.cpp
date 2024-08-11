@@ -6,66 +6,6 @@
 
 using namespace NAF;
 
-
-class Frontend : public Handlers::RootHandler
-{
-    public:
-        Frontend() : RootHandler(){}
-
-        void Process_()
-        {
-            file_manager_.set_directory_for_uploaded_files("/var/www/uploaded-files");
-            file_manager_.AddSupportedFile_("png", Files::FileProperties{"image/png", true, {""}});
-            auto method = GetMethod_(get_properties().method);
-            switch(method)
-            {
-                case HTTP::EnumMethods::kHTTP_POST:
-                    UploadProcess_();
-                    break;
-                case HTTP::EnumMethods::kHTTP_GET:
-                case HTTP::EnumMethods::kHTTP_PUT:
-                case HTTP::EnumMethods::kHTTP_DEL:
-                case HTTP::EnumMethods::kHTTP_HEAD:
-                case HTTP::EnumMethods::kHTTP_OPTIONS:
-                case HTTP::EnumMethods::kHTTP_PATCH:
-                case HTTP::EnumMethods::kNULL:
-                    JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
-                    break;
-            }
-        }
-
-        void UploadProcess_()
-        {
-            // Manage the files
-                auto& request = get_http_server_request().value();
-                file_manager_.set_operation_type(Files::OperationType::kUpload);
-                HTMLForm form(*request, request->stream(), file_manager_);
-
-            // Verify supported files
-                if(!file_manager_.IsSupported_())
-                {
-                    HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Requested file is not supported.");
-                    return;
-                }
-
-            // Verify max file size
-                if(!file_manager_.VerifyMaxFileSize_())
-                {
-                    HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The requested file exceeds the file size limit.");
-                    return;
-                }
-
-            // Upload file
-                file_manager_.UploadFile_();
-
-            // Response
-                CompoundFillResponse_(HTTP::Status::kHTTP_OK, file_manager_.get_result(), "Ok.");
-        }
-
-    private:
-        Files::FileManager file_manager_;
-};
-
 int main(int argc, char** argv)
 {
     Core::NebulaAtom app;
@@ -93,7 +33,37 @@ int main(int argc, char** argv)
 
     app.AddHandler_("/upload", [&]()
     {
-        return new Frontend;
+        return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
+        {
+            Files::FileManager file_manager;
+            file_manager.set_directory_base("/var/www/uploaded-files");
+            file_manager.AddSupportedFile_("png", Files::FileProperties{"image/png", true, {""}});
+
+            // Manage the files
+            auto& request = self.get_http_server_request().value();
+            file_manager.set_operation_type(Files::OperationType::kUpload);
+            HTMLForm form(*request, request->stream(), file_manager);
+
+            // Verify supported files
+            if(!file_manager.IsSupported_())
+            {
+                self.HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Requested file is not supported.");
+                return;
+            }
+
+            // Verify max file size
+            if(!file_manager.VerifyMaxFileSize_())
+            {
+                self.HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The requested file exceeds the file size limit.");
+                return;
+            }
+
+            // Upload file
+            file_manager.UploadFile_();
+
+            // Response
+            self.CompoundFillResponse_(HTTP::Status::kHTTP_OK, file_manager.get_result(), "Ok.");
+        });
     });
 
     app.AddHandler_("/database", [&]()
@@ -125,7 +95,7 @@ int main(int argc, char** argv)
             a1.set_sql_code("INSERT INTO test_files (file) VALUES (?)");
             a1.AddParameter_("photo", Tools::DValue(""), true);
 
-            a1.IdentifyParameters_(self.get_files_parameters());
+            a1.IdentifyParameters_(*self.get_files_parameters());
             a1.ComposeQuery_();
             a1.ExecuteQuery_();
 
@@ -135,7 +105,6 @@ int main(int argc, char** argv)
                 self.HTMLResponse_(HTTP::Status::kHTTP_OK, "OK");
         });
     });
-
 
     return app.Init_(argc, argv);
 
