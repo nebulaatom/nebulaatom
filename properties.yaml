@@ -9,7 +9,6 @@ db_user : "root"
 db_password : "0UHC72zNvywZ"
 session_max_age : 3600
 directory_base : "/srv/www"
-directory_for_uploaded_files : "/srv/www"
 directory_for_temp_files : "/tmp"
 certificate: "cert.pem"
 key: "key.pem"
