@@ -15,7 +15,7 @@ void ViewParameters(Handlers::CustomHandler& self)
     {
         case HTTP::Body::Type::kFormMultipart:
         {
-            for(auto& file : self.get_files_parameters().get_files())
+            for(auto& file : self.get_files_parameters()->get_files())
                 Tools::OutputLogger::Debug_("FormMultipart parameter: " + file.get_name() + ", " + file.get_filename());
             for(auto& value : *self.get_form())
                 Tools::OutputLogger::Debug_("FormMultipart parameter: " + value.first + ", " + value.second);
