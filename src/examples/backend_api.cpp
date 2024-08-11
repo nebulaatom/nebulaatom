@@ -80,22 +80,22 @@ class MainHandler : public Handlers::BackendHandler
                             return true;
                     });
             
-            // Function /api/products
+            // Function /api/image
                 auto f2 = AddFunction_("/api/image", HTTP::EnumMethods::kHTTP_GET);
                 f2->set_response_type(Functions::Function::ResponseType::kFile);
 
+                f2->get_file_manager()->set_directory_base("/var/www/uploaded-files");
+                f2->get_file_manager()->AddBasicSupportedFiles_();
+
                 // Action 1
-                    auto action = f2->AddAction_("a1");
-                    action->set_custom_error("No image found.");
-                    action->set_sql_code("SELECT file_path FROM test_filepaths WHERE id = ?");
-                    action->AddParameter_("id", Tools::DValue(0), true);
+                auto action = f2->AddAction_("a1");
+                action->set_custom_error("No image found.");
+                action->set_sql_code("SELECT file_path FROM test_filepaths WHERE id = ?");
+                action->AddParameter_("id", Tools::DValue(0), true);
         }
 
         void Process_() override
         {
-            get_file_manager().set_directory_base("/var/www/uploaded-files");
-            get_file_manager().AddBasicSupportedFiles_();
-
             AddFunctions_();
 
             // Set security type
