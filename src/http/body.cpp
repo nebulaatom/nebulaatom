@@ -22,7 +22,7 @@ using namespace NAF::HTTP;
 
 Body::Body() :
     body_type_(Type::kURI)
-    ,files_parameters_(Files::OperationType::kUpload)
+    ,files_parameters_(new Files::FileManager(Files::OperationType::kUpload))
     ,form_(new Net::HTMLForm)
 {
     
@@ -30,7 +30,7 @@ Body::Body() :
 
 void Body::ReadFormMultipart_(Net::HTTPServerRequest& request)
 {
-    form_ = std::make_shared<Net::HTMLForm>(request, request.stream(), files_parameters_);
+    form_ = std::make_shared<Net::HTMLForm>(request, request.stream(), *files_parameters_);
     body_type_ = Type::kFormMultipart;
 }
 

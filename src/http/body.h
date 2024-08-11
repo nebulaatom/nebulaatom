@@ -70,7 +70,7 @@ class NAF::HTTP::Body : public Tools::ManageJSON
             auto& var = query_parameters_;
             return var;
         }
-        Files::FileManager& get_files_parameters()
+        Files::FileManager::Ptr& get_files_parameters()
         {
             auto& var = files_parameters_;
             return var;
@@ -89,7 +89,7 @@ class NAF::HTTP::Body : public Tools::ManageJSON
     private:
         Type body_type_;
         URI::QueryParameters query_parameters_;
-        Files::FileManager files_parameters_;
+        Files::FileManager::Ptr files_parameters_;
         std::shared_ptr<HTMLForm> form_;
         
 };
