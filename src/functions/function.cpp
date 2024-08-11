@@ -35,13 +35,23 @@ Action::Ptr Function::AddAction_(std::string identifier)
     return action;
 }
 
-bool Function::ProcessJSON_(JSON::Object::Ptr& json_result)
+void Function::Setup_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request::HTTPServerResponsePtr response)
 {
-    // Process actions of the function
-    Tools::OutputLogger::Debug_("Function: " + endpoint_);
-    for(auto& action : actions_)
+    if(request.has_value())
+        SetupRequest_(*request.value());
+    else
     {
-        Tools::OutputLogger::Debug_("Action: " + action->get_identifier() + ", Final: " + std::to_string(action->get_final()));
+        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Error to setup Request in Function");
+        return;
+    }
+    if(response.has_value())
+        SetupResponse_(*response.value());
+    else
+    {
+        JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Error to setup Response in Function");
+        return;
+    }
+}
 
         // Copy actions references
         action->get_actions_container().clear();
