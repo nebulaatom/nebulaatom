@@ -217,7 +217,7 @@ void RootHandler::IdentifyParameters_(Functions::Action::Ptr action)
     {
         case HTTP::Body::Type::kFormMultipart:
             action->IdentifyParameters_(get_form());
-            action->IdentifyParameters_(get_files_parameters());
+            action->IdentifyParameters_(*get_files_parameters());
             break;
         case HTTP::Body::Type::kJSON:
             action->IdentifyParameters_(get_json_array());
