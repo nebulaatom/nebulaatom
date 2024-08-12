@@ -8,9 +8,37 @@ Results::Results()
 
 }
 
-Field::Ptr Results::FindField_(Field::Position& field_position)
+Field::Ptr Results::First_()
 {
-    Field::Ptr field_result = nullptr;
+    Field::Ptr field_result = std::make_shared<Field>();
+    return ExtractField_(0, 0);
+}
+
+Field::Ptr Results::Last_()
+{
+    Field::Ptr field_result = std::make_shared<Field>();
+    std::size_t size_rows, size_fields;
+
+    size_rows = size();
+    if(size_rows < 1)
+        return field_result;
+
+    size_fields = at(size_rows - 1)->size();
+    if(size_fields < 1)
+        return field_result;
+
+    return ExtractField_(size_rows, size_fields);
+}
+
+Field::Ptr Results::ExtractField_(std::size_t row, std::size_t column)
+{
+    Field::Position field_position(row, column);
+    return ExtractField_(field_position);
+}
+
+Field::Ptr Results::ExtractField_(Field::Position& field_position)
+{
+    Field::Ptr field_result = std::make_shared<Field>();
 
     // Verify rows size
         if(size() < 1)
@@ -28,8 +56,9 @@ Field::Ptr Results::FindField_(Field::Position& field_position)
         if(field_position.column > row->size() - 1)
             return field_result;
 
-        auto field_value = row->at(field_position.column);
-        return field_value;
+        field_result = row->at(field_position.column);
+
+    return field_result;
 }
 
 Row::Ptr Results::AddRow_()

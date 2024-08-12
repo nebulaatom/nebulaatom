@@ -41,7 +41,10 @@ class NAF::Query::Results : public std::vector<Row::Ptr>
 
         Results();
 
-        Field::Ptr FindField_(Field::Position& field_position);
+        Field::Ptr First_();
+        Field::Ptr Last_();
+        Field::Ptr ExtractField_(std::size_t row, std::size_t column);
+        Field::Ptr ExtractField_(Field::Position& field_position);
         Row::Ptr AddRow_();
 };
 
