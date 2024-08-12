@@ -272,7 +272,7 @@ std::string DValue::ToString_()
         {
             try
             {
-                throw std::runtime_error("Erro to convert Empty value to String.");
+                throw std::runtime_error("Error to convert Empty value to String.");
             }
             catch(std::exception& error)
             {
