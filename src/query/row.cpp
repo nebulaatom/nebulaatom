@@ -8,9 +8,9 @@ Row::Row()
 
 }
 
-Field::Ptr Row::FindField_(std::string column_name)
+Field::Ptr Row::ExtractField_(std::string column_name)
 {
-    Field::Ptr field_result = nullptr;
+    Field::Ptr field_result = std::make_shared<Field>();
     auto field_value = std::find_if(begin(), end(), [column_name](Field::Ptr field)
     {
         return field->get_column_name() == column_name;
