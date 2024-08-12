@@ -47,6 +47,7 @@ class NAF::Query::Field
             std::size_t column;
         };
 
+        Field();
         Field(std::string column_name, Tools::DValue value);
 
         std::string get_column_name() const { return column_name_;}
@@ -60,12 +61,15 @@ class NAF::Query::Field
         void set_column_name(std::string column_name) { column_name_ = column_name;}
         void set_value(Tools::DValue value) { value_ = value;}
 
-        std::string String_();
-        float Float_();
-        bool Bool_();
-        int Int_();
+        bool IsNull_();
+        std::string ToString_();
+        std::string& String_();
+        float& Float_();
+        bool& Bool_();
+        int& Int_();
 
     private:
+        bool is_null_;
         std::string column_name_;
         Tools::DValue value_;
 };

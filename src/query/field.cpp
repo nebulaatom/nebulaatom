@@ -3,14 +3,33 @@
 
 using namespace NAF::Query;
 
-Field::Field(std::string column_name, Tools::DValue value) :
-    column_name_(column_name)
-    ,value_(value)
+Field::Field() :
+    is_null_(true)
+    ,column_name_("")
+    ,value_(Tools::DValue())
 {
 
 }
 
-std::string Field::String_()
+Field::Field(std::string column_name, Tools::DValue value) :
+    is_null_(false)
+    ,column_name_(column_name)
+    ,value_(value)
+{
+    
+}
+
+bool Field::IsNull_()
+{
+    return is_null_;
+}
+
+std::string Field::ToString_()
+{
+    return value_.ToString_();
+}
+
+std::string& Field::String_()
 {
     if(!value_.TypeIsIqual_(Tools::DValue::Type::kString))
     {
@@ -20,7 +39,7 @@ std::string Field::String_()
     return value_.get_value_string();
 }
 
-float Field::Float_()
+float& Field::Float_()
 {
     if(!value_.TypeIsIqual_(Tools::DValue::Type::kFloat))
     {
@@ -30,7 +49,7 @@ float Field::Float_()
     return value_.get_value_float();
 }
 
-bool Field::Bool_()
+bool& Field::Bool_()
 {
     if(!value_.TypeIsIqual_(Tools::DValue::Type::kBoolean))
     {
@@ -40,7 +59,7 @@ bool Field::Bool_()
     return value_.get_value_bool();
 }
 
-int Field::Int_()
+int& Field::Int_()
 {
     if(!value_.TypeIsIqual_(Tools::DValue::Type::kInteger))
     {
