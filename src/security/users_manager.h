@@ -28,6 +28,7 @@
 #include "functions/action.h"
 #include "security/user.h"
 #include "tools/output_logger.h"
+#include "query/database_manager.h"
 
 
 namespace NAF
@@ -54,12 +55,18 @@ class NAF::Security::UsersManager
             auto& var = action_;
             return var;
         }
+        Query::DatabaseManager::Credentials& get_credentials()
+        {
+            auto& var = credentials_;
+            return var;
+        }
 
         bool AuthenticateUser_();
 
     private:
         User current_user_;
         Functions::Action::Ptr action_;
+        Query::DatabaseManager::Credentials credentials_;
 };
 
 
