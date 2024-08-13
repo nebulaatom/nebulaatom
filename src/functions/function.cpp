@@ -9,9 +9,11 @@ Function::Function() :
     ,target_("")
     ,error_(false)
     ,error_message_("Unknown error.")
+    ,remove_file_on_modify_(true)
     ,response_type_(ResponseType::kJSON)
     ,method_(HTTP::EnumMethods::kHTTP_GET)
     ,file_manager_(new Files::FileManager())
+    ,custom_process_([](Function&){})
 {
     
 }
@@ -21,9 +23,11 @@ Function::Function(std::string endpoint, HTTP::EnumMethods method, ResponseType 
     ,target_("")
     ,error_(false)
     ,error_message_("Unknown error.")
+    ,remove_file_on_modify_(true)
     ,response_type_(response_type)
     ,method_(method)
     ,file_manager_(new Files::FileManager())
+    ,custom_process_([](Function&){})
 {
     
 }
@@ -112,6 +116,11 @@ void Function::Process_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Reque
             
             break;
         }
+        case Functions::Function::ResponseType::kCustom:
+        {
+            custom_process_(*this);
+            break;
+        }
     }
 }
 
@@ -170,9 +179,8 @@ bool Function::ProcessFile_(std::string& filepath)
         // Set filepath
         if(action->get_final())
         {
-            Query::Field::Position position(0, 0);
-            Query::Field::Ptr field = action->get_results()->FindField_(position);
-            if(field != nullptr)
+            auto field = action->get_results()->First_();
+            if(!field->IsNull_())
                 filepath = field->String_();
         }
     }
@@ -252,22 +260,25 @@ void Function::UploadProcess_()
 
 void Function::ModifyProcess_(std::string& filepath)
 {
-    // Manage the file
-    Files::FileManager tmp_file_manager = Files::FileManager(*file_manager_);
-    tmp_file_manager.set_operation_type(Files::OperationType::kDelete);
-
-    tmp_file_manager.get_files().clear();
-    tmp_file_manager.get_files().push_back(file_manager_->CreateTempFile_("/" + filepath));
-
-    // Check file
-    if(!tmp_file_manager.CheckFiles_())
+    if(remove_file_on_modify_)
     {
-        HTMLResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Requested file bad check.");
-        return;
-    }
+        // Manage the file
+        Files::FileManager tmp_file_manager = Files::FileManager(*file_manager_);
+        tmp_file_manager.set_operation_type(Files::OperationType::kDelete);
 
-    // Remove the file
-    tmp_file_manager.RemoveFile_();
+        tmp_file_manager.get_files().clear();
+        tmp_file_manager.get_files().push_back(file_manager_->CreateTempFile_("/" + filepath));
+
+        // Check file
+        if(!tmp_file_manager.CheckFiles_())
+        {
+            HTMLResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Requested file bad check.");
+            return;
+        }
+
+        // Remove the file
+        tmp_file_manager.RemoveFile_();
+    }
 
     // Process new file to upload
     file_manager_->set_operation_type(Files::OperationType::kUpload);
@@ -321,4 +332,9 @@ void Function::RemoveProcess_(std::string& filepath)
         
     // Response
     JSONResponse_(HTTP::Status::kHTTP_OK, "Ok.");
+}
+
+void Function::SetupCustomProcess_(std::function<void(Function&)> custom_process)
+{
+    custom_process_ = custom_process;
 }

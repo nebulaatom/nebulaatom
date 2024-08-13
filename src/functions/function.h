@@ -3,6 +3,7 @@
 #define NAF_FUNCTIONS_FUNCTION
 
 
+#include <functional>
 #include <string>
 #include <vector>
 #include <map>
@@ -14,6 +15,8 @@
 #include "query/parameter.h"
 #include "http/request.h"
 #include "http/common_responses.h"
+#include "security/user.h"
+#include "security/users_manager.h"
 
 
 namespace NAF
@@ -34,6 +37,7 @@ class NAF::Functions::Function : public HTTP::CommonResponses
         {
             kJSON
             ,kFile
+            ,kCustom
         };
 
         Function();
@@ -43,8 +47,14 @@ class NAF::Functions::Function : public HTTP::CommonResponses
         std::string get_target() const { return target_; }
         bool get_error() const { return error_; }
         std::string get_error_message() const { return error_message_; }
+        bool get_remove_file_on_modify() const { return remove_file_on_modify_; }
         ResponseType get_response_type() const { return response_type_; }
         HTTP::EnumMethods get_method() const { return method_; }
+        Security::User& get_current_user()
+        {
+            auto& var = current_user_;
+            return var;
+        }
         std::vector<Action::Ptr>& get_actions()
         {
             auto& var = actions_;
@@ -63,6 +73,7 @@ class NAF::Functions::Function : public HTTP::CommonResponses
 
         void set_endpoint(std::string endpoint) { endpoint_ = endpoint; }
         void set_target(std::string target) { target_ = target; }
+        void set_remove_file_on_modify(bool remove_file_on_modify) { remove_file_on_modify_ = remove_file_on_modify; }
         void set_method(HTTP::EnumMethods type) { method_ = type; }
         void set_response_type(ResponseType response_type) { response_type_ = response_type; }
 
@@ -75,6 +86,7 @@ class NAF::Functions::Function : public HTTP::CommonResponses
         void UploadProcess_();
         void ModifyProcess_(std::string& filepath);
         void RemoveProcess_(std::string& filepath);
+        void SetupCustomProcess_(std::function<void(Function&)> custom_process);
 
     protected:
         void Setup_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request::HTTPServerResponsePtr response);
@@ -84,11 +96,14 @@ class NAF::Functions::Function : public HTTP::CommonResponses
         std::string target_;
         bool error_;
         std::string error_message_;
+        bool remove_file_on_modify_;
         ResponseType response_type_;
         HTTP::EnumMethods method_;
+        Security::User current_user_;
         std::vector<Action::Ptr> actions_;
         HTTP::Methods methods_;
         Files::FileManager::Ptr file_manager_;
+        std::function<void(Function&)> custom_process_;
 };
 
 
