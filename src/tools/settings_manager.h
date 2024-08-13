@@ -24,13 +24,15 @@
 #include <memory>
 #include <string>
 #include <mutex>
+#include <algorithm>
 
+#include "tools/dvalue.h"
 #include "yaml-cpp/node/detail/iterator_fwd.h"
 #include "yaml-cpp/node/node.h"
 #include "yaml-cpp/yaml.h"
 #include "Poco/Exception.h"
 
-#include "tools/output_logger.h"
+#include "tools/dvalue.h"
 
 namespace NAF
 {
@@ -46,30 +48,40 @@ using namespace Poco;
 class NAF::Tools::SettingsManager
 {
     public:
-        struct BasicProperties
+        struct Setting
         {
-            int port, max_queued, max_threads, session_max_age;
-            float max_file_size;
-            std::string db_host, db_port, db_name, db_user, db_password;
-            std::string directory_base, directory_for_temp_files;
-            std::string certificate, key, rootcert;
-            std::string logger_output_file;
-            bool debug;
+            Setting(std::string name, Tools::DValue::Type type, Tools::DValue value) :
+                name(name)
+                ,type(type)
+                ,value(value)
+            {
+
+            }
+            std::string name;
+            Tools::DValue::Type type;
+            Tools::DValue value;
         };
 
         SettingsManager();
 
-        static BasicProperties& get_basic_properties_()
+        static std::vector<Setting>& get_settings()
         {
-            auto& var = basic_properties_;
+            auto& var = settings_;
             return var;
         }
-        static std::string get_properties_file_address() { return properties_file_address_; }
+        static std::string get_config_path() { return config_path_; }
 
-        static void set_properties_file_address(std::string properties_file_address) { properties_file_address_ = properties_file_address; }
+        static void set_config_path(std::string config_path) { config_path_ = config_path; }
 
-        static void SetUpProperties_();
-        static void ReadBasicProperties_();
+        static std::vector<Setting>::iterator GetSetting_(std::string setting_name);
+        static std::string GetSetting_(std::string setting_name, const char* another_value);
+        static std::string GetSetting_(std::string setting_name, std::string another_value);
+        static int GetSetting_(std::string setting_name, int another_value);
+        static float GetSetting_(std::string setting_name, float another_value);
+        static bool GetSetting_(std::string setting_name, bool another_value);
+        static void AddSetting_(std::string name, Tools::DValue::Type type, Tools::DValue value);
+        static void AddBasicSettings_();
+        static void ReadSettings_();
 
     protected:
         static bool VerifyYAMLScalarNode_(YAML::Node& node);
@@ -78,8 +90,8 @@ class NAF::Tools::SettingsManager
 
     private:
         static std::mutex mutex_;
-        static BasicProperties basic_properties_;
-        static std::string properties_file_address_;
+        static std::vector<Setting> settings_;
+        static std::string config_path_;
 };
 
 #endif // NAF_TOOLS_SETTINGSMANAGER
