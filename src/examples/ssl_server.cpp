@@ -8,8 +8,9 @@ using namespace NAF;
 int main(int argc, char** argv)
 {
     Core::NebulaAtom app(true);
-    Tools::SettingsManager::set_properties_file_address("properties.yaml");
-    Tools::SettingsManager::ReadBasicProperties_();
+    Tools::SettingsManager::set_config_path("properties.yaml");
+    Tools::SettingsManager::ReadSettings_();
+    app.SetupSettings_();
 
     app.CustomHandlerCreator_([&](Core::HTTPRequestInfo&)
     {

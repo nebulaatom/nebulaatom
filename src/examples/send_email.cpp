@@ -8,7 +8,7 @@ using namespace NAF;
 int main(int argc, char** argv)
 {
     Core::NebulaAtom app(true);
-    Tools::SettingsManager::ReadBasicProperties_();
+    Tools::SettingsManager::ReadSettings_();
 
     app.CustomHandlerCreator_([&](Core::HTTPRequestInfo&)
     {

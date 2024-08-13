@@ -42,8 +42,9 @@ int main(int argc, char** argv)
 {
     Core::NebulaAtom app;
 
+    Tools::SettingsManager::ReadSettings_();
+    app.SetupSettings_();
     Query::DatabaseManager::StartMySQL_();
-    Tools::SettingsManager::ReadBasicProperties_();
 
     app.CustomHandlerCreator_([&](Core::HTTPRequestInfo&)
     {

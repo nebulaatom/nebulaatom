@@ -10,7 +10,7 @@ int main(int argc, char** argv)
     Core::NebulaAtom app;
 
     Query::DatabaseManager::StartMySQL_();
-    Tools::SettingsManager::ReadBasicProperties_();
+    Tools::SettingsManager::ReadSettings_();
 
     // Cached Action
         Functions::CacheAction a1("a1", 10s);

@@ -10,7 +10,8 @@ int main(int argc, char** argv)
 {
     Core::NebulaAtom app;
     Query::DatabaseManager::StartMySQL_();
-    Tools::SettingsManager::ReadBasicProperties_();
+    Tools::SettingsManager::ReadSettings_();
+    app.SetupSettings_();
 
 
     app.AddHandler_("/", [&]()
