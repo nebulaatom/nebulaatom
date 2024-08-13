@@ -36,7 +36,7 @@ std::string& Field::String_()
         throw std::runtime_error("Error on field.cpp on String_(): The data type to be obtained does not match the current data type.");
     }
 
-    return value_.get_value_string();
+    return value_.String_();
 }
 
 float& Field::Float_()
@@ -46,7 +46,7 @@ float& Field::Float_()
         throw std::runtime_error("Error on field.cpp on Float_(): The data type to be obtained does not match the current data type.");
     }
 
-    return value_.get_value_float();
+    return value_.Float_();
 }
 
 bool& Field::Bool_()
@@ -56,7 +56,7 @@ bool& Field::Bool_()
         throw std::runtime_error("Error on field.cpp on String_(): The data type to be obtained does not match the current data type.");
     }
 
-    return value_.get_value_bool();
+    return value_.Bool_();
 }
 
 int& Field::Int_()
@@ -66,5 +66,5 @@ int& Field::Int_()
         throw std::runtime_error("Error on field.cpp on String_(): The data type to be obtained does not match the current data type.");
     }
 
-    return value_.get_value_int();
+    return value_.Int_();
 }
