@@ -30,27 +30,69 @@ Tools::SettingsManager::SettingsManager()
     
 }
 
-void Tools::SettingsManager::SetUpProperties_()
+std::vector<SettingsManager::Setting>::iterator SettingsManager::GetSetting_(std::string setting_name)
 {
-    mutex_.lock();
-    basic_properties_.port = 8080;
-    basic_properties_.max_queued = 1000;
-    basic_properties_.max_threads = 16;
-    basic_properties_.max_file_size = 15;
-    basic_properties_.db_host = "127.0.0.1";
-    basic_properties_.db_port = "3306";
-    basic_properties_.db_name = "";
-    basic_properties_.db_user = "";
-    basic_properties_.db_password = "";
-    basic_properties_.session_max_age = 3600;
-    basic_properties_.directory_base = "/var/www";
-    basic_properties_.directory_for_temp_files = "/tmp";
-    basic_properties_.certificate = "";
-    basic_properties_.key = "";
-    basic_properties_.rootcert = "";
-    basic_properties_.logger_output_file = "nebulaatom.log";
-    basic_properties_.debug = false;
-    mutex_.unlock();
+    auto found = std::find_if(settings_.begin(), settings_.end(), [&setting_name](Setting& setting)
+    {
+        return setting.name == setting_name;
+    });
+    return found;
+}
+
+std::string SettingsManager::GetSetting_(std::string setting_name, const char* another_value)
+{
+    auto setting = GetSetting_(setting_name);
+    if(setting == settings_.end())
+        return another_value;
+    else if(setting->type != Tools::DValue::Type::kString)
+        return another_value;
+
+    return setting->value.String_();
+}
+
+std::string SettingsManager::GetSetting_(std::string setting_name, std::string another_value)
+{
+    auto setting = GetSetting_(setting_name);
+    if(setting == settings_.end())
+        return another_value;
+    else if(setting->type != Tools::DValue::Type::kString)
+        return another_value;
+
+    return setting->value.String_();
+}
+
+int SettingsManager::GetSetting_(std::string setting_name, int another_value)
+{
+    auto setting = GetSetting_(setting_name);
+    if(setting == settings_.end())
+        return another_value;
+    else if(setting->type != Tools::DValue::Type::kInteger)
+        return another_value;
+
+    return setting->value.Int_();
+}
+
+float SettingsManager::GetSetting_(std::string setting_name, float another_value)
+{
+    auto setting = GetSetting_(setting_name);
+    if(setting == settings_.end())
+        return another_value;
+    else if(setting->type != Tools::DValue::Type::kFloat)
+        return another_value;
+
+    return setting->value.Float_();
+}
+
+bool SettingsManager::GetSetting_(std::string setting_name, bool another_value)
+{
+    auto setting = GetSetting_(setting_name);
+    if(setting == settings_.end())
+        return another_value;
+    else if(setting->type != Tools::DValue::Type::kBoolean)
+        return another_value;
+
+    return setting->value.Bool_();
+}
 }
 
 void Tools::SettingsManager::ReadBasicProperties_()
