@@ -192,10 +192,10 @@ void Action::IdentifyParameters_(Files::FileManager& files_parameters)
         for (auto& file : files_parameters.get_files())
         {
             float filesize = file.get_tmp_file()->getSize();
-            if(filesize > Tools::SettingsManager::get_basic_properties_().max_file_size * 1000000)
+            if(filesize > Tools::SettingsManager::GetSetting_("max_file_size", 15) * 1000000)
             {
                 Tools::OutputLogger::Warning_("Warning on action.cpp on IdentifyParameters_(): The file " + file.get_name()
-                    + " exceeds the maximum file size (" + std::to_string(Tools::SettingsManager::get_basic_properties_().max_file_size) + ")");
+                    + " exceeds the maximum file size (" + std::to_string(Tools::SettingsManager::GetSetting_("max_file_size", 15)) + ")");
                 continue;
             }
 
@@ -329,30 +329,30 @@ bool Action::ComposeQuery_()
                     }
                     case Tools::DValue::Type::kString:
                     {
-                        auto& value = param->get_value().get_value_string();
+                        auto& value = param->StringValue_();
                         *query_ , use(value);
                         break;
                     }
                     case Tools::DValue::Type::kInteger:
                     {
-                        auto& value = param->get_value().get_value_int();
+                        auto& value = param->IntValue_();
                         *query_ , use(value);
                         break;
                     }
                     case Tools::DValue::Type::kFloat:
                     {
-                        auto& value = param->get_value().get_value_float();
+                        auto& value = param->FloatValue_();
                         *query_ , use(value);
                         break;
                     }
                     case Tools::DValue::Type::kBoolean:
                     {
-                        auto& value = param->get_value().get_value_bool();
+                        auto& value = param->BoolValue_();
                         *query_ , use(value);
                         break;
                     }
                 }
-                if(param->get_value().get_value_string().size() < 1000)
+                if(param->ToString_().size() < 1000)
                     Tools::OutputLogger::Debug_("Parameter in ComposeQuery_(): " + param->get_name() + ": " + param->ToString_());
                 else
                     Tools::OutputLogger::Debug_("Parameter in ComposeQuery_(): " + param->get_name() + ": -- BIG STRING --");
@@ -508,16 +508,16 @@ JSON::Object::Ptr Action::CreateJSONResult_()
                     switch(field->get_value().get_type())
                     {
                         case Tools::DValue::Type::kBoolean:
-                            row_fields->set(column_name, field_value.get_value_bool());
+                            row_fields->set(column_name, field_value.Bool_());
                             break;
                         case Tools::DValue::Type::kFloat:
-                            row_fields->set(column_name, field_value.get_value_float());
+                            row_fields->set(column_name, field_value.Float_());
                             break;
                         case Tools::DValue::Type::kInteger:
-                            row_fields->set(column_name, field_value.get_value_int());
+                            row_fields->set(column_name, field_value.Int_());
                             break;
                         case Tools::DValue::Type::kString:
-                            row_fields->set(column_name, field_value.get_value_string());
+                            row_fields->set(column_name, field_value.String_());
                             break;
                         case Tools::DValue::Type::kEmpty:
                             row_fields->set(column_name, "");
