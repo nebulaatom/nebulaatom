@@ -65,14 +65,14 @@ void SessionsManager::ReadSessions_()
 
             for(auto& row : *action.get_results())
             {
-                auto identifier = row->FindField_("identifier");
-                auto path = row->FindField_("path");
-                auto user = row->FindField_("user");
-                auto max_age = row->FindField_("max_age");
+                auto identifier = row->ExtractField_("identifier");
+                auto path = row->ExtractField_("path");
+                auto user = row->ExtractField_("user");
+                auto max_age = row->ExtractField_("max_age");
 
-                if(identifier == nullptr || path == nullptr || user == nullptr || max_age == nullptr)
+                if(identifier->IsNull_() || path->IsNull_() || user->IsNull_() || max_age->IsNull_())
                 {
-                    throw std::runtime_error("Error to get results, FindField_ return a nullptr object.");
+                    throw std::runtime_error("Error to get results, ExtractField_ return a nullptr object.");
                     return;
                 }
 
