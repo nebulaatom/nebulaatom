@@ -51,13 +51,12 @@ void DatabaseManager::StopMySQL_()
 std::shared_ptr<Data::Session> DatabaseManager::StartSessionMySQL_()
 {
     mutex_.lock();
-    Tools::SettingsManager settings_manager;
 
-    std::string db_host = settings_manager.get_basic_properties_().db_host;
-    std::string db_port = settings_manager.get_basic_properties_().db_port;
-    std::string db_name = settings_manager.get_basic_properties_().db_name;
-    std::string db_user = settings_manager.get_basic_properties_().db_user;
-    std::string db_password = settings_manager.get_basic_properties_().db_password;
+    std::string db_host = Tools::SettingsManager::GetSetting_("db_host", "localhost");
+    std::string db_port = Tools::SettingsManager::GetSetting_("db_port", "3306");
+    std::string db_name = Tools::SettingsManager::GetSetting_("db_name", "db");
+    std::string db_user = Tools::SettingsManager::GetSetting_("db_user", "");
+    std::string db_password = Tools::SettingsManager::GetSetting_("db_password", "");
 
     mutex_.unlock();
     
