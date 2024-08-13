@@ -27,11 +27,13 @@
 
 #include "Poco/Exception.h"
 
+#include "query/database_manager.h"
 #include "extras/session.h"
 #include "functions/action.h"
 #include "tools/output_logger.h"
 #include "query/parameter.h"
 #include "tools/dvalue.h"
+#include "tools/settings_manager.h"
 
 namespace NAF
 {
@@ -53,6 +55,11 @@ class NAF::Tools::SessionsManager
             auto& var = sessions_;
             return var;
         }
+        static Query::DatabaseManager::Credentials& get_credentials()
+        {
+            auto& var = credentials_;
+            return var;
+        }
 
         static void ReadSessions_();
         static NAF::Extras::Session& CreateSession_(std::string user, std::string path, int max_age);
@@ -64,6 +71,7 @@ class NAF::Tools::SessionsManager
     private:
         static std::mutex mutex_;
         static std::map<std::string, NAF::Extras::Session> sessions_;
+        static Query::DatabaseManager::Credentials credentials_;
 };
 
 #endif // NAF_TOOLS_SESSIONSMANAGER

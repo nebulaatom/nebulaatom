@@ -22,6 +22,14 @@ using namespace NAF::Tools;
 
 std::map<std::string, NAF::Extras::Session> SessionsManager::sessions_ = {};
 std::mutex SessionsManager::mutex_;
+NAF::Query::DatabaseManager::Credentials SessionsManager::credentials_ = Query::DatabaseManager::Credentials
+(
+    Tools::SettingsManager::GetSetting_("db_host", "localhost")
+    ,Tools::SettingsManager::GetSetting_("db_port", "3306")
+    ,Tools::SettingsManager::GetSetting_("db_name", "db")
+    ,Tools::SettingsManager::GetSetting_("db_user", "root")
+    ,Tools::SettingsManager::GetSetting_("db_password", "root")
+);
 
 SessionsManager::SessionsManager()
 {
@@ -40,6 +48,7 @@ void SessionsManager::ReadSessions_()
         mutex_.lock();
         // Setting up the action
             Functions::Action action{""};
+            action.get_credentials().Replace_(credentials_);
             action.set_custom_error("Sessions not found.");
             action.set_sql_code("SELECT * FROM _naf_sessions WHERE NOW() < reg_date + INTERVAL max_age SECOND");
 
@@ -121,6 +130,7 @@ NAF::Extras::Session& SessionsManager::CreateSession_(std::string user, std::str
     {
         // Setting up the action
             Functions::Action action{""};
+            action.get_credentials().Replace_(credentials_);
             action.set_custom_error("Session not saved.");
             std::string sql_code =
                 "INSERT INTO _naf_sessions (identifier, path, user, max_age) "
@@ -157,6 +167,7 @@ void SessionsManager::DeleteSession_(std::string id)
     {
         // Setting up the action
             Functions::Action action{""};
+            action.get_credentials().Replace_(credentials_);
             action.set_custom_error("Session not saved.");
             std::string sql_code =
                 "DELETE FROM _woodpecker_sessions WHERE identifier = ?"
