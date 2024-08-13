@@ -24,6 +24,14 @@ RootHandler::RootHandler() :
 {
     requested_route_ = std::make_shared<Tools::Route>(std::vector<std::string>{""});
     set_security_type(Extras::SecurityType::kDisableAll);
+    Query::DatabaseManager::Credentials credentials(
+        Tools::SettingsManager::GetSetting_("db_host", "localhost")
+        ,Tools::SettingsManager::GetSetting_("db_port", "3306")
+        ,Tools::SettingsManager::GetSetting_("db_name", "db")
+        ,Tools::SettingsManager::GetSetting_("db_user", "root")
+        ,Tools::SettingsManager::GetSetting_("db_password", "root")
+    );
+    get_users_manager().get_credentials().Replace_(credentials);
 }
 
 RootHandler::~RootHandler()
