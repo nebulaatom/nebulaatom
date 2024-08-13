@@ -17,7 +17,6 @@
 */
 
 #include "security/users_manager.h"
-#include "query/parameter.h"
 
 using namespace NAF::Security;
 
