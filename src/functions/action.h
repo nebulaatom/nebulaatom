@@ -30,6 +30,8 @@
 #include <Poco/Data/RecordSet.h>
 #include <Poco/Net/HTMLForm.h>
 
+#include "query/database_manager.h"
+#include "tools/settings_manager.h"
 #include "query/results.h"
 #include "query/parameter.h"
 #include "query/condition.h"
@@ -52,9 +54,6 @@ using namespace Poco::Net;
 using namespace Poco::Data;
 using namespace Poco::Data::Keywords;
 
-
-class DatabaseManager;
-class SettingsManager;
 
 class NAF::Functions::Action
 {
@@ -106,6 +105,11 @@ class NAF::Functions::Action
         std::shared_ptr<Data::Statement>& get_query()
         {
             auto& var = query_;
+            return var;
+        }
+        Query::DatabaseManager::Credentials& get_credentials()
+        {
+            auto& var = credentials_;
             return var;
         }
 
@@ -162,6 +166,7 @@ class NAF::Functions::Action
         int affected_rows_;
         std::shared_ptr<Data::Session> session_;
         std::shared_ptr<Data::Statement> query_;
+        Query::DatabaseManager::Credentials credentials_;
         std::mutex mutex_;
         
 };

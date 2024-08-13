@@ -1,8 +1,5 @@
 
 #include "functions/action.h"
-#include "query/database_manager.h"
-#include "tools/output_logger.h"
-#include "tools/settings_manager.h"
 
 using namespace NAF;
 using namespace NAF::Functions;
@@ -19,6 +16,14 @@ Action::Action(std::string identifier) :
     ,sql_code_("SELECT 1")
     ,final_query_("")
     ,affected_rows_(0)
+    ,credentials_
+    (
+        Tools::SettingsManager::GetSetting_("db_host", "localhost")
+        ,Tools::SettingsManager::GetSetting_("db_port", "3306")
+        ,Tools::SettingsManager::GetSetting_("db_name", "db")
+        ,Tools::SettingsManager::GetSetting_("db_user", "root")
+        ,Tools::SettingsManager::GetSetting_("db_password", "root")
+    )
 {
     results_ = std::make_shared<Query::Results>();
     json_result_ = new JSON::Object;
@@ -560,7 +565,7 @@ bool Action::InitializeQuery_()
 {
     try
     {
-        session_ = Query::DatabaseManager::StartSessionMySQL_();
+        session_ = Query::DatabaseManager::StartSessionMySQL_(credentials_);
         if(session_.get() == nullptr)
         {
             throw MySQL::MySQLException("Error to connect to database server.");
