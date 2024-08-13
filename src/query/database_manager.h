@@ -31,8 +31,6 @@
 #include <Poco/Data/MySQL/MySQLException.h>
 #include <Poco/Data/Statement.h>
 
-//#include "tools/settings_manager.h"
-
 
 namespace NAF
 {
@@ -46,19 +44,49 @@ using namespace Poco;
 using namespace Poco::Data;
 using namespace Poco::Data::Keywords;
 
-class SettingsManager;
 class NAF::Query::DatabaseManager
 {
     public:
+        struct Credentials
+        {
+            Credentials() :
+                db_host("")
+                ,db_port("")
+                ,db_name("")
+                ,db_user("")
+                ,db_password("")
+            {
+
+            }
+            Credentials(std::string db_host, std::string db_port, std::string db_name, std::string db_user, std::string db_password) :
+                db_host(db_host)
+                ,db_port(db_port)
+                ,db_name(db_name)
+                ,db_user(db_user)
+                ,db_password(db_password)
+            {
+
+            }
+            void Replace_(Credentials& credentials)
+            {
+                db_host = credentials.db_host;
+                db_port = credentials.db_port;
+                db_name = credentials.db_name;
+                db_user = credentials.db_user;
+                db_password = credentials.db_password;
+            }
+
+            std::string db_host, db_port, db_name, db_user, db_password;
+        };
+
         DatabaseManager();
         ~DatabaseManager();
 
         static void StartMySQL_();
         static void StopMySQL_();
-        static std::shared_ptr<Data::Session> StartSessionMySQL_();
+        static std::shared_ptr<Data::Session> StartSessionMySQL_(Credentials& credentials);
 
     private:
-        static std::mutex mutex_;
         static bool initialized_;
 
 };

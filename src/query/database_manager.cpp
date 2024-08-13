@@ -17,13 +17,10 @@
  */
 
 #include "query/database_manager.h"
-#include "tools/settings_manager.h"
-#include <Poco/Mutex.h>
 
 using namespace NAF;
 using namespace NAF::Query;
 
-std::mutex DatabaseManager::mutex_;
 bool DatabaseManager::initialized_ = false;
 
 DatabaseManager::DatabaseManager()
@@ -48,21 +45,15 @@ void DatabaseManager::StopMySQL_()
         Data::MySQL::Connector::unregisterConnector();
 }
 
-std::shared_ptr<Data::Session> DatabaseManager::StartSessionMySQL_()
+std::shared_ptr<Data::Session> DatabaseManager::StartSessionMySQL_(Credentials& credentials)
 {
-    mutex_.lock();
-
-    std::string db_host = Tools::SettingsManager::GetSetting_("db_host", "localhost");
-    std::string db_port = Tools::SettingsManager::GetSetting_("db_port", "3306");
-    std::string db_name = Tools::SettingsManager::GetSetting_("db_name", "db");
-    std::string db_user = Tools::SettingsManager::GetSetting_("db_user", "");
-    std::string db_password = Tools::SettingsManager::GetSetting_("db_password", "");
-
-    mutex_.unlock();
-    
     return std::make_shared<Data::Session>
     (
         "MySQL"
-        ,"host="+db_host+";port="+db_port+";db="+db_name+";user="+db_user+";password="+db_password+";"
+        ,"host=" + credentials.db_host
+            + ";port=" + credentials.db_port
+            + ";db=" + credentials.db_name
+            + ";user=" + credentials.db_user
+            + ";password=" + credentials.db_password + ";"
     );
 }
