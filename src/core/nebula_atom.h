@@ -89,6 +89,10 @@ class NAF::Core::NebulaAtom
         int Init_(int argc, char** argv);
         void CustomHandlerCreator_(HandlerFactory::FunctionHandlerCreator handler_creator);
         void AddHandler_(std::string route, HandlerFactory::FunctionHandler handler);
+        void SetupSettings_();
+
+    protected:
+        void AddBasicSettings_();
 
     private:
         const bool use_ssl_;

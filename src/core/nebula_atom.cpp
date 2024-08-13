@@ -26,7 +26,8 @@ NebulaAtom::NebulaAtom(bool use_ssl) :
     if(use_ssl_)
         Net::initializeSSL();
 
-    Tools::SettingsManager::SetUpProperties_();
+    AddBasicSettings_();
+    SetupSettings_();
 }
 
 NebulaAtom::~NebulaAtom()
@@ -99,4 +100,31 @@ int NebulaAtom::Init_(int argc, char** argv)
     console_parameters_ = std::vector<std::string>(argv, argv + argc);
 
     return Init_();
+}
+
+void NebulaAtom::AddBasicSettings_()
+{
+    Tools::SettingsManager::AddSetting_("port", Tools::DValue::Type::kInteger, Tools::DValue(8080));
+    Tools::SettingsManager::AddSetting_("max_queued", Tools::DValue::Type::kInteger, Tools::DValue(1000));
+    Tools::SettingsManager::AddSetting_("max_threads", Tools::DValue::Type::kInteger, Tools::DValue(16));
+    Tools::SettingsManager::AddSetting_("max_file_size", Tools::DValue::Type::kInteger, Tools::DValue(15));
+    Tools::SettingsManager::AddSetting_("db_host", Tools::DValue::Type::kString, Tools::DValue("127.0.0.1"));
+    Tools::SettingsManager::AddSetting_("db_port", Tools::DValue::Type::kString, Tools::DValue("3306"));
+    Tools::SettingsManager::AddSetting_("db_name", Tools::DValue::Type::kString, Tools::DValue(""));
+    Tools::SettingsManager::AddSetting_("db_user", Tools::DValue::Type::kString, Tools::DValue(""));
+    Tools::SettingsManager::AddSetting_("db_password", Tools::DValue::Type::kString, Tools::DValue(""));
+    Tools::SettingsManager::AddSetting_("session_max_age", Tools::DValue::Type::kInteger, Tools::DValue(3600));
+    Tools::SettingsManager::AddSetting_("directory_base", Tools::DValue::Type::kString, Tools::DValue("/var/www"));
+    Tools::SettingsManager::AddSetting_("directory_for_temp_files", Tools::DValue::Type::kString, Tools::DValue("/tmp"));
+    Tools::SettingsManager::AddSetting_("certificate", Tools::DValue::Type::kString, Tools::DValue(""));
+    Tools::SettingsManager::AddSetting_("key", Tools::DValue::Type::kString, Tools::DValue(""));
+    Tools::SettingsManager::AddSetting_("rootcert", Tools::DValue::Type::kString, Tools::DValue(""));
+    Tools::SettingsManager::AddSetting_("logger_output_file", Tools::DValue::Type::kString, Tools::DValue("nebulaatom.log"));
+    Tools::SettingsManager::AddSetting_("debug", Tools::DValue::Type::kBoolean, Tools::DValue(false));
+}
+
+void NebulaAtom::SetupSettings_()
+{
+    Tools::OutputLogger::set_output_file_address(Tools::SettingsManager::GetSetting_("logger_output_file", "nebulaatom.log"));
+    Tools::OutputLogger::set_print_debug(Tools::SettingsManager::GetSetting_("debug", true));
 }
