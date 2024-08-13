@@ -47,6 +47,8 @@ using namespace Poco;
 class NAF::Tools::DValue
 {
     public:
+        using Ptr = std::shared_ptr<DValue>;
+
         enum class Type
         {
             kEmpty
@@ -71,6 +73,21 @@ class NAF::Tools::DValue
             auto& var = type_;
             return var;
         }
+
+        bool operator==(DValue& dvalue);
+        bool operator!=(DValue& dvalue);
+        bool operator<(DValue& dvalue);
+        bool operator<=(DValue& dvalue);
+        bool operator>(DValue& dvalue);
+        bool operator>=(DValue& dvalue);
+        bool TypeIsIqual_(Type row_value_type);
+        std::string ToString_();
+        std::string& String_();
+        float& Float_();
+        bool& Bool_();
+        int& Int_();
+
+    protected:
         std::string& get_value_string()
         {
             auto& var = value_string_;
@@ -92,16 +109,6 @@ class NAF::Tools::DValue
             return var;
         }
 
-        bool operator==(DValue& dvalue);
-        bool operator!=(DValue& dvalue);
-        bool operator<(DValue& dvalue);
-        bool operator<=(DValue& dvalue);
-        bool operator>(DValue& dvalue);
-        bool operator>=(DValue& dvalue);
-        bool TypeIsIqual_(Type row_value_type);
-        std::string ToString_();
-
-    protected:
         void Format_(Poco::Dynamic::Var& value);
 
     private:

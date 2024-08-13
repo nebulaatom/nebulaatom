@@ -381,3 +381,43 @@ void DValue::Format_(Poco::Dynamic::Var& value)
         type_ = DValue::Type::kString;
     }
 }
+
+std::string& DValue::String_()
+{
+    if(!TypeIsIqual_(Tools::DValue::Type::kString))
+    {
+        throw std::runtime_error("Error on dvalue.cpp on String_(): The data type to be obtained does not match the current data type.");
+    }
+
+    return value_string_;
+}
+
+float& DValue::Float_()
+{
+    if(!TypeIsIqual_(Tools::DValue::Type::kFloat))
+    {
+        throw std::runtime_error("Error on dvalue.cpp on Float_(): The data type to be obtained does not match the current data type.");
+    }
+
+    return value_float_;
+}
+
+bool& DValue::Bool_()
+{
+    if(!TypeIsIqual_(Tools::DValue::Type::kBoolean))
+    {
+        throw std::runtime_error("Error on dvalue.cpp on String_(): The data type to be obtained does not match the current data type.");
+    }
+
+    return value_bool_;
+}
+
+int& DValue::Int_()
+{
+    if(!TypeIsIqual_(Tools::DValue::Type::kInteger))
+    {
+        throw std::runtime_error("Error on dvalue.cpp on String_(): The data type to be obtained does not match the current data type.");
+    }
+
+    return value_int_;
+}
