@@ -82,7 +82,7 @@ void SessionsManager::ReadSessions_()
                 new_session.set_path(path->String_());
                 new_session.set_max_age(max_age->Int_());
 
-                sessions_.emplace(identifier->get_value().get_value_string(), std::move(new_session));
+                sessions_.emplace(identifier->String_(), std::move(new_session));
 
             }
         mutex_.unlock();
