@@ -57,6 +57,14 @@ class MainHandler : public Handlers::BackendHandler
                     auto a2 = f1->AddAction_("a2");
                     a2->set_custom_error("No products found.");
                     a2->set_sql_code("SELECT * FROM products WHERE id_store = ?");
+                    a2->SetupCondition_("condition-action2", Query::ConditionType::kWarning, [](Functions::Action& action)
+                    {
+                        Tools::OutputLogger::Debug_("First: " + action.get_results()->First_()->ToString_());
+                        Tools::OutputLogger::Debug_("Last: " + action.get_results()->Last_()->ToString_());
+                        Tools::OutputLogger::Debug_("(2, 3): " + action.get_results()->ExtractField_(2, 3)->ToString_());
+                        return true;
+                    });
+
                     // Parameters and conditions
                     auto param2 = a2->AddParameter_("id_store", Query::Field::Position{0, 0}, "a1", false);
                     param2->SetupCondition_("cond-param2", Query::ConditionType::kError, [](Query::Parameter::Ptr param)
