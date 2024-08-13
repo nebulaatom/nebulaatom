@@ -93,6 +93,10 @@ bool SettingsManager::GetSetting_(std::string setting_name, bool another_value)
 
     return setting->value.Bool_();
 }
+
+void Tools::SettingsManager::AddSetting_(std::string name, Tools::DValue::Type type, Tools::DValue value)
+{
+    settings_.push_back(Setting(name, type, value));
 }
 
 void Tools::SettingsManager::ReadBasicProperties_()
