@@ -16,6 +16,9 @@
 */
 
 #include "nebula_atom.h"
+#include "query/database_manager.h"
+#include "security/permissions_manager.h"
+#include "tools/sessions_manager.h"
 
 using namespace NAF::Core;
 
@@ -127,4 +130,13 @@ void NebulaAtom::SetupSettings_()
 {
     Tools::OutputLogger::set_output_file_address(Tools::SettingsManager::GetSetting_("logger_output_file", "nebulaatom.log"));
     Tools::OutputLogger::set_print_debug(Tools::SettingsManager::GetSetting_("debug", true));
+    Query::DatabaseManager::Credentials credentials(
+        Tools::SettingsManager::GetSetting_("db_host", "localhost")
+        ,Tools::SettingsManager::GetSetting_("db_port", "3306")
+        ,Tools::SettingsManager::GetSetting_("db_name", "db")
+        ,Tools::SettingsManager::GetSetting_("db_user", "root")
+        ,Tools::SettingsManager::GetSetting_("db_password", "root")
+    );
+    Tools::SessionsManager::get_credentials().Replace_(credentials);
+    Security::PermissionsManager::get_credentials().Replace_(credentials);
 }

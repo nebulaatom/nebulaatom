@@ -50,8 +50,9 @@
 #include "core/handler_factory.h"
 #include "query/database_manager.h"
 #include "tools/settings_manager.h"
-#include "tools/sessions_manager.h"
 #include "tools/output_logger.h"
+#include "tools/sessions_manager.h"
+#include "security/permissions_manager.h"
 
 
 namespace NAF
