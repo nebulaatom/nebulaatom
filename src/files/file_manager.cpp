@@ -115,6 +115,8 @@ bool FileManager::CheckFile_(Files::File& current_file)
     if(requested_path == nullptr || requested_file == nullptr)
         return false;
 
+    Tools::OutputLogger::Debug_("Check: " + requested_path->toString());
+
     switch(operation_type_)
     {
         case OperationType::kDownload:
