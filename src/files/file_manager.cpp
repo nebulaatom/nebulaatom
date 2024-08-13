@@ -23,8 +23,8 @@ FileManager::FileManager() :
     operation_type_(OperationType::kDownload)
 {
     result_ = new JSON::Object();
-    directory_base_ = Tools::SettingsManager::get_basic_properties_().directory_base;
-    directory_for_temp_files_ = Tools::SettingsManager::get_basic_properties_().directory_for_temp_files;
+    directory_base_ = Tools::SettingsManager::GetSetting_("directory_base", "/var/www");
+    directory_for_temp_files_ = Tools::SettingsManager::GetSetting_("directory_for_temp_files", "/tmp");
 }
 
 FileManager::FileManager(FileManager& file_manager)
@@ -40,8 +40,8 @@ FileManager::FileManager(OperationType operation_type) :
     operation_type_(operation_type)
 {
     result_ = new JSON::Object();
-    directory_base_ = Tools::SettingsManager::get_basic_properties_().directory_base;
-    directory_for_temp_files_ = Tools::SettingsManager::get_basic_properties_().directory_for_temp_files;
+    directory_base_ = Tools::SettingsManager::GetSetting_("directory_base", "/var/www");
+    directory_for_temp_files_ = Tools::SettingsManager::GetSetting_("directory_for_temp_files", "/tmp");
 }
 
 FileManager::~FileManager()
@@ -226,7 +226,7 @@ void FileManager::ProcessContentLength_()
 
 bool FileManager::VerifyMaxFileSize_()
 {
-    auto max_file_size = Tools::SettingsManager::get_basic_properties_().max_file_size;
+    auto max_file_size = Tools::SettingsManager::GetSetting_("max_file_size", 15);
     for(auto& file_it : files_)
     {
         int content_length = file_it.get_content_length();
