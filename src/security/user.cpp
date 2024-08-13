@@ -23,15 +23,13 @@ using namespace NAF::Security;
 User::User() :
     id_(-1)
     ,username_("")
-    ,password_("")
 {
 
 }
 
-User::User(int id, std::string username, std::string password) :
+User::User(int id, std::string username) :
     id_(id)
     ,username_(username)
-    ,password_(password)
 {
 
 }

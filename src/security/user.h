@@ -37,20 +37,17 @@ class NAF::Security::User
 {
     public:
         User();
-        User(int id, std::string username, std::string password);
+        User(int id, std::string username);
 
         int get_id() const { return id_; }
         std::string get_username() const { return username_; }
-        std::string get_password() const { return password_; }
 
         void set_id(int id) { id_ = id; }
         void set_username(std::string username) { username_ = username; }
-        void set_password(std::string password) { password_ = password; }
 
     private:
         int id_;
         std::string username_;
-        std::string password_;
 };
 
 
