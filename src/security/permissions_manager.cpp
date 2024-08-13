@@ -97,14 +97,14 @@ void PermissionsManager::LoadPermissions_()
             for(auto& row : *action.get_results())
             {
                 // Get elements
-                auto endpoint = row->FindField_("endpoint");
-                auto username = row->FindField_("username");
-                auto id_user = row->FindField_("id_user");
-                auto action = row->FindField_("action");
+                auto endpoint = row->ExtractField_("endpoint");
+                auto username = row->ExtractField_("username");
+                auto id_user = row->ExtractField_("id_user");
+                auto action = row->ExtractField_("action");
 
-                if(endpoint == nullptr || username == nullptr || id_user == nullptr || action == nullptr)
+                if(endpoint->IsNull_() || username->IsNull_() || id_user->IsNull_() || action->IsNull_())
                 {
-                    throw std::runtime_error("Error to get results, FindField_ return a nullptr object.");
+                    throw std::runtime_error("Error to get results, ExtractField_ return a nullptr object.");
                     return;
                 }
 
@@ -117,7 +117,7 @@ void PermissionsManager::LoadPermissions_()
                 Permission p
                 {
                     Tools::Route{endpoint->String_()}
-                    ,std::make_shared<User>(id_user->Int_(), username->String_(), ""), action_mapped
+                    ,std::make_shared<User>(id_user->Int_(), username->String_()), action_mapped
                 };
 
                 permissions_.push_back(std::move(p));
