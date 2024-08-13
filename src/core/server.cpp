@@ -31,8 +31,8 @@ Server::Server(HandlerFactory* handler_factory) :
 void Server::SetupParams_(HTTPServerParams::Ptr params)
 {
     params->setServerName(server_name_);
-    params->setMaxQueued(Tools::SettingsManager::get_basic_properties_().max_queued);
-    params->setMaxThreads(Tools::SettingsManager::get_basic_properties_().max_threads);
+    params->setMaxQueued(Tools::SettingsManager::GetSetting_("max_queued", 1000));
+    params->setMaxThreads(Tools::SettingsManager::GetSetting_("max_threads", 16));
 }
 
 void Server::initialize(Application& self)
@@ -42,9 +42,9 @@ void Server::initialize(Application& self)
     if(use_ssl_)
     {
         auto& config = self.config();
-        config.setString("openSSL.server.privateKeyFile", Tools::SettingsManager::get_basic_properties_().key);
-        config.setString("openSSL.server.certificateFile", Tools::SettingsManager::get_basic_properties_().certificate);
-        config.setString("openSSL.server.caConfig", Tools::SettingsManager::get_basic_properties_().rootcert);
+        config.setString("openSSL.server.privateKeyFile", Tools::SettingsManager::GetSetting_("key", "key.pem"));
+        config.setString("openSSL.server.certificateFile", Tools::SettingsManager::GetSetting_("certificate", "cert.pem"));
+        config.setString("openSSL.server.caConfig", Tools::SettingsManager::GetSetting_("rootcert", ""));
     }
 }
     
@@ -61,20 +61,20 @@ int Server::main(const std::vector<std::string>&)
     // Setup Socket and Server
     if(use_ssl_)
     {
-        SecureServerSocket secure_server_socket(Tools::SettingsManager::get_basic_properties_().port);
+        SecureServerSocket secure_server_socket(Tools::SettingsManager::GetSetting_("port", 8080));
         http_server_ = std::make_unique<HTTPServer>(handler_factory_, secure_server_socket, new HTTPServerParams);
     }
     else
     {
-        ServerSocket server_socket(Tools::SettingsManager::get_basic_properties_().port);
+        ServerSocket server_socket(Tools::SettingsManager::GetSetting_("port", 8080));
         http_server_ = std::make_unique<HTTPServer>(handler_factory_, server_socket, new HTTPServerParams);
     }
 
     http_server_->start();
     Tools::OutputLogger::Log_(
-        "Server started at port " + std::to_string(Tools::SettingsManager::get_basic_properties_().port)
-        + " (Max threads: " + std::to_string(Tools::SettingsManager::get_basic_properties_().max_threads)
-        + ", Max Queued: " + std::to_string(Tools::SettingsManager::get_basic_properties_().max_queued) + ")"
+        "Server started at port " + std::to_string(Tools::SettingsManager::GetSetting_("port", 8080))
+        + " (Max threads: " + std::to_string(Tools::SettingsManager::GetSetting_("max_threads", 16))
+        + ", Max Queued: " + std::to_string(Tools::SettingsManager::GetSetting_("max_queued", 1000)) + ")"
     );
     
     waitForTerminationRequest();
