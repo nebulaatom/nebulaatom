@@ -39,7 +39,7 @@ std::string& Parameter::StringValue_()
         throw std::runtime_error("Error on Parameter.cpp on StringValue_(): The data type to be obtained does not match the current data type.");
     }
 
-    return value_.get_value_string();
+    return value_.String_();
 }
 
 int& Parameter::IntValue_()
@@ -49,7 +49,7 @@ int& Parameter::IntValue_()
         throw std::runtime_error("Error on Parameter.cpp on IntValue_(): The data type to be obtained does not match the current data type.");
     }
 
-    return value_.get_value_int();
+    return value_.Int_();
 }
 
 bool& Parameter::BoolValue_()
@@ -59,7 +59,7 @@ bool& Parameter::BoolValue_()
         throw std::runtime_error("Error on Parameter.cpp on BoolValue_(): The data type to be obtained does not match the current data type.");
     }
 
-    return value_.get_value_bool();
+    return value_.Bool_();
 }
 
 float& Parameter::FloatValue_()
@@ -69,7 +69,7 @@ float& Parameter::FloatValue_()
         throw std::runtime_error("Error on Parameter.cpp on FloatValue_(): The data type to be obtained does not match the current data type.");
     }
 
-    return value_.get_value_float();
+    return value_.Float_();
 }
 
 void Parameter::SetupCondition_(std::string identifier, Query::ConditionType type, Query::Condition<Ptr>::Functor functor)
