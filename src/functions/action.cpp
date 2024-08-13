@@ -601,8 +601,8 @@ void Action::SetupPositionParameter_(Query::Parameter::Ptr parameter)
         // Set DValue found
         if(action_found != actions_container_.end())
         {
-            auto row_value = action_found->get()->get_results()->FindField_(parameter->get_field_position());
-            if(row_value != nullptr)
+            auto row_value = action_found->get()->get_results()->ExtractField_(parameter->get_field_position());
+            if(!row_value->IsNull_())
                 parameter->set_value(row_value->get_value());
         }
     }
