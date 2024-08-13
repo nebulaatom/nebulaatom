@@ -24,6 +24,14 @@ using namespace NAF::Security;
 std::mutex PermissionsManager::mutex_;
 std::list<Permission> PermissionsManager::permissions_ = {};
 std::map<std::string, ActionType> PermissionsManager::action_type_map_ = {};
+NAF::Query::DatabaseManager::Credentials PermissionsManager::credentials_ = Query::DatabaseManager::Credentials
+(
+    Tools::SettingsManager::GetSetting_("db_host", "localhost")
+    ,Tools::SettingsManager::GetSetting_("db_port", "3306")
+    ,Tools::SettingsManager::GetSetting_("db_name", "db")
+    ,Tools::SettingsManager::GetSetting_("db_user", "root")
+    ,Tools::SettingsManager::GetSetting_("db_password", "root")
+);
 
 PermissionsManager::PermissionsManager()
 {
@@ -76,6 +84,7 @@ void PermissionsManager::LoadPermissions_()
 
         // Setting up the action
             Functions::Action action{""};
+            action.get_credentials().Replace_(credentials_);
             action.set_custom_error("Permissions not found.");
             std::string sql_code =
                 "SELECT ap.endpoint AS endpoint, au.username AS username, au.id AS id_user, ap.action AS action "

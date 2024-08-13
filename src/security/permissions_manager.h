@@ -26,6 +26,7 @@
 #include <algorithm>
 #include <mutex>
 
+#include "query/database_manager.h"
 #include "functions/action.h"
 #include "security/permission.h"
 #include "tools/route.h"
@@ -49,14 +50,19 @@ class NAF::Security::PermissionsManager
 
         PermissionsManager();
 
-        std::list<Permission>& get_permissions()
+        static std::list<Permission>& get_permissions()
         {
             auto& var = permissions_;
             return var;
         }
-        std::map<std::string, ActionType>& get_action_type_map()
+        static std::map<std::string, ActionType>& get_action_type_map()
         {
             auto& var = action_type_map_;
+            return var;
+        }
+        static Query::DatabaseManager::Credentials& get_credentials()
+        {
+            auto& var = credentials_;
             return var;
         }
 
@@ -71,6 +77,7 @@ class NAF::Security::PermissionsManager
         static std::mutex mutex_;
         static std::list<Permission> permissions_;
         static std::map<std::string, ActionType> action_type_map_;
+        static Query::DatabaseManager::Credentials credentials_;
 };
 
 
