@@ -88,7 +88,7 @@ void LoginHandler::StartSession_()
         (
             get_users_manager().get_current_user().get_username()
             ,"/"
-            ,Tools::SettingsManager::get_basic_properties_().session_max_age
+            ,Tools::SettingsManager::GetSetting_("session_max_age", 3600)
         );
 
     // Response
