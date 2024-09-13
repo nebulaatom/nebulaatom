@@ -86,7 +86,7 @@ void LoginHandler::StartSession_()
     // Create the session
         auto session = Tools::SessionsManager::CreateSession_
         (
-            get_users_manager().get_current_user().get_username()
+            get_users_manager().get_current_user().get_id()
             ,"/"
             ,Tools::SettingsManager::GetSetting_("session_max_age", 3600)
         );
