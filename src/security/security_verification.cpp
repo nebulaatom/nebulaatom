@@ -30,7 +30,7 @@ bool SecurityVerification::VerifyRoutesPermissions_(Tools::Route& route, std::st
 {
     try
     {
-        auto p = permissions_manager_.FindPermission_(route, users_manager_.get_current_user().get_username(), action_type);
+        auto p = permissions_manager_.FindPermission_(route, users_manager_.get_current_user().get_id(), action_type);
 
         // Permission not found
         switch(security_type_)
