@@ -114,7 +114,7 @@ void PermissionsManager::LoadPermissions_()
 
                 if(endpoint->IsNull_() || username->IsNull_() || id_user->IsNull_() || action->IsNull_() || id_group->IsNull_())
                 {
-                    throw std::runtime_error("Error to get results, ExtractField_ return a nullptr object.");
+                    throw std::runtime_error("Error to get results, Null object.");
                     return;
                 }
 

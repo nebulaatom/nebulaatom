@@ -33,7 +33,7 @@ UsersManager::UsersManager() :
     // Setting up the action
     action_ = std::make_shared<Functions::Action>("login-action");
     action_->get_credentials().Replace_(credentials_);
-    action_->set_sql_code("SELECT id FROM _naf_users WHERE username = ? AND password = ?");
+    action_->set_sql_code("SELECT id, username, id_group FROM _naf_users WHERE username = ? AND password = ?");
     action_->AddParameter_("username", Tools::DValue(""), true);
     action_->AddParameter_("password", Tools::DValue(""), true);
 }
@@ -42,15 +42,6 @@ bool UsersManager::AuthenticateUser_()
 {
     try
     {
-        // Set current user
-            auto& parameters = action_->get_parameters();
-            auto found = std::find_if(parameters.begin(), parameters.end(), [&](Query::Parameter::Ptr parameter)
-            {
-                return parameter->get_name() == "username";
-            });
-            if(found != parameters.end())
-                current_user_.set_username((*found)->ToString_());
-
         // Query process
             action_->ComposeQuery_();
             if(action_->get_error())
@@ -62,7 +53,25 @@ bool UsersManager::AuthenticateUser_()
 
         // Verify results
             if(action_->get_results()->size() > 0)
+            {
+                // Set current user
+                auto row = action_->get_results()->front();
+                auto id = row->ExtractField_("id");
+                auto username = row->ExtractField_("username");
+                auto id_group = row->ExtractField_("id_group");
+
+                if(id->IsNull_() || username->IsNull_() || id_group->IsNull_())
+                {
+                    throw std::runtime_error("Error to get results, Null object.");
+                    return false;
+                }
+
+                current_user_.set_id(id->Int_());
+                current_user_.set_username(username->String_());
+                current_user_.set_id_group(id_group->Int_());
+
                 return true;
+            }
             else
                 return false;
     }
