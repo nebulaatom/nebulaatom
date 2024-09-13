@@ -146,8 +146,8 @@ bool RootHandler::VerifySession_()
             }
 
             // Get the session user
-                auto user = sessions.at(session_id).get_user();
-                get_users_manager().get_current_user().set_username(user);
+                auto id_user = sessions.at(session_id).get_id_user();
+                get_users_manager().get_current_user().set_id(id_user);
 
             return true;
         }
