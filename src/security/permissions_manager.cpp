@@ -38,7 +38,7 @@ PermissionsManager::PermissionsManager()
     
 }
 
-std::_List_iterator<Permission> PermissionsManager::FindPermission_(Tools::Route& route, std::string user, std::string action_type)
+std::_List_iterator<Permission> PermissionsManager::FindPermission_(Tools::Route& route, int id_user, std::string action_type)
 {
     auto permission_final = permissions_.end();
 
@@ -50,7 +50,7 @@ std::_List_iterator<Permission> PermissionsManager::FindPermission_(Tools::Route
     auto permission_found = std::find_if(permissions_.begin(), permissions_.end(), [&](Permission& permission)
     {
         return permission.get_route() == route
-        && permission.get_user()->get_username() == user
+        && permission.get_user()->get_id() == id_user
         && permission.get_action_type() == action_mapped;
     });
 
@@ -87,9 +87,9 @@ void PermissionsManager::LoadPermissions_()
             action.get_credentials().Replace_(credentials_);
             action.set_custom_error("Permissions not found.");
             std::string sql_code =
-                "SELECT ap.endpoint AS endpoint, au.username AS username, au.id AS id_user, ap.action AS action "
+                "SELECT ap.endpoint AS endpoint, au.username AS username, au.id AS id_user, ap.action AS action, au.id_group AS id_group "
                 "FROM _naf_permissions ap "
-                "JOIN _naf_users au ON au.id = ap.id_user"
+                "JOIN _naf_users au ON au.id_group = ap.id_group"
             ;
             action.set_sql_code(sql_code);
 
@@ -109,9 +109,10 @@ void PermissionsManager::LoadPermissions_()
                 auto endpoint = row->ExtractField_("endpoint");
                 auto username = row->ExtractField_("username");
                 auto id_user = row->ExtractField_("id_user");
+                auto id_group = row->ExtractField_("id_group");
                 auto action = row->ExtractField_("action");
 
-                if(endpoint->IsNull_() || username->IsNull_() || id_user->IsNull_() || action->IsNull_())
+                if(endpoint->IsNull_() || username->IsNull_() || id_user->IsNull_() || action->IsNull_() || id_group->IsNull_())
                 {
                     throw std::runtime_error("Error to get results, ExtractField_ return a nullptr object.");
                     return;
@@ -126,7 +127,7 @@ void PermissionsManager::LoadPermissions_()
                 Permission p
                 {
                     Tools::Route{endpoint->String_()}
-                    ,std::make_shared<User>(id_user->Int_(), username->String_()), action_mapped
+                    ,std::make_shared<User>(id_user->Int_(), username->String_(), id_group->Int_()), action_mapped
                 };
 
                 permissions_.push_back(std::move(p));
