@@ -50,7 +50,7 @@ void SessionsManager::ReadSessions_()
             Functions::Action action{""};
             action.get_credentials().Replace_(credentials_);
             action.set_custom_error("Sessions not found.");
-            action.set_sql_code("SELECT * FROM _naf_sessions WHERE NOW() < reg_date + INTERVAL max_age SECOND");
+            action.set_sql_code("SELECT * FROM _naf_sessions WHERE NOW() < created_at + INTERVAL max_age SECOND");
 
         // Query process
             action.ComposeQuery_();
@@ -76,10 +76,10 @@ void SessionsManager::ReadSessions_()
             {
                 auto identifier = row->ExtractField_("identifier");
                 auto path = row->ExtractField_("path");
-                auto user = row->ExtractField_("user");
+                auto id_user = row->ExtractField_("id_naf_user");
                 auto max_age = row->ExtractField_("max_age");
 
-                if(identifier->IsNull_() || path->IsNull_() || user->IsNull_() || max_age->IsNull_())
+                if(identifier->IsNull_() || path->IsNull_() || id_user->IsNull_() || max_age->IsNull_())
                 {
                     throw std::runtime_error("Error to get results, ExtractField_ return a nullptr object.");
                     return;
@@ -87,7 +87,7 @@ void SessionsManager::ReadSessions_()
 
                 Extras::Session new_session;
                 new_session.set_id(identifier->String_());
-                new_session.set_user(user->String_());
+                new_session.set_id_user(id_user->Int_());
                 new_session.set_path(path->String_());
                 new_session.set_max_age(max_age->Int_());
 
@@ -106,10 +106,10 @@ void SessionsManager::ReadSessions_()
     }
 }
 
-NAF::Extras::Session& SessionsManager::CreateSession_(std::string user, std::string path, int max_age)
+NAF::Extras::Session& SessionsManager::CreateSession_(int id_user, std::string path, int max_age)
 {
     Extras::Session new_session;
-    new_session.set_user(user);
+    new_session.set_id_user(id_user);
     new_session.set_path(path);
     new_session.set_max_age(max_age);
 
@@ -133,14 +133,14 @@ NAF::Extras::Session& SessionsManager::CreateSession_(std::string user, std::str
             action.get_credentials().Replace_(credentials_);
             action.set_custom_error("Session not saved.");
             std::string sql_code =
-                "INSERT INTO _naf_sessions (identifier, path, user, max_age) "
+                "INSERT INTO _naf_sessions (identifier, path, max_age, id_user) "
                 "VALUES (?, ?, ?, ?)"
             ;
             action.set_sql_code(sql_code);
             action.AddParameter_("identifier", Tools::DValue(id), false);
             action.AddParameter_("path", Tools::DValue(path), false);
-            action.AddParameter_("user", Tools::DValue(user), false);
             action.AddParameter_("max_age", Tools::DValue(max_age), false);
+            action.AddParameter_("user", Tools::DValue(id_user), false);
 
         // Query process
             action.ComposeQuery_();
@@ -169,10 +169,7 @@ void SessionsManager::DeleteSession_(std::string id)
             Functions::Action action{""};
             action.get_credentials().Replace_(credentials_);
             action.set_custom_error("Session not saved.");
-            std::string sql_code =
-                "DELETE FROM _woodpecker_sessions WHERE identifier = ?"
-            ;
-            action.set_sql_code(sql_code);
+            action.set_sql_code("DELETE FROM _naf_sessions WHERE identifier = ?");
             action.AddParameter_("identifier", Tools::DValue(id), false);
 
         // Query process
