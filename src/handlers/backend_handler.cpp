@@ -42,8 +42,13 @@ void BackendHandler::ProcessActions_()
         file_manager->get_files().push_back(*it);
 
     // Set current user
-    std::string username = get_users_manager().get_current_user().get_username();
+    auto id = get_users_manager().get_current_user().get_id();
+    auto username = get_users_manager().get_current_user().get_username();
+    auto id_group = get_users_manager().get_current_user().get_id_group();
+
+    get_current_function()->get_current_user().set_id(id);
     get_current_function()->get_current_user().set_username(username);
+    get_current_function()->get_current_user().set_id_group(id_group);
 
     // Process current function
     get_current_function()->Process_(get_http_server_request(), get_http_server_response());
