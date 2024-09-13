@@ -133,14 +133,14 @@ NAF::Extras::Session& SessionsManager::CreateSession_(int id_user, std::string p
             action.get_credentials().Replace_(credentials_);
             action.set_custom_error("Session not saved.");
             std::string sql_code =
-                "INSERT INTO _naf_sessions (identifier, path, max_age, id_user) "
+                "INSERT INTO _naf_sessions (identifier, path, max_age, id_naf_user) "
                 "VALUES (?, ?, ?, ?)"
             ;
             action.set_sql_code(sql_code);
             action.AddParameter_("identifier", Tools::DValue(id), false);
             action.AddParameter_("path", Tools::DValue(path), false);
             action.AddParameter_("max_age", Tools::DValue(max_age), false);
-            action.AddParameter_("user", Tools::DValue(id_user), false);
+            action.AddParameter_("id_user", Tools::DValue(id_user), false);
 
         // Query process
             action.ComposeQuery_();
