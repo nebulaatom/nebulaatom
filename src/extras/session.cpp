@@ -23,7 +23,7 @@ using namespace NAF::Extras;
 Session::Session() :
     id_("")
     ,path_("/")
-    ,user_("")
+    ,id_user_(-1)
     ,max_age_(3600)
 {
     GenerateSessionID_();

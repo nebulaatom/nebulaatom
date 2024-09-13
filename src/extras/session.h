@@ -55,9 +55,9 @@ class NAF::Extras::Session
         {
             return path_;
         }
-        std::string get_user() const
+        int get_id_user() const
         {
-            return user_;
+            return id_user_;
         }
         int get_max_age() const
         {
@@ -72,9 +72,9 @@ class NAF::Extras::Session
         {
             path_ = path;
         }
-        void set_user(std::string user)
+        void set_id_user(int id_user)
         {
-            user_ = user;
+            id_user_ = id_user;
         }
         void set_max_age(int max_age)
         {
@@ -90,7 +90,7 @@ class NAF::Extras::Session
     private:
         std::string id_;
         std::string path_;
-        std::string user_;
+        int id_user_;
         int max_age_;
 };
 
