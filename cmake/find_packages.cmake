@@ -1,13 +1,15 @@
 
 # Add CMake modules
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
+endif()
 
 # Find MySQL
-find_package(MySQL REQUIRED)
-if(NOT MySQL_FOUND)
-    message(FATAL_ERROR "MySQL not found")
+find_package(libmysqlclient REQUIRED)
+if(NOT libmysqlclient_FOUND)
+    message(FATAL_ERROR "libmysqlclient not found")
 endif()
-list(APPEND HEADER ${MySQL_INCLUDE_DIRS})
+list(APPEND HEADER ${libmysqlclient_INCLUDE_DIRS_RELEASE})
 
 # Find yaml-cpp
 find_package(yaml-cpp REQUIRED)
