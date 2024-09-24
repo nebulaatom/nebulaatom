@@ -5,26 +5,31 @@
             "label": "Remove CPack DEB"
             ,"type": "shell"
             ,"command": "rm -r build/Debug/cpack/*"
-        },
-        {
+        }
+        ,{
             "label": "Build and Install CPack DEB"
             ,"type": "shell"
             ,"command": "cpack --config build/Debug/CPackSourceConfig.cmake && cpack --config build/Debug/CPackConfig.cmake && sudo dpkg -i build/Debug/cpack/libnebulaatom-*-Linux.deb && sudo apt-get install -f"
-        },
-        {
+        }
+        ,{
             "label": "Doxygen Documentation"
             ,"type": "shell"
             ,"command": "cd build/Debug && doxygen"
-        },
-        {
+        }
+        ,{
             "label": "Conan install Deps"
             ,"type": "shell"
-            ,"command": "cd build/Debug && conan install --build=missing ../../"
-        },
-        {
+            ,"command": "cd build/Debug && conan install ../../ --output-folder=./ --build=missing"
+        }
+        ,{
             "label": "Generate Cert/Key"
             ,"type": "shell"
             ,"command": "cd build/Debug && openssl req -nodes -new -x509 -keyout key.pem -out cert.pem"
+        }
+        ,{
+            "label": "Clean Build"
+            ,"type": "shell"
+            ,"command": "cd build/Debug && rm -r *"
         }
     ]
 }
