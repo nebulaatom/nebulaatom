@@ -31,5 +31,10 @@
             ,"type": "shell"
             ,"command": "cd build/Debug && rm -r *"
         }
+        ,{
+            "label": "Install"
+            ,"type": "shell"
+            ,"command": "cd build/Debug && sudo cmake --build . --target install"
+        }
     ]
 }
