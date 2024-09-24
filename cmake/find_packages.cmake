@@ -4,7 +4,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
     list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 endif()
 
-# Find MySQL
+# Find libmysqlclient
 find_package(libmysqlclient REQUIRED)
 if(NOT libmysqlclient_FOUND)
     message(FATAL_ERROR "libmysqlclient not found")

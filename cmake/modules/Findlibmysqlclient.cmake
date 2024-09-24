@@ -72,7 +72,7 @@ find_library(libmysqlclient_LIBRARIES
 if(libmysqlclient_INCLUDE_DIRS_RELEASE AND libmysqlclient_LIBRARIES)
 	message(STATUS "libmysqlclient Include dir: ${libmysqlclient_INCLUDE_DIRS_RELEASE}")
 	message(STATUS "libmysqlclient client libraries: ${libmysqlclient_LIBRARIES}")
-elseif(MySQL_FIND_REQUIRED)
+elseif(libmysqlclient_FIND_REQUIRED)
 	message(FATAL_ERROR "Cannot find libmysqlclient_LIBRARIES. Include dir: ${libmysqlclient_INCLUDE_DIRS_RELEASE}  library dir: ${libmysqlclient_LIBRARIES}")
 endif()
 
