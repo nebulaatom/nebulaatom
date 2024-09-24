@@ -46,13 +46,13 @@ find_path(MySQL_INCLUDE_DIRS
 
 # Set include dirs
 if(EXISTS "${MARIADB_INCLUDE_DIRS}/mysql.h")
-	set(MySQL_INCLUDE_DIRS ${MARIADB_INCLUDE_DIRS})
+	set(libmysqlclient_INCLUDE_DIRS_RELEASE ${MARIADB_INCLUDE_DIRS})
 elseif(EXISTS "${MySQL_INCLUDE_DIRS}/mysql/mysql.h")
-	set(MySQL_INCLUDE_DIRS ${MySQL_INCLUDE_DIRS}/mysql)
+	set(libmysqlclient_INCLUDE_DIRS_RELEASE ${MySQL_INCLUDE_DIRS}/mysql)
 endif()
 
 # Find library dirs
-find_library(MySQL_LIBRARIES
+find_library(libmysqlclient_LIBRARIES
 	NAMES mysqlclient_r mariadbclient mariadb mysqlclient libmysqlclient
 	PATHS /usr/lib/mysql
 			/usr/lib/mariadb
@@ -69,30 +69,30 @@ find_library(MySQL_LIBRARIES
 )
 
 # Verify if exists directories
-if(MySQL_INCLUDE_DIRS AND MySQL_LIBRARIES)
-	message(STATUS "MySQL Include dir: ${MySQL_INCLUDE_DIRS}")
-	message(STATUS "MySQL client libraries: ${MySQL_LIBRARIES}")
+if(libmysqlclient_INCLUDE_DIRS_RELEASE AND libmysqlclient_LIBRARIES)
+	message(STATUS "libmysqlclient Include dir: ${libmysqlclient_INCLUDE_DIRS_RELEASE}")
+	message(STATUS "libmysqlclient client libraries: ${libmysqlclient_LIBRARIES}")
 elseif(MySQL_FIND_REQUIRED)
-	message(FATAL_ERROR "Cannot find MySQL. Include dir: ${MySQL_INCLUDE_DIRS}  library dir: ${MySQL_LIBRARIES_DIR}")
+	message(FATAL_ERROR "Cannot find libmysqlclient_LIBRARIES. Include dir: ${libmysqlclient_INCLUDE_DIRS_RELEASE}  library dir: ${libmysqlclient_LIBRARIES}")
 endif()
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(MySQL
+find_package_handle_standard_args(libmysqlclient
 	DEFAULT_MSG
-	MySQL_LIBRARIES
-	MySQL_INCLUDE_DIRS
+	libmysqlclient_LIBRARIES
+	libmysqlclient_INCLUDE_DIRS_RELEASE
 )
 
 # Copy the results to the output variables.
-if(NOT TARGET MySQL::MySQL)
-	add_library(MySQL::MySQL INTERFACE IMPORTED)
-	set_target_properties(MySQL::MySQL PROPERTIES
-		INTERFACE_INCLUDE_DIRECTORIES "${MySQL_INCLUDE_DIRS}"
-		INTERFACE_LINK_LIBRARIES "${MySQL_LIBRARIES}"
+if(NOT TARGET libmysqlclient::libmysqlclient)
+	add_library(libmysqlclient::libmysqlclient INTERFACE IMPORTED)
+	set_target_properties(libmysqlclient::libmysqlclient PROPERTIES
+		INTERFACE_INCLUDE_DIRECTORIES "${libmysqlclient_INCLUDE_DIRS_RELEASE}"
+		INTERFACE_LINK_LIBRARIES "${libmysqlclient_LIBRARIES}"
 	)
 else()
-	set(MySQL_LIBRARIES)
-	set(MySQL_INCLUDE_DIRS)
+	set(libmysqlclient_LIBRARIES)
+	set(libmysqlclient_INCLUDE_DIRS_RELEASE)
 endif()
 
-mark_as_advanced(MySQL_INCLUDE_DIRS MySQL_LIBRARIES)
+mark_as_advanced(libmysqlclient_INCLUDE_DIRS_RELEASE libmysqlclient_LIBRARIES)
