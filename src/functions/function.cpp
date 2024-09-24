@@ -59,68 +59,84 @@ void Function::Setup_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request
 
 void Function::Process_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request::HTTPServerResponsePtr response)
 {
-    Setup_(request, response);
-
-    switch(response_type_)
+    try
     {
-        case Functions::Function::ResponseType::kJSON:
+        Setup_(request, response);
+
+        switch(response_type_)
         {
-            JSON::Object::Ptr json_result = new JSON::Object();
-            if(!ProcessJSON_(json_result))
+            case Functions::Function::ResponseType::kJSON:
             {
-                if(error_)
+                JSON::Object::Ptr json_result = new JSON::Object();
+                if(!ProcessJSON_(json_result))
                 {
-                    JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, error_message_);
-                    return;
+                    if(error_)
+                    {
+                        JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, error_message_);
+                        throw std::runtime_error("Error on function.cpp on Process_(): " + error_message_);
+                        return;
+                    }
                 }
+
+                // Send JSON results
+                CompoundResponse_(HTTP::Status::kHTTP_OK, json_result);
+
+                break;
             }
-
-            // Send JSON results
-            CompoundResponse_(HTTP::Status::kHTTP_OK, json_result);
-
-            break;
-        }
-        case Functions::Function::ResponseType::kFile:
-        {
-            std::string filepath = "";
-            if(!ProcessFile_(filepath))
+            case Functions::Function::ResponseType::kFile:
             {
-                if(error_)
+                std::string filepath = "";
+                if(!ProcessFile_(filepath))
                 {
-                    JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, error_message_);
-                    return;
+                    if(error_)
+                    {
+                        JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, error_message_);
+                        throw std::runtime_error("Error on function.cpp on Process_(): " + error_message_);
+                        return;
+                    }
                 }
-            }
 
-            switch(method_)
-            {
-                case HTTP::EnumMethods::kHTTP_GET:
-                    DownloadProcess_(filepath);
-                    break;
-                case HTTP::EnumMethods::kHTTP_POST:
-                    UploadProcess_();
-                    break;
-                case HTTP::EnumMethods::kHTTP_PUT:
-                    ModifyProcess_(filepath);
-                    break;
-                case HTTP::EnumMethods::kHTTP_DEL:
-                    RemoveProcess_(filepath);
-                    break;
-                case HTTP::EnumMethods::kHTTP_HEAD:
-                case HTTP::EnumMethods::kHTTP_OPTIONS:
-                case HTTP::EnumMethods::kHTTP_PATCH:
-                case HTTP::EnumMethods::kNULL:
-                    JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
-                    break;
+                switch(method_)
+                {
+                    case HTTP::EnumMethods::kHTTP_GET:
+                        DownloadProcess_(filepath);
+                        break;
+                    case HTTP::EnumMethods::kHTTP_POST:
+                        UploadProcess_();
+                        break;
+                    case HTTP::EnumMethods::kHTTP_PUT:
+                        ModifyProcess_(filepath);
+                        break;
+                    case HTTP::EnumMethods::kHTTP_DEL:
+                        RemoveProcess_(filepath);
+                        break;
+                    case HTTP::EnumMethods::kHTTP_HEAD:
+                    case HTTP::EnumMethods::kHTTP_OPTIONS:
+                    case HTTP::EnumMethods::kHTTP_PATCH:
+                    case HTTP::EnumMethods::kNULL:
+                        JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
+                        throw std::runtime_error("Error on function.cpp on Process_(): The client provided a bad HTTP method.");
+                        break;
+                }
+                
+                break;
             }
-            
-            break;
+            case Functions::Function::ResponseType::kCustom:
+            {
+                custom_process_(*this);
+                break;
+            }
         }
-        case Functions::Function::ResponseType::kCustom:
-        {
-            custom_process_(*this);
-            break;
-        }
+    }
+    catch(std::runtime_error& error)
+    {
+        Tools::OutputLogger::Error_("Error on function.cpp on Process_(): " + error_message_);
+        return;
+    }
+    catch(std::exception& error)
+    {
+        Tools::OutputLogger::Error_("Error on function.cpp on Process_(): " + error_message_);
+        return;
     }
 }
 
@@ -157,7 +173,11 @@ bool Function::ProcessJSON_(JSON::Object::Ptr& json_result)
     for(auto& action : actions_)
     {
         // Process Action
-        ProcessAction_(action);
+        if(!ProcessAction_(action))
+        {
+            error_ = true;
+            return false;
+        }
 
         // Set JSON results
         if(action->get_final())
@@ -174,7 +194,12 @@ bool Function::ProcessFile_(std::string& filepath)
     for(auto& action : actions_)
     {
         // Process Action
-        ProcessAction_(action);
+        if(!ProcessAction_(action))
+        {
+            error_ = true;
+            return false;
+        }
+
 
         // Set filepath
         if(action->get_final())
