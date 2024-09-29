@@ -1,5 +1,6 @@
 
 #include "functions/action.h"
+#include "query/parameter.h"
 
 using namespace NAF;
 using namespace NAF::Functions;
@@ -123,6 +124,17 @@ void Action::ReplaceParamater_(Query::Parameter::Ptr parameter)
 
         found_param->get()->set_value(parameter->get_value());
     }
+}
+
+
+std::vector<Query::Parameter::Ptr>::iterator Action::GetParameter(std::string name)
+{
+    auto found = std::find_if(parameters_.begin(), parameters_.end(), [name](Query::Parameter::Ptr param)
+    {
+        return param->get_name() == name;
+    });
+
+    return found;
 }
 
 void Action::IdentifyParameters_(JSON::Array::Ptr json_array)

@@ -125,6 +125,7 @@ class NAF::Functions::Action
         JSON::Array::Ptr GetParametersArray_(JSON::Array::Ptr json_array, int counter);
         Query::Parameter::Ptr GetParameterObject_(JSON::Array::Ptr parameters_array, int counter);
         void ReplaceParamater_(Query::Parameter::Ptr parameter);
+        std::vector<Query::Parameter::Ptr>::iterator GetParameter(std::string name);
         Query::Parameter::Ptr AddParameter_(std::string name, Tools::DValue value, bool editable);
         Query::Parameter::Ptr AddParameter_(std::string name, Query::Field::Position field_position, std::string related_action, bool editable);
         void IdentifyParameters_(std::shared_ptr<Net::HTMLForm> form);
