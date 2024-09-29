@@ -78,6 +78,7 @@ class NAF::Functions::Function : public HTTP::CommonResponses
         void set_response_type(ResponseType response_type) { response_type_ = response_type; }
 
         Action::Ptr AddAction_(std::string identifier);
+        std::vector<Action::Ptr>::iterator GetAction_(std::string identifier);
         void Process_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request::HTTPServerResponsePtr response);
         bool ProcessAction_(Action::Ptr action);
         bool ProcessJSON_(JSON::Object::Ptr& json_result);

@@ -39,6 +39,16 @@ Action::Ptr Function::AddAction_(std::string identifier)
     return action;
 }
 
+std::vector<Action::Ptr>::iterator Function::GetAction_(std::string identifier)
+{
+    auto found = std::find_if(actions_.begin(), actions_.end(), [&identifier](Action::Ptr action)
+    {
+        return action->get_identifier() == identifier;
+    });
+
+    return found;
+}
+
 void Function::Setup_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request::HTTPServerResponsePtr response)
 {
     if(request.has_value())
