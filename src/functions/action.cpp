@@ -510,7 +510,18 @@ JSON::Object::Ptr Action::CreateJSONResult_()
 
         // Variables
             JSON::Object::Ptr result_json = new JSON::Object();
+            JSON::Array::Ptr columns_array = new JSON::Array();
             JSON::Array::Ptr data_array = new JSON::Array();
+
+        // Make columns array
+            if(results_->size() > 0)
+            {
+                auto first_row = results_->front();
+                for(auto field : *first_row)
+                {
+                    columns_array->set(columns_array->size(), field.get()->get_column_name());
+                }
+            }
 
         // Make JSON data
             for(auto& rows : *results_)
@@ -545,6 +556,7 @@ JSON::Object::Ptr Action::CreateJSONResult_()
                 data_array->set(data_array->size(), row_fields);
             }
 
+            result_json->set("columns", columns_array);
             result_json->set("data", data_array);
 
             mutex_.unlock();
