@@ -36,7 +36,7 @@ class MainHandler : public Handlers::BackendHandler
                         return true;
                     });
                     // Parameters and conditions
-                    auto param = a1->AddParameter_("storeName", Tools::DValue(""), true);
+                    auto param = a1->AddParameter_("storeName", Tools::DValue::Ptr(new Tools::DValue("")), true);
                     param->SetupCondition_("cond-param1", Query::ConditionType::kError, [](Query::Parameter::Ptr param)
                     {
                         if(param->ToString_() == "")
@@ -74,7 +74,7 @@ class MainHandler : public Handlers::BackendHandler
                             param->set_error("id_store cannot be iqual to a empty string");
                             return false;
                         }
-                        else if(param->get_value().get_type() != Tools::DValue::Type::kInteger)
+                        else if(!param->get_value()->TypeIsIqual_(Tools::DValue::Type::kInteger))
                         {
                             param->set_error("id_store must be an integer value");
                             return false;
@@ -99,7 +99,7 @@ class MainHandler : public Handlers::BackendHandler
                 auto action = f2->AddAction_("a1");
                 action->set_custom_error("No image found.");
                 action->set_sql_code("SELECT file_path FROM test_filepaths WHERE id = ?");
-                action->AddParameter_("id", Tools::DValue(0), true);
+                action->AddParameter_("id", Tools::DValue::Ptr(new Tools::DValue(0)), true);
         }
 
         void Process_() override
