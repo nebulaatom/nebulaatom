@@ -1,7 +1,9 @@
 
 #include "core/nebula_atom.h"
 #include "files/file_manager.h"
+#include "functions/function.h"
 #include "handlers/custom_handler.h"
+#include "query/parameter.h"
 #include "tools/dvalue.h"
 
 using namespace NAF;
@@ -92,16 +94,18 @@ int main(int argc, char** argv)
         return new Handlers::CustomHandler([&](Handlers::CustomHandler& self)
         {
             self.ManageRequestBody_();
-            Functions::Action a1("a1");
-            a1.set_sql_code("INSERT INTO test_files (file) VALUES (?)");
-            a1.AddParameter_("photo", Tools::DValue(""), true);
+            auto function = self.AddFunction_("", HTTP::EnumMethods::kHTTP_POST);
+            self.set_current_function(function);
+            auto a1 = function->AddAction_("a1");
+            a1->set_sql_code("INSERT INTO test_files (file) VALUES (?)");
+            a1->AddParameter_("photo", Tools::DValue::Ptr(new Tools::DValue("")), true);
 
-            a1.IdentifyParameters_(*self.get_files_parameters());
-            a1.ComposeQuery_();
-            a1.ExecuteQuery_();
+            self.IdentifyParameters_();
+            a1->ComposeQuery_();
+            a1->ExecuteQuery_();
 
-            if(a1.get_error())
-                self.HTMLResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, a1.get_custom_error());
+            if(a1->get_error())
+                self.HTMLResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, a1->get_custom_error());
             else
                 self.HTMLResponse_(HTTP::Status::kHTTP_OK, "OK");
         });
