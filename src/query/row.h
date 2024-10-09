@@ -43,7 +43,7 @@ class NAF::Query::Row : public std::vector<Field::Ptr>
         Row();
 
         Field::Ptr ExtractField_(std::string column_name);
-        Field::Ptr AddField_(std::string column_name, Tools::DValue value);
+        Field::Ptr AddField_(std::string column_name, Tools::DValue::Ptr value);
 };
 
 #endif // NAF_QUERY_ROW
