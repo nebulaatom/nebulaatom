@@ -69,6 +69,8 @@ void Function::Setup_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request
 
 void Function::Process_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request::HTTPServerResponsePtr response)
 {
+    bool json_sent = false;
+
     try
     {
         Setup_(request, response);
@@ -83,6 +85,7 @@ void Function::Process_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Reque
                     if(error_)
                     {
                         JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, error_message_);
+                        json_sent = true;
                         throw std::runtime_error("Error on function.cpp on Process_(): " + error_message_);
                         return;
                     }
@@ -101,6 +104,7 @@ void Function::Process_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Reque
                     if(error_)
                     {
                         JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, error_message_);
+                        json_sent = true;
                         throw std::runtime_error("Error on function.cpp on Process_(): " + error_message_);
                         return;
                     }
@@ -125,6 +129,7 @@ void Function::Process_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Reque
                     case HTTP::EnumMethods::kHTTP_PATCH:
                     case HTTP::EnumMethods::kNULL:
                         JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "The client provided a bad HTTP method.");
+                        json_sent = true;
                         throw std::runtime_error("Error on function.cpp on Process_(): The client provided a bad HTTP method.");
                         break;
                 }
@@ -140,11 +145,17 @@ void Function::Process_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Reque
     }
     catch(std::runtime_error& error)
     {
+        if(!json_sent)
+            JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, error_message_);
+
         Tools::OutputLogger::Error_("Error on function.cpp on Process_(): " + error_message_);
         return;
     }
     catch(std::exception& error)
     {
+        if(!json_sent)
+            JSONResponse_(HTTP::Status::kHTTP_BAD_REQUEST, error_message_);
+
         Tools::OutputLogger::Error_("Error on function.cpp on Process_(): " + error_message_);
         return;
     }
