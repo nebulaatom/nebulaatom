@@ -19,11 +19,11 @@ Field::Ptr Results::Last_()
     Field::Ptr field_result = std::make_shared<Field>();
     std::size_t size_rows, size_fields;
 
-    size_rows = size();
+    size_rows = size() - 1;
     if(size_rows < 1)
         return field_result;
 
-    size_fields = at(size_rows - 1)->size();
+    size_fields = at(size_rows - 1)->size() - 1;
     if(size_fields < 1)
         return field_result;
 

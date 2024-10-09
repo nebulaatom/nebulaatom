@@ -48,18 +48,18 @@ class NAF::Query::Field
         };
 
         Field();
-        Field(std::string column_name, Tools::DValue value);
+        Field(std::string column_name, Tools::DValue::Ptr value);
 
         std::string get_column_name() const { return column_name_;}
-        Tools::DValue get_value() const {return value_;}
-        Tools::DValue& get_value()
+        Tools::DValue::Ptr get_value() const {return value_;}
+        Tools::DValue::Ptr& get_value()
         {
             auto& var = value_;
             return var;
         }
 
         void set_column_name(std::string column_name) { column_name_ = column_name;}
-        void set_value(Tools::DValue value) { value_ = value;}
+        void set_value(Tools::DValue::Ptr value) { value_ = value;}
 
         bool IsNull_();
         std::string ToString_();
@@ -71,7 +71,7 @@ class NAF::Query::Field
     private:
         bool is_null_;
         std::string column_name_;
-        Tools::DValue value_;
+        Tools::DValue::Ptr value_;
 };
 
 
