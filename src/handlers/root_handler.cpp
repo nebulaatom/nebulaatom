@@ -219,31 +219,193 @@ void RootHandler::SetupProperties_()
     Net::MessageHeader::splitParameters(request->getContentType(), properties_.content_type, properties_.content_type_parameters);
 }
 
-void RootHandler::IdentifyParameters_(Functions::Action::Ptr action)
+void RootHandler::IdentifyParameters_()
 {
+    if(current_function_ == nullptr)
+        throw std::runtime_error("Current function is null");
+
     switch(get_body_type())
     {
         case HTTP::Body::Type::kFormMultipart:
-            action->IdentifyParameters_(get_form());
-            action->IdentifyParameters_(*get_files_parameters());
+            IdentifyParameters_(get_form());
+            IdentifyParameters_(*get_files_parameters());
             break;
         case HTTP::Body::Type::kJSON:
-            action->IdentifyParameters_(get_json_array());
+            IdentifyParameters_(get_json_array());
             break;
         case HTTP::Body::Type::kURI:
         case HTTP::Body::Type::kFormURLEncoded:
-            action->IdentifyParameters_(get_query_parameters());
+            IdentifyParameters_(get_query_parameters());
             if(get_json_array()->size() > 0)
-                action->IdentifyParameters_(get_json_array());
+                IdentifyParameters_(get_json_array());
             break;
     }
-}
 
-void RootHandler::IdentifyParameters_()
-{
     auto& actions = current_function_->get_actions();
     for(auto it = actions.begin(); it != actions.end(); ++it)
     {
         IdentifyParameters_(*it);
+    }
+}
+
+void RootHandler::IdentifyParameters_(Functions::Action::Ptr action)
+{
+    // Iterate over action parameters
+    for(auto it : action->get_parameters())
+    {
+        // Iterate over Function parameters
+        for(auto it2 : current_function_->get_parameters())
+        {
+            if(it2->get_name() == it->get_name())
+            {
+                // Copy function parameter value to action parameter value (Shared)
+                it->set_value(it2->get_value());
+            }
+        }
+    }
+}
+
+void RootHandler::IdentifyParameters_(JSON::Array::Ptr json_array)
+{
+    try
+    {
+        // Iterate over JSON array
+        for (std::size_t a = 0; a < json_array->size(); a++)
+        {
+            // Get Parameter object
+            auto parameter_object = json_array->getObject(a);
+            if(parameter_object == nullptr)
+            {
+                Tools::OutputLogger::Warning_("Warning on root_handler.cpp on IdentifyParameters_(): Parameter JSON object is null.");
+                continue;
+            }
+
+            // Get parameter name
+            if(parameter_object->get("name").isEmpty())
+            {
+                Tools::OutputLogger::Warning_("Warning on root_handler.cpp on IdentifyParameters_(): Parameter name is empty.");
+                continue;
+            }
+            auto parameter_name = parameter_object->get("name").toString();
+                
+            // Get parameter value
+            if(parameter_object->get("value").isEmpty())
+            {
+                Tools::OutputLogger::Warning_("Warning on root_handler.cpp on IdentifyParameters_(): Parameter value is empty.");
+                continue;
+            }
+            auto parameter_value = parameter_object->get("value").toString();
+            
+            // Create and Save parameter
+            auto parameter = std::make_shared<Query::Parameter>(parameter_name, Tools::DValue::Ptr(new Tools::DValue(parameter_value)), true);
+
+            current_function_->get_parameters().push_back(parameter);
+        }
+    }
+    catch(JSON::JSONException& error)
+    {
+        Tools::OutputLogger::Error_("Error on root_handler.cpp on IdentifyParameters_(): " + std::string(error.what()));
+        return;
+    }
+    catch(std::runtime_error& error)
+    {
+        Tools::OutputLogger::Error_("Error on root_handler.cpp on IdentifyParameters_(): " + std::string(error.what()));
+        return;
+    }
+    catch(std::exception& error)
+    {
+        Tools::OutputLogger::Error_("Error on root_handler.cpp on IdentifyParameters_(): " + std::string(error.what()));
+        return;
+    }
+}
+
+void RootHandler::IdentifyParameters_(std::shared_ptr<Net::HTMLForm> form)
+{
+    try
+    {
+        // Iterate over files
+        for (auto& value : *form)
+        {
+            // Get parameter object
+            Query::Parameter::Ptr parameter(new Query::Parameter(value.first, Tools::DValue::Ptr(new Tools::DValue(value.second)), true));
+            current_function_->get_parameters().push_back(parameter);
+        }
+    }
+    catch(std::runtime_error& error)
+    {
+        Tools::OutputLogger::Error_("Error on root_handler.cpp on IdentifyParameters_(): " + std::string(error.what()));
+        return;
+    }
+    catch(std::exception& error)
+    {
+        Tools::OutputLogger::Error_("Error on root_handler.cpp on IdentifyParameters_(): " + std::string(error.what()));
+        return;
+    }
+}
+
+void RootHandler::IdentifyParameters_(Files::FileManager& files_parameters)
+{
+    try
+    {
+        // Iterate over files
+        for (auto& file : files_parameters.get_files())
+        {
+            // Verify file size
+            float filesize = file.get_tmp_file()->getSize();
+            if(filesize > Tools::SettingsManager::GetSetting_("max_file_size", 15) * 1000000)
+            {
+                Tools::OutputLogger::Warning_("Warning on root_handler.cpp on IdentifyParameters_(): The file " + file.get_name()
+                    + " exceeds the maximum file size (" + std::to_string(Tools::SettingsManager::GetSetting_("max_file_size", 15)) + ")");
+                continue;
+            }
+
+            // Create parameter
+            auto parameter = std::make_shared<Query::Parameter>(file.get_name(), Tools::DValue::Ptr(new Tools::DValue()), true);
+
+            // Copy the file to parameter value
+            std::ifstream istr; std::stringstream parameter_value;
+            istr.open(file.get_tmp_file()->path());
+            StreamCopier::copyStream(istr, parameter_value);
+            istr.close();
+
+            auto value = std::make_shared<Tools::DValue>(parameter_value.str());
+            parameter->set_value(value);
+
+            current_function_->get_parameters().push_back(parameter);
+        }
+    }
+    catch(std::runtime_error& error)
+    {
+        Tools::OutputLogger::Error_("Error on root_handler.cpp on IdentifyParameters_(): " + std::string(error.what()));
+        return;
+    }
+    catch(std::exception& error)
+    {
+        Tools::OutputLogger::Error_("Error on root_handler.cpp on IdentifyParameters_(): " + std::string(error.what()));
+        return;
+    }
+}
+
+void RootHandler::IdentifyParameters_(URI::QueryParameters& query_parameters)
+{
+    try
+    {
+        // Iterate over JSON array
+        for (auto& query_parameter : query_parameters)
+        {
+            // Get parameter object
+            auto parameter = std::make_shared<Query::Parameter>(query_parameter.first, Tools::DValue::Ptr(new Tools::DValue(query_parameter.second)), true);
+            current_function_->get_parameters().push_back(parameter);
+        }
+    }
+    catch(std::runtime_error& error)
+    {
+        Tools::OutputLogger::Error_("Error on root_handler.cpp on IdentifyParameters_(): " + std::string(error.what()));
+        return;
+    }
+    catch(std::exception& error)
+    {
+        Tools::OutputLogger::Error_("Error on root_handler.cpp on IdentifyParameters_(): " + std::string(error.what()));
+        return;
     }
 }

@@ -129,6 +129,8 @@ class NAF::Handlers::RootHandler :
             return var;
         }
 
+        void set_current_function(Functions::Function::Ptr function) {current_function_ = function; }
+
         virtual void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response);
         bool SetupSSL_();
         Functions::Function::Ptr AddFunction_(std::string endpoint, HTTP::EnumMethods method);
@@ -137,11 +139,15 @@ class NAF::Handlers::RootHandler :
         bool VerifyPermissions_();
         bool IdentifyRoute_();
         void ManageRequestBody_();
+        void IdentifyParameters_();
+        void IdentifyParameters_(Functions::Action::Ptr action);
 
     protected:
         void SetupProperties_();
-        void IdentifyParameters_(Functions::Action::Ptr action);
-        void IdentifyParameters_();
+        void IdentifyParameters_(std::shared_ptr<Net::HTMLForm> form);
+        void IdentifyParameters_(Files::FileManager& files_parameters);
+        void IdentifyParameters_(JSON::Array::Ptr json_array);
+        void IdentifyParameters_(URI::QueryParameters& query_parameters);
 
     private:
         struct Properties properties_;
