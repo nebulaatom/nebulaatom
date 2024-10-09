@@ -137,10 +137,10 @@ NAF::Extras::Session& SessionsManager::CreateSession_(int id_user, std::string p
                 "VALUES (?, ?, ?, ?)"
             ;
             action.set_sql_code(sql_code);
-            action.AddParameter_("identifier", Tools::DValue(id), false);
-            action.AddParameter_("path", Tools::DValue(path), false);
-            action.AddParameter_("max_age", Tools::DValue(max_age), false);
-            action.AddParameter_("id_user", Tools::DValue(id_user), false);
+            action.AddParameter_("identifier", Tools::DValue::Ptr(new Tools::DValue(id)), false);
+            action.AddParameter_("path", Tools::DValue::Ptr(new Tools::DValue(path)), false);
+            action.AddParameter_("max_age", Tools::DValue::Ptr(new Tools::DValue(max_age)), false);
+            action.AddParameter_("id_user", Tools::DValue::Ptr(new Tools::DValue(id_user)), false);
 
         // Query process
             action.ComposeQuery_();
@@ -170,7 +170,7 @@ void SessionsManager::DeleteSession_(std::string id)
             action.get_credentials().Replace_(credentials_);
             action.set_custom_error("Session not saved.");
             action.set_sql_code("DELETE FROM _naf_sessions WHERE identifier = ?");
-            action.AddParameter_("identifier", Tools::DValue(id), false);
+            action.AddParameter_("identifier", Tools::DValue::Ptr(new Tools::DValue(id)), false);
 
         // Query process
             action.ComposeQuery_();
