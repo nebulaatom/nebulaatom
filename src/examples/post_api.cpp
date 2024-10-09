@@ -26,7 +26,7 @@ class MainHandler : public Handlers::BackendHandler
                     action->set_custom_error("Error to add product.");
                     action->set_sql_code("INSERT INTO products (name, price, id_store) VALUES (?, ?, ?)");
                     // Parameters and conditions
-                    action->AddParameter_("productName", Tools::DValue(""), true)
+                    action->AddParameter_("productName", Tools::DValue::Ptr(new Tools::DValue("")), true)
                     ->SetupCondition_("condition-productName", Query::ConditionType::kError, [](Query::Parameter::Ptr param)
                     {
                         if(param->ToString_() == "")
@@ -37,7 +37,7 @@ class MainHandler : public Handlers::BackendHandler
                         else
                             return true;
                     });
-                    action->AddParameter_("productPrice", Tools::DValue(""), true)
+                    action->AddParameter_("productPrice", Tools::DValue::Ptr(new Tools::DValue("")), true)
                     ->SetupCondition_("condition-productPrice", Query::ConditionType::kError, [](Query::Parameter::Ptr param)
                     {
                         if(param->ToString_() == "")
@@ -48,7 +48,7 @@ class MainHandler : public Handlers::BackendHandler
                         else
                             return true;
                     });
-                    action->AddParameter_("idStore", Tools::DValue(""), true)
+                    action->AddParameter_("idStore", Tools::DValue::Ptr(new Tools::DValue("")), true)
                     ->SetupCondition_("condition-idStore", Query::ConditionType::kError, [](Query::Parameter::Ptr param)
                     {
                         if(param->ToString_() == "")
