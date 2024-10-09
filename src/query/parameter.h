@@ -47,15 +47,16 @@ class NAF::Query::Parameter
 {
     public:
         using Ptr = std::shared_ptr<Parameter>;
+        using Vector = std::vector<Ptr>;
 
-        Parameter(std::string name, Tools::DValue value, bool editable);
+        Parameter(std::string name, Tools::DValue::Ptr value, bool editable);
         Parameter(std::string name, Query::Field::Position field_position, std::string related_action, bool editable);
 
         ParameterType get_parameter_type() const { return parameter_type_; }
         std::string get_name() const { return name_; }
         std::string get_error() const { return error_; }
         bool get_editable() const { return editable_; }
-        Tools::DValue& get_value()
+        Tools::DValue::Ptr& get_value()
         {
             auto& var = value_;
             return var;
@@ -76,7 +77,7 @@ class NAF::Query::Parameter
         void set_name(std::string name) { name_ = name; }
         void set_error(std::string error) { error_ = error; }
         void set_editable(bool editable) { editable_ = editable; }
-        void set_value(Tools::DValue value) { value_ = value; }
+        void set_value(Tools::DValue::Ptr value) { value_ = value; }
         void set_related_action(std::string related_action) { related_action_ = related_action; }
 
         std::string ToString_();
@@ -91,7 +92,7 @@ class NAF::Query::Parameter
         std::string name_;
         std::string error_;
         bool editable_;
-        Tools::DValue value_;
+        Tools::DValue::Ptr value_;
         Query::Field::Position field_position_;
         std::string related_action_;
         Query::Condition<Ptr>::Ptr condition_;

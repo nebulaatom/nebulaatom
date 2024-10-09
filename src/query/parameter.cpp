@@ -3,7 +3,7 @@
 
 using namespace NAF::Query;
 
-Parameter::Parameter(std::string name, Tools::DValue value, bool editable) :
+Parameter::Parameter(std::string name, Tools::DValue::Ptr value, bool editable) :
     parameter_type_(ParameterType::kField)
     ,name_(name)
     ,error_("")
@@ -20,7 +20,7 @@ Parameter::Parameter(std::string name, Query::Field::Position field_position, st
     ,name_(name)
     ,error_("")
     ,editable_(editable)
-    ,value_(Tools::DValue(""))
+    ,value_(new Tools::DValue())
     ,field_position_(field_position)
     ,related_action_(related_action)
 {
@@ -29,47 +29,47 @@ Parameter::Parameter(std::string name, Query::Field::Position field_position, st
 
 std::string Parameter::ToString_()
 {
-    return value_.ToString_();
+    return value_->ToString_();
 }
 
 std::string& Parameter::StringValue_()
 {
-    if(!value_.TypeIsIqual_(Tools::DValue::Type::kString))
+    if(!value_->TypeIsIqual_(Tools::DValue::Type::kString))
     {
         throw std::runtime_error("Error on Parameter.cpp on StringValue_(): The data type to be obtained does not match the current data type.");
     }
 
-    return value_.String_();
+    return value_->String_();
 }
 
 int& Parameter::IntValue_()
 {
-    if(!value_.TypeIsIqual_(Tools::DValue::Type::kInteger))
+    if(!value_->TypeIsIqual_(Tools::DValue::Type::kInteger))
     {
         throw std::runtime_error("Error on Parameter.cpp on IntValue_(): The data type to be obtained does not match the current data type.");
     }
 
-    return value_.Int_();
+    return value_->Int_();
 }
 
 bool& Parameter::BoolValue_()
 {
-    if(!value_.TypeIsIqual_(Tools::DValue::Type::kBoolean))
+    if(!value_->TypeIsIqual_(Tools::DValue::Type::kBoolean))
     {
         throw std::runtime_error("Error on Parameter.cpp on BoolValue_(): The data type to be obtained does not match the current data type.");
     }
 
-    return value_.Bool_();
+    return value_->Bool_();
 }
 
 float& Parameter::FloatValue_()
 {
-    if(!value_.TypeIsIqual_(Tools::DValue::Type::kFloat))
+    if(!value_->TypeIsIqual_(Tools::DValue::Type::kFloat))
     {
         throw std::runtime_error("Error on Parameter.cpp on FloatValue_(): The data type to be obtained does not match the current data type.");
     }
 
-    return value_.Float_();
+    return value_->Float_();
 }
 
 void Parameter::SetupCondition_(std::string identifier, Query::ConditionType type, Query::Condition<Ptr>::Functor functor)
