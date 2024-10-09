@@ -70,6 +70,11 @@ class NAF::Functions::Function : public HTTP::CommonResponses
             auto& var = file_manager_;
             return var;
         }
+        std::vector<Query::Parameter::Ptr>& get_parameters()
+        {
+            auto& var = parameters_;
+            return var;
+        }
 
         void set_endpoint(std::string endpoint) { endpoint_ = endpoint; }
         void set_target(std::string target) { target_ = target; }
@@ -105,6 +110,7 @@ class NAF::Functions::Function : public HTTP::CommonResponses
         HTTP::Methods methods_;
         Files::FileManager::Ptr file_manager_;
         std::function<void(Function&)> custom_process_;
+        std::vector<Query::Parameter::Ptr> parameters_;
 };
 
 
