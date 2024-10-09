@@ -122,16 +122,10 @@ class NAF::Functions::Action
         void set_sql_code(std::string sql_code) { sql_code_ = sql_code; };
         void set_final_query(std::string final_query) {final_query_ = final_query;}
 
-        JSON::Array::Ptr GetParametersArray_(JSON::Array::Ptr json_array, int counter);
-        Query::Parameter::Ptr GetParameterObject_(JSON::Array::Ptr parameters_array, int counter);
         void ReplaceParamater_(Query::Parameter::Ptr parameter);
         std::vector<Query::Parameter::Ptr>::iterator GetParameter(std::string name);
-        Query::Parameter::Ptr AddParameter_(std::string name, Tools::DValue value, bool editable);
+        Query::Parameter::Ptr AddParameter_(std::string name, Tools::DValue::Ptr value, bool editable);
         Query::Parameter::Ptr AddParameter_(std::string name, Query::Field::Position field_position, std::string related_action, bool editable);
-        void IdentifyParameters_(std::shared_ptr<Net::HTMLForm> form);
-        void IdentifyParameters_(Files::FileManager& files_parameters);
-        void IdentifyParameters_(JSON::Array::Ptr json_array);
-        void IdentifyParameters_(URI::QueryParameters& query_parameters);
         void SetupCondition_(std::string identifier, Query::ConditionType type, Query::Condition<Action&>::Functor functor);
         bool ComposeQuery_();
         void ExecuteQuery_();

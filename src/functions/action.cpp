@@ -44,71 +44,6 @@ Action::~Action()
     }
 }
 
-JSON::Array::Ptr Action::GetParametersArray_(JSON::Array::Ptr json_array, int counter)
-{
-    // Get the action object
-    if(json_array->get(counter).isEmpty())
-    {
-        Tools::OutputLogger::Warning_("Warning on action.cpp on GetParametersArray_(): Data array haves an empty action.");
-        return nullptr;
-    }
-    auto action_object = json_array->getObject(counter);
-
-    // Get the action identifier
-    if(action_object->get("action_id").isEmpty() || !action_object->get("action_id").isString())
-    {
-        Tools::OutputLogger::Warning_("Warning on action.cpp on GetParametersArray_(): The action object does not have an action_id String Object.");
-        return nullptr;
-    }
-    auto action_id = action_object->get("action_id").toString();
-
-    // Verify Action identifier
-    if(action_id != get_identifier())
-        return nullptr;
-
-    // Get the parameters object
-    if(action_object->get("parameters").isEmpty() || !action_object->get("parameters").isArray())
-    {
-        Tools::OutputLogger::Warning_("Warning on action.cpp on GetParametersArray_(): The action object does not have a parameters array.");
-        return nullptr;
-    }
-
-    return action_object->getArray("parameters");
-}
-
-Query::Parameter::Ptr Action::GetParameterObject_(JSON::Array::Ptr parameters_array, int counter)
-{
-    if(parameters_array->get(counter).isEmpty())
-    {
-        Tools::OutputLogger::Warning_("Warning on action.cpp on GetParameterObject_(): Parameters array haves an empty element.");
-        return nullptr;
-    }
-
-    auto parameter_object = parameters_array->getObject(counter);
-
-    // Get parameter name
-    if(parameter_object->get("name").isEmpty() || !parameter_object->get("name").isString())
-    {
-        Tools::OutputLogger::Warning_("Warning on action.cpp on GetParameterObject_(): Parameter name is not a String Object.");
-        return nullptr;
-    }
-
-    auto parameter_name = parameter_object->get("name").toString();
-
-    // Get parameter value
-    if(parameter_object->get("value").isEmpty())
-    {
-        Tools::OutputLogger::Warning_("Warning on action.cpp on GetParameterObject_(): Parameter value is empty.");
-        return nullptr;
-    }
-
-    auto parameter_value = parameter_object->get("value");
-
-    // Create and return parameter
-    Query::Parameter::Ptr parameter(new Query::Parameter(parameter_name, parameter_value, true));
-    return parameter;
-}
-
 void Action::ReplaceParamater_(Query::Parameter::Ptr parameter)
 {
     // Find if exists parameter
@@ -137,144 +72,11 @@ std::vector<Query::Parameter::Ptr>::iterator Action::GetParameter(std::string na
     return found;
 }
 
-void Action::IdentifyParameters_(JSON::Array::Ptr json_array)
-{
-    try
-    {
-        // Iterate over JSON array
-        for (std::size_t a = 0; a < json_array->size(); a++)
-        {
-            // Get Parameters Array
-                JSON::Array::Ptr parameters_array = GetParametersArray_(json_array, a);
-                if(parameters_array == nullptr)
-                    continue;
-
-            // Iterate over parameters array
-                for(std::size_t b = 0; b < parameters_array->size(); b++)
-                {
-                    // Get parameter object
-                    Query::Parameter::Ptr parameter = GetParameterObject_(parameters_array, b);
-                    if(parameter == nullptr)
-                        continue;
-
-                    // Replace Parameter
-                    ReplaceParamater_(parameter);
-                }
-
-        }
-    }
-    catch(JSON::JSONException& error)
-    {
-        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
-    }
-    catch(std::runtime_error& error)
-    {
-        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
-    }
-    catch(std::exception& error)
-    {
-        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
-    }
-}
-
-void Action::IdentifyParameters_(std::shared_ptr<Net::HTMLForm> form)
-{
-    try
-    {
-        // Iterate over files
-        for (auto& value : *form)
-        {
-            // Get parameter object
-            Query::Parameter::Ptr parameter(new Query::Parameter(value.first, value.second, true));
-
-            // Replace Parameter
-            ReplaceParamater_(parameter);
-        }
-    }
-    catch(std::runtime_error& error)
-    {
-        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
-    }
-    catch(std::exception& error)
-    {
-        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
-    }
-}
-
-void Action::IdentifyParameters_(Files::FileManager& files_parameters)
-{
-    try
-    {
-        // Iterate over files
-        for (auto& file : files_parameters.get_files())
-        {
-            float filesize = file.get_tmp_file()->getSize();
-            if(filesize > Tools::SettingsManager::GetSetting_("max_file_size", 15) * 1000000)
-            {
-                Tools::OutputLogger::Warning_("Warning on action.cpp on IdentifyParameters_(): The file " + file.get_name()
-                    + " exceeds the maximum file size (" + std::to_string(Tools::SettingsManager::GetSetting_("max_file_size", 15)) + ")");
-                continue;
-            }
-
-            // Find parameter
-            auto found_param = std::find_if(parameters_.begin(), parameters_.end(), [&file](Query::Parameter::Ptr& param)
-            {
-                return param->get_name() == file.get_name();
-            });
-
-            // Remplace parameter value
-            if(found_param != parameters_.end())
-            {
-                if(!found_param->get()->get_editable()) return;
-
-                std::ifstream istr; std::stringstream parameter_value;
-                istr.open(file.get_tmp_file()->path());
-                StreamCopier::copyStream(istr, parameter_value);
-                istr.close();
-
-                found_param->get()->set_value(parameter_value.str());
-            }
-        }
-    }
-    catch(std::runtime_error& error)
-    {
-        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
-    }
-    catch(std::exception& error)
-    {
-        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
-    }
-}
-
-void Action::IdentifyParameters_(URI::QueryParameters& query_parameters)
-{
-    try
-    {
-        // Iterate over JSON array
-        for (auto& query_parameter : query_parameters)
-        {
-            // Get parameter object
-            Query::Parameter::Ptr parameter(new Query::Parameter(query_parameter.first, query_parameter.second, true));
-
-            // Replace Parameter
-            ReplaceParamater_(parameter);
-        }
-    }
-    catch(std::runtime_error& error)
-    {
-        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
-    }
-    catch(std::exception& error)
-    {
-        NotifyError_("Error on action.cpp on IdentifyParameters_(): " + std::string(error.what()));
-    }
-}
-
 void Action::SetupCondition_(std::string identifier, Query::ConditionType type, Query::Condition<Action&>::Functor functor)
 {
     condition_ = std::make_shared<Query::Condition<Action&>>(identifier, type, functor);
 }
-Query::Parameter::Ptr Action::AddParameter_(std::string name, Tools::DValue value, bool editable)
+Query::Parameter::Ptr Action::AddParameter_(std::string name, Tools::DValue::Ptr value, bool editable)
 {
     parameters_.push_back(std::make_shared<Query::Parameter>(name, value, editable));
     return parameters_.back();
@@ -336,7 +138,7 @@ bool Action::ComposeQuery_()
                     return false;
 
                 // Add final value to query
-                switch(param->get_value().get_type())
+                switch(param->get_value()->get_type())
                 {
                     case Tools::DValue::Type::kEmpty:
                     {
@@ -471,7 +273,7 @@ void Action::MakeResults_()
                     auto column_name = results_dataquery.columnName(col);
                     auto value = it.get(a);
                     // Create shared Query::Field
-                    row_fields->push_back(std::make_shared<Query::Field>(column_name, Tools::DValue(value)));
+                    row_fields->push_back(std::make_shared<Query::Field>(column_name, Tools::DValue::Ptr(new Tools::DValue(value))));
                     col++;
                 }
 
@@ -533,19 +335,19 @@ JSON::Object::Ptr Action::CreateJSONResult_()
                 {
                     auto column_name = field->get_column_name();
                     auto& field_value = field->get_value();
-                    switch(field->get_value().get_type())
+                    switch(field->get_value()->get_type())
                     {
                         case Tools::DValue::Type::kBoolean:
-                            row_fields->set(column_name, field_value.Bool_());
+                            row_fields->set(column_name, field_value->Bool_());
                             break;
                         case Tools::DValue::Type::kFloat:
-                            row_fields->set(column_name, field_value.Float_());
+                            row_fields->set(column_name, field_value->Float_());
                             break;
                         case Tools::DValue::Type::kInteger:
-                            row_fields->set(column_name, field_value.Int_());
+                            row_fields->set(column_name, field_value->Int_());
                             break;
                         case Tools::DValue::Type::kString:
-                            row_fields->set(column_name, field_value.String_());
+                            row_fields->set(column_name, field_value->String_());
                             break;
                         case Tools::DValue::Type::kEmpty:
                             row_fields->set(column_name, "");
