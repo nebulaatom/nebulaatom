@@ -155,8 +155,7 @@ bool Action::ComposeQuery_()
 {
     try
     {
-        if(error_)
-            return false;
+        if(error_) {return false;}
 
         // Initialize de query statement
             if(!InitializeQuery_())
@@ -362,8 +361,7 @@ JSON::Object::Ptr Action::CreateJSONResult_()
             JSON::Array::Ptr columns_array = new JSON::Array();
             JSON::Array::Ptr data_array = new JSON::Array();
 
-        if(error_)
-            return result_json;
+        if(error_) {return result_json;}
         
         // Make columns array
             if(results_->size() > 0)
