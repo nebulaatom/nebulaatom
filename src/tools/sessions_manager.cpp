@@ -53,22 +53,10 @@ void SessionsManager::ReadSessions_()
             action.set_sql_code("SELECT * FROM _naf_sessions WHERE NOW() < created_at + INTERVAL max_age SECOND");
 
         // Query process
-            action.ComposeQuery_();
-            if(action.get_error())
+            if(!action.Work_())
             {
-                Tools::OutputLogger::Error_("Error on sessions_manager.cpp on ReadSessions_(): " + action.get_custom_error());
-                return;
-            }
-            action.ExecuteQuery_();
-            if(action.get_error())
-            {
-                Tools::OutputLogger::Error_("Error on sessions_manager.cpp on ReadSessions_(): " + action.get_custom_error());
-                return;
-            }
-            action.MakeResults_();
-            if(action.get_error())
-            {
-                Tools::OutputLogger::Error_("Error on sessions_manager.cpp on ReadSessions_(): " + action.get_custom_error());
+                mutex_.unlock();
+                Tools::OutputLogger::Error_("Error on sessions_manager.cpp on LoadPermissions_(): " + action.get_custom_error());
                 return;
             }
 
@@ -81,6 +69,7 @@ void SessionsManager::ReadSessions_()
 
                 if(identifier->IsNull_() || path->IsNull_() || id_user->IsNull_() || max_age->IsNull_())
                 {
+                    mutex_.unlock();
                     throw std::runtime_error("Error to get results, ExtractField_ return a nullptr object.");
                     return;
                 }
@@ -98,11 +87,15 @@ void SessionsManager::ReadSessions_()
     }
     catch(MySQL::MySQLException& error)
     {
+        mutex_.unlock();
         Tools::OutputLogger::Error_("Error on sessions_manager.cpp on ReadSessions_(): " + std::string(error.message()));
+        return;
     }
     catch(std::exception& error)
     {
+        mutex_.unlock();
         Tools::OutputLogger::Error_("Error on sessions_manager.cpp on ReadSessions_(): " + std::string(error.what()));
+        return;
     }
 }
 
