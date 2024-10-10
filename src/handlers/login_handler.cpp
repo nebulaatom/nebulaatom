@@ -75,7 +75,8 @@ void LoginHandler::StartSession_()
         ManageRequestBody_();
 
         // Identify parameters
-        IdentifyParameters_(get_users_manager().get_action());
+        IdentifyParameters_();
+        get_current_function()->IdentifyParameters_(get_users_manager().get_action());
 
         if(!get_users_manager().AuthenticateUser_())
         {
