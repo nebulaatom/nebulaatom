@@ -153,6 +153,7 @@ void Tools::SettingsManager::ReadSettings_()
     }
     catch(std::exception& e)
     {
+        mutex_.unlock();
         PrintError_("ReadSettings_", std::string(e.what()));
         return;
     }
