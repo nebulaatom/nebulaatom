@@ -61,7 +61,6 @@ class NAF::Tools::DValue
         DValue();
         DValue(Poco::Dynamic::Var& value);
         DValue(std::string value_string);
-        DValue(char value_string);
         DValue(const char* value_string);
         DValue(int value_int);
         DValue(float value_float);
