@@ -1,6 +1,5 @@
 
 #include "functions/action.h"
-#include "query/parameter.h"
 
 using namespace NAF;
 using namespace NAF::Functions;
@@ -76,6 +75,42 @@ void Action::SetupCondition_(std::string identifier, Query::ConditionType type, 
 {
     condition_ = std::make_shared<Query::Condition<Action&>>(identifier, type, functor);
 }
+
+Query::Parameter::Ptr Action::AddParameter_(std::string name, std::string value_string, bool editable)
+{
+    Tools::DValue::Ptr value = std::make_shared<Tools::DValue>(value_string);
+    parameters_.push_back(std::make_shared<Query::Parameter>(name, value, editable));
+    return parameters_.back();
+}
+
+Query::Parameter::Ptr Action::AddParameter_(std::string name, const char* value_string, bool editable)
+{
+    Tools::DValue::Ptr value = std::make_shared<Tools::DValue>(value_string);
+    parameters_.push_back(std::make_shared<Query::Parameter>(name, value, editable));
+    return parameters_.back();
+}
+
+Query::Parameter::Ptr Action::AddParameter_(std::string name, int value_int, bool editable)
+{
+    Tools::DValue::Ptr value = std::make_shared<Tools::DValue>(value_int);
+    parameters_.push_back(std::make_shared<Query::Parameter>(name, value, editable));
+    return parameters_.back();
+}
+
+Query::Parameter::Ptr Action::AddParameter_(std::string name, float value_float, bool editable)
+{
+    Tools::DValue::Ptr value = std::make_shared<Tools::DValue>(value_float);
+    parameters_.push_back(std::make_shared<Query::Parameter>(name, value, editable));
+    return parameters_.back();
+}
+
+Query::Parameter::Ptr Action::AddParameter_(std::string name, bool value_bool, bool editable)
+{
+    Tools::DValue::Ptr value = std::make_shared<Tools::DValue>(value_bool);
+    parameters_.push_back(std::make_shared<Query::Parameter>(name, value, editable));
+    return parameters_.back();
+}
+
 Query::Parameter::Ptr Action::AddParameter_(std::string name, Tools::DValue::Ptr value, bool editable)
 {
     parameters_.push_back(std::make_shared<Query::Parameter>(name, value, editable));

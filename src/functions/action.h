@@ -124,6 +124,11 @@ class NAF::Functions::Action
 
         void ReplaceParamater_(Query::Parameter::Ptr parameter);
         std::vector<Query::Parameter::Ptr>::iterator GetParameter(std::string name);
+        Query::Parameter::Ptr AddParameter_(std::string name, std::string value_string, bool editable);
+        Query::Parameter::Ptr AddParameter_(std::string name, const char* value_string, bool editable);
+        Query::Parameter::Ptr AddParameter_(std::string name, int value_int, bool editable);
+        Query::Parameter::Ptr AddParameter_(std::string name, float value_float, bool editable);
+        Query::Parameter::Ptr AddParameter_(std::string name, bool value_bool, bool editable);
         Query::Parameter::Ptr AddParameter_(std::string name, Tools::DValue::Ptr value, bool editable);
         Query::Parameter::Ptr AddParameter_(std::string name, Query::Field::Position field_position, std::string related_action, bool editable);
         void SetupCondition_(std::string identifier, Query::ConditionType type, Query::Condition<Action&>::Functor functor);
