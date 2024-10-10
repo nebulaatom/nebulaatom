@@ -79,6 +79,7 @@ void PermissionsManager::LoadPermissions_()
         FillActionTypeMap_();
         if(permissions_.size() > 0)
         {
+            mutex_.unlock();
             return;
         }
 
@@ -94,13 +95,12 @@ void PermissionsManager::LoadPermissions_()
             action.set_sql_code(sql_code);
 
         // Query process
-            action.ComposeQuery_();
-            if(action.get_error())
+            if(!action.Work_())
+            {
+                mutex_.unlock();
+                Tools::OutputLogger::Error_("Error on permissions_manager.cpp on LoadPermissions_(): " + action.get_custom_error());
                 return;
-            action.ExecuteQuery_();
-            if(action.get_error())
-                return;
-            action.MakeResults_();
+            }
 
         // Iterate over the results
             for(auto& row : *action.get_results())
@@ -136,6 +136,7 @@ void PermissionsManager::LoadPermissions_()
     }
     catch(const std::exception& error)
     {
+        mutex_.unlock();
         std::cerr << "- Error on PermissionsManager::LoadPermissions_(): " << std::string(error.what()) << std::endl;
         return;
     }
