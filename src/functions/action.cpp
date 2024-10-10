@@ -155,6 +155,9 @@ bool Action::ComposeQuery_()
 {
     try
     {
+        if(error_)
+            return false;
+
         // Initialize de query statement
             if(!InitializeQuery_())
                 return false;
@@ -238,6 +241,9 @@ void Action::ExecuteQuery_()
 {
     try
     {
+        if(error_)
+            return;
+
         affected_rows_ = query_->execute();
         if(async_) async_finished_ = true;
     }
@@ -262,6 +268,9 @@ void Action::ExecuteAsyncQuery_()
 {
     try
     {
+        if(error_)
+            return;
+
         async_ = true;
         async_finished_ = false;
         std::thread thread_obj(&Action::ExecuteQuery_, this);
@@ -288,6 +297,9 @@ void Action::MakeResults_()
 {
     try
     {
+        if(error_)
+            return;
+
         mutex_.lock();
 
         // Variables
@@ -350,6 +362,9 @@ JSON::Object::Ptr Action::CreateJSONResult_()
             JSON::Array::Ptr columns_array = new JSON::Array();
             JSON::Array::Ptr data_array = new JSON::Array();
 
+        if(error_)
+            return result_json;
+        
         // Make columns array
             if(results_->size() > 0)
             {
