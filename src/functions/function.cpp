@@ -159,6 +159,14 @@ void Function::Process_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Reque
         Tools::OutputLogger::Error_("Error on function.cpp on Process_(): " + error_message_);
         return;
     }
+    catch(...)
+    {
+        if(!json_sent)
+            JSONResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, "Unknown error");
+
+        Tools::OutputLogger::Error_("Error on function.cpp on Process_(): Unknown error");
+        return;
+    }
 }
 
 bool Function::ProcessAction_(Action::Ptr action)
