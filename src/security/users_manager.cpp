@@ -34,8 +34,8 @@ UsersManager::UsersManager() :
     action_ = std::make_shared<Functions::Action>("login-action");
     action_->get_credentials().Replace_(credentials_);
     action_->set_sql_code("SELECT id, username, id_group FROM _naf_users WHERE username = ? AND password = ?");
-    action_->AddParameter_("username", Tools::DValue::Ptr(new Tools::DValue("")), true);
-    action_->AddParameter_("password", Tools::DValue::Ptr(new Tools::DValue("")), true);
+    action_->AddParameter_("username", "", true);
+    action_->AddParameter_("password", "", true);
 }
 
 bool UsersManager::AuthenticateUser_()
