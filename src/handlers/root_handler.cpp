@@ -222,7 +222,10 @@ void RootHandler::SetupProperties_()
 void RootHandler::IdentifyParameters_()
 {
     if(current_function_ == nullptr)
-        throw std::runtime_error("Current function is null");
+    {
+        auto function = AddFunction_("", HTTP::EnumMethods::kHTTP_GET);
+        current_function_ = function;
+    }
 
     switch(get_body_type())
     {
@@ -244,24 +247,7 @@ void RootHandler::IdentifyParameters_()
     auto& actions = current_function_->get_actions();
     for(auto it = actions.begin(); it != actions.end(); ++it)
     {
-        IdentifyParameters_(*it);
-    }
-}
-
-void RootHandler::IdentifyParameters_(Functions::Action::Ptr action)
-{
-    // Iterate over action parameters
-    for(auto it : action->get_parameters())
-    {
-        // Iterate over Function parameters
-        for(auto it2 : current_function_->get_parameters())
-        {
-            if(it2->get_name() == it->get_name())
-            {
-                // Copy function parameter value to action parameter value (Shared)
-                it->set_value(it2->get_value());
-            }
-        }
+        current_function_->IdentifyParameters_(*it);
     }
 }
 

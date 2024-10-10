@@ -392,3 +392,20 @@ void Function::SetupCustomProcess_(std::function<void(Function&)> custom_process
 {
     custom_process_ = custom_process;
 }
+
+void Function::IdentifyParameters_(Functions::Action::Ptr action)
+{
+    // Iterate over action parameters
+    for(auto it : action->get_parameters())
+    {
+        // Iterate over Function parameters
+        for(auto it2 : parameters_)
+        {
+            if(it2->get_name() == it->get_name())
+            {
+                // Copy function parameter value to action parameter value (Shared)
+                it->set_value(it2->get_value());
+            }
+        }
+    }
+}

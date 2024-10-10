@@ -140,7 +140,6 @@ class NAF::Handlers::RootHandler :
         bool IdentifyRoute_();
         void ManageRequestBody_();
         void IdentifyParameters_();
-        void IdentifyParameters_(Functions::Action::Ptr action);
 
     protected:
         void SetupProperties_();

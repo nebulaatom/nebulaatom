@@ -93,6 +93,7 @@ class NAF::Functions::Function : public HTTP::CommonResponses
         void ModifyProcess_(std::string& filepath);
         void RemoveProcess_(std::string& filepath);
         void SetupCustomProcess_(std::function<void(Function&)> custom_process);
+        void IdentifyParameters_(Functions::Action::Ptr action);
 
     protected:
         void Setup_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request::HTTPServerResponsePtr response);
