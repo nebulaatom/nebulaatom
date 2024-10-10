@@ -98,7 +98,7 @@ int main(int argc, char** argv)
             self.set_current_function(function);
             auto a1 = function->AddAction_("a1");
             a1->set_sql_code("INSERT INTO test_files (file) VALUES (?)");
-            a1->AddParameter_("photo", Tools::DValue::Ptr(new Tools::DValue("")), true);
+            a1->AddParameter_("photo", "", true);
 
             self.IdentifyParameters_();
             a1->ComposeQuery_();
