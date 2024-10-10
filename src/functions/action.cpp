@@ -306,7 +306,10 @@ void Action::MakeResults_()
 
         // Default values
             if(query_.get() == nullptr)
+            {
+                mutex_.unlock();
                 return;
+            }
 
         // Make Results
             for(auto& it : results_dataquery)
@@ -333,16 +336,19 @@ void Action::MakeResults_()
     }
     catch(JSON::JSONException& error)
     {
+        mutex_.unlock();
         NotifyError_("Error on action.cpp on MakeResults_(): " + std::string(error.message()));
         return;
     }
     catch(std::runtime_error& error)
     {
+        mutex_.unlock();
         NotifyError_("Error on action.cpp on MakeResults_(): " + std::string(error.what()));
         return;
     }
     catch(std::exception& error)
     {
+        mutex_.unlock();
         NotifyError_("Error on action.cpp on MakeResults_(): " + std::string(error.what()));
         return;
     }
@@ -361,7 +367,11 @@ JSON::Object::Ptr Action::CreateJSONResult_()
             JSON::Array::Ptr columns_array = new JSON::Array();
             JSON::Array::Ptr data_array = new JSON::Array();
 
-        if(error_) {return result_json;}
+        if(error_)
+        {
+            mutex_.unlock();
+            return result_json;
+        }
         
         // Make columns array
             if(results_->size() > 0)
@@ -414,16 +424,19 @@ JSON::Object::Ptr Action::CreateJSONResult_()
     }
     catch(JSON::JSONException& error)
     {
+        mutex_.unlock();
         Tools::OutputLogger::Error_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.message()));
         return JSON::Object::Ptr{};
     }
     catch(std::runtime_error& error)
     {
+        mutex_.unlock();
         Tools::OutputLogger::Error_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.what()));
         return JSON::Object::Ptr{};
     }
     catch(std::exception& error)
     {
+        mutex_.unlock();
         Tools::OutputLogger::Error_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.what()));
         return JSON::Object::Ptr{};
     }
