@@ -1,5 +1,6 @@
 
 #include "functions/function.h"
+#include "query/parameter.h"
 
 using namespace NAF;
 using namespace NAF::Functions;
@@ -30,6 +31,16 @@ Function::Function(std::string endpoint, HTTP::EnumMethods method, ResponseType 
     ,custom_process_([](Function&){})
 {
     
+}
+
+std::vector<Query::Parameter::Ptr>::iterator Function::GetParameter_(std::string name)
+{
+    auto found = std::find_if(parameters_.begin(), parameters_.end(), [&name](Query::Parameter::Ptr parameter)
+    {
+        return parameter->get_name() == name;
+    });
+
+    return found;
 }
 
 Action::Ptr Function::AddAction_(std::string identifier)

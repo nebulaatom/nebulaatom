@@ -82,6 +82,7 @@ class NAF::Functions::Function : public HTTP::CommonResponses
         void set_method(HTTP::EnumMethods type) { method_ = type; }
         void set_response_type(ResponseType response_type) { response_type_ = response_type; }
 
+        std::vector<Query::Parameter::Ptr>::iterator  GetParameter_(std::string name);
         Action::Ptr AddAction_(std::string identifier);
         std::vector<Action::Ptr>::iterator GetAction_(std::string identifier);
         void Process_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request::HTTPServerResponsePtr response);
