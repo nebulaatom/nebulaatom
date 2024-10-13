@@ -412,7 +412,7 @@ void Function::IdentifyParameters_(Functions::Action::Ptr action)
         // Iterate over Function parameters
         for(auto it2 : parameters_)
         {
-            if(it2->get_name() == it->get_name())
+            if(it2->get_name() == it->get_name() && it->get_editable())
             {
                 // Copy function parameter value to action parameter value (Shared)
                 it->set_value(it2->get_value());
