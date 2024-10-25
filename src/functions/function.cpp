@@ -1,6 +1,5 @@
 
 #include "functions/function.h"
-#include "query/parameter.h"
 
 using namespace NAF;
 using namespace NAF::Functions;
@@ -81,6 +80,8 @@ void Function::Setup_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request
 void Function::Process_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Request::HTTPServerResponsePtr response)
 {
     bool json_sent = false;
+
+    Tools::OutputLogger::Debug_("Function " + endpoint_);
 
     try
     {
@@ -182,8 +183,6 @@ void Function::Process_(HTTP::Request::HTTPServerRequestPtr request, HTTP::Reque
 
 bool Function::ProcessAction_(Action::Ptr action)
 {
-    Tools::OutputLogger::Debug_("Action: " + action->get_identifier() + ", Final: " + std::to_string(action->get_final()));
-
     // Copy actions references
     action->get_actions_container().clear();
     action->get_actions_container().insert(action->get_actions_container().end(), actions_.begin(), actions_.end());
@@ -209,7 +208,6 @@ bool Function::ProcessAction_(Action::Ptr action)
 bool Function::ProcessJSON_(JSON::Object::Ptr& json_result)
 {
     // Process actions of the function
-    Tools::OutputLogger::Debug_("Function: " + endpoint_);
     for(auto& action : actions_)
     {
         // Process Action
@@ -230,7 +228,6 @@ bool Function::ProcessJSON_(JSON::Object::Ptr& json_result)
 bool Function::ProcessFile_(std::string& filepath)
 {
     // Process actions of the function
-    Tools::OutputLogger::Debug_("Function: " + endpoint_);
     for(auto& action : actions_)
     {
         // Process Action

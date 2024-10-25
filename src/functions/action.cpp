@@ -125,6 +125,8 @@ Query::Parameter::Ptr Action::AddParameter_(std::string name, Query::Field::Posi
 
 bool Action::Work_()
 {
+    Tools::OutputLogger::Debug_("Action " + identifier_);
+
     // Compose query
     ComposeQuery_();
     if(error_) return false;
