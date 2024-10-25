@@ -64,10 +64,16 @@ class NAF::HTTP::Cookie
             name(name)
             ,value(value)
         {}
+        Cookie(Net::HTTPCookie cookie) : 
+            name("")
+            ,value("")
+            ,cookie(cookie)
+        {}
         virtual ~Cookie(){}
 
         std::string name;
         std::string value;
+        Net::HTTPCookie cookie;
 };
 
 class NAF::HTTP::Request
@@ -100,7 +106,9 @@ class NAF::HTTP::Request
         }
         
         void AddHeader_(std::string name, std::string value);
+        void AddHeader_(HTTP::Header header);
         void AddCookie_(std::string name, std::string value);
+        void AddCookie_(HTTP::Cookie cookie);
 
     protected:
         void SetupRequest_(Net::HTTPServerRequest& request);
