@@ -43,13 +43,7 @@ bool UsersManager::AuthenticateUser_()
     try
     {
         // Query process
-            action_->ComposeQuery_();
-            if(action_->get_error())
-                return false;
-            action_->ExecuteQuery_();
-            if(action_->get_error())
-                return false;
-            action_->MakeResults_();
+            action_->Work_();
 
         // Verify results
             if(action_->get_results()->size() > 0)
