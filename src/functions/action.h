@@ -67,7 +67,7 @@ class NAF::Functions::Action
         std::string get_status() const { return status_; };
         std::string get_message() const { return message_; };
         std::string get_custom_error() const { return custom_error_; };
-        int last_insert_id() const { return last_insert_id_; };
+        int get_last_insert_id() const { return last_insert_id_; };
         bool get_final() const { return final_; };
         bool get_error() const { return error_; };
         std::vector<Query::Parameter::Ptr>& get_parameters()
@@ -138,10 +138,10 @@ class NAF::Functions::Action
         void ExecuteAsyncQuery_();
         void MakeResults_();
         JSON::Object::Ptr CreateJSONResult_();
-        void GetLastInsertID_();
         virtual bool Work_();
 
     protected:
+        void GetLastInsertID_();
         void NotifyError_(std::string message);
         void SetupPositionParameter_(Query::Parameter::Ptr parameter);
         bool VerifyParameterCondition_(Query::Parameter::Ptr parameter);
