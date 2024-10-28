@@ -59,14 +59,8 @@ int main(int argc, char** argv)
             // Create query
             Functions::Action a1("a1");
             a1.set_sql_code("SELECT * FROM products");
-
-            a1.ComposeQuery_();
-            a1.ExecuteQuery_();
-            a1.MakeResults_();
-
-            auto result = a1.CreateJSONResult_();
-            result->set("status", a1.get_status());
-            result->set("message", a1.get_message());
+            a1.Work_();
+            auto result = a1.get_json_result();
 
             self.CompoundResponse_(HTTP::Status::kHTTP_OK, result);
 
