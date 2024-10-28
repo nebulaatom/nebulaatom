@@ -141,9 +141,6 @@ bool Action::Work_()
     if(error_) return false;
 
     // Get LAST_INSERT_ID
-    *query_ << "SELECT LAST_INSERT_ID()";
-    ExecuteQuery_();
-    if(error_) return false;
     GetLastInsertID_();
     if(error_) return false;
 
@@ -455,6 +452,9 @@ void Action::GetLastInsertID_()
 {
     try
     {
+        query_ = std::make_shared<Data::Statement>(*session_);
+        *query_ << "SELECT LAST_INSERT_ID()";
+        ExecuteQuery_();
         if(error_)
             return;
 
