@@ -11,6 +11,7 @@ Action::Action(std::string identifier) :
     ,status_("OK.")
     ,message_("OK.")
     ,custom_error_("Error in Action")
+    ,last_insert_id_(0)
     ,final_(true)
     ,error_(false)
     ,sql_code_("SELECT 1")
@@ -139,16 +140,25 @@ bool Action::Work_()
     MakeResults_();
     if(error_) return false;
 
+    // Get LAST_INSERT_ID
+    sql_code_ = "SELECT LAST_INSERT_ID()";
+    ExecuteQuery_();
+    if(error_) return false;
+    GetLastInsertID_();
+    if(error_) return false;
+
+    // Close session
+    session_->close();
+    if(error_) return false;
+    
     // Verify condition
     if(!VerifyCondition_())
         return false;
 
-    if(get_final())
-    {
-        json_result_ = CreateJSONResult_();
-        json_result_->set("status", get_status());
-        json_result_->set("message", get_message());
-    }
+    // Create JSON result
+    json_result_ = CreateJSONResult_();
+    json_result_->set("status", get_status());
+    json_result_->set("message", get_message());
 
     return true;
 }
@@ -331,9 +341,6 @@ void Action::MakeResults_()
                 get_results()->push_back(std::move(row_fields));
             }
 
-        // Close session
-            session_->close();
-        
         mutex_.unlock();
     }
     catch(JSON::JSONException& error)
@@ -441,6 +448,62 @@ JSON::Object::Ptr Action::CreateJSONResult_()
         mutex_.unlock();
         Tools::OutputLogger::Error_("Error on action.cpp on CreateJSONResult_(): " + std::string(error.what()));
         return JSON::Object::Ptr{};
+    }
+}
+
+void Action::GetLastInsertID_()
+{
+    try
+    {
+        if(error_)
+            return;
+
+        // Default values
+        if(query_.get() == nullptr)
+            return;
+
+        // Variables
+        Data::RecordSet results_dataquery(*query_);
+        auto results = Query::Results::Ptr(new Query::Results());
+
+        // Make Results
+        for(auto& it : results_dataquery)
+        {
+            Query::Row::Ptr row_fields(new Query::Row);
+
+            std::size_t col = 0;
+            for(size_t a = 0; a < it.fieldCount(); a++)
+            {
+                auto column_name = results_dataquery.columnName(col);
+                auto value = it.get(a);
+                // Create shared Query::Field
+                row_fields->push_back(std::make_shared<Query::Field>(column_name, Tools::DValue::Ptr(new Tools::DValue(value))));
+                col++;
+            }
+
+            results->push_back(std::move(row_fields));
+        }
+
+        // Get LastInsertID
+        auto id = results->First_();
+        if(!id->IsNull_() && id->get_value()->TypeIsIqual_(Tools::DValue::Type::kInteger))
+            last_insert_id_ = id->Int_();
+
+    }
+    catch(JSON::JSONException& error)
+    {
+        NotifyError_("Error on action.cpp on GetLastInsertID_(): " + std::string(error.message()));
+        return;
+    }
+    catch(std::runtime_error& error)
+    {
+        NotifyError_("Error on action.cpp on GetLastInsertID_(): " + std::string(error.what()));
+        return;
+    }
+    catch(std::exception& error)
+    {
+        NotifyError_("Error on action.cpp on GetLastInsertID_(): " + std::string(error.what()));
+        return;
     }
 }
 
