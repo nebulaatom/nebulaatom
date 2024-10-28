@@ -136,10 +136,7 @@ NAF::Extras::Session& SessionsManager::CreateSession_(int id_user, std::string p
             action.AddParameter_("id_user", id_user, false);
 
         // Query process
-            action.ComposeQuery_();
-            if(action.get_error())
-                return sessions_.at(id);
-            action.ExecuteQuery_();
+            action.Work_();
     }
     catch(MySQL::MySQLException& error)
     {
