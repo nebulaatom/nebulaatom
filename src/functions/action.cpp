@@ -141,7 +141,7 @@ bool Action::Work_()
     if(error_) return false;
 
     // Get LAST_INSERT_ID
-    sql_code_ = "SELECT LAST_INSERT_ID()";
+    *query_ << "SELECT LAST_INSERT_ID()";
     ExecuteQuery_();
     if(error_) return false;
     GetLastInsertID_();
