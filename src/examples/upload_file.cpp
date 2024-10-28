@@ -101,8 +101,7 @@ int main(int argc, char** argv)
             a1->AddParameter_("photo", "", true);
 
             self.IdentifyParameters_();
-            a1->ComposeQuery_();
-            a1->ExecuteQuery_();
+            a1->Work_();
 
             if(a1->get_error())
                 self.HTMLResponse_(HTTP::Status::kHTTP_INTERNAL_SERVER_ERROR, a1->get_custom_error());
