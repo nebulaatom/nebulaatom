@@ -27,7 +27,6 @@ class MainHandler : public Handlers::BackendHandler
                     auto a1 = f1->AddAction_("a1");
                     a1->set_custom_error("No stores found with this name.");
                     a1->set_sql_code("SELECT id FROM stores WHERE name = ?");
-                    a1->set_final(false);
                     a1->SetupCondition_("verify-identifier", Query::ConditionType::kWarning, [](Functions::Action& action)
                     {
                         if(action.get_results()->size() > 0)
@@ -55,6 +54,7 @@ class MainHandler : public Handlers::BackendHandler
 
                 // Action 2
                     auto a2 = f1->AddAction_("a2");
+                    a1->set_final(true);
                     a2->set_custom_error("No products found.");
                     a2->set_sql_code("SELECT * FROM products WHERE id_store = ?");
                     a2->SetupCondition_("condition-action2", Query::ConditionType::kWarning, [](Functions::Action& action)
@@ -88,6 +88,11 @@ class MainHandler : public Handlers::BackendHandler
                             return true;
                     });
             
+                // Action 3
+                    auto a3 = f1->AddAction_("a3");
+                    a3->set_sql_code("INSERT INTO test_logs (log) VALUES (?)");
+                    a3->AddParameter_("test", Tools::DValue::Ptr(new Tools::DValue()), false);
+
             // Function /api/image
                 auto f2 = AddFunction_("/api/image", HTTP::EnumMethods::kHTTP_GET);
                 f2->set_response_type(Functions::Function::ResponseType::kFile);
