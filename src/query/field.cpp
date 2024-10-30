@@ -1,5 +1,6 @@
 
 #include "field.h"
+#include "tools/dvalue.h"
 
 using namespace NAF;
 using namespace NAF::Query;
@@ -17,7 +18,8 @@ Field::Field(std::string column_name, Tools::DValue::Ptr value) :
     ,column_name_(column_name)
     ,value_(value)
 {
-    
+    if(value_->TypeIsIqual_(Tools::DValue::Type::kEmpty))
+        is_null_ = true;
 }
 
 bool Field::IsNull_()
