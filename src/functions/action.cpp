@@ -188,7 +188,7 @@ bool Action::ComposeQuery_()
                 {
                     case Tools::DValue::Type::kEmpty:
                     {
-                        auto value = Poco::Nullable<int>();
+                        auto value = Poco::Any();
                         *query_ , use(value);
                         break;
                     }
