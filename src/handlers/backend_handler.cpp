@@ -35,6 +35,9 @@ void BackendHandler::ProcessActions_()
     // Identify parameters
     IdentifyParameters_();
 
+    // Set file parameters to current function
+    get_current_function()->get_file_manager() = get_files_parameters();
+
     // Set current user
     auto id = get_users_manager().get_current_user().get_id();
     auto username = get_users_manager().get_current_user().get_username();
