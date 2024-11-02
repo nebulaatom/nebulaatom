@@ -1,5 +1,6 @@
 
 #include "functions/action.h"
+#include <Poco/Nullable.h>
 
 using namespace NAF;
 using namespace NAF::Functions;
@@ -176,6 +177,13 @@ bool Action::ComposeQuery_()
         // Set the parameters
             for(auto& param : parameters_)
             {
+                if(param->get_value()->TypeIsIqual_(Tools::DValue::Type::kEmpty))
+                    Tools::OutputLogger::Debug_("Parameter in ComposeQuery_(): " + param->get_name() + ": -- EMPTY VALUE --");
+                else if(param->ToString_().size() < 1000)
+                    Tools::OutputLogger::Debug_("Parameter in ComposeQuery_(): " + param->get_name() + ": " + param->ToString_());
+                else
+                    Tools::OutputLogger::Debug_("Parameter in ComposeQuery_(): " + param->get_name() + ": -- BIG STRING --");
+                
                 // Setup positional parameter
                 SetupPositionParameter_(param);
 
@@ -188,7 +196,7 @@ bool Action::ComposeQuery_()
                 {
                     case Tools::DValue::Type::kEmpty:
                     {
-                        auto value = Poco::Any();
+                        Poco::NullType value;
                         *query_ , use(value);
                         break;
                     }
@@ -217,10 +225,6 @@ bool Action::ComposeQuery_()
                         break;
                     }
                 }
-                if(param->ToString_().size() < 1000)
-                    Tools::OutputLogger::Debug_("Parameter in ComposeQuery_(): " + param->get_name() + ": " + param->ToString_());
-                else
-                    Tools::OutputLogger::Debug_("Parameter in ComposeQuery_(): " + param->get_name() + ": -- BIG STRING --");
             }
 
         // Return
@@ -254,6 +258,11 @@ void Action::ExecuteQuery_()
 
         affected_rows_ = query_->execute();
         if(async_) async_finished_ = true;
+    }
+    catch(Poco::DataException& ce)
+    {
+        NotifyError_("Error on action.cpp on ExecuteQuery_(): " + std::string(ce.message()));
+        return;
     }
     catch(MySQL::MySQLException& error)
     {
