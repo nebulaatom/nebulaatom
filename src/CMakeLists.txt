@@ -43,6 +43,8 @@ set(NEBULAATOM_SOURCES
     ${PROJECT_SOURCE_DIR}/src/tools/settings_manager.cpp
     ${PROJECT_SOURCE_DIR}/src/tools/output_logger.cpp
     ${PROJECT_SOURCE_DIR}/src/tools/email.cpp
+    ${PROJECT_SOURCE_DIR}/src/tools/base64_tool.cpp
+    ${PROJECT_SOURCE_DIR}/src/tools/hmac_tool.cpp
 )
 
 # Headers
@@ -105,6 +107,8 @@ set(NEBULAATOM_headers_tools
     ${PROJECT_SOURCE_DIR}/src/tools/settings_manager.h
     ${PROJECT_SOURCE_DIR}/src/tools/output_logger.h
     ${PROJECT_SOURCE_DIR}/src/tools/email.h
+    ${PROJECT_SOURCE_DIR}/src/tools/base64_tool.h
+    ${PROJECT_SOURCE_DIR}/src/tools/hmac_tool.h
 )
 set(HEADER
     ${HEADER}
