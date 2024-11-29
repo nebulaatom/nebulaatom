@@ -122,8 +122,41 @@ void CommonResponses::FileResponse_(HTTP::Status status, std::string address)
 {
     SetupHeaders_();
     SetupCookies_();
+    
     // Manage the file
         Files::FileManager file_manager(Files::OperationType::kDownload);
+        file_manager.get_files().push_back(file_manager.CreateTempFileFromAddress_(address));
+        auto tmp_file = file_manager.get_files().front();
+
+    // Check file
+        if(!file_manager.CheckFiles_())
+        {
+            HTMLResponse_(HTTP::Status::kHTTP_NOT_FOUND, "Requested file bad check.");
+            return;
+        }
+        file_manager.AddBasicSupportedFiles_();
+        if(!file_manager.IsSupported_())
+        {
+            HTMLResponse_(HTTP::Status::kHTTP_BAD_REQUEST, "Requested file is not supported.");
+            return;
+        }
+        
+    // Reponse
+        get_http_server_response().value()->setStatus(responses_.find(status)->second.http_status);
+        get_http_server_response().value()->setContentType(file_manager.get_files().front().get_content_type());
+        get_http_server_response().value()->setChunkedTransferEncoding(true);
+        std::ostream& out_reponse = get_http_server_response().value()->send();
+
+    // Download file
+        file_manager.DownloadFile_(out_reponse);
+}
+
+void CommonResponses::FileResponse_(HTTP::Status status, std::string address, Files::FileManager& file_manager)
+{
+    SetupHeaders_();
+    SetupCookies_();
+
+    // Manage the file
         file_manager.get_files().push_back(file_manager.CreateTempFileFromAddress_(address));
         auto tmp_file = file_manager.get_files().front();
 

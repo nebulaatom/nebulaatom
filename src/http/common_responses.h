@@ -91,6 +91,7 @@ class NAF::HTTP::CommonResponses : public HTTP::Request
         void HTMLResponse_(HTTP::Status status, std::string message);
         void CustomHTMLResponse_(HTTP::Status status, std::string html_message);
         void FileResponse_(HTTP::Status status, std::string address);
+        void FileResponse_(HTTP::Status status, std::string address, Files::FileManager& file_manager);
 
     protected:
         void FillResponses_();
