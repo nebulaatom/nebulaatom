@@ -77,11 +77,7 @@ void PermissionsManager::LoadPermissions_()
     {
         mutex_.lock();
         FillActionTypeMap_();
-        if(permissions_.size() > 0)
-        {
-            mutex_.unlock();
-            return;
-        }
+        permissions_.clear();
 
         // Setting up the action
             Functions::Action action{""};
