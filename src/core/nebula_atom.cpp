@@ -124,6 +124,9 @@ void NebulaAtom::AddBasicSettings_()
     Tools::SettingsManager::AddSetting_("rootcert", Tools::DValue::Type::kString, Tools::DValue(""));
     Tools::SettingsManager::AddSetting_("logger_output_file", Tools::DValue::Type::kString, Tools::DValue("nebulaatom.log"));
     Tools::SettingsManager::AddSetting_("debug", Tools::DValue::Type::kBoolean, Tools::DValue(false));
+    Tools::SettingsManager::AddSetting_("permissions_table", Tools::DValue::Type::kString, Tools::DValue("_naf_permissions"));
+    Tools::SettingsManager::AddSetting_("users_table", Tools::DValue::Type::kString, Tools::DValue("_naf_users"));
+    Tools::SettingsManager::AddSetting_("sessions_table", Tools::DValue::Type::kString, Tools::DValue("_naf_sessions"));
 }
 
 void NebulaAtom::SetupSettings_()
