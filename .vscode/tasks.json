@@ -36,5 +36,10 @@
             ,"type": "shell"
             ,"command": "cd build/Debug && sudo cmake --build . --target install"
         }
+        ,{
+            "label": "Create Docker Image"
+            ,"type": "shell"
+            ,"command": "docker build -t nebulaatom:latest ."
+        }
     ]
 }
