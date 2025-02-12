@@ -15,3 +15,6 @@ key: "key.pem"
 rootcert: ""
 logger_output_file: "nebulaatom.log"
 debug: true
+permissions_table: "_naf_permissions"
+users_table: "_naf_users"
+sessions_table: "_naf_sessions"
