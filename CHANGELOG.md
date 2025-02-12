@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.11.5 (Beta)
+
+* Conditions when evaluated do not return an error [#92](https://github.com/nebulaatom/nebulaatom/issues/92)
+* Set dependencies to Debian 12 (bookworm) versions [#77](https://github.com/nebulaatom/nebulaatom/issues/77)
+* Add methods to get Function Actions and get Actions Parameters [#93](https://github.com/nebulaatom/nebulaatom/issues/93)
+* Add 'columns' to JSON responses [#94](https://github.com/nebulaatom/nebulaatom/issues/94)
+* Use Tools::DValue::Ptr in Parameters and Results classes [#95](https://github.com/nebulaatom/nebulaatom/issues/95)
+* Fix Custom Functions Proccess error without Response [#96](https://github.com/nebulaatom/nebulaatom/issues/96)
+* Improve Parameters identification [#97](https://github.com/nebulaatom/nebulaatom/issues/97)
+* Add functions to add action parameters more efficiently [#98](https://github.com/nebulaatom/nebulaatom/issues/98)
+* Fix error with mutex object not unlocked [#99](https://github.com/nebulaatom/nebulaatom/issues/99)
+* Get the last inser id of a Query [#100](https://github.com/nebulaatom/nebulaatom/issues/100)
+* Poco::Nullable<int> insert random values to DB, replace with Poco::NullType [#101](https://github.com/nebulaatom/nebulaatom/issues/101)
+* Add HMAC-SHA1 and Base64 tools [#102](https://github.com/nebulaatom/nebulaatom/issues/102)
+* Add a Files::FileManager to FileResponse_ in CommonResponses class [#103](https://github.com/nebulaatom/nebulaatom/issues/103)
+* Enable permissions reloading #104[#92](https://github.com/nebulaatom/nebulaatom/issues/92)
+* Setup custom tables for users, permissions and sessions in properties file [#105](https://github.com/nebulaatom/nebulaatom/issues/105)
+* Add Changelog [#106](https://github.com/nebulaatom/nebulaatom/issues/106)
+
 ## v0.11.4 (Beta)
 
 * Modify LoginHandler and UsersManagers to use Parameters [#81](https://github.com/nebulaatom/nebulaatom/issues/81)
