@@ -50,7 +50,7 @@ void SessionsManager::ReadSessions_()
             Functions::Action action{""};
             action.get_credentials().Replace_(credentials_);
             action.set_custom_error("Sessions not found.");
-            action.set_sql_code("SELECT * FROM _naf_sessions WHERE NOW() < created_at + INTERVAL max_age SECOND");
+            action.set_sql_code("SELECT * FROM " + Tools::SettingsManager::GetSetting_("sessions_table", "_naf_sessions") + " WHERE NOW() < created_at + INTERVAL max_age SECOND");
 
         // Query process
             if(!action.Work_())
@@ -126,7 +126,7 @@ NAF::Extras::Session& SessionsManager::CreateSession_(int id_user, std::string p
             action.get_credentials().Replace_(credentials_);
             action.set_custom_error("Session not saved.");
             std::string sql_code =
-                "INSERT INTO _naf_sessions (identifier, path, max_age, id_naf_user) "
+                "INSERT INTO " + Tools::SettingsManager::GetSetting_("sessions_table", "_naf_sessions") + " (identifier, path, max_age, id_naf_user) "
                 "VALUES (?, ?, ?, ?)"
             ;
             action.set_sql_code(sql_code);
@@ -159,7 +159,7 @@ void SessionsManager::DeleteSession_(std::string id)
             Functions::Action action{""};
             action.get_credentials().Replace_(credentials_);
             action.set_custom_error("Session not saved.");
-            action.set_sql_code("DELETE FROM _naf_sessions WHERE identifier = ?");
+            action.set_sql_code("DELETE FROM " + Tools::SettingsManager::GetSetting_("sessions_table", "_naf_sessions") + " WHERE identifier = ?");
             action.AddParameter_("identifier", id, false);
 
         // Query process

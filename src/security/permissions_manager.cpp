@@ -85,8 +85,8 @@ void PermissionsManager::LoadPermissions_()
             action.set_custom_error("Permissions not found.");
             std::string sql_code =
                 "SELECT ap.endpoint AS endpoint, au.username AS username, au.id AS id_user, ap.action AS action, au.id_group AS id_group "
-                "FROM _naf_permissions ap "
-                "JOIN _naf_users au ON au.id_group = ap.id_group"
+                "FROM " + Tools::SettingsManager::GetSetting_("permissions_table", "_naf_permissions") + " ap "
+                "JOIN " + Tools::SettingsManager::GetSetting_("users_table", "_naf_users") + " au ON au.id_group = ap.id_group"
             ;
             action.set_sql_code(sql_code);
 
